@@ -1,0 +1,93 @@
+{
+  "features": [
+    {
+      "id": "feat-001",
+      "name": "Setup do projeto Angular",
+      "description": "Inicializar projeto Angular 21.x + TypeScript ES2025 (componentes standalone, sem NgModule), roteamento base, cliente HTTP configurado para o API Gateway (envia Accept-Language conforme idioma ativo), layout responsivo base (RNF01), gate de cobertura 80% configurado no test runner (ver docs/TESTING.md), Playwright instalado para e2e. Tema Angular Material M3 (claro/escuro com toggle) configurado com --color-action-neutral (azul) como cor primaria e --color-brand (verde) como secondary/tertiary - ver docs/DESIGN-SYSTEM.md secao 'Regra semantica de cor' - registrar em progress.md a abordagem exata de troca de tema usada. Assets do logo StakeVault copiados de docs/design-references/ (logo-mark-dark.svg, logo-mark-light.svg, logo-mark-solid.svg como favicon/app icon, logo-bars-only.svg) para o projeto Angular. Splash de carregamento animado (ver docs/DESIGN-SYSTEM.md item 17 do inventario) baseado em docs/design-references/splash-animation-artistic.html (versao recomendada - anel de guia com giro continuo, cometa tracando o anel, raios girando ate destravar, pop+pulso de confirmacao, wordmark revelado por mask/wipe) tocando uma vez e travando no logo formado, nao em loop infinito, reaproveitando o giro do anel de guia como loop discreto se o carregamento passar de ~3s, respeitando prefers-reduced-motion (bloco @media ja pronto no arquivo de referencia). Componente base de layout em paineis (app-panel-layout + app-panel, grid multi-coluna com rolagem independente por painel, colapso responsivo desktop/tablet/mobile) - ver docs/DESIGN-SYSTEM.md secao 'Layout em paineis'. @jsverse/transloco instalado e configurado com os tres locales sempre em sincronia (pt-BR/en-US/es, arquivos JSON base + seletor de idioma persistido em localStorage) - ver docs/CONVENTIONS.md secao 'Internacionalizacao (i18n)'. ngx-echarts (Apache ECharts) instalado como biblioteca de graficos para RF10/RF11 - ver docs/DESIGN-SYSTEM.md item 6 do inventario (decisao de 2026-08-02). src/environments/environment.ts + environment.prod.ts configurados com a URL base do api-gateway (build-time, fileReplacements do Angular CLI) - ver docs/OBSERVABILITY-AND-CONFIG.md secao 'Configuracao de apps/web' (decisao de 2026-08-02). Ferramentas de QA visual instaladas (decisao de 2026-08-02, ver docs/DESIGN-SYSTEM.md secao 'QA visual'): npx impeccable install (https://github.com/pbakaus/impeccable) e npx skills add https://github.com/leonxlnx/taste-skill - uso restrito a auditoria/polish de componentes ja implementados, nao gerar DESIGN.md proprio (docs/DESIGN-SYSTEM.md continua sendo a unica fonte de verdade de design).",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-002",
+      "name": "RF01/RF02 (UI) - Autenticacao e gestao de usuarios do tenant",
+      "description": "SEM tela de autocadastro (ver docs/DECISIONS-LOG.md 2026-08-02 'Modelo de tenant multiusuario' - nao existe autocadastro publico de tenant nem de usuario). Tela de login com 3 campos: slug do tenant, email, senha (email so e unico dentro do schema do tenant). Armazenamento seguro do token PASETO no cliente (claims de userId e tenantId). Criacao de tenant e FORA do escopo deste app (operador chama a API direto com X-Admin-Api-Key, sem UI - decisao de 2026-08-02 item 11). Tela de gestao de usuarios do tenant (lista + criar usuario role=member), visivel apenas para o usuario logado com role=admin - role=member NAO ve essa tela de forma alguma, nem somente leitura (decisao de 2026-08-02 item 11) - ver docs/services/web.md secao 'Modelo de tenant (UI)'.",
+      "dependencies": [
+        "feat-001"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-003",
+      "name": "RF03 (UI) - Gestao de casas de apostas",
+      "description": "Cadastro e listagem de casas de apostas, consumindo bets-service.",
+      "dependencies": [
+        "feat-002"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-004",
+      "name": "RF04 (UI) - Registro manual de apostas",
+      "description": "Formulario de registro de aposta seguindo as oito regras de ouro de Shneiderman (ver docs/services/web.md).",
+      "dependencies": [
+        "feat-003"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-005",
+      "name": "RF08 (UI) - Historico de operacoes",
+      "description": "Tela de historico/auditoria de apostas e movimentacoes financeiras.",
+      "dependencies": [
+        "feat-004"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-006",
+      "name": "RF10/RF11 (UI) - Dashboards e filtros dinamicos",
+      "description": "Paineis visuais consumindo GET /api/v1/statistics do stats-service, com filtros por periodo, esporte, liga, mercado e tipster (query params em ingles: sport, league, market, tipster, from, to) recalculando as metricas dinamicamente (RN08). Rotulos de filtro na UI localizados.",
+      "dependencies": [
+        "feat-005"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-007",
+      "name": "Pipeline de CI (GitHub Actions + SonarCloud)",
+      "description": "Workflow ja versionado em .github/workflows/ci.yml (dentro deste repositorio - este app e seu proprio repositorio Git, nao um monorepo, ver docs/CI-CD.md) com 5 passos: validacao de CHANGELOG.md atualizado, validacao de chaves de traducao (src/assets/i18n/pt-BR.json, en-US.json, es.json), build (npm ci && npm run build), testes unitarios + cobertura (ng test --code-coverage), qualidade/cobertura no SonarCloud (sonar-project.properties, projectKey sv-frontend). Scripts de validacao em .github/scripts/ (duplicados neste repositorio, nao compartilhados). Repositorio GitHub: https://github.com/eimmig/sv-frontend.git. So funciona de fato apos este repositorio existir no GitHub e o setup do SonarCloud (org, projeto, SONAR_TOKEN, SONAR_ORGANIZATION) estar feito - ver docs/CI-CD.md secao 'Setup pendente'.",
+      "dependencies": [
+        "feat-001"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    }
+  ]
+}

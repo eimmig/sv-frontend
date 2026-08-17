@@ -1,0 +1,20 @@
+# Dependencias e build
+node_modules/
+dist/
+.angular/
+
+# Relatorio de cobertura consumido pelo SonarCloud
+coverage/
+
+# Segredos — nunca versionados (ver docs/OBSERVABILITY-AND-CONFIG.md no vault)
+.env
+.env.local
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# SO
+Thumbs.db
+.DS_Store
