@@ -6,3 +6,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 `docs/CI-CD.md`).
 
 ## [Unreleased]
+
+### Fixed
+
+- Chave do projeto no SonarCloud corrigida para `eimmig_sv-frontend`. O SonarCloud gera a chave como
+  `<org>_<repo>` ao importar um repositório do GitHub; a forma sem prefixo, usada até aqui, faria a
+  análise falhar com projeto inexistente.
