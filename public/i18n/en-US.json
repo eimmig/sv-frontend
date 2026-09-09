@@ -17,5 +17,13 @@
     "metricsTitle": "Metrics",
     "itemPlaceholder": "Item {{n}}",
     "metricsPlaceholder": "Center panel placeholder — layout mechanism proven in this subtask, the real dashboard is feat-006."
+  },
+  "login": {
+    "title": "Sign in",
+    "slugLabel": "Organization",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "submit": "Sign in",
+    "genericError": "Could not sign in. Please try again."
   }
 }

@@ -17,5 +17,13 @@
     "metricsTitle": "Métricas",
     "itemPlaceholder": "Item {{n}}",
     "metricsPlaceholder": "Placeholder do painel central — mecanismo de layout provado nesta subtask, dashboard real é a feat-006."
+  },
+  "login": {
+    "title": "Entrar",
+    "slugLabel": "Organização",
+    "emailLabel": "E-mail",
+    "passwordLabel": "Senha",
+    "submit": "Entrar",
+    "genericError": "Não foi possível entrar. Tente novamente."
   }
 }
