@@ -1,4 +1,3 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,8 +5,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
+import { loadInto, submitForm } from '../../core/api-request';
 import { UserSummary, UsersApi } from '../../core/users-api';
-import { toProblemDetail } from '../../core/problem-detail';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 
@@ -46,37 +45,24 @@ export class Users {
   }
 
   private reload(): void {
-    this.usersApi.list().subscribe({
-      next: (users) => {
-        this.users.set(users);
-        this.loadError.set(null);
-      },
-      error: (error: HttpErrorResponse) => {
-        const problem = toProblemDetail(error);
-        this.loadError.set(problem.detail ?? this.transloco.translate('users.genericError'));
-      },
-    });
+    loadInto(this.usersApi.list(), this.users, this.loadError, () =>
+      this.transloco.translate('users.genericError'),
+    );
   }
 
   protected submit(): void {
     if (this.form.invalid || this.submitting()) {
       return;
     }
-    const input = this.form.getRawValue();
-    this.submitting.set(true);
-    this.formError.set(null);
-
-    this.usersApi.create(input).subscribe({
-      next: () => {
-        this.submitting.set(false);
+    submitForm(
+      this.usersApi.create(this.form.getRawValue()),
+      this.submitting,
+      this.formError,
+      () => this.transloco.translate('users.genericError'),
+      () => {
         this.form.reset();
         this.reload();
       },
-      error: (error: HttpErrorResponse) => {
-        this.submitting.set(false);
-        const problem = toProblemDetail(error);
-        this.formError.set(problem.detail ?? this.transloco.translate('users.genericError'));
-      },
-    });
+    );
   }
 }

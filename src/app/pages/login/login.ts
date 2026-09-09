@@ -1,5 +1,4 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,8 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
+import { submitForm } from '../../core/api-request';
 import { Auth } from '../../core/auth';
-import { toProblemDetail } from '../../core/problem-detail';
 import { Panel } from '../../shared/panel/panel';
 
 @Component({
@@ -50,18 +49,12 @@ export class Login implements OnInit {
       return;
     }
     const { slug, email, password } = this.form.getRawValue();
-    this.submitting.set(true);
-    this.errorMessage.set(null);
-
-    this.auth.login(slug, email, password).subscribe({
-      next: () => {
-        this.router.navigateByUrl('/dashboard');
-      },
-      error: (error: HttpErrorResponse) => {
-        this.submitting.set(false);
-        const problem = toProblemDetail(error);
-        this.errorMessage.set(problem.detail ?? this.transloco.translate('login.genericError'));
-      },
-    });
+    submitForm(
+      this.auth.login(slug, email, password),
+      this.submitting,
+      this.errorMessage,
+      () => this.transloco.translate('login.genericError'),
+      () => this.router.navigateByUrl('/dashboard'),
+    );
   }
 }
