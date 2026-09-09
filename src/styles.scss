@@ -96,3 +96,32 @@ body {
   margin: 0;
   height: 100%;
 }
+
+// Tonal result badge (docs/DESIGN-SYSTEM.md item 16, "Badge de resultado de aposta") - fundo
+// tonal + texto na mesma cor, nunca fundo solido + texto branco. Global utility since several
+// screens show a won/lost/pending or gain/loss signal (history status, betting house balance
+// delta, dashboard breakdown - feat-011.2/.3).
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge--positive {
+  background: color-mix(in srgb, var(--color-positive) 16%, transparent);
+  color: var(--color-positive);
+}
+
+.badge--negative {
+  background: color-mix(in srgb, var(--color-negative) 16%, transparent);
+  color: var(--color-negative);
+}
+
+.badge--neutral {
+  background: var(--color-surface-elevated);
+  color: var(--color-text-secondary);
+}

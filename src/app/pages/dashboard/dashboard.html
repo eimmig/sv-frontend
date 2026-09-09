@@ -91,34 +91,51 @@
     } @else {
       <div class="dashboard__cards" data-testid="dashboard-overall-cards">
         <div class="dashboard__card">
-          <span class="dashboard__card-label">{{ 'dashboard.totalStakedLabel' | transloco }}</span>
-          <span class="dashboard__card-value" data-testid="dashboard-total-staked">{{
-            formatBrl(dashboard().overall.totalStaked)
-          }}</span>
+          <div class="dashboard__card-icon"><mat-icon aria-hidden="true">account_balance_wallet</mat-icon></div>
+          <div class="dashboard__card-body">
+            <span class="dashboard__card-label">{{ 'dashboard.totalStakedLabel' | transloco }}</span>
+            <span class="dashboard__card-value" data-testid="dashboard-total-staked">{{
+              formatBrl(dashboard().overall.totalStaked)
+            }}</span>
+          </div>
+        </div>
+        <div class="dashboard__card" [class]="'dashboard__card--' + sign(dashboard().overall.netProfit)">
+          <div class="dashboard__card-icon">
+            <mat-icon aria-hidden="true">{{ dashboard().overall.netProfit >= 0 ? 'trending_up' : 'trending_down' }}</mat-icon>
+          </div>
+          <div class="dashboard__card-body">
+            <span class="dashboard__card-label">{{ 'dashboard.netProfitLabel' | transloco }}</span>
+            <span class="dashboard__card-value" data-testid="dashboard-net-profit">{{
+              formatBrl(dashboard().overall.netProfit)
+            }}</span>
+          </div>
+        </div>
+        <div class="dashboard__card" [class]="'dashboard__card--' + sign(dashboard().overall.roi)">
+          <div class="dashboard__card-icon"><mat-icon aria-hidden="true">percent</mat-icon></div>
+          <div class="dashboard__card-body">
+            <span class="dashboard__card-label">{{ 'dashboard.roiLabel' | transloco }}</span>
+            <span class="dashboard__card-value" data-testid="dashboard-roi">{{
+              formatPercent(dashboard().overall.roi)
+            }}</span>
+          </div>
         </div>
         <div class="dashboard__card">
-          <span class="dashboard__card-label">{{ 'dashboard.netProfitLabel' | transloco }}</span>
-          <span class="dashboard__card-value" data-testid="dashboard-net-profit">{{
-            formatBrl(dashboard().overall.netProfit)
-          }}</span>
+          <div class="dashboard__card-icon"><mat-icon aria-hidden="true">emoji_events</mat-icon></div>
+          <div class="dashboard__card-body">
+            <span class="dashboard__card-label">{{ 'dashboard.winRateLabel' | transloco }}</span>
+            <span class="dashboard__card-value" data-testid="dashboard-win-rate">{{
+              formatPercent(dashboard().overall.winRate)
+            }}</span>
+          </div>
         </div>
         <div class="dashboard__card">
-          <span class="dashboard__card-label">{{ 'dashboard.roiLabel' | transloco }}</span>
-          <span class="dashboard__card-value" data-testid="dashboard-roi">{{
-            formatPercent(dashboard().overall.roi)
-          }}</span>
-        </div>
-        <div class="dashboard__card">
-          <span class="dashboard__card-label">{{ 'dashboard.winRateLabel' | transloco }}</span>
-          <span class="dashboard__card-value" data-testid="dashboard-win-rate">{{
-            formatPercent(dashboard().overall.winRate)
-          }}</span>
-        </div>
-        <div class="dashboard__card">
-          <span class="dashboard__card-label">{{ 'dashboard.settledCountLabel' | transloco }}</span>
-          <span class="dashboard__card-value" data-testid="dashboard-settled-count">{{
-            dashboard().overall.settledCount
-          }}</span>
+          <div class="dashboard__card-icon"><mat-icon aria-hidden="true">receipt_long</mat-icon></div>
+          <div class="dashboard__card-body">
+            <span class="dashboard__card-label">{{ 'dashboard.settledCountLabel' | transloco }}</span>
+            <span class="dashboard__card-value" data-testid="dashboard-settled-count">{{
+              dashboard().overall.settledCount
+            }}</span>
+          </div>
         </div>
       </div>
 
@@ -143,8 +160,8 @@
                   <tr data-testid="dashboard-by-sport-row">
                     <td>{{ segment.dimensionName }}</td>
                     <td>{{ formatBrl(segment.metrics.totalStaked) }}</td>
-                    <td>{{ formatBrl(segment.metrics.netProfit) }}</td>
-                    <td>{{ formatPercent(segment.metrics.roi) }}</td>
+                    <td [class]="'dashboard__value--' + sign(segment.metrics.netProfit)">{{ formatBrl(segment.metrics.netProfit) }}</td>
+                    <td [class]="'dashboard__value--' + sign(segment.metrics.roi)">{{ formatPercent(segment.metrics.roi) }}</td>
                     <td>{{ formatPercent(segment.metrics.winRate) }}</td>
                     <td>{{ segment.metrics.settledCount }}</td>
                   </tr>
@@ -172,8 +189,8 @@
                   <tr data-testid="dashboard-by-market-row">
                     <td>{{ segment.dimensionName }}</td>
                     <td>{{ formatBrl(segment.metrics.totalStaked) }}</td>
-                    <td>{{ formatBrl(segment.metrics.netProfit) }}</td>
-                    <td>{{ formatPercent(segment.metrics.roi) }}</td>
+                    <td [class]="'dashboard__value--' + sign(segment.metrics.netProfit)">{{ formatBrl(segment.metrics.netProfit) }}</td>
+                    <td [class]="'dashboard__value--' + sign(segment.metrics.roi)">{{ formatPercent(segment.metrics.roi) }}</td>
                     <td>{{ formatPercent(segment.metrics.winRate) }}</td>
                     <td>{{ segment.metrics.settledCount }}</td>
                   </tr>
@@ -201,8 +218,8 @@
                   <tr data-testid="dashboard-by-betting-house-row">
                     <td>{{ segment.dimensionName }}</td>
                     <td>{{ formatBrl(segment.metrics.totalStaked) }}</td>
-                    <td>{{ formatBrl(segment.metrics.netProfit) }}</td>
-                    <td>{{ formatPercent(segment.metrics.roi) }}</td>
+                    <td [class]="'dashboard__value--' + sign(segment.metrics.netProfit)">{{ formatBrl(segment.metrics.netProfit) }}</td>
+                    <td [class]="'dashboard__value--' + sign(segment.metrics.roi)">{{ formatPercent(segment.metrics.roi) }}</td>
                     <td>{{ formatPercent(segment.metrics.winRate) }}</td>
                     <td>{{ segment.metrics.settledCount }}</td>
                   </tr>
