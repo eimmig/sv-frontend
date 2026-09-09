@@ -3,7 +3,7 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Feature ativa:** `feat-001` (`feat-001.1`..`.7` done, `feat-001.8`..`.9` restantes)
+**Feature ativa:** `feat-001` (`feat-001.1`..`.8` done, `feat-001.9` restante)
 
 ## Status
 
@@ -19,15 +19,17 @@
 - [x] `feat-001.5` (assets de logo + splash animado) — `done` em 2026-09-09.
 - [x] `feat-001.6` (ngx-echarts instalado e provado) — `done` em 2026-09-09.
 - [x] `feat-001.7` (Playwright + gate de cobertura 80%) — `done` em 2026-09-09.
+- [x] `feat-001.8` (Impeccable + taste-skill + huashu-design + DESIGN.md pré-escrito) — `done` em
+      2026-09-09.
 
 ### Em andamento
 
-- `feat-001` — próxima subtask: `feat-001.8` (Impeccable + taste-skill + huashu-design +
-  DESIGN.md pré-escrito).
+- `feat-001` — próxima subtask: `feat-001.9` (CHANGELOG, Test Suite Auditor e verificação
+  final — fecha a feature).
 
 ### Próximos passos (Next Steps)
 
-1. `feat-001.8`..`feat-001.9` (ver `feature_list.json` deste app).
+1. `feat-001.9` (ver `feature_list.json` deste app) — última subtask de `feat-001`.
 
 ## Bloqueios / Riscos
 
@@ -300,6 +302,52 @@ da feature ativa" que a regra de escopo restrito existe pra evitar. Mesmo padrã
 
 `./init.sh` verde (27 testes, 97.87% stmts). `npx playwright test` verde (3/3). 1 subtask
 (SV-217).
+
+## `feat-001.8` fechada — Impeccable + taste-skill + huashu-design + DESIGN.md (2026-09-09)
+
+**Achado real na instalação do Impeccable**: `npx impeccable install` sem flags detecta
+harnesses automaticamente e ofereceu só "GitHub Copilot" como default — falso positivo, só
+porque `.github/` existe (workflows de CI), não porque este projeto usa Copilot (nunca
+mencionado em nenhum `CLAUDE.md`). Corrigido rodando de novo com
+`--providers=claude --scope=project` (o agente real deste projeto), e a instalação errada
+(`.github/skills`, `.github/agents`, `.github/hooks`) removida.
+
+**Hook movido de `settings.local.json` pra `settings.json`**: a doc do próprio skill
+(`reference/hooks.md`) diz que `.claude/settings.local.json` é intencionalmente gitignored
+(fica "machine-local"), mas "a hook you move into the shared settings.json is honored in place
+too" — como o objetivo aqui é toda sessão neste repo ganhar o hook de QA visual automaticamente
+(não só a máquina que rodou o install), o conteúdo foi movido pra `.claude/settings.json`
+(commitado). `settings.local.json` continua no `.gitignore` como defesa em profundidade caso um
+`impeccable update` futuro o recrie.
+
+**`npx skills add` (taste-skill, huashu-design)**: instala em `.agents/skills/` (fonte
+canônica/universal) com espelho materializado em `.claude/skills/` pra Claude Code
+especificamente. Confirmado que git nesta máquina (`core.symlinks=false`) grava cópias reais de
+arquivo ao dar `git add` num "symlink" de diretório do Windows, não um texto de link quebrado —
+seguro commitar os dois. `taste-skill` trouxe 12 sub-skills (~350KB, tudo commitado).
+`huashu-design` trouxe ~28MB de assets de bgm/sfx opcionais (capability de vídeo/animação que
+este projeto não usa — é prototipagem de UI de app financeiro, não vídeo de marketing) —
+ignorados no git (`*.mp3`, `sfx/`), mantendo `SKILL.md`/scripts/templates jsx. Mesmo tratamento
+já dado ao binário do próprio Impeccable (15MB, `windows-x64`, regenerado pelo `install`).
+`skills-lock.json` (like `package-lock.json`, fonte+hash por skill) commitado.
+
+**`apps/web/DESIGN.md`** pré-escrito a partir de `docs/DESIGN-SYSTEM.md` (front-matter YAML de
+tokens + 8 seções canônicas) — todos os valores conferidos contra a fonte (paleta clara/escura,
+tipografia, espaçamento/raio/elevação).
+
+**Achado real de limitação de sessão**: `npx impeccable init` não é comando de CLI — só existe
+como skill invocável via `/impeccable init` dentro do chat do agente, e a lista de skills desta
+sessão foi capturada antes de `.claude/skills/impeccable` existir (tentativa real de invocar
+confirmou: "Unknown skill: impeccable"). Reiniciar a sessão resolveria, mas a sessão não
+consegue fazer isso sozinha. Em vez de pular o item do checklist, `PRODUCT.md` foi escrito à mão
+seguindo exatamente o template documentado no próprio `reference/init.md` do skill, populado só
+com fatos já documentados (`docs/REQUIREMENTS.md`, `docs/DESIGN-SYSTEM.md`) — **achado real do
+Delivery Reviewer**: a primeira versão continha 2 alegações não sourceadas (hábito do usuário
+via planilha; comparação com concorrentes) que a própria doc do skill proíbe inventar —
+corrigidas antes do commit (marcadas como lacuna em aberto / removida a comparação sem
+evidência).
+
+`./init.sh` verde (nenhuma mudança de código de app, 27 testes inalterados). 1 subtask (SV-218).
 
 ## Evidência de conclusão
 
