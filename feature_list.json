@@ -520,7 +520,7 @@
         {
           "id": "feat-010.2",
           "name": "i18n, Playwright, CHANGELOG e verificacao final",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-254",
           "detail": "Fecha a feature - mesmo padrao das features anteriores.",
           "checklist": [

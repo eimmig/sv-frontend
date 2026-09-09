@@ -240,3 +240,106 @@ test.describe('RF12 - update bet status', () => {
     await expect(page.getByTestId('history-bets-mark-lost')).toBeVisible();
   });
 });
+
+test.describe('RF13 - register a transaction', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.addInitScript(() => {
+      localStorage.setItem(
+        'stakevault.auth',
+        JSON.stringify({
+          token: 'v4.local.test',
+          userId: 'test-user',
+          role: 'MEMBER',
+          tenantSlug: 'acme',
+          mustChangePassword: false,
+        }),
+      );
+    });
+    await page.route('**/api/v1/betting-houses*', catalogRoute([{ id: 'bh-1', name: 'Bet365' }]));
+    await page.route('**/api/v1/sports*', catalogRoute([{ id: 'sp-1', name: 'Futebol' }]));
+    await page.route('**/api/v1/leagues*', catalogRoute([{ id: 'lg-1', name: 'Brasileirão' }]));
+    await page.route('**/api/v1/markets*', catalogRoute([{ id: 'mk-1', name: 'Handicap' }]));
+    await page.route('**/api/v1/tipsters*', catalogRoute([{ id: 'tp-1', name: 'Ana' }]));
+    await page.route('**/api/v1/bets*', catalogRouteEmpty());
+  });
+
+  test('creates a deposit and the list reloads with the new row', async ({ page }) => {
+    let listCalls = 0;
+    await page.route('**/api/v1/transactions*', (route) => {
+      if (route.request().method() === 'POST') {
+        return route.fulfill({
+          status: 201,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            id: 't1',
+            bettingHouseId: 'bh-1',
+            type: 'deposit',
+            amount: 500,
+            createdAt: '2026-03-05T10:00:00Z',
+          }),
+        });
+      }
+      listCalls += 1;
+      const content =
+        listCalls > 1
+          ? [{ id: 't1', bettingHouseId: 'bh-1', type: 'deposit', amount: 500, createdAt: '2026-03-05T10:00:00Z' }]
+          : [];
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ content, page: 0, size: 20, totalElements: content.length, totalPages: 1 }),
+      });
+    });
+
+    await page.goto('/history');
+    await page.getByRole('tab', { name: 'Transactions' }).click();
+    await expect(page.getByTestId('history-transactions-list')).not.toContainText('Bet365');
+
+    await page.getByTestId('history-create-transaction-betting-house').click();
+    await page.getByRole('option', { name: 'Bet365' }).click();
+    await page.getByTestId('history-create-transaction-type').click();
+    await page.getByRole('option', { name: 'Deposit' }).click();
+    await page.getByTestId('history-create-transaction-amount').fill('500');
+    await page.getByTestId('history-create-transaction-submit').click();
+
+    await expect(page.getByTestId('history-create-transaction-success')).toContainText(
+      'Transaction registered successfully.',
+    );
+    await expect(page.getByTestId('history-transactions-row')).toContainText('Bet365');
+    await expect(page.getByTestId('history-create-transaction-amount')).toHaveValue('0');
+  });
+
+  test('shows the backend detail when creating a transaction is rejected', async ({ page }) => {
+    await page.route('**/api/v1/transactions*', (route) => {
+      if (route.request().method() === 'POST') {
+        return route.fulfill({
+          status: 400,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            type: 'https://stakevault.dev/problems/validation-error',
+            title: 'Validation error',
+            status: 400,
+            detail: 'Amount must be positive.',
+          }),
+        });
+      }
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 }),
+      });
+    });
+
+    await page.goto('/history');
+    await page.getByRole('tab', { name: 'Transactions' }).click();
+    await page.getByTestId('history-create-transaction-betting-house').click();
+    await page.getByRole('option', { name: 'Bet365' }).click();
+    await page.getByTestId('history-create-transaction-type').click();
+    await page.getByRole('option', { name: 'Withdrawal' }).click();
+    await page.getByTestId('history-create-transaction-amount').fill('50');
+    await page.getByTestId('history-create-transaction-submit').click();
+
+    await expect(page.getByTestId('history-create-transaction-error')).toContainText('Amount must be positive.');
+  });
+});
