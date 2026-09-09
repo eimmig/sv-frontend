@@ -5,19 +5,19 @@
   box-sizing: border-box;
 }
 
-.usuarios__form {
+.users__form {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.usuarios__error {
+.users__error {
   margin: 0 0 8px;
   color: var(--color-negative);
   font-size: 14px;
 }
 
-.usuarios__table {
+.users__table {
   width: 100%;
   border-collapse: collapse;
 

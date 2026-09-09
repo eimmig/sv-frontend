@@ -3,8 +3,76 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Estado:** `feat-001`, `feat-002` e `feat-007` `done`. Próxima é `feat-003` (RF03 UI - casas de
-apostas).
+**Estado:** `feat-001`, `feat-002`, `feat-003` e `feat-007` `done`. Próxima é `feat-004` (RF04 UI
+- registro manual de apostas).
+
+## `feat-003.3` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
+
+Fecha `feat-003` (RF03 UI). `validate-i18n-keys.py` confirmou as 7 chaves novas (`bettingHouses.*`)
+em sincronia nos 3 locales (42 no total). `e2e/betting-houses.spec.ts` novo (2 fluxos): criar casa
+de apostas com sucesso (lista atualiza, valores em R$), erro de nome duplicado (`detail` RFC 7807
+exibido). Suite completa (12 testes: 2 novos + 10 já existentes de `feat-002`) verde.
+
+QA visual: telas novas (`betting-houses`/`users`, pós-rename) reaproveitam 100% dos mesmos
+padrões/tokens já auditados via Impeccable em `feat-002.4` (mesmo `app-panel-layout`, mesma
+paleta, mesmo padrão de formulário+lista) — sem elemento visual novo que justifique nova rodada de
+`npx impeccable detect` (a ferramenta só alcança `/login` sem sessão real, já escaneada). Conferido
+manualmente via `ng serve` + screenshots Playwright ad-hoc (descartados): lista+formulário nos dois
+temas e mobile/desktop, valores formatados corretamente em R$, nav "Casas de apostas" destacada.
+
+Delivery Reviewer final sobre a feature inteira (`git diff develop...feature/SV-233`, 41 arquivos
+entre os 3 PRs): PASS, sem achado bloqueante. Test Suite Auditor (mesmo passe): PASS — 58 testes
+unitários + 12 Playwright, cobertura 94.14%/87.67%/92.5%/95.08%, nenhum teste trivial/redundante.
+
+**Vault revisado** (item fixo desta subtask): nenhuma nota nova necessária — o achado de naming
+já foi documentado nos commits/PRs de `feat-003.1`/`.2` (sem contrato cross-service novo, sem
+gotcha de lib/config além do já registrado em `docs/DESIGN-SYSTEM.md` em `feat-002.4`).
+
+`./init.sh` verde, Playwright (12 testes) verde. `epic-006` (raiz) permanece `in-progress` —
+restam `feat-004` (RF04 UI), `feat-005` (RF08 UI) e `feat-006` (RF10/RF11 UI).
+
+## `feat-003.1` fechada — renomear páginas/rotas/i18n de português pra inglês (2026-09-09)
+
+Achado do usuário, não do Plan Reviewer: `docs/CONVENTIONS.md` já dizia "nomes de rota, evento e
+código, todos já em inglês", mas `pages/historico`, `pages/registro-de-aposta` e `pages/usuarios`
+(criadas em `feat-001.1`) e a `pages/casas-de-apostas` desta própria feature, ainda em andamento,
+estavam em português — 3 features já mergeadas (`feat-001`/`feat-002`) carregavam essa dívida sem
+nenhuma sessão anterior ter cruzado a convenção contra o nome real dos arquivos. Perguntado ao
+usuário como proceder (renomear agora / só documentar a exceção / só daqui pra frente) — decisão:
+renomear tudo agora, antes de mais features construírem em cima do padrão errado.
+
+`git mv` pra `history`/`register-bet`/`users` (classes, selectors, CSS, i18n keys `usuarios.*` ->
+`users.*`, `app.routes.ts`, links da nav, `e2e/auth.spec.ts`) — `casas-de-apostas` não passou por
+esse rename porque nunca teve conteúdo real sob esse nome; virou `betting-houses` direto em
+`feat-003.2`. Achado real durante a correção: `app.routes.ts` já esperava `m.BettingHouses` mas o
+stub renomeado ainda exportava `CasasDeApostas` (a classe do componente também precisava do
+rename, não só a pasta) — build quebrou no PR real (não localmente, só a suíte de unit tests
+rodou antes do push), corrigido num commit de fix separado antes do merge.
+
+`./init.sh` e Playwright verdes após a correção. Delivery Reviewer (passe próprio, sem
+subagentes): PASS. PR real (`subtask/SV-234` -> `feature/SV-233`, PR #18, 2 commits — rename +
+fix do stub), CI verde antes do merge.
+
+## `feat-003.2` fechada — BettingHousesApi + tela real (lista + criar) (2026-09-09)
+
+Mesmo padrão de `UsersApi`/`Users` (`feat-002.3`), já nascendo com nomenclatura em inglês
+(`feat-003.1` pagou a dívida de nomenclatura primeiro). `PagedResponse<T>` genérico novo
+(`core/paged-response.ts`, reaproveitável por `feat-004`/`005`/`006`) — confirmado contra o código
+real de `bets-service` (`BettingHousesController`/`PagedResponse.java`), não só a nota do vault.
+Sem paginação na UI (busca 1 página com `size=100`, o máximo do backend) — mesmo racional já
+aceito em `auth-service feat-009` pra `GET /users`. `formatBrl` (`core/currency.ts`,
+`Intl.NumberFormat('pt-BR', {currency:'BRL'})`) fixo independente do idioma ativo da UI — dinheiro
+do bankroll é sempre Real brasileiro, sem multi-moeda no backlog.
+
+58 testes (26 arquivos) passando, cobertura 94.14%/87.67%/92.5%/95.08%. Achado de teste real
+(não de produto): `Intl.NumberFormat('pt-BR')` separa o símbolo do valor com espaço **não-quebrável**
+(U+00A0), não espaço comum — asserção inicial com espaço comum falhava silenciosamente parecendo
+idêntica no editor; corrigido com comentário explicando o motivo pra não reincidir. Verificado no
+navegador (`ng serve` + script Playwright ad-hoc, descartado): lista+formulário nos dois temas e
+mobile/desktop, valores formatados corretamente em R$.
+
+Delivery Reviewer (passe próprio, sem subagentes): PASS. PR real (`subtask/SV-236` ->
+`feature/SV-233`, PR #19), CI verde antes do merge.
 
 ## `feat-002.4` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
 

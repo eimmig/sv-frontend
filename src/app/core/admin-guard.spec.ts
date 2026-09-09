@@ -23,7 +23,7 @@ describe('adminGuard', () => {
     });
 
     const result = TestBed.runInInjectionContext(() =>
-      adminGuard({} as never, { url: '/usuarios' } as never),
+      adminGuard({} as never, { url: '/users' } as never),
     );
 
     expect(result).toBe(true);
@@ -39,7 +39,7 @@ describe('adminGuard', () => {
     });
 
     const result = TestBed.runInInjectionContext(() =>
-      adminGuard({} as never, { url: '/usuarios' } as never),
+      adminGuard({} as never, { url: '/users' } as never),
     );
 
     expect(result).toBeInstanceOf(UrlTree);
