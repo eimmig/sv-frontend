@@ -1,0 +1,299 @@
+// Ported from docs/design-references/splash-animation-artistic.html - plays once and locks on
+// the formed logo instead of the reference's infinite loop: every `infinite` below became
+// `1 forwards` except .sv2-dial's sv2-spin (the guide ring keeps a slow, independent 14s
+// rotation for as long as the overlay is visible - the "discrete loop" the design calls for
+// when loading runs past the ~5.4s intro, with no extra JS needed since it was already
+// decoupled from the 5.4s cycle in the source animation). .sv2-stage's cycle animation (which
+// only existed to fade the whole thing out before looping back) is dropped entirely.
+
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0b1622;
+}
+
+.splash__svg {
+  max-width: 340px;
+}
+
+.sv2-dial {
+  transform-box: view-box;
+  transform-origin: 200px 78px;
+  opacity: 0;
+  animation:
+    sv2-dialin 5.4s linear 1 forwards,
+    sv2-spin 14s linear infinite;
+}
+
+.sv2-ring {
+  stroke-dasharray: 227;
+  stroke-dashoffset: 227;
+  animation: sv2-draw 5.4s cubic-bezier(0.45, 0, 0.25, 1) 1 forwards;
+}
+
+.sv2-comet {
+  transform-box: view-box;
+  transform-origin: 200px 78px;
+  opacity: 0;
+  animation:
+    sv2-orbit 5.4s cubic-bezier(0.45, 0, 0.25, 1) 1 forwards,
+    sv2-cfade 5.4s linear 1 forwards;
+}
+
+.sv2-spokes {
+  transform-box: view-box;
+  transform-origin: 200px 78px;
+  animation: sv2-turn 5.4s cubic-bezier(0.2, 0.9, 0.25, 1) 1 forwards;
+}
+
+.sv2-spoke {
+  stroke-dasharray: 19;
+  stroke-dashoffset: 19;
+  animation: sv2-sdraw 5.4s ease-out 1 forwards;
+}
+
+.sv2-bar {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  transform: scaleY(0);
+  animation: sv2-grow 5.4s cubic-bezier(0.2, 1.3, 0.4, 1) 1 forwards;
+}
+
+.sv2-b2 {
+  animation-delay: 0.13s;
+}
+
+.sv2-b3 {
+  animation-delay: 0.26s;
+}
+
+.sv2-icon {
+  transform-box: view-box;
+  transform-origin: 200px 78px;
+  animation: sv2-pop 5.4s ease-out 1 forwards;
+}
+
+.sv2-pulse {
+  transform-box: view-box;
+  transform-origin: 200px 78px;
+  opacity: 0;
+  animation: sv2-ripple 5.4s cubic-bezier(0.1, 0.6, 0.3, 1) 1 forwards;
+}
+
+.sv2-p2 {
+  animation-delay: 0.35s;
+}
+
+.sv2-wipe {
+  transform-box: view-box;
+  animation: sv2-sweep 5.4s cubic-bezier(0.3, 0, 0.2, 1) 1 forwards;
+}
+
+.sv2-word {
+  opacity: 0;
+  animation: sv2-lift 5.4s ease-out 1 forwards;
+}
+
+@keyframes sv2-dialin {
+  0% {
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes sv2-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sv2-draw {
+  0%,
+  4% {
+    stroke-dashoffset: 227;
+  }
+  35% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes sv2-orbit {
+  0%,
+  4% {
+    transform: rotate(0);
+  }
+  35% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sv2-cfade {
+  0%,
+  3% {
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  34% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes sv2-turn {
+  0%,
+  33% {
+    transform: rotate(-40deg);
+  }
+  46% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(0);
+  }
+}
+
+@keyframes sv2-sdraw {
+  0%,
+  33% {
+    stroke-dashoffset: 19;
+  }
+  46% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes sv2-grow {
+  0%,
+  44% {
+    transform: scaleY(0);
+  }
+  60% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes sv2-pop {
+  0%,
+  58% {
+    transform: scale(1);
+  }
+  63% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes sv2-ripple {
+  0%,
+  58% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  80% {
+    transform: scale(2);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes sv2-sweep {
+  0%,
+  62% {
+    transform: translateX(-420px);
+  }
+  82% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes sv2-lift {
+  0%,
+  62% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  78% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sv2-dial,
+  .sv2-ring,
+  .sv2-comet,
+  .sv2-spokes,
+  .sv2-spoke,
+  .sv2-bar,
+  .sv2-icon,
+  .sv2-pulse,
+  .sv2-wipe,
+  .sv2-word {
+    animation: none;
+  }
+
+  .sv2-ring,
+  .sv2-spoke {
+    stroke-dashoffset: 0;
+  }
+
+  .sv2-bar {
+    transform: scaleY(1);
+  }
+
+  .sv2-dial,
+  .sv2-word {
+    opacity: 1;
+  }
+
+  .sv2-comet,
+  .sv2-pulse {
+    opacity: 0;
+  }
+
+  .sv2-wipe {
+    transform: translateX(0);
+  }
+}

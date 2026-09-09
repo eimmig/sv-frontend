@@ -73,7 +73,7 @@
         {
           "id": "feat-001.5",
           "name": "Assets de logo + splash animado",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-215",
           "detail": "Baseado em docs/design-references/splash-animation-artistic.html - toca uma vez, trava no logo formado, respeita prefers-reduced-motion (bloco @media ja pronto no arquivo de referencia).",
           "checklist": [

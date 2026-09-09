@@ -3,7 +3,7 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Feature ativa:** `feat-001` (`feat-001.1`..`.4` done, `feat-001.5`..`.9` restantes)
+**Feature ativa:** `feat-001` (`feat-001.1`..`.5` done, `feat-001.6`..`.9` restantes)
 
 ## Status
 
@@ -16,14 +16,15 @@
       2026-09-09.
 - [x] `feat-001.3` (transloco i18n + seletor de idioma persistido) — `done` em 2026-09-09.
 - [x] `feat-001.4` (`app-panel-layout`/`app-panel`) — `done` em 2026-09-09.
+- [x] `feat-001.5` (assets de logo + splash animado) — `done` em 2026-09-09.
 
 ### Em andamento
 
-- `feat-001` — próxima subtask: `feat-001.5` (assets de logo + splash animado).
+- `feat-001` — próxima subtask: `feat-001.6` (ngx-echarts instalado e provado).
 
 ### Próximos passos (Next Steps)
 
-1. `feat-001.5`..`feat-001.9` (ver `feature_list.json` deste app).
+1. `feat-001.6`..`feat-001.9` (ver `feature_list.json` deste app).
 
 ## Bloqueios / Riscos
 
@@ -190,6 +191,39 @@ responsivo dos 2 breakpoints foi confirmado via inspeção do CSS **compilado** 
 não só o SCSS fonte), não visualmente em DevTools real. `Delivery Reviewer` rodado sobre o diff
 (achado único, P3 não bloqueante: o `64px` do dashboard já citado acima). `./init.sh` verde (23
 testes, 97.51% stmts). 1 subtask (SV-213).
+
+## `feat-001.5` fechada — assets de logo + splash animado (2026-09-09)
+
+Assets copiados de `docs/design-references/` pra `public/assets/logo/` (estrutura real do
+Angular 22, mesmo achado de `feat-001.3`). Favicon trocado do padrão Angular pra
+`logo-mark-solid.svg` (`<link rel="icon" type="image/svg+xml">`, `favicon.ico` mantido como
+`alternate icon` pra browser sem suporte a favicon SVG).
+
+`Splash` (`src/app/core/splash/`) porta `docs/design-references/splash-animation-artistic.html`
+verbatim na estrutura SVG, mudando só o comportamento de repetição: toda animação `infinite` virou
+`1 forwards` (trava no frame final em vez de resetar e repetir), **exceto** a rotação do anel-guia
+(`sv2-spin`, 14s) — que já era independente do ciclo de 5.4s na própria referência, então mantê-la
+`infinite` dá de graça o "loop discreto do anel de guia se o carregamento passar de ~3s" pedido
+pela description, sem precisar de temporizador JS extra pra isso. `prefers-reduced-motion` reusa o
+bloco `@media` já pronto da referência (anima nada, mostra o frame final direto).
+
+Splash é um overlay `position:fixed` full-viewport mostrado no boot do app (`app.ts`/`app.html`),
+que emite `done` depois de 5.4s (ou imediatamente sob motion reduzido, via `window.matchMedia`
+com a mesma guarda defensiva já usada em `Theme`) — `App` esconde o overlay ao receber o evento,
+revelando o app por baixo (já montado, não recriado). Textos do SVG (`aria-label`/`title`/`desc`/
+tagline "GESTÃO DE BANCA") localizados via transloco; o wordmark "StakeVault" em si fica
+intencionalmente sem tradução (nome de marca).
+
+Testes: `splash.spec.ts` usa fake timers (`vi.useFakeTimers`) pra provar o dismiss em exatamente
+5.4s (não antes) e o dismiss imediato sob `prefers-reduced-motion`; `app.spec.ts` ganhou teste
+comportamental novo (splash presente no primeiro render, ausente depois do timer rodar) — o teste
+antigo nunca chamava `detectChanges()`, deixando `app.html` sem cobertura real. `Delivery Reviewer`
+rodado sobre o diff, sem achado. `./init.sh` verde (26 testes, 98.09% stmts).
+
+**Limitação de verificação**: sem ferramenta de browser real nesta sessão — app é CSR puro (sem
+SSR), então `curl` não revela o DOM pós-JS; a prova da animação em si é a leitura de código
+(estrutura idêntica à referência) + testes com fake timers, não inspeção visual. Favicon confirmado
+via `ng serve` + curl (200). 1 subtask (SV-215).
 
 ## Evidência de conclusão
 
