@@ -3,10 +3,11 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Estado:** `feat-001` a `feat-010` `done`. Próxima elegível: `feat-011` (polish visual sistema
-todo, pedido do usuário) — `plan_review` ainda vazio, escopo grande (todas as telas), fica pro
-Plan Reviewer quebrar em subtasks quando for a vez dela. Todas as branches já mergeadas em
-`develop` (feature/subtask) seguem apagadas local e remotamente a cada fechamento de feature.
+**Estado:** `feat-001` a `feat-011` `done` — backlog de `apps/web` inteiro concluído (11
+features, 0 pendências). Próxima sessão: nenhuma feature elegível neste harness até o usuário
+trazer escopo novo; outros harnesses (`infra/feat-002`/`feat-004`) têm story no Jira (Backlog)
+mas sem `plan_review`. Todas as branches já mergeadas em `develop` (feature/subtask) seguem
+apagadas local e remotamente a cada fechamento de feature.
 
 ## `feat-005.2` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
 
@@ -965,3 +966,48 @@ painéis nos dois temas e o colapso mobile (painéis empilham, mesmo padrão já
 `betting-houses`/`register-bet`). PR #39 (`subtask/SV-253`→`feature/SV-252`), #40
 (`subtask/SV-254`→`feature/SV-252`) e #41 (`feature/SV-252`→`develop`, gate completo com
 SonarCloud) — todos verdes, mergeados. Branches apagadas após merge.
+
+## `feat-011` fechada — polish visual moderno, sistema todo (2026-09-09)
+
+5 subtasks, uma PR real por rodada (direção exposta cedo, não só no fechamento — decisão
+registrada no `plan_review`), todas mergeadas em `feature/SV-255`:
+
+- **`feat-011.1`**: causa raiz real do bug de contraste relatado pelo usuário — `mat.theme()`
+  só rodava em modo claro (`src/styles.scss`), os tokens `--color-*` só cobrem 4 alias
+  `--mat-sys-*` genéricos, não os tokens específicos que o Material usa de verdade (ex.: painel
+  de overlay de um `mat-select`). Corrigido com uma segunda chamada `mat.theme()` em modo escuro
+  sob os mesmos seletores de `tokens.dark-tokens` (padrão oficial do Angular Material pra temas
+  múltiplos) — conserta *todo* overlay do Material no app, não só o seletor de idioma que expôs
+  o bug. Toggle de tema virou ícone sol/lua; login ganhou logo/wordmark/tagline/gradiente de
+  marca. Achado extra: os 4 SVGs do logo tinham comentário antes do `<svg>` raiz, quebrando
+  `naturalWidth` em qualquer `<img>` (bug real do Chromium, confirmado com repro isolado) —
+  corrigido nos 4 arquivos.
+- **`feat-011.2`**: cards de KPI do dashboard e saldo das casas de apostas ganharam cor
+  positiva/negativa (`-R$ 320,00` renderizava em preto puro antes) + badge tonal de delta —
+  `.badge`/`.badge--positive/negative/neutral` virou utility global em `styles.scss`.
+- **`feat-011.3`**: status de aposta e tipo de movimentação no histórico ganharam o badge tonal
+  (item 16 do inventário, documentado desde sempre, nunca aplicado); registro de aposta ganhou
+  preview de retorno potencial (stake × odd) ao vivo. Achado de teste documentado em
+  `docs/TESTING.md`: conteúdo de aba inativa de `mat-tab-group` não é confiável em unit test sob
+  jsdom (animação não completa sem `transitionend` real) — testar a lógica isolada, provar o
+  render de verdade em Playwright.
+- **`feat-011.4`**: avatar de iniciais na tela de usuários (item 14 do inventário, documentado
+  desde a primeira sessão de design, nunca implementado em lugar nenhum) + badge de papel.
+  `CatalogManager` — a única tela do app ainda com um `<ul>` cru, sem `app-panel-layout` — ganhou
+  o mesmo padrão form-panel+list-panel de todas as outras telas.
+- **`feat-011.5`**: auditoria final via `npx impeccable detect` contra servidor real. Achou de
+  novo o contraste de `--color-text-secondary` no modo escuro (4.47:1, já sinalizado sem correção
+  desde `feat-002`, que deixou a decisão explícita pra quando outra feature tocasse o token de
+  novo) — perguntado ao usuário via `AskUserQuestion`, decisão: corrigir. Novo valor `#8B99A2`
+  mede ~5:1 nos dois fundos escuros. 1 achado (bounce-easing do splash) revisado e rejeitado —
+  escolha de design explícita e documentada (`docs/DESIGN-SYSTEM.md` item 17), não bug.
+
+`./init.sh` e Playwright completo (24/24) verdes em cada subtask e na feature inteira. PR
+`feature/SV-255`→`develop` (#47) pegou 2 achados reais do SonarCloud no gate (nested ternary em
+`dashboard.ts`, `.at(-1)` preferível a indexação por `.length - 1` em `users.ts`) — corrigidos
+com um commit adicional na mesma branch antes do gate passar, sem subtask nova (correção de gate,
+não escopo novo). Verificação visual real (screenshots, não só leitura de código) nas 7 telas
+tocadas, claro/escuro, desktop/mobile. Vault atualizado nos mesmos commits das descobertas:
+`docs/DESIGN-SYSTEM.md` (correção da seção Angular Material, nota de contraste fechada, item 14
+implementado), `docs/TESTING.md` (gotcha de `mat-tab-group`/jsdom). Branches apagadas após merge
+(feature + 5 subtasks). Backlog de `apps/web` inteiro concluído com esta feature.
