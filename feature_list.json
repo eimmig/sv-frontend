@@ -88,7 +88,7 @@
         {
           "id": "feat-001.6",
           "name": "ngx-echarts instalado e provado",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-216",
           "detail": "So a biblioteca instalada e provada (grafico placeholder) nesta feature - dashboard real (RF10/RF11 UI) e feature futura.",
           "checklist": [
