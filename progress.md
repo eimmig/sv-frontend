@@ -3,7 +3,7 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Feature ativa:** `feat-001` (`feat-001.1`..`.5` done, `feat-001.6`..`.9` restantes)
+**Feature ativa:** `feat-001` (`feat-001.1`..`.6` done, `feat-001.7`..`.9` restantes)
 
 ## Status
 
@@ -17,14 +17,15 @@
 - [x] `feat-001.3` (transloco i18n + seletor de idioma persistido) — `done` em 2026-09-09.
 - [x] `feat-001.4` (`app-panel-layout`/`app-panel`) — `done` em 2026-09-09.
 - [x] `feat-001.5` (assets de logo + splash animado) — `done` em 2026-09-09.
+- [x] `feat-001.6` (ngx-echarts instalado e provado) — `done` em 2026-09-09.
 
 ### Em andamento
 
-- `feat-001` — próxima subtask: `feat-001.6` (ngx-echarts instalado e provado).
+- `feat-001` — próxima subtask: `feat-001.7` (Playwright + gate de cobertura 80%).
 
 ### Próximos passos (Next Steps)
 
-1. `feat-001.6`..`feat-001.9` (ver `feature_list.json` deste app).
+1. `feat-001.7`..`feat-001.9` (ver `feature_list.json` deste app).
 
 ## Bloqueios / Riscos
 
@@ -224,6 +225,34 @@ rodado sobre o diff, sem achado. `./init.sh` verde (26 testes, 98.09% stmts).
 SSR), então `curl` não revela o DOM pós-JS; a prova da animação em si é a leitura de código
 (estrutura idêntica à referência) + testes com fake timers, não inspeção visual. Favicon confirmado
 via `ng serve` + curl (200). 1 subtask (SV-215).
+
+## `feat-001.6` fechada — ngx-echarts instalado e provado (2026-09-09)
+
+`ngx-echarts@22.0.0` + `echarts@6.1.0` (peer deps `@angular/core >=22.0.0` confirmado via
+`npm view`). `LineChartSample` (`src/app/shared/line-chart-sample/`) prova a integração com dados
+mock: traço `--color-brand`, gradiente até transparente, ~3 linhas de grade sutis
+(`--color-border`), marcador de destaque no último valor — exatamente o inventário item 6 de
+`docs/DESIGN-SYSTEM.md`. Cores resolvidas via `getComputedStyle` (não hardcoded) e recalculadas
+num `computed()` que depende do signal `Theme.current()`, então o gráfico acompanha a troca de
+tema sem precisar recriar o componente.
+
+**Achado real de orçamento de bundle**: registrar `echarts.use([...])` +
+`provideEchartsCore({echarts})` em `app.config.ts` (global) estourou o budget de erro do
+`angular.json` (1MB) — o core do echarts sozinho soma ~500KB. Corrigido movendo o registro pros
+`providers` do próprio componente `LineChartSample` (escopo de injeção do Angular aceita
+`providers` em nível de componente, aplicando aos elementos da própria view) — como esse
+componente só é alcançado pela rota lazy `/dashboard`, o echarts inteiro fica dentro do chunk lazy
+em vez do bundle principal. Confirmado no output real do build: chunk `dashboard` saltou de
+~2.9KB pra ~501KB, bundle principal voltou pro tamanho anterior à subtask (~570KB, mesmo warning
+de budget não-bloqueante de sempre). Mecanismo reaproveitável pra qualquer biblioteca pesada
+usada só numa rota específica.
+
+Gotcha de teste: jsdom não tem `ResizeObserver` (usado pelo `autoResize` do `ngx-echarts` no
+`ngOnInit`) — stub mínimo (`observe`/`unobserve`/`disconnect` vazios) adicionado em
+`dashboard.spec.ts` e `line-chart-sample.spec.ts`. `Delivery Reviewer` rodado sobre o diff, sem
+achado (2 riscos residuais documentados: sem verificação visual real do gráfico/recoloração de
+tema, e `withAlpha()` assume formato hex nos tokens de cor — aceitável, é o formato real usado
+hoje). `./init.sh` verde (27 testes, 97.87% stmts). 1 subtask (SV-216).
 
 ## Evidência de conclusão
 
