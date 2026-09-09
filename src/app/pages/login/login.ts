@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,7 +24,7 @@ import { Panel } from '../../shared/panel/panel';
   styleUrl: './login.scss',
   templateUrl: './login.html',
 })
-export class Login {
+export class Login implements OnInit {
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
   private readonly formBuilder = inject(FormBuilder);
@@ -39,7 +39,7 @@ export class Login {
     password: ['', Validators.required],
   });
 
-  constructor() {
+  ngOnInit(): void {
     if (this.auth.isAuthenticated()) {
       this.router.navigateByUrl('/dashboard');
     }

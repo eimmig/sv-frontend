@@ -3,22 +3,40 @@
     <form [formGroup]="form" (ngSubmit)="submit()" class="login__form">
       <mat-form-field appearance="outline">
         <mat-label>{{ 'login.slugLabel' | transloco }}</mat-label>
-        <input matInput type="text" formControlName="slug" data-testid="login-slug" autocomplete="organization" />
+        <input
+          matInput
+          id="login-slug-input"
+          type="text"
+          formControlName="slug"
+          data-testid="login-slug"
+          autocomplete="organization"
+          [attr.aria-label]="'login.slugLabel' | transloco"
+        />
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>{{ 'login.emailLabel' | transloco }}</mat-label>
-        <input matInput type="email" formControlName="email" data-testid="login-email" autocomplete="email" />
+        <input
+          matInput
+          id="login-email-input"
+          type="email"
+          formControlName="email"
+          data-testid="login-email"
+          autocomplete="email"
+          [attr.aria-label]="'login.emailLabel' | transloco"
+        />
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>{{ 'login.passwordLabel' | transloco }}</mat-label>
         <input
           matInput
+          id="login-password-input"
           type="password"
           formControlName="password"
           data-testid="login-password"
           autocomplete="current-password"
+          [attr.aria-label]="'login.passwordLabel' | transloco"
         />
       </mat-form-field>
 
