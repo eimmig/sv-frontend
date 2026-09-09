@@ -3,8 +3,59 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Estado:** `feat-001`, `feat-002`, `feat-003`, `feat-004`, `feat-007` e `feat-008` `done`.
-Próxima é `feat-005` (RF08 UI — histórico de operações).
+**Estado:** `feat-001`, `feat-002`, `feat-003`, `feat-004`, `feat-005`, `feat-007` e `feat-008`
+`done`. Próxima é `feat-006` (RF10/RF11 UI — dashboards). `feat-009` (RF12) e `feat-010` (RF13)
+registradas no backlog, `not-started` — gap real encontrado planejando `feat-005`, decisão do
+usuário (`AskUserQuestion`): ficam fora do escopo de `feat-005`/`feat-006`.
+
+## `feat-005.2` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
+
+Fecha `feat-005` (RF08 UI). `validate-i18n-keys.py` confirmou as 24 chaves novas (`history.*`)
+em sincronia nos 3 locales (96 no total). `e2e/history.spec.ts` novo (2 fluxos): filtrar apostas
+por casa de apostas (nome resolvido, nunca o UUID cru, na linha da tabela), trocar pra aba de
+movimentações e paginar (indicador "Page X of Y" avançando). Suite completa (17 testes: 2 novos +
+15 já existentes) verde.
+
+Delivery Reviewer final sobre a feature inteira (`git diff develop...feature/SV-243`, 15
+arquivos entre os 2 PRs): PASS, sem achado bloqueante — conferido explicitamente que
+`new_duplicated_lines_density` do SonarCloud não estourou e que os inputs novos já nasceram com
+`id`+`aria-label` (aplicado de saída, sem retrofit necessário desta vez). Test Suite Auditor
+(mesmo passe): PASS — 83 testes unitários + 17 Playwright, cobertura
+86.89%/89.08%/81.75%/92.08%.
+
+**Vault revisado** (item fixo desta subtask): nenhuma nota nova necessária além do que já foi
+registrado em `feat-005.1` (`core/date-format.ts` vs `core/currency.ts` — data respeita idioma,
+moeda não) e do gap de RF12/RF13 já documentado na `description` de `feat-005`/`feat-009`/
+`feat-010`.
+
+`./init.sh` verde, Playwright (17 testes) verde. `epic-006` (raiz) permanece `in-progress` —
+resta só `feat-006` (RF10/RF11 UI).
+
+## `feat-005.1` fechada — tela de histórico de operações (2026-09-09)
+
+Somente leitura (2 abas: Apostas/Movimentações), decisão do usuário — RF12 (status)/RF13
+(depósitos/saques) viram `feat-009`/`feat-010` separadas. `BetResponse`/`TransactionResponse` só
+trazem IDs (`bettingHouseId`/`sportId`/etc.), não nomes — resolvidos client-side contra
+`betting-houses`+catálogos já carregados (mesmo `forkJoin` de `feat-004`). Primeira tela com
+paginação de verdade (Anterior/Próxima + "Página X de Y") — as anteriores (catálogos,
+casas de apostas) buscavam 1 página grande por serem listas pequenas por natureza; histórico
+cresce ao longo do tempo. `core/date-format.ts` novo: diferente de `formatBrl` (sempre BRL,
+independente do idioma), datas respeitam o locale ativo de verdade (`Intl.DateTimeFormat`
+parametrizado pelo `Language.current()`).
+
+Aplicado de saída o padrão de `id`+`aria-label`/`<output>` (achado recorrente de
+`feat-002`/`feat-004`, agora documentado em `docs/CONVENTIONS.md`) — sem retrofit necessário
+nesta feature. Achado real de QA visual (não de SonarCloud desta vez): tabelas sem
+`overflow-x:auto` cortavam colunas em mobile sem indicar rolagem — corrigido envolvendo as duas
+tabelas num wrapper com scroll horizontal próprio.
+
+83 testes (33 arquivos) passando, cobertura 86.89%/89.08%/81.75%/92.08%. Verificado no navegador
+(`ng serve` + screenshots Playwright ad-hoc, descartados): as duas abas nos dois temas e mobile/
+desktop, nomes resolvidos corretamente (não UUIDs), status/tipo localizados, paginação
+funcionando.
+
+Delivery Reviewer (passe próprio, sem subagentes): PASS. PR real (`subtask/SV-244` ->
+`feature/SV-243`, PR #28), CI verde antes do merge.
 
 ## `feat-004.2` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
 

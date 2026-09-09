@@ -102,5 +102,35 @@
     "submit": "Register bet",
     "success": "Bet registered successfully.",
     "genericError": "Could not complete the operation. Please try again."
+  },
+  "history": {
+    "betsTitle": "Bets",
+    "transactionsTitle": "Transactions",
+    "bettingHouseLabel": "Betting house",
+    "sportLabel": "Sport",
+    "fromLabel": "From",
+    "toLabel": "To",
+    "filterAll": "All",
+    "filter": "Filter",
+    "stakeLabel": "Stake",
+    "oddLabel": "Odd",
+    "statusLabel": "Status",
+    "dateLabel": "Date",
+    "typeLabel": "Type",
+    "amountLabel": "Amount",
+    "previousPage": "Previous",
+    "nextPage": "Next",
+    "pageIndicator": "Page {{page}} of {{totalPages}}",
+    "genericError": "Could not complete the operation. Please try again.",
+    "status": {
+      "pending": "Pending",
+      "won": "Won",
+      "lost": "Lost",
+      "void": "Void"
+    },
+    "type": {
+      "deposit": "Deposit",
+      "withdrawal": "Withdrawal"
+    }
   }
 }

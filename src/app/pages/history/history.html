@@ -1,1 +1,206 @@
-<p>history works!</p>
+@if (optionsError(); as message) {
+  <p class="history__error" role="alert" data-testid="history-options-error">{{ message }}</p>
+} @else {
+  <mat-tab-group class="history" data-testid="history-tabs">
+    <mat-tab [label]="'history.betsTitle' | transloco">
+      <form [formGroup]="betFilterForm" (ngSubmit)="applyBetFilter()" class="history__filters">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'history.bettingHouseLabel' | transloco }}</mat-label>
+          <mat-select formControlName="bettingHouseId" data-testid="history-bets-filter-betting-house">
+            <mat-option value="">{{ 'history.filterAll' | transloco }}</mat-option>
+            @for (house of options().bettingHouses; track house.id) {
+              <mat-option [value]="house.id">{{ house.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'history.sportLabel' | transloco }}</mat-label>
+          <mat-select formControlName="sportId" data-testid="history-bets-filter-sport">
+            <mat-option value="">{{ 'history.filterAll' | transloco }}</mat-option>
+            @for (sport of options().sports; track sport.id) {
+              <mat-option [value]="sport.id">{{ sport.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'history.fromLabel' | transloco }}</mat-label>
+          <input
+            matInput
+            id="history-bets-from-input"
+            type="date"
+            formControlName="from"
+            data-testid="history-bets-filter-from"
+            [attr.aria-label]="'history.fromLabel' | transloco"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'history.toLabel' | transloco }}</mat-label>
+          <input
+            matInput
+            id="history-bets-to-input"
+            type="date"
+            formControlName="to"
+            data-testid="history-bets-filter-to"
+            [attr.aria-label]="'history.toLabel' | transloco"
+          />
+        </mat-form-field>
+
+        <button mat-flat-button type="submit" data-testid="history-bets-filter-submit">
+          {{ 'history.filter' | transloco }}
+        </button>
+      </form>
+
+      @if (betsError(); as message) {
+        <p class="history__error" role="alert" data-testid="history-bets-error">{{ message }}</p>
+      } @else {
+        <div class="history__table-wrap">
+          <table class="history__table" data-testid="history-bets-list">
+            <thead>
+              <tr>
+                <th>{{ 'history.bettingHouseLabel' | transloco }}</th>
+                <th>{{ 'history.sportLabel' | transloco }}</th>
+                <th>{{ 'history.stakeLabel' | transloco }}</th>
+                <th>{{ 'history.oddLabel' | transloco }}</th>
+                <th>{{ 'history.statusLabel' | transloco }}</th>
+                <th>{{ 'history.dateLabel' | transloco }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (bet of betsPage().content; track bet.id) {
+                <tr data-testid="history-bets-row">
+                  <td>{{ nameOf(options().bettingHouses, bet.bettingHouseId) }}</td>
+                  <td>{{ nameOf(options().sports, bet.sportId) }}</td>
+                  <td>{{ formatBrl(bet.stake) }}</td>
+                  <td>{{ bet.odd }}</td>
+                  <td>{{ 'history.status.' + bet.status | transloco }}</td>
+                  <td>{{ formatDateTime(bet.betDate) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="history__pagination">
+          <button
+            mat-stroked-button
+            type="button"
+            data-testid="history-bets-prev-page"
+            [disabled]="betsPage().page <= 0"
+            (click)="betsPrevPage()"
+          >
+            {{ 'history.previousPage' | transloco }}
+          </button>
+          <span data-testid="history-bets-page-indicator">{{
+            'history.pageIndicator' | transloco: { page: betsPage().page + 1, totalPages: betsPage().totalPages || 1 }
+          }}</span>
+          <button
+            mat-stroked-button
+            type="button"
+            data-testid="history-bets-next-page"
+            [disabled]="betsPage().page + 1 >= betsPage().totalPages"
+            (click)="betsNextPage()"
+          >
+            {{ 'history.nextPage' | transloco }}
+          </button>
+        </div>
+      }
+    </mat-tab>
+
+    <mat-tab [label]="'history.transactionsTitle' | transloco">
+      <form [formGroup]="transactionFilterForm" (ngSubmit)="applyTransactionFilter()" class="history__filters">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'history.bettingHouseLabel' | transloco }}</mat-label>
+          <mat-select formControlName="bettingHouseId" data-testid="history-transactions-filter-betting-house">
+            <mat-option value="">{{ 'history.filterAll' | transloco }}</mat-option>
+            @for (house of options().bettingHouses; track house.id) {
+              <mat-option [value]="house.id">{{ house.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'history.fromLabel' | transloco }}</mat-label>
+          <input
+            matInput
+            id="history-transactions-from-input"
+            type="date"
+            formControlName="from"
+            data-testid="history-transactions-filter-from"
+            [attr.aria-label]="'history.fromLabel' | transloco"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'history.toLabel' | transloco }}</mat-label>
+          <input
+            matInput
+            id="history-transactions-to-input"
+            type="date"
+            formControlName="to"
+            data-testid="history-transactions-filter-to"
+            [attr.aria-label]="'history.toLabel' | transloco"
+          />
+        </mat-form-field>
+
+        <button mat-flat-button type="submit" data-testid="history-transactions-filter-submit">
+          {{ 'history.filter' | transloco }}
+        </button>
+      </form>
+
+      @if (transactionsError(); as message) {
+        <p class="history__error" role="alert" data-testid="history-transactions-error">{{ message }}</p>
+      } @else {
+        <div class="history__table-wrap">
+          <table class="history__table" data-testid="history-transactions-list">
+            <thead>
+              <tr>
+                <th>{{ 'history.bettingHouseLabel' | transloco }}</th>
+                <th>{{ 'history.typeLabel' | transloco }}</th>
+                <th>{{ 'history.amountLabel' | transloco }}</th>
+                <th>{{ 'history.dateLabel' | transloco }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (transaction of transactionsPage().content; track transaction.id) {
+                <tr data-testid="history-transactions-row">
+                  <td>{{ nameOf(options().bettingHouses, transaction.bettingHouseId) }}</td>
+                  <td>{{ 'history.type.' + transaction.type | transloco }}</td>
+                  <td>{{ formatBrl(transaction.amount) }}</td>
+                  <td>{{ formatDateTime(transaction.createdAt) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="history__pagination">
+          <button
+            mat-stroked-button
+            type="button"
+            data-testid="history-transactions-prev-page"
+            [disabled]="transactionsPage().page <= 0"
+            (click)="transactionsPrevPage()"
+          >
+            {{ 'history.previousPage' | transloco }}
+          </button>
+          <span data-testid="history-transactions-page-indicator">{{
+            'history.pageIndicator'
+              | transloco: { page: transactionsPage().page + 1, totalPages: transactionsPage().totalPages || 1 }
+          }}</span>
+          <button
+            mat-stroked-button
+            type="button"
+            data-testid="history-transactions-next-page"
+            [disabled]="transactionsPage().page + 1 >= transactionsPage().totalPages"
+            (click)="transactionsNextPage()"
+          >
+            {{ 'history.nextPage' | transloco }}
+          </button>
+        </div>
+      }
+    </mat-tab>
+  </mat-tab-group>
+}
