@@ -3,8 +3,29 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Estado:** `feat-001`, `feat-002`, `feat-003`, `feat-007` e `feat-008` `done`. `feat-004`
-(RF04 UI) `in-progress` — `feat-004.1` `done`, resta `feat-004.2`.
+**Estado:** `feat-001`, `feat-002`, `feat-003`, `feat-004`, `feat-007` e `feat-008` `done`.
+Próxima é `feat-005` (RF08 UI — histórico de operações).
+
+## `feat-004.2` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
+
+Fecha `feat-004` (RF04 UI). `validate-i18n-keys.py` confirmou as 22 chaves novas
+(`registerBet.*`) em sincronia nos 3 locales (72 no total). `e2e/register-bet.spec.ts` novo (2
+fluxos): registro com sucesso (banner de sucesso, `Idempotency-Key` presente no header, campos
+voltam ao valor default), erro de validação (422 `invalid-odd`) exibindo o `detail` RFC 7807.
+Suite completa (15 testes: 2 novos + 13 já existentes) verde.
+
+Delivery Reviewer final sobre a feature inteira (`git diff develop...feature/SV-240`, 11
+arquivos entre os 2 PRs): PASS, sem achado bloqueante — conferido explicitamente que
+`new_duplicated_lines_density` do SonarCloud não estourou (achado real de `feat-003`). Test Suite
+Auditor (mesmo passe): PASS — 73 testes unitários + 15 Playwright, cobertura
+90.56%/89.04%/85.45%/93.86%.
+
+**Vault revisado** (item fixo desta subtask): nenhuma nota nova necessária — o mapeamento das 8
+regras de Shneiderman já está registrado no `plan_review` desta feature (`feature_list.json`),
+não há contrato cross-service novo (rotas já existiam desde `bets-service feat-004`).
+
+`./init.sh` verde, Playwright (15 testes) verde. `epic-006` (raiz) permanece `in-progress` —
+restam `feat-005` (RF08 UI) e `feat-006` (RF10/RF11 UI).
 
 ## `feat-004.1` fechada — formulário de registro manual de apostas (2026-09-09)
 
