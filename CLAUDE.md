@@ -1,6 +1,6 @@
 # CLAUDE.md — web
 
-SPA Angular 21.x + TypeScript ES2025: autenticação, casas de apostas, registro de apostas,
+SPA Angular 22.x + TypeScript ES2025: autenticação, casas de apostas, registro de apostas,
 histórico e dashboards. Parte do harness multinível do monorepo — leia `../../CLAUDE.md`
 (raiz) para invariantes cross-service antes deste arquivo, e `../../docs/services/web.md` para
 o desenho completo (regras de Shneiderman, RF cobertos). Arquitetura de frontend, testes,
@@ -69,7 +69,7 @@ normativos e já decididos em `../../docs/CONVENTIONS.md`, `../../docs/TESTING.m
 - **Gráficos (RF10/RF11 UI)**: `ngx-echarts` (Apache ECharts) — decisão de 2026-08-02, ver
   `../../docs/DESIGN-SYSTEM.md` item 6 do inventário. Não introduzir outra biblioteca de
   gráficos (Chart.js, D3 direto, etc.) em nenhuma feature.
-- **Config de ambiente**: `src/environments/environment.ts`/`environment.prod.ts` (build-time,
+- **Config de ambiente**: `src/environments/environment.ts`/`environment.development.ts` (build-time,
   `fileReplacements` do Angular CLI) com a URL base do `api-gateway` — decisão de 2026-08-02, ver
   `../../docs/OBSERVABILITY-AND-CONFIG.md` seção "Configuração de apps/web". Não buscar config
   em runtime (`config.json`) nem hardcodar a URL fora desses arquivos.

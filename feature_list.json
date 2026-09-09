@@ -3,12 +3,146 @@
     {
       "id": "feat-001",
       "name": "Setup do projeto Angular",
-      "description": "Inicializar projeto Angular 21.x + TypeScript ES2025 (componentes standalone, sem NgModule), roteamento base, cliente HTTP configurado para o API Gateway (envia Accept-Language conforme idioma ativo), layout responsivo base (RNF01), gate de cobertura 80% configurado no test runner (ver docs/TESTING.md), Playwright instalado para e2e. Tema Angular Material M3 (claro/escuro com toggle) configurado com --color-action-neutral (azul) como cor primaria e --color-brand (verde) como secondary/tertiary - ver docs/DESIGN-SYSTEM.md secao 'Regra semantica de cor' - registrar em progress.md a abordagem exata de troca de tema usada. Assets do logo StakeVault copiados de docs/design-references/ (logo-mark-dark.svg, logo-mark-light.svg, logo-mark-solid.svg como favicon/app icon, logo-bars-only.svg) para o projeto Angular. Splash de carregamento animado (ver docs/DESIGN-SYSTEM.md item 17 do inventario) baseado em docs/design-references/splash-animation-artistic.html (versao recomendada - anel de guia com giro continuo, cometa tracando o anel, raios girando ate destravar, pop+pulso de confirmacao, wordmark revelado por mask/wipe) tocando uma vez e travando no logo formado, nao em loop infinito, reaproveitando o giro do anel de guia como loop discreto se o carregamento passar de ~3s, respeitando prefers-reduced-motion (bloco @media ja pronto no arquivo de referencia). Componente base de layout em paineis (app-panel-layout + app-panel, grid multi-coluna com rolagem independente por painel, colapso responsivo desktop/tablet/mobile) - ver docs/DESIGN-SYSTEM.md secao 'Layout em paineis'. @jsverse/transloco instalado e configurado com os tres locales sempre em sincronia (pt-BR/en-US/es, arquivos JSON base + seletor de idioma persistido em localStorage) - ver docs/CONVENTIONS.md secao 'Internacionalizacao (i18n)'. ngx-echarts (Apache ECharts) instalado como biblioteca de graficos para RF10/RF11 - ver docs/DESIGN-SYSTEM.md item 6 do inventario (decisao de 2026-08-02). src/environments/environment.ts + environment.prod.ts configurados com a URL base do api-gateway (build-time, fileReplacements do Angular CLI) - ver docs/OBSERVABILITY-AND-CONFIG.md secao 'Configuracao de apps/web' (decisao de 2026-08-02). Ferramentas de QA visual e prototipagem instaladas (decisao de 2026-08-02, estendida em 2026-09-03, ver docs/DESIGN-SYSTEM.md secao 'QA visual e prototipagem'): npx impeccable install, npx skills add https://github.com/leonxlnx/taste-skill, npx skills add https://github.com/alchaincyf/huashu-design - uso restrito a auditoria/polish de componentes ja implementados (impeccable/taste-skill) e prototipagem descartavel pre-implementacao (huashu-design), nenhuma decide aparencia por conta propria. Logo apos o install: apps/web/DESIGN.md e pre-escrito a partir de docs/DESIGN-SYSTEM.md, no formato oficial DESIGN.md (https://github.com/google-labs-code/design.md - front-matter YAML de tokens + 8 secoes canonicas: Overview, Colors, Typography, Layout, Elevation & Depth, Shapes, Components, Do's and Don'ts). Isso e o que impede /impeccable document/new-work de gerar um DESIGN.md divergente depois: com o arquivo ja existindo, o proprio Impeccable pergunta antes de tocar nele (refresh/overwrite/merge) em vez de sobrescrever - docs/DESIGN-SYSTEM.md continua a unica fonte de verdade de design.",
+      "description": "Inicializar projeto Angular 22.x + TypeScript ES2025 (componentes standalone, sem NgModule), roteamento base, cliente HTTP configurado para o API Gateway (envia Accept-Language conforme idioma ativo), layout responsivo base (RNF01), gate de cobertura 80% configurado no test runner (ver docs/TESTING.md), Playwright instalado para e2e. Tema Angular Material M3 (claro/escuro com toggle) configurado com --color-action-neutral (azul) como cor primaria e --color-brand (verde) como secondary/tertiary - ver docs/DESIGN-SYSTEM.md secao 'Regra semantica de cor' - registrar em progress.md a abordagem exata de troca de tema usada. Assets do logo StakeVault copiados de docs/design-references/ (logo-mark-dark.svg, logo-mark-light.svg, logo-mark-solid.svg como favicon/app icon, logo-bars-only.svg) para o projeto Angular. Splash de carregamento animado (ver docs/DESIGN-SYSTEM.md item 17 do inventario) baseado em docs/design-references/splash-animation-artistic.html (versao recomendada - anel de guia com giro continuo, cometa tracando o anel, raios girando ate destravar, pop+pulso de confirmacao, wordmark revelado por mask/wipe) tocando uma vez e travando no logo formado, nao em loop infinito, reaproveitando o giro do anel de guia como loop discreto se o carregamento passar de ~3s, respeitando prefers-reduced-motion (bloco @media ja pronto no arquivo de referencia). Componente base de layout em paineis (app-panel-layout + app-panel, grid multi-coluna com rolagem independente por painel, colapso responsivo desktop/tablet/mobile) - ver docs/DESIGN-SYSTEM.md secao 'Layout em paineis'. @jsverse/transloco instalado e configurado com os tres locales sempre em sincronia (pt-BR/en-US/es, arquivos JSON base + seletor de idioma persistido em localStorage) - ver docs/CONVENTIONS.md secao 'Internacionalizacao (i18n)'. ngx-echarts (Apache ECharts) instalado como biblioteca de graficos para RF10/RF11 - ver docs/DESIGN-SYSTEM.md item 6 do inventario (decisao de 2026-08-02). src/environments/environment.ts + environment.development.ts configurados com a URL base do api-gateway (build-time, fileReplacements do Angular CLI) - ver docs/OBSERVABILITY-AND-CONFIG.md secao 'Configuracao de apps/web' (decisao de 2026-08-02). Ferramentas de QA visual e prototipagem instaladas (decisao de 2026-08-02, estendida em 2026-09-03, ver docs/DESIGN-SYSTEM.md secao 'QA visual e prototipagem'): npx impeccable install, npx skills add https://github.com/leonxlnx/taste-skill, npx skills add https://github.com/alchaincyf/huashu-design - uso restrito a auditoria/polish de componentes ja implementados (impeccable/taste-skill) e prototipagem descartavel pre-implementacao (huashu-design), nenhuma decide aparencia por conta propria. Logo apos o install: apps/web/DESIGN.md e pre-escrito a partir de docs/DESIGN-SYSTEM.md, no formato oficial DESIGN.md (https://github.com/google-labs-code/design.md - front-matter YAML de tokens + 8 secoes canonicas: Overview, Colors, Typography, Layout, Elevation & Depth, Shapes, Components, Do's and Don'ts). Isso e o que impede /impeccable document/new-work de gerar um DESIGN.md divergente depois: com o arquivo ja existindo, o proprio Impeccable pergunta antes de tocar nele (refresh/overwrite/merge) em vez de sobrescrever - docs/DESIGN-SYSTEM.md continua a unica fonte de verdade de design.",
       "dependencies": [],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (primeiro app frontend do backlog, risco baixo/medio mitigado com grounding real via npm view em vez de so a description escrita quando o harness foi criado). Veredito: REVISE, 1 achado MAJOR corrigido no plano (nao exigia decisao do usuario - mesmo padrao ja usado pra Spring Boot/Java em auth-service e uv/PyPI em telegram-integration: versao real resolvida pela ferramenta no bootstrap e a fonte de verdade). (MAJOR) description e 5 notas do vault (docs/CONVENTIONS.md, docs/DESIGN-SYSTEM.md x2, docs/ARCHITECTURE.md, docs/TESTING.md, apps/web/CLAUDE.md) fixavam 'Angular 21.x', mas 'npm view @angular/cli version' confirma 22.1.7 como estavel atual (22.2.0-next.* em pre-release) - corrigidas todas pra '22.x' no mesmo commit (docs/ARCHITECTURE.md editado com cuidado - outra sessao tinha mudancas nao commitadas em secao diferente do mesmo arquivo, verificado sem overlap antes de editar). Achado real adicional durante a verificacao (nao um achado de plano, gotcha de ambiente): Angular CLI 22.1.7 exige Node ^22.22.3 || ^24.15.0 || >=26.0.0 (engines), mas a maquina tinha Node 24.9.0 (EBADENGINE) - corrigido via 'nvm install 24.21.0' (LTS) + 'nvm use 24.21.0', documentado em docs/CONVENTIONS.md. Escopo da feature (9 subtasks abaixo, sequenciais - cada uma e uma parte real e testavel do bootstrap, nao ceremonia): Angular Material 22.x/tema M3/paleta ja fechados em docs/DESIGN-SYSTEM.md (nao decisao em aberto); transloco/ngx-echarts/Playwright ja decididos em docs/CONVENTIONS.md; nenhuma subtask introduz biblioteca nao autorizada. Delivery Reviewer roda sobre o diff real de cada subtask; Test Suite Auditor roda uma vez ao final (feat-001.9) sobre a suite completa, nao subtask por subtask (risco baixo, testes unitarios simples de componente/servico nesta fase de bootstrap). Persistence Auditor nao se aplica (frontend sem persistencia propria).",
+      "jira": "SV-209",
+      "subtasks": [
+        {
+          "id": "feat-001.1",
+          "name": "ng new real (Angular 22.x) + roteamento + HttpClient com interceptor Accept-Language + environments",
+          "status": "done",
+          "jira": "SV-210",
+          "detail": "Bootstrap real via Angular CLI (nao escrito a mao) - mesmo padrao de start.spring.io/uv init usado nos outros servicos. environments/environment.ts + environment.development.ts com a URL base do api-gateway (fileReplacements do Angular CLI, ver docs/OBSERVABILITY-AND-CONFIG.md).",
+          "checklist": [
+            "'npx @angular/cli@22 new web --standalone --routing --style=scss --ssr=false' (ou equivalente atual do CLI 22.x) dentro de apps/web, sem sobrescrever CLAUDE.md/feature_list.json/init.sh/progress.md/session-handoff.md/CHANGELOG.md/sonar-project.properties ja existentes.",
+            "Roteamento base (rotas placeholder pras telas futuras: login, dashboard, historico, casas de apostas, registro de aposta) - sem paginas reais ainda, so estrutura.",
+            "HttpClient configurado com interceptor functional que envia Accept-Language conforme o idioma ativo (mesmo que o idioma ainda seja fixo nesta subtask - a integracao real com o seletor de idioma persistido vem na subtask de transloco).",
+            "environment.ts/environment.development.ts com a URL base do api-gateway (build-time, fileReplacements) - ver docs/OBSERVABILITY-AND-CONFIG.md secao 'Configuracao de apps/web'.",
+            "Ajustar apps/web/init.sh se o comando de build/test real divergir do que o script generico assume (ver script atual)."
+          ],
+          "validation": "'ng serve' sobe sem erro, rota placeholder renderiza, init.sh roda 'ng build'/'ng test' de verdade (nao guarda 'No package.json' mais).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-001.2",
+          "name": "Angular Material M3 + tema claro/escuro + tokens de cor StakeVault",
+          "status": "not-started",
+          "jira": "SV-211",
+          "detail": "Tema M3 gerado a partir de --color-action-neutral (azul) como primary, --color-brand (verde) como secondary/tertiary - ver docs/DESIGN-SYSTEM.md 'Integracao com Angular Material'. Toggle claro/escuro com localStorage sobrepondo prefers-color-scheme.",
+          "checklist": [
+            "'ng add @angular/material' (versao 22.x resolvida pelo CLI).",
+            "Tema M3 (mat.theme()) com --color-action-neutral como primary, --color-brand como secondary/tertiary - nao o inverso.",
+            "CSS custom properties dos tokens de cor (claro e escuro, tabelas completas de docs/DESIGN-SYSTEM.md) mapeadas pros papeis M3 equivalentes (surface/background/on-surface/on-surface-variant).",
+            "Toggle de tema com persistencia em localStorage, [data-theme] no elemento raiz, default seguindo prefers-color-scheme.",
+            "Registrar em progress.md a abordagem exata usada (media query vs classe manual vs as duas) - exigido pela description da feature."
+          ],
+          "validation": "Toggle funciona nos dois temas, cores batem com as tabelas de docs/DESIGN-SYSTEM.md (inspecionado visualmente), nenhum uso de --color-brand como cor de CTA generica.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-001.3",
+          "name": "transloco i18n (pt-BR/en-US/es) + seletor de idioma persistido",
+          "status": "not-started",
+          "jira": "SV-212",
+          "detail": "Tres locales sempre em sincronia - ver docs/CONVENTIONS.md 'Internacionalizacao (i18n)'. Interceptor de Accept-Language da subtask 1 passa a refletir o idioma ativo de verdade.",
+          "checklist": [
+            "'@jsverse/transloco' instalado e configurado, arquivos src/assets/i18n/{pt-BR,en-US,es}.json com as mesmas chaves.",
+            "Seletor de idioma (componente simples) persistido em localStorage.",
+            "Interceptor de Accept-Language (subtask 1) atualizado pra usar o idioma ativo do transloco, nao mais fixo.",
+            "Validador de chaves de traducao (mesmo mecanismo usado nos outros servicos, ver docs/CI-CD.md) funcionando localmente antes do CI existir."
+          ],
+          "validation": "Troca de idioma no seletor reflete nas strings da UI e no header Accept-Language das chamadas HTTP.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-001.4",
+          "name": "app-panel-layout + app-panel (layout em paineis)",
+          "status": "not-started",
+          "jira": "SV-213",
+          "detail": "Ver docs/DESIGN-SYSTEM.md 'Layout em paineis' - grid multi-coluna, rolagem independente por painel, colapso desktop/tablet/mobile.",
+          "checklist": [
+            "app-panel-layout (grid CSS, colunas configuraveis por pagina) + app-panel (container --color-surface, cabecalho opcional, rolagem interna propria via overflow-y).",
+            "Colapso responsivo: desktop >=1024px multi-coluna, tablet ~600-1024px 2 colunas, mobile <600px coluna unica.",
+            "Aplicado numa tela placeholder (ex.: a rota de dashboard da subtask 1) pra provar o mecanismo, sem construir o dashboard real ainda (isso e feat-005/RF10/11, fora de escopo aqui)."
+          ],
+          "validation": "Testado numa resolucao mobile e uma desktop (RNF01) - painel rola dentro de si mesmo, pagina inteira nao rola.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-001.5",
+          "name": "Assets de logo + splash animado",
+          "status": "not-started",
+          "jira": "SV-215",
+          "detail": "Baseado em docs/design-references/splash-animation-artistic.html - toca uma vez, trava no logo formado, respeita prefers-reduced-motion (bloco @media ja pronto no arquivo de referencia).",
+          "checklist": [
+            "Assets de logo (logo-mark-{dark,light,solid}.svg, logo-bars-only.svg) copiados pra apps/web/src/assets/ (ou public/, conforme estrutura do CLI 22.x).",
+            "Splash animado baseado em splash-animation-artistic.html - anel de guia, cometa, raios, pop+pulso, wordmark por mask/wipe.",
+            "Toca uma vez e trava no logo formado (nao loop infinito) - loop discreto do anel de guia so entra se o carregamento passar de ~3s.",
+            "prefers-reduced-motion respeitado (mesmo mecanismo do arquivo de referencia)."
+          ],
+          "validation": "Splash roda uma vez e trava; com prefers-reduced-motion ativado (DevTools), estado final aparece direto sem animacao.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-001.6",
+          "name": "ngx-echarts instalado e provado",
+          "status": "not-started",
+          "jira": "SV-216",
+          "detail": "So a biblioteca instalada e provada (grafico placeholder) nesta feature - dashboard real (RF10/RF11 UI) e feature futura.",
+          "checklist": [
+            "'ngx-echarts' + 'echarts' instalados.",
+            "Um grafico de linha placeholder (dados mock) renderizado numa rota de teste, usando a paleta de cores de docs/DESIGN-SYSTEM.md (item 6 do inventario - traco --color-brand, gradiente, grid sutil) - prova a integracao, nao e o dashboard final."
+          ],
+          "validation": "Grafico placeholder renderiza nos dois temas sem erro de console.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-001.7",
+          "name": "Playwright + gate de cobertura 80%",
+          "status": "not-started",
+          "jira": "SV-217",
+          "detail": "Ver docs/TESTING.md - unitarios de componente + Playwright pros fluxos criticos (ainda nao existem fluxos reais nesta subtask, so a infraestrutura de teste).",
+          "checklist": [
+            "Playwright instalado e configurado (ver docs/TESTING.md).",
+            "Gate de cobertura 80% configurado no test runner real usado pelo CLI 22.x (Karma ou o que o 'ng new' de fato instalou - confirmar e registrar em progress.md, ver nota de docs/TESTING.md).",
+            "Um teste unitario e um teste Playwright minimos (smoke) provando que a infraestrutura funciona - fluxos criticos reais (cadastro de aposta, etc.) vem quando aquelas features existirem."
+          ],
+          "validation": "'ng test'/cobertura e Playwright rodam de verdade via init.sh, nao guarda pulada.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-001.8",
+          "name": "Impeccable + taste-skill + huashu-design + DESIGN.md pre-escrito",
+          "status": "not-started",
+          "jira": "SV-218",
+          "detail": "Ver docs/DESIGN-SYSTEM.md 'QA visual e prototipagem' - DESIGN.md pre-escrito ANTES de qualquer comando document/new-work, pra evitar divergencia.",
+          "checklist": [
+            "'npx impeccable install', 'npx skills add https://github.com/leonxlnx/taste-skill', 'npx skills add https://github.com/alchaincyf/huashu-design'.",
+            "apps/web/DESIGN.md pre-escrito a partir de docs/DESIGN-SYSTEM.md, formato oficial DESIGN.md (front-matter YAML de tokens + 8 secoes canonicas: Overview, Colors, Typography, Layout, Elevation & Depth, Shapes, Components, Do's and Don'ts).",
+            "'npx impeccable init' (seguro, so grava PRODUCT.md) - nao rodar 'document'/'new-work' nesta subtask (DESIGN.md ja escrito a mao, nao ha nada pra auditar ainda)."
+          ],
+          "validation": "DESIGN.md existe e reflete docs/DESIGN-SYSTEM.md antes de qualquer comando Impeccable que possa gera-lo.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-001.9",
+          "name": "CHANGELOG, Test Suite Auditor e verificacao final",
+          "status": "not-started",
+          "jira": "SV-219",
+          "detail": "Fecha a feature - Test Suite Auditor roda uma vez sobre a suite completa das 8 subtasks anteriores.",
+          "checklist": [
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh deste app e da raiz rodando sem erro.",
+            "Test Suite Auditor rodado sobre a suite completa (unitarios + Playwright).",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas (RNF01 + DESIGN-SYSTEM).",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit."
+          ],
+          "validation": "init.sh verde, Test Suite Auditor sem achado real pendente, evidence preenchida, epic-006 (raiz) permanece in-progress ate as demais features deste app tambem fecharem.",
+          "owner": "agente"
+        }
+      ],
       "evidence": ""
     },
     {

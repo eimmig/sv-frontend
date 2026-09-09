@@ -2,22 +2,24 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-07-30 00:00
-**Feature ativa:** nenhuma
+**Última atualização:** 2026-09-09
+**Feature ativa:** `feat-001` (`feat-001.1` done, `feat-001.2`..`.9` restantes)
 
 ## Status
 
 ### O que está pronto
 
 - [x] Harness deste app criado.
+- [x] `feat-001.1` (`ng new` real + roteamento + HttpClient/interceptor + environments) — `done`
+      em 2026-09-09.
 
 ### Em andamento
 
-- Nenhuma feature iniciada.
+- `feat-001` — próxima subtask: `feat-001.2` (Angular Material M3 + tema claro/escuro).
 
 ### Próximos passos (Next Steps)
 
-1. `feat-001` — inicializar o projeto Angular 21.x.
+1. `feat-001.2`..`feat-001.9` (ver `feature_list.json` deste app).
 
 ## Bloqueios / Riscos
 
@@ -29,9 +31,60 @@
 - Gerenciamento de estado: **Signals nativos** (não NgRx). Componentes **standalone**. Decididas
   em `../../docs/CONVENTIONS.md`, não específicas desta sessão.
 
-## Arquivos modificados nesta sessão
+## `feat-001.1` fechada — `ng new` real + roteamento + HttpClient/interceptor + environments (2026-09-09)
 
-- `CLAUDE.md`, `feature_list.json`, `init.sh`, `progress.md`, `session-handoff.md` — criados.
+Primeira feature deste app — nenhum código existia antes desta sessão. Bootstrap real via
+`npx @angular/cli@22 new web --directory . --skip-git --routing --style scss --package-manager npm`
+(não escrito à mão — mesmo padrão de `start.spring.io`/`uv init` usado nos outros serviços).
+
+**Achados reais de versão corrigidos antes de codificar** (Plan Reviewer): `docs/CONVENTIONS.md`,
+`docs/DESIGN-SYSTEM.md`, `docs/ARCHITECTURE.md`, `docs/TESTING.md` e `apps/web/CLAUDE.md`
+fixavam "Angular 21.x" — `npm view @angular/cli version` confirmou 22.1.7 estável, corrigido em
+todas. Gotcha de ambiente: Angular CLI 22.1.7 exige Node `^22.22.3 || ^24.15.0 || >=26.0.0`, a
+máquina tinha 24.9.0 (EBADENGINE) — corrigido via `nvm install 24.21.0` (LTS), documentado em
+`docs/CONVENTIONS.md`.
+
+**Test runner real**: `vitest` (não Karma) — CLI 22.x já migrou o default, confirmando o hedge
+que já existia em `docs/TESTING.md`. Cobertura via `@vitest/coverage-v8` — achado real: instalar
+a versão `latest` (5.x) quebra o resolver do npm (`Cannot read properties of null (reading
+'children')`, bug do Arborist ao misturar major incompatível com `vitest@4.x` já instalado pelo
+CLI) — corrigido pinando `@vitest/coverage-v8@4.1.11` (mesma major do `vitest` instalado).
+
+**Nomenclatura de environments real diverge da documentada**: `ng generate environments` gera
+`environment.ts` (produção/default) + `environment.development.ts` (dev, via `fileReplacements`
+na configuration `development`) — não `environment.prod.ts` como `docs/OBSERVABILITY-AND-CONFIG.md`
+e `apps/web/CLAUDE.md` diziam (convenção de versões antigas do Angular CLI). Corrigido nos dois
+no mesmo commit. `environment.ts` aponta pra URL pública do Gateway (placeholder,
+`https://api.stakevault.example.com` — revisitar quando o domínio real existir);
+`environment.development.ts` aponta pra `http://localhost:8080` (porta fixa do `api-gateway` em
+dev, ver `docs/DECISIONS-LOG.md` 2026-09-07).
+
+**Roteamento**: 5 rotas placeholder lazy-loaded (`login`, `dashboard`, `historico`,
+`casas-de-apostas`, `registro-de-aposta`), cada uma um componente `ng generate component`
+mínimo em `src/app/pages/` — sem UI real ainda, só estrutura (as páginas de verdade são
+features futuras). Redirect de `''` pra `login`.
+
+**HttpClient + interceptor de Accept-Language**: `ActiveLocale` (serviço com um `signal` de
+locale, default `pt-BR`) + `acceptLanguageInterceptor` (functional interceptor que clona a
+requisição com o header `Accept-Language` = locale ativo). `ActiveLocale` é provisório — a
+subtask de transloco (`feat-001.3`) substitui/conecta esse signal ao idioma real selecionado
+pelo usuário, sem precisar reescrever o interceptor.
+
+**Template/teste do componente raiz simplificados**: `app.html`/`app.ts` gerados pelo CLI trazem
+o placeholder de marketing padrão do Angular (título "Hello, web" + ilustração) — substituído por
+só `<router-outlet />`, já que o roteamento é a única responsabilidade deste componente nesta
+fase. `app.spec.ts` ajustado (removido o teste do título antigo, adicionado `provideRouter([])`
+pro `TestBed` conseguir instanciar `RouterOutlet`).
+
+`init.sh` atualizado pros comandos reais (`ng build` + `ng test --watch=false --coverage` —
+não mais os placeholders `npm test -- --watch=false --code-coverage` de sintaxe Karma). Gate de
+cobertura 80% ainda **não** configurado no test runner (fica pra `feat-001.7`, que também traz
+Playwright) — cobertura atual (100% stmts/lines, 98.46% branches) já está acima do gate, mas
+nada falha ainda se cair abaixo.
+
+`ng serve` testado manualmente (porta 4300, smoke via curl) — `/` redireciona pra `/login`,
+HTTP 200, processos encerrados ao final. 1 subtask (SV-210, story SV-209). `./init.sh` verde
+(build + 7 arquivos de teste, 8 testes, 0 falhas).
 
 ## Evidência de conclusão
 
