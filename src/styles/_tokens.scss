@@ -24,6 +24,7 @@
   --color-action-neutral-strong: #215680;
   --color-disabled-bg: #e7eeeb;
   --color-disabled-text: #9aa6a2;
+  --panel-shadow: 0 4px 24px rgba(20, 20, 30, 0.06);
 
   --mat-sys-surface: var(--color-surface);
   --mat-sys-background: var(--color-background);
@@ -46,6 +47,7 @@
   --color-action-neutral-strong: #2e6fa0;
   --color-disabled-bg: #1d2a36;
   --color-disabled-text: #4c5a64;
+  --panel-shadow: none;
 
   --mat-sys-surface: var(--color-surface);
   --mat-sys-background: var(--color-background);
