@@ -1,20 +1,49 @@
-# Dependencias e build
-node_modules/
-dist/
-.angular/
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-# Relatorio de cobertura consumido pelo SonarCloud
-coverage/
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.iml
 
 # Segredos — nunca versionados (ver docs/OBSERVABILITY-AND-CONFIG.md no vault)
 .env
 .env.local
 
-# IDE
-.idea/
-.vscode/
-*.iml
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+.history/*
 
-# SO
-Thumbs.db
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
+
+# System files
 .DS_Store
+Thumbs.db
