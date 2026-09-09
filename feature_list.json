@@ -670,7 +670,7 @@
         {
           "id": "feat-011.3",
           "name": "Polish visual - registro de aposta + historico (apostas/movimentacoes)",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-258",
           "detail": "Estende o tratamento visual de 011.1 pra tela de registro de aposta (RF04) e historico (RF08/RF12/RF13, as duas abas).",
           "checklist": [

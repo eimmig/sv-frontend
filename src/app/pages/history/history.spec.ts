@@ -5,6 +5,7 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { History } from './history';
 import { Bet } from '../../core/bets-api';
+import { Transaction } from '../../core/transactions-api';
 import { environment } from '../../../environments/environment';
 
 describe('History', () => {
@@ -157,6 +158,44 @@ describe('History', () => {
 
   it('formats a date using the active language', () => {
     expect(fixture.componentInstance['formatDateTime']('2026-03-05T14:30:00.000Z')).toBeTruthy();
+  });
+
+  it('badges bet status won/lost/pending with the matching tone', () => {
+    const bets: Bet[] = (['won', 'lost', 'pending'] as const).map((status, index) => ({
+      id: String(index),
+      bettingHouseId: 'bh-1',
+      sportId: 'sp-1',
+      leagueId: 'lg-1',
+      marketId: 'mk-1',
+      tipsterId: null,
+      ticketNumber: null,
+      team1: null,
+      team2: null,
+      description: null,
+      betType: null,
+      playType: null,
+      stake: 100,
+      odd: 1.85,
+      status,
+      betDate: '2026-03-01T18:00:00Z',
+    }));
+    fixture.componentInstance['betsPage'].set({ content: bets, page: 0, size: 20, totalElements: 3, totalPages: 1 });
+    fixture.detectChanges();
+
+    const badges: HTMLElement[] = fixture.nativeElement.querySelectorAll('[data-testid="history-bets-status-badge"]');
+    expect(badges).toHaveLength(3);
+    expect(badges[0].classList).toContain('badge--positive');
+    expect(badges[1].classList).toContain('badge--negative');
+    expect(badges[2].classList).toContain('badge--neutral');
+  });
+
+  it('badges transaction type deposit as positive and withdrawal as neutral', () => {
+    // Rendering the Movimentações tab's rows here would require driving mat-tab-group's
+    // animation-gated body swap, which doesn't complete synchronously under jsdom (no real
+    // transitionend) - e2e/history.spec.ts's "switches to the transactions tab" flow (real
+    // browser) is where the badge is proven end to end instead.
+    expect(fixture.componentInstance['transactionTypeBadge']('deposit')).toBe('badge--positive');
+    expect(fixture.componentInstance['transactionTypeBadge']('withdrawal')).toBe('badge--neutral');
   });
 
   it('marks a pending bet as won and replaces it in place, without reloading the list', () => {
