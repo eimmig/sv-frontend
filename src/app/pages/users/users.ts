@@ -21,11 +21,11 @@ import { PanelLayout } from '../../shared/panel-layout/panel-layout';
     Panel,
     PanelLayout,
   ],
-  selector: 'app-usuarios',
-  styleUrl: './usuarios.scss',
-  templateUrl: './usuarios.html',
+  selector: 'app-users',
+  styleUrl: './users.scss',
+  templateUrl: './users.html',
 })
-export class Usuarios {
+export class Users {
   private readonly usersApi = inject(UsersApi);
   private readonly formBuilder = inject(FormBuilder);
   private readonly transloco = inject(TranslocoService);
@@ -53,7 +53,7 @@ export class Usuarios {
       },
       error: (error: HttpErrorResponse) => {
         const problem = toProblemDetail(error);
-        this.loadError.set(problem.detail ?? this.transloco.translate('usuarios.genericError'));
+        this.loadError.set(problem.detail ?? this.transloco.translate('users.genericError'));
       },
     });
   }
@@ -75,7 +75,7 @@ export class Usuarios {
       error: (error: HttpErrorResponse) => {
         this.submitting.set(false);
         const problem = toProblemDetail(error);
-        this.formError.set(problem.detail ?? this.transloco.translate('usuarios.genericError'));
+        this.formError.set(problem.detail ?? this.transloco.translate('users.genericError'));
       },
     });
   }

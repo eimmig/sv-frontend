@@ -28,7 +28,7 @@ function seedSession(
   );
 }
 
-test.describe('RF01/RF02 - autenticacao e gestao de usuarios do tenant', () => {
+test.describe('RF01/RF02 - authentication and tenant user management', () => {
   test.beforeEach(async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
   });
@@ -118,17 +118,17 @@ test.describe('RF01/RF02 - autenticacao e gestao de usuarios do tenant', () => {
     await expect(page.getByTestId('nav-users')).toBeVisible();
     await page.getByTestId('nav-users').click();
 
-    await expect(page).toHaveURL(/\/usuarios$/);
-    await expect(page.getByTestId('usuarios-row')).toContainText('Ana');
+    await expect(page).toHaveURL(/\/users$/);
+    await expect(page.getByTestId('users-row')).toContainText('Ana');
   });
 
-  test('a member does not see the "Usuários" link and is bounced from /usuarios', async ({ page }) => {
+  test('a member does not see the "Usuários" link and is bounced from /users', async ({ page }) => {
     await seedSession(page, 'MEMBER');
     await page.goto('/dashboard');
 
     await expect(page.getByTestId('nav-users')).toHaveCount(0);
 
-    await page.goto('/usuarios');
+    await page.goto('/users');
 
     await expect(page).toHaveURL(/\/dashboard$/);
   });

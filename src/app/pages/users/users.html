@@ -1,0 +1,75 @@
+<app-panel-layout columns="360px 1fr">
+  <app-panel [title]="'users.createTitle' | transloco">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="users__form">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'users.nameLabel' | transloco }}</mat-label>
+        <input
+          matInput
+          id="users-name-input"
+          type="text"
+          formControlName="name"
+          data-testid="users-name"
+          [attr.aria-label]="'users.nameLabel' | transloco"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'users.emailLabel' | transloco }}</mat-label>
+        <input
+          matInput
+          id="users-email-input"
+          type="email"
+          formControlName="email"
+          data-testid="users-email"
+          [attr.aria-label]="'users.emailLabel' | transloco"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'users.passwordLabel' | transloco }}</mat-label>
+        <input
+          matInput
+          id="users-password-input"
+          type="password"
+          formControlName="password"
+          data-testid="users-password"
+          autocomplete="new-password"
+          [attr.aria-label]="'users.passwordLabel' | transloco"
+        />
+      </mat-form-field>
+
+      @if (formError(); as message) {
+        <p class="users__error" role="alert" data-testid="users-form-error">{{ message }}</p>
+      }
+
+      <button mat-flat-button type="submit" data-testid="users-submit" [disabled]="form.invalid || submitting()">
+        {{ 'users.create' | transloco }}
+      </button>
+    </form>
+  </app-panel>
+
+  <app-panel [title]="'users.listTitle' | transloco">
+    @if (loadError(); as message) {
+      <p class="users__error" role="alert" data-testid="users-load-error">{{ message }}</p>
+    } @else {
+      <table class="users__table" data-testid="users-list">
+        <thead>
+          <tr>
+            <th>{{ 'users.nameLabel' | transloco }}</th>
+            <th>{{ 'users.emailLabel' | transloco }}</th>
+            <th>{{ 'users.roleLabel' | transloco }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users(); track user.id) {
+            <tr data-testid="users-row">
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ 'users.role.' + user.role | transloco }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </app-panel>
+</app-panel-layout>

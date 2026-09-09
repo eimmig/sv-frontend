@@ -38,7 +38,7 @@
     "message": "Estás usando una contraseña temporal. Cámbiala lo antes posible.",
     "dismiss": "Entendido"
   },
-  "usuarios": {
+  "users": {
     "createTitle": "Nuevo usuario",
     "listTitle": "Usuarios del tenant",
     "nameLabel": "Nombre",
@@ -51,5 +51,14 @@
       "ADMIN": "Administrador",
       "MEMBER": "Miembro"
     }
+  },
+  "bettingHouses": {
+    "createTitle": "Nueva casa de apuestas",
+    "listTitle": "Casas de apuestas",
+    "nameLabel": "Nombre",
+    "initialBalanceLabel": "Saldo inicial",
+    "balanceLabel": "Saldo actual",
+    "create": "Crear casa de apuestas",
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
   }
 }

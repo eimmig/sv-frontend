@@ -15,25 +15,25 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'historico',
-    loadComponent: () => import('./pages/historico/historico').then((m) => m.Historico),
+    path: 'history',
+    loadComponent: () => import('./pages/history/history').then((m) => m.History),
     canActivate: [authGuard],
   },
   {
-    path: 'casas-de-apostas',
+    path: 'betting-houses',
     loadComponent: () =>
-      import('./pages/casas-de-apostas/casas-de-apostas').then((m) => m.CasasDeApostas),
+      import('./pages/betting-houses/betting-houses').then((m) => m.BettingHouses),
     canActivate: [authGuard],
   },
   {
-    path: 'registro-de-aposta',
+    path: 'register-bet',
     loadComponent: () =>
-      import('./pages/registro-de-aposta/registro-de-aposta').then((m) => m.RegistroDeAposta),
+      import('./pages/register-bet/register-bet').then((m) => m.RegisterBet),
     canActivate: [authGuard],
   },
   {
-    path: 'usuarios',
-    loadComponent: () => import('./pages/usuarios/usuarios').then((m) => m.Usuarios),
+    path: 'users',
+    loadComponent: () => import('./pages/users/users').then((m) => m.Users),
     canActivate: [authGuard, adminGuard],
   },
 ];
