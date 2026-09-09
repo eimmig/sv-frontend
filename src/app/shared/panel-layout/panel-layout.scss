@@ -1,7 +1,12 @@
+:host {
+  display: block;
+  height: 100%;
+  min-height: 0;
+}
+
 .panel-layout {
   display: grid;
   grid-template-columns: var(--panel-columns, 1fr);
-  align-items: start;
   gap: 24px;
   height: 100%;
   min-height: 0;

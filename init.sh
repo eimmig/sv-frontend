@@ -22,8 +22,8 @@ if [ -f "package.json" ]; then
   fi
   echo "..   ng build"
   npx ng build
-  echo "..   ng test (vitest runner, ver docs/TESTING.md)"
-  npx ng test --watch=false --coverage
+  echo "..   ng test (vitest runner, gate de cobertura 80% em angular.json, ver docs/TESTING.md)"
+  npx ng test --watch=false
 else
   echo "----  No package.json yet — feat-001 not started."
   echo "     See feature_list.json for the next step."
