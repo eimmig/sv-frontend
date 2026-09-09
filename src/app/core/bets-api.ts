@@ -87,4 +87,9 @@ export class BetsApi {
       params: filterParams(filter, page),
     });
   }
+
+  /** Only pending -> won|lost|void is a valid transition (RN06) - the backend rejects anything else with 422. */
+  updateStatus(id: string, status: 'won' | 'lost' | 'void'): Observable<Bet> {
+    return this.http.patch<Bet>(`${environment.apiGatewayUrl}/api/v1/bets/${id}/status`, { status });
+  }
 }

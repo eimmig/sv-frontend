@@ -56,6 +56,9 @@
       @if (betsError(); as message) {
         <p class="history__error" role="alert" data-testid="history-bets-error">{{ message }}</p>
       } @else {
+        @if (settleError(); as message) {
+          <p class="history__error" role="alert" data-testid="history-settle-error">{{ message }}</p>
+        }
         <div class="history__table-wrap">
           <table class="history__table" data-testid="history-bets-list">
             <thead>
@@ -66,6 +69,7 @@
                 <th>{{ 'history.oddLabel' | transloco }}</th>
                 <th>{{ 'history.statusLabel' | transloco }}</th>
                 <th>{{ 'history.dateLabel' | transloco }}</th>
+                <th>{{ 'history.actionsLabel' | transloco }}</th>
               </tr>
             </thead>
             <tbody>
@@ -77,6 +81,37 @@
                   <td>{{ bet.odd }}</td>
                   <td>{{ 'history.status.' + bet.status | transloco }}</td>
                   <td>{{ formatDateTime(bet.betDate) }}</td>
+                  <td class="history__actions">
+                    @if (bet.status === 'pending') {
+                      <button
+                        mat-stroked-button
+                        type="button"
+                        data-testid="history-bets-mark-won"
+                        [disabled]="settlingBetId() === bet.id"
+                        (click)="markStatus(bet, 'won')"
+                      >
+                        {{ 'history.markWon' | transloco }}
+                      </button>
+                      <button
+                        mat-stroked-button
+                        type="button"
+                        data-testid="history-bets-mark-lost"
+                        [disabled]="settlingBetId() === bet.id"
+                        (click)="markStatus(bet, 'lost')"
+                      >
+                        {{ 'history.markLost' | transloco }}
+                      </button>
+                      <button
+                        mat-stroked-button
+                        type="button"
+                        data-testid="history-bets-mark-void"
+                        [disabled]="settlingBetId() === bet.id"
+                        (click)="markStatus(bet, 'void')"
+                      >
+                        {{ 'history.markVoid' | transloco }}
+                      </button>
+                    }
+                  </td>
                 </tr>
               }
             </tbody>

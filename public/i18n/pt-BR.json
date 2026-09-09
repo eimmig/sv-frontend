@@ -148,6 +148,10 @@
     "type": {
       "deposit": "Depósito",
       "withdrawal": "Saque"
-    }
+    },
+    "actionsLabel": "Ações",
+    "markWon": "Ganha",
+    "markLost": "Perdida",
+    "markVoid": "Devolvida"
   }
 }
