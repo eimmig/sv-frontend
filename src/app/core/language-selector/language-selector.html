@@ -1,0 +1,9 @@
+<mat-select
+  [value]="language.current()"
+  [aria-label]="'language.label' | transloco"
+  (selectionChange)="onLocaleSelected($event.value)"
+>
+  @for (locale of locales; track locale.value) {
+    <mat-option [value]="locale.value">{{ locale.label }}</mat-option>
+  }
+</mat-select>

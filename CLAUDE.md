@@ -61,7 +61,7 @@ normativos e já decididos em `../../docs/CONVENTIONS.md`, `../../docs/TESTING.m
   `Accept-Language` conforme o idioma ativo no app (ver bullet de i18n abaixo) para que
   `title`/`detail` já venham no idioma certo.
 - **i18n**: `@jsverse/transloco`, três locales sempre em sincronia — `pt-BR`, `en-US`, `es`,
-  arquivos em `src/assets/i18n/{pt-BR,en-US,es}.json` (ver `../../docs/CONVENTIONS.md` seção
+  arquivos em `public/i18n/{pt-BR,en-US,es}.json` (ver `../../docs/CONVENTIONS.md` seção
   "Internacionalização (i18n)") — decisão do usuário, não é opcional nem um dos três
   "principal". Nenhum componente tem string de UI hardcoded; toda label nova em qualquer
   feature precisa das três traduções antes de a feature ser `done` — validado automaticamente

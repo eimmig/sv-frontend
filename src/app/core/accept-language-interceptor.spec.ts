@@ -1,16 +1,30 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpRequest, HttpResponse, HttpInterceptorFn } from '@angular/common/http';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 import { of } from 'rxjs';
 
 import { acceptLanguageInterceptor } from './accept-language-interceptor';
-import { ActiveLocale } from './active-locale';
+import { Language } from './language';
 
 describe('acceptLanguageInterceptor', () => {
   const interceptor: HttpInterceptorFn = (req, next) =>
     TestBed.runInInjectionContext(() => acceptLanguageInterceptor(req, next));
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    localStorage.removeItem('stakevault.language');
+    Object.defineProperty(navigator, 'language', { value: 'pt-BR', configurable: true });
+    TestBed.configureTestingModule({
+      imports: [
+        TranslocoTestingModule.forRoot({
+          langs: { 'pt-BR': {}, 'en-US': {}, es: {} },
+          translocoConfig: { availableLangs: ['pt-BR', 'en-US', 'es'], defaultLang: 'pt-BR' },
+        }),
+      ],
+    });
+  });
+
+  afterEach(() => {
+    delete (navigator as { language?: string }).language;
   });
 
   function capturedHeader(): string | null {
@@ -30,7 +44,7 @@ describe('acceptLanguageInterceptor', () => {
   });
 
   it('reflects a locale change made before the request', () => {
-    TestBed.inject(ActiveLocale).current.set('en-US');
+    TestBed.inject(Language).set('en-US');
 
     expect(capturedHeader()).toBe('en-US');
   });

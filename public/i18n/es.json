@@ -1,0 +1,9 @@
+{
+  "theme": {
+    "switchToLight": "Modo claro",
+    "switchToDark": "Modo oscuro"
+  },
+  "language": {
+    "label": "Idioma"
+  }
+}
