@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+
+.theme-toggle {
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+
+  &:hover {
+    color: var(--color-brand);
+    border-color: var(--color-brand);
+  }
+}

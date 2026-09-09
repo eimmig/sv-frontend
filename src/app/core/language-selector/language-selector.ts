@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 import { Language, Locale } from '../language';
 
 @Component({
-  imports: [MatSelectModule, TranslocoPipe],
+  imports: [MatIconModule, MatSelectModule, TranslocoPipe],
   selector: 'app-language-selector',
   styleUrl: './language-selector.scss',
   templateUrl: './language-selector.html',

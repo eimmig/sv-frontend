@@ -1,3 +1,10 @@
-<button mat-stroked-button type="button" data-testid="theme-toggle" (click)="theme.toggle()">
-  {{ (theme.current() === 'dark' ? 'theme.switchToLight' : 'theme.switchToDark') | transloco }}
+<button
+  mat-icon-button
+  type="button"
+  class="theme-toggle"
+  data-testid="theme-toggle"
+  [attr.aria-label]="(theme.current() === 'dark' ? 'theme.switchToLight' : 'theme.switchToDark') | transloco"
+  (click)="theme.toggle()"
+>
+  <mat-icon>{{ theme.current() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
 </button>

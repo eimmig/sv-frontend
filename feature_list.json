@@ -638,7 +638,7 @@
         {
           "id": "feat-011.1",
           "name": "Language selector + theme toggle com estilo real (fix de contraste) + tela de login elevada",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-256",
           "detail": "Corrige a causa raiz do bug de contraste (scss vazio dos dois componentes de topbar) com estilo real usando os tokens de tema StakeVault, e eleva o visual da tela de login (logo, acento de marca, tipografia) - os 3 itens que o usuario reportou concretamente.",
           "checklist": [
