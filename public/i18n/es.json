@@ -25,5 +25,17 @@
     "passwordLabel": "Contraseña",
     "submit": "Iniciar sesión",
     "genericError": "No se pudo iniciar sesión. Inténtalo de nuevo."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "bettingHouses": "Casas de apuestas",
+    "newBet": "Registrar apuesta",
+    "history": "Historial",
+    "users": "Usuarios",
+    "logout": "Cerrar sesión"
+  },
+  "mustChangePassword": {
+    "message": "Estás usando una contraseña temporal. Cámbiala lo antes posible.",
+    "dismiss": "Entendido"
   }
 }
