@@ -4,7 +4,27 @@
 
 **Última atualização:** 2026-09-09
 **Estado:** `feat-001` e `feat-007` `done`. `feat-002` (RF01/RF02 UI) `in-progress` —
-`feat-002.1`/`feat-002.2` `done`, restam `feat-002.3`/`feat-002.4`.
+`feat-002.1`/`feat-002.2`/`feat-002.3` `done`, resta só `feat-002.4` (fechamento).
+
+## `feat-002.3` fechada — tela de gestão de usuários do tenant (2026-09-09)
+
+`UsersApi` (`core/users-api.ts`): `list()`/`create()` via `GET`/`POST /api/v1/users`, só enviando
+`Authorization: Bearer` (`authInterceptor` de `feat-002.1`) — gateway injeta `X-User-Id`/
+`X-Tenant-Id` do token, frontend nunca envia esses dois manualmente. `Usuarios`
+(`pages/usuarios`) real: `app-panel-layout` (formulário de criação à esquerda, 360px; lista à
+direita, 1fr — colapsa pra coluna única em mobile), lista carregada no `constructor` e recarregada
+após criação bem-sucedida, erro de qualquer uma das duas chamadas exibe `detail` do RFC 7807.
+Rota `usuarios` já existia como stub guardado (`authGuard`+`adminGuard`, `feat-002.2`) — esta
+subtask só trocou o conteúdo.
+
+52 testes (24 arquivos) passando, cobertura 95.03%/89.37%/94.2%/95.42%. Verificado no navegador
+(`ng serve` + script Playwright ad-hoc com rede mockada, descartado): lista+formulário nos dois
+temas e em mobile/desktop, painéis colapsando corretamente pra coluna única. `./init.sh` verde,
+Playwright (3 testes) verde.
+
+Delivery Reviewer (passe próprio, sem subagentes — diff de 9 arquivos, risco baixo, precedente
+direto de `feat-002.1`): PASS, sem achado. PR real (`subtask/SV-231` -> `feature/SV-228`, PR #15),
+CI verde antes do merge.
 
 ## `feat-002.2` fechada — guards + nav mínima do app shell + banner mustChangePassword (2026-09-09)
 
