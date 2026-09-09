@@ -63,6 +63,7 @@ function buildChartOption(
         symbol: 'circle',
         symbolSize: 6,
         smooth: true,
+        itemStyle: { color: brandColor },
         lineStyle: { color: brandColor, width: 2 },
         areaStyle: {
           color: {
