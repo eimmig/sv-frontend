@@ -471,14 +471,51 @@
     {
       "id": "feat-006",
       "name": "RF10/RF11 (UI) - Dashboards e filtros dinamicos",
-      "description": "Paineis visuais consumindo GET /api/v1/statistics do stats-service, com filtros por periodo, esporte, liga, mercado e tipster (query params em ingles: sport, league, market, tipster, from, to) recalculando as metricas dinamicamente (RN08). Rotulos de filtro na UI localizados.",
+      "description": "Paineis visuais consumindo GET /api/v1/statistics do stats-service, com filtros por casa de apostas/esporte/liga/mercado/tipster e periodo (query params reais confirmados no codigo: bettingHouseId/sportId/leagueId/marketId/tipsterId, UUID, mais from/to, LocalDate - nao sport/league/market como a description original dizia, ja corrigido em docs/services/web.md) recalculando as metricas dinamicamente via nova consulta ao backend a cada filtro aplicado (RN08). Rotulos de filtro na UI localizados.",
       "dependencies": [
         "feat-005"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (risco baixo/medio - primeira tela deste app consumindo stats-service, mas mesmo padrao lista+filtro+forkJoin ja usado e testado em feat-004/005/008, e o app-panel-layout/mat-tab-group ja provados). Veredito: READY. Contrato confirmado no codigo real de stats-service (nao so no vault): GET /api/v1/statistics (StatisticsController) aceita bettingHouseId/sportId/leagueId/marketId/tipsterId (UUID, opcionais) + from/to (LocalDate, opcionais), devolve StatisticsDashboard{overall, bySport, byMarket, byBettingHouse, monthly} num unico bundle (RF11 - sem endpoint por segmento). BetMetrics{totalStaked, netProfit, roi, winRate, settledCount} - roi e winRate sao FRACOES (netProfit/totalStaked e wonCount/settledCount, escala 0..1, ver CalculateMetricsService.toMetrics), nao percentuais prontos - UI formata como percentual (novo core/percent.ts, Intl.NumberFormat style:'percent', locale-aware como core/date-format.ts, nao fixo como core/currency.ts - percentual nao e dinheiro). RN04 ja garante zero (nao excecao/null) quando o denominador e zero, sem tratamento especial no frontend. api-gateway ja roteia /api/v1/statistics/** pro stats-service (RouteConfig.java, confirmado no codigo-fonte, statsServiceRoute ja existe desde a topologia inicial do gateway - sem gap). Nenhum endpoint separado por byLeague/byTipster - leagueId/tipsterId so estreitam todos os segmentos como filtro, mesmo racional ja documentado em docs/services/stats-service.md. Decisao de layout (app-panel-layout columns=\"320px 1fr\", mesmo mecanismo de feat-001.4/dashboard placeholder atual): painel 1 = filtros (selects de betting-houses/4 catalogos + from/to, mesmo padrao de forkJoin+loadInto de history/feat-005, submit explicito 'Aplicar' - RN08 e satisfeita por uma nova consulta real ao clicar aplicar, nao filtragem client-side sobre dado ja carregado, nem re-fetch a cada keystroke); painel 2 = metricas (cards de overall formatados com formatBrl/novo formatPercent, grafico de linha real de lucro liquido mensal usando StatisticsDashboard.monthly via ngx-echarts, e mat-tab-group com 3 abas - Esporte/Mercado/Casa de Apostas - cada uma uma tabela de SegmentedBetMetrics, mesmo padrao de tabela de history) - 2 paineis, dentro da faixa 2-3 recomendada em docs/DESIGN-SYSTEM.md secao 'Layout em paineis' pro dashboard. shared/line-chart-sample (feat-001.6, mock, comentario no proprio arquivo ja dizia 'real dashboard charts are feat-006') e removido nesta feature - superseded pelo grafico real com StatisticsDashboard.monthly, evita componente morto e ajuda o risco ja sinalizado em session-handoff.md (bundle 601KB vs budget 500KB); novo shared/monthly-profit-chart reaproveita o mesmo padrao de leitura de tema via CSS custom properties (Theme signal) que line-chart-sample ja provou, so trocando dado mock por MonthlyBetMetrics[] real. Sem restricao de role (mesmo padrao de betting-houses/history - qualquer usuario autenticado do tenant ve o dashboard), so authGuard (rota 'dashboard' ja guardada desde feat-001.1). 2 subtasks (implementacao + fechamento), mesmo padrao das features anteriores.",
+      "jira": "SV-246",
+      "subtasks": [
+        {
+          "id": "feat-006.1",
+          "name": "StatisticsApi + core/percent.ts + monthly-profit-chart + Dashboard real (filtros, cards, grafico, breakdown por aba)",
+          "status": "in-progress",
+          "jira": "SV-247",
+          "detail": "core/statistics-api.ts novo (get(filter) via GET /api/v1/statistics). core/percent.ts novo (formatPercent locale-aware). shared/monthly-profit-chart novo (substitui shared/line-chart-sample, removido). Dashboard real substitui o placeholder de feat-001.4.",
+          "checklist": [
+            "core/statistics-api.ts: StatisticsFilter (bettingHouseId/sportId/leagueId/marketId/tipsterId/from/to, todos opcionais) + BetMetrics/SegmentedBetMetrics/MonthlyBetMetrics/StatisticsDashboard (shape completo confirmado no codigo real) + StatisticsApi.get(filter) via GET /api/v1/statistics, mesmo padrao de filterParams de core/bets-api.ts.",
+            "core/percent.ts: formatPercent(value, locale) via Intl.NumberFormat(locale, {style:'percent', maximumFractionDigits:1}) - roi/winRate sao fracoes 0..1, nao percentual pronto.",
+            "shared/monthly-profit-chart: componente novo (input data: MonthlyBetMetrics[]), le tema via CSS custom properties (mesmo padrao de shared/line-chart-sample), echarts.use() escopado no componente (nao em app.config.ts). shared/line-chart-sample (componente+html+scss+spec) removido - superseded, sem outro consumidor.",
+            "Dashboard (pages/dashboard) real: forkJoin carrega betting-houses+4 catalogos (mesmo padrao de history) pro formulario de filtro; ngOnInit chama StatisticsApi.get({}) sem filtro pra carga inicial.",
+            "Painel de filtros: form (Reactive Forms) com selects bettingHouseId/sportId/leagueId/marketId/tipsterId (mesmo padrao mat-select de history, opcao 'Todos') + from/to (date, id+aria-label) + botao 'Aplicar' (submit explicito, nao client-side).",
+            "Painel de metricas: cards de overall (totalStaked/netProfit em formatBrl, roi/winRate em formatPercent, settledCount), app-monthly-profit-chart alimentado por dashboard().monthly, mat-tab-group (Esporte/Mercado/Casa de Apostas) cada aba com tabela de SegmentedBetMetrics (dimensionName + as 5 metricas).",
+            "Erro de carga (options ou statistics) exibe detail do RFC 7807 (toProblemDetail/loadInto reaproveitados)."
+          ],
+          "validation": "Unit tests (HttpTestingController) cobrindo StatisticsApi.get com/sem filtro, formatPercent, carga inicial do Dashboard e reaplicar filtro disparando nova consulta. Testado nos dois temas e mobile/desktop.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-006.2",
+          "name": "i18n, Playwright, CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-248",
+          "detail": "Fecha a feature e o epic-006 inteiro (raiz) - mesmo padrao das features anteriores.",
+          "checklist": [
+            "Todas as strings novas (filtros, cards, abas de breakdown) traduzidas nos 3 locales, validador de chaves rodado localmente.",
+            "Fluxo Playwright novo (mock via page.route): carregar dashboard com metricas iniciais, aplicar filtro (ex.: casa de apostas) e ver nova consulta disparada, trocar de aba de breakdown.",
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh (ng build + ng test com cobertura 80% + Playwright) verde.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done - conferir explicitamente new_duplicated_lines_density do SonarCloud e os achados de acessibilidade ja recorrentes (Web:InputWithoutLabelCheck/S6819) antes do push.",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence; ../../feature_list.json (raiz) marca epic-006 done (esta e a ultima feature do epic).",
+          "owner": "agente"
+        }
+      ],
       "evidence": ""
     },
     {

@@ -15,8 +15,25 @@
   "dashboard": {
     "filtersTitle": "Filtros",
     "metricsTitle": "Métricas",
-    "itemPlaceholder": "Elemento {{n}}",
-    "metricsPlaceholder": "Marcador del panel central — mecanismo de diseño probado en esta subtarea, el dashboard real es feat-006."
+    "bettingHouseLabel": "Casa de apuestas",
+    "sportLabel": "Deporte",
+    "leagueLabel": "Liga",
+    "marketLabel": "Mercado",
+    "tipsterLabel": "Tipster",
+    "fromLabel": "Desde",
+    "toLabel": "Hasta",
+    "filterAll": "Todas",
+    "applyFilter": "Aplicar filtro",
+    "nameLabel": "Nombre",
+    "totalStakedLabel": "Total apostado",
+    "netProfitLabel": "Beneficio neto",
+    "roiLabel": "ROI",
+    "winRateLabel": "Tasa de acierto",
+    "settledCountLabel": "Apuestas liquidadas",
+    "bySportTitle": "Por deporte",
+    "byMarketTitle": "Por mercado",
+    "byBettingHouseTitle": "Por casa de apuestas",
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
   },
   "login": {
     "title": "Iniciar sesión",

@@ -1,19 +1,21 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { LineChart } from 'echarts/charts';
-import { GridComponent } from 'echarts/components';
+import { GridComponent, TooltipComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { EChartsCoreOption } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 
+import { formatMonth } from '../../core/date-format';
+import { Language } from '../../core/language';
+import { MonthlyBetMetrics } from '../../core/statistics-api';
 import { Theme } from '../../core/theme';
 
-// Tree-shaken build (only what a line chart with a subtle grid needs, see
-// docs/DESIGN-SYSTEM.md item 6) registered inside this lazy-loaded component rather than
-// app.config.ts, so echarts' ~500kB core only ships to the routes that render a chart.
-echarts.use([LineChart, GridComponent, CanvasRenderer]);
-
-const MOCK_DATA = [820, 932, 901, 934, 1290, 1330, 1320, 1450, 1400, 1620, 1580, 1710];
+// Tree-shaken build registered inside this lazy-loaded component rather than
+// app.config.ts, so echarts' ~500kB core only ships to the dashboard route
+// (see docs/DESIGN-SYSTEM.md item 6, same scoping already used by the
+// feat-001.6 proof-of-concept this component supersedes).
+echarts.use([LineChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
 function readCssColor(name: string): string {
   if (typeof getComputedStyle === 'undefined') {
@@ -30,12 +32,20 @@ function withAlpha(hexColor: string, alpha: number): string {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-function buildLineChartOption(brandColor: string, borderColor: string): EChartsCoreOption {
+function buildChartOption(
+  months: MonthlyBetMetrics[],
+  locale: string,
+  brandColor: string,
+  borderColor: string,
+): EChartsCoreOption {
+  const labels = months.map((entry) => formatMonth(entry.year, entry.month, locale));
+  const netProfit = months.map((entry) => entry.metrics.netProfit);
   return {
-    grid: { top: 16, right: 16, bottom: 24, left: 40 },
+    grid: { top: 16, right: 16, bottom: 24, left: 48 },
+    tooltip: { trigger: 'axis' },
     xAxis: {
       type: 'category',
-      data: MOCK_DATA.map((_, i) => `${i + 1}`),
+      data: labels,
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: { color: borderColor },
@@ -49,8 +59,9 @@ function buildLineChartOption(brandColor: string, borderColor: string): EChartsC
     series: [
       {
         type: 'line',
-        data: MOCK_DATA,
-        symbol: 'none',
+        data: netProfit,
+        symbol: 'circle',
+        symbolSize: 6,
         smooth: true,
         lineStyle: { color: brandColor, width: 2 },
         areaStyle: {
@@ -66,31 +77,32 @@ function buildLineChartOption(brandColor: string, borderColor: string): EChartsC
             ],
           },
         },
-        markPoint: {
-          symbol: 'circle',
-          symbolSize: 8,
-          label: { show: false },
-          itemStyle: { color: brandColor },
-          data: [{ coord: [MOCK_DATA.length - 1, MOCK_DATA[MOCK_DATA.length - 1]] }],
-        },
       },
     ],
   };
 }
 
-/** Proves the ngx-echarts integration (docs/DESIGN-SYSTEM.md item 6) - real dashboard charts are feat-006. */
+/** Real dashboard chart (feat-006) - monthly net profit trend from StatisticsDashboard.monthly. */
 @Component({
   imports: [NgxEchartsDirective],
   providers: [provideEchartsCore({ echarts })],
-  selector: 'app-line-chart-sample',
-  templateUrl: './line-chart-sample.html',
-  styleUrl: './line-chart-sample.scss',
+  selector: 'app-monthly-profit-chart',
+  templateUrl: './monthly-profit-chart.html',
+  styleUrl: './monthly-profit-chart.scss',
 })
-export class LineChartSample {
+export class MonthlyProfitChart {
   private readonly theme = inject(Theme);
+  private readonly language = inject(Language);
+
+  readonly data = input<MonthlyBetMetrics[]>([]);
 
   protected readonly chartOptions = computed<EChartsCoreOption>(() => {
     this.theme.current();
-    return buildLineChartOption(readCssColor('--color-brand'), readCssColor('--color-border'));
+    return buildChartOption(
+      this.data(),
+      this.language.current(),
+      readCssColor('--color-brand'),
+      readCssColor('--color-border'),
+    );
   });
 }
