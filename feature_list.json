@@ -685,7 +685,7 @@
         {
           "id": "feat-011.4",
           "name": "Polish visual - usuarios + catalogos",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-259",
           "detail": "Estende o tratamento visual de 011.1 pra gestao de usuarios do tenant (RF02) e catalogos (esportes/ligas/mercados/tipsters).",
           "checklist": [
