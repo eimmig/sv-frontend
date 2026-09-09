@@ -224,7 +224,7 @@
         {
           "id": "feat-007.1",
           "name": "sonar.qualitygate.wait + validate-sonar-issues.py",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-221",
           "detail": "Porta o padrao exato de services/telegram-integration/.github/workflows/ci.yml (mesmo mecanismo, sonarqube-scan-action) e .github/scripts/validate-sonar-issues.py, so trocando o projectKey pra eimmig_sv-frontend.",
           "checklist": [
