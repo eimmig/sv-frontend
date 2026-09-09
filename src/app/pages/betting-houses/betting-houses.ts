@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 
 @Component({
   imports: [],
-  selector: 'app-casas-de-apostas',
-  styleUrl: './casas-de-apostas.scss',
-  templateUrl: './casas-de-apostas.html',
+  selector: 'app-betting-houses',
+  styleUrl: './betting-houses.scss',
+  templateUrl: './betting-houses.html',
 })
-export class CasasDeApostas {}
+export class BettingHouses {}
