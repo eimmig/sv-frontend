@@ -59,7 +59,7 @@
         {
           "id": "feat-001.4",
           "name": "app-panel-layout + app-panel (layout em paineis)",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-213",
           "detail": "Ver docs/DESIGN-SYSTEM.md 'Layout em paineis' - grid multi-coluna, rolagem independente por painel, colapso desktop/tablet/mobile.",
           "checklist": [
