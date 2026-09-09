@@ -101,7 +101,7 @@
         {
           "id": "feat-001.7",
           "name": "Playwright + gate de cobertura 80%",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-217",
           "detail": "Ver docs/TESTING.md - unitarios de componente + Playwright pros fluxos criticos (ainda nao existem fluxos reais nesta subtask, so a infraestrutura de teste).",
           "checklist": [
