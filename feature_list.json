@@ -356,7 +356,7 @@
         {
           "id": "feat-004.1",
           "name": "BetsApi + formulario real (Idempotency-Key, dropdowns, regras de Shneiderman)",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-241",
           "detail": "core/bets-api.ts (create() com header Idempotency-Key). pages/register-bet real: carrega betting-houses (feat-003) + 4 catalogos (feat-008) via forkJoin, formulario com dropdowns, validacao inline, banner de sucesso, botao Limpar.",
           "checklist": [

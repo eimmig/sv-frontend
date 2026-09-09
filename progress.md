@@ -3,8 +3,34 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Estado:** `feat-001`, `feat-002`, `feat-003`, `feat-007` e `feat-008` `done`. Próxima é
-`feat-004` (RF04 UI — registro manual de apostas).
+**Estado:** `feat-001`, `feat-002`, `feat-003`, `feat-007` e `feat-008` `done`. `feat-004`
+(RF04 UI) `in-progress` — `feat-004.1` `done`, resta `feat-004.2`.
+
+## `feat-004.1` fechada — formulário de registro manual de apostas (2026-09-09)
+
+Primeiro formulário do app com regras de UX explícitas do TCC1 (oito regras de ouro de
+Shneiderman, `docs/services/web.md`) — mapeamento regra-a-regra registrado no `plan_review` desta
+feature. `core/bets-api.ts`: `POST /api/v1/bets` com header `Idempotency-Key` gerado
+client-side (`crypto.randomUUID()`, regenerado a cada reset/sucesso) — protege contra duplo-envio
+em retry de rede ou duplo-clique. Formulário real (`app-panel-layout` 3 colunas: Evento/
+Detalhes/Valores) carrega `betting-houses` (`feat-003`) + os 4 catálogos (`feat-008`) via
+`forkJoin` num único `loadInto` — dropdowns em vez de UUIDs digitados, reduzindo a chance de FK
+inválida a quase zero. `betDate` default "agora" (regra 2 — atalho pro caso mais comum).
+
+**Achado real pego pelo próprio teste unitário antes do commit**: o banner de sucesso após criar
+a aposta aparecia e sumia na mesma tick — `submit()` chamava `successMessage.set(...)` e depois
+`reset()`, mas `reset()` por sua vez zera `successMessage` no fim (limpeza de estado ao limpar o
+formulário) — corrigido invertendo a ordem (`reset()` primeiro, `successMessage.set(...)` depois).
+Sem esse teste (`toBe('Aposta registrada com sucesso.')` em vez de só verificar que o form
+resetou), o bug passaria despercebido silenciosamente.
+
+73 testes (31 arquivos) passando, cobertura 90.56%/89.04%/85.45%/93.86%. Verificado no navegador
+(`ng serve` + screenshots Playwright ad-hoc, descartados): formulário nos dois temas e mobile/
+desktop, painéis colapsando corretamente, botão "Registrar aposta" desabilitado até os campos
+obrigatórios serem preenchidos.
+
+Delivery Reviewer (passe próprio, sem subagentes): PASS. PR real (`subtask/SV-241` ->
+`feature/SV-240`, PR #25), CI verde antes do merge.
 
 ## `feat-008.2` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
 
