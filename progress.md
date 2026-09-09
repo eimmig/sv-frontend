@@ -3,7 +3,9 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Feature ativa:** `feat-001` (`feat-001.1`..`.8` done, `feat-001.9` restante)
+**Feature ativa:** `feat-001` (todas as 9 subtasks `done`; feature em si ainda não marcada `done`
+— fica pra uma edição separada, ver "Regras de trabalho" do `CLAUDE.md` raiz sobre não pular o
+estado `Review`)
 
 ## Status
 
@@ -21,15 +23,16 @@
 - [x] `feat-001.7` (Playwright + gate de cobertura 80%) — `done` em 2026-09-09.
 - [x] `feat-001.8` (Impeccable + taste-skill + huashu-design + DESIGN.md pré-escrito) — `done` em
       2026-09-09.
+- [x] `feat-001.9` (CHANGELOG, Test Suite Auditor e verificação final) — `done` em 2026-09-09.
 
 ### Em andamento
 
-- `feat-001` — próxima subtask: `feat-001.9` (CHANGELOG, Test Suite Auditor e verificação
-  final — fecha a feature).
+- Nenhuma subtask em andamento. `feat-001` (a feature) marcada `done` numa edição separada deste
+  `feature_list.json` + `--sync-status` próprio, depois desta.
 
 ### Próximos passos (Next Steps)
 
-1. `feat-001.9` (ver `feature_list.json` deste app) — última subtask de `feat-001`.
+1. Marcar `feat-001` `done` (edição separada) — libera `feat-002` (RF01/RF02 UI).
 
 ## Bloqueios / Riscos
 
@@ -348,6 +351,45 @@ corrigidas antes do commit (marcadas como lacuna em aberto / removida a compara�
 evidência).
 
 `./init.sh` verde (nenhuma mudança de código de app, 27 testes inalterados). 1 subtask (SV-218).
+
+## `feat-001.9` fechada — CHANGELOG, Test Suite Auditor e verificação final (2026-09-09)
+
+`./init.sh` deste app e da raiz rodados — app verde (27 testes, 97.87% stmts, gate real de 80%
+enforced); raiz com falha pré-existente em `auth-service`/`bets-service`/`stats-service`/
+`telegram-integration` (mesmo estado observado no início desta sessão, não relacionado a
+`apps/web` — fora de escopo corrigir aqui, ver "Escopo restrito" do `CLAUDE.md` raiz).
+
+**Test Suite Auditor** rodado sobre a suíte completa (15 arquivos/27 testes vitest + 2
+arquivos/3 testes Playwright) — veredito **PASS**, sem achado bloqueante. Achados não
+bloqueantes: `LineChartSample` sem regressão automatizada pro conteúdo visual real do gráfico
+(só prova que não lança erro — a correção visual foi verificada manualmente via screenshot,
+registrar como `ADD` futuro quando `feat-006` existir); stub de `ResizeObserver` em 2 specs sem
+`afterEach` de limpeza (inofensivo hoje); specs das 4 rotas placeholder são boilerplate puro do
+`ng generate` (esperado, serão substituídos por `feat-002`+).
+
+**Verificação visual final** (RNF01 + `docs/DESIGN-SYSTEM.md`): 4 combinações reais via
+Playwright (`page.screenshot`) — desktop claro, desktop escuro (via `prefers-color-scheme`, não
+só o toggle explícito — primeira vez que o fallback de sistema foi provado visualmente, não só
+por teste unitário), mobile claro, mobile escuro. Todas confirmam: colapso responsivo pra coluna
+única em mobile, painel "Filtros" com 30 itens corretamente limitado à própria altura com scroll
+interno (o bug de `feat-001.4`/fix de `feat-001.7` seguindo correto em mobile também), gráfico
+renderizando com as cores certas nos dois temas.
+
+**Vault revisado** (item fixo desta subtask) — 3 achados reais desta feature sem nota
+correspondente, corrigidos no repositório raiz (`sv-harness`, commit separado por ser outro
+repositório Git):
+- `docs/CONVENTIONS.md`: gotcha de `:host` sem `display: block` quebrando cadeia de
+  dimensionamento (achado de `feat-001.4`/`.7`) — mecanismo reaproveitável pra todo componente
+  Angular novo que participa de layout.
+- `docs/CONVENTIONS.md`: padrão de escopar biblioteca pesada (`ngx-echarts`) nos `providers` do
+  componente em vez de `app.config.ts`, pra manter fora do bundle principal — reaproveitável
+  pelos gráficos futuros de `feat-006`.
+- `docs/TESTING.md`: convenção de locator do Playwright (`data-testid`, nunca cópia
+  traduzida/classe de estilo) + correção da flag de cobertura stale (`--code-coverage` do Karma,
+  já não existe mais).
+
+Nenhuma divergência do TCC 1 encontrada nesta feature — não gerou entrada em
+`docs/DECISIONS-LOG.md`.
 
 ## Evidência de conclusão
 

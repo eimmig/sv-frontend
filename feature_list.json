@@ -129,7 +129,7 @@
         {
           "id": "feat-001.9",
           "name": "CHANGELOG, Test Suite Auditor e verificacao final",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-219",
           "detail": "Fecha a feature - Test Suite Auditor roda uma vez sobre a suite completa das 8 subtasks anteriores.",
           "checklist": [
