@@ -25,5 +25,17 @@
     "passwordLabel": "Senha",
     "submit": "Entrar",
     "genericError": "Não foi possível entrar. Tente novamente."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "bettingHouses": "Casas de apostas",
+    "newBet": "Registrar aposta",
+    "history": "Histórico",
+    "users": "Usuários",
+    "logout": "Sair"
+  },
+  "mustChangePassword": {
+    "message": "Você está usando uma senha temporária. Troque-a assim que possível.",
+    "dismiss": "Entendi"
   }
 }

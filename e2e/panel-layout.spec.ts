@@ -10,6 +10,20 @@ import { expect, test } from '@playwright/test';
 test.describe('dashboard panel layout (RNF01, docs/DESIGN-SYSTEM.md "Layout em painéis")', () => {
   test('the page does not scroll - each panel scrolls independently instead', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
+    // /dashboard is authGuard-protected since feat-002.2 - seed a session before navigating
+    // instead of going through the real login form, which is out of scope for this test.
+    await page.addInitScript(() => {
+      localStorage.setItem(
+        'stakevault.auth',
+        JSON.stringify({
+          token: 'v4.local.test',
+          userId: 'test-user',
+          role: 'MEMBER',
+          tenantSlug: 'acme',
+          mustChangePassword: false,
+        }),
+      );
+    });
     await page.goto('/dashboard');
 
     const pageScrollHeight = await page.evaluate(() => document.documentElement.scrollHeight);

@@ -1,0 +1,24 @@
+<nav class="app-nav" data-testid="app-nav">
+  <span class="app-nav__brand">StakeVault</span>
+  <a routerLink="/dashboard" routerLinkActive="app-nav__link--active" class="app-nav__link">{{
+    'nav.dashboard' | transloco
+  }}</a>
+  <a routerLink="/casas-de-apostas" routerLinkActive="app-nav__link--active" class="app-nav__link">{{
+    'nav.bettingHouses' | transloco
+  }}</a>
+  <a routerLink="/registro-de-aposta" routerLinkActive="app-nav__link--active" class="app-nav__link">{{
+    'nav.newBet' | transloco
+  }}</a>
+  <a routerLink="/historico" routerLinkActive="app-nav__link--active" class="app-nav__link">{{
+    'nav.history' | transloco
+  }}</a>
+  @if (auth.isAdmin()) {
+    <a routerLink="/usuarios" routerLinkActive="app-nav__link--active" class="app-nav__link" data-testid="nav-users">{{
+      'nav.users' | transloco
+    }}</a>
+  }
+  <span class="app-nav__spacer"></span>
+  <button mat-stroked-button type="button" data-testid="nav-logout" (click)="logout()">
+    {{ 'nav.logout' | transloco }}
+  </button>
+</nav>

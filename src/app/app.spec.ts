@@ -1,3 +1,5 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
@@ -7,6 +9,7 @@ import { App } from './app';
 
 describe('App', () => {
   beforeEach(async () => {
+    localStorage.removeItem('stakevault.auth');
     vi.useFakeTimers();
     Object.defineProperty(navigator, 'matchMedia', {
       value: () => ({ matches: false }),
@@ -31,7 +34,7 @@ describe('App', () => {
           translocoConfig: { availableLangs: ['pt-BR'], defaultLang: 'pt-BR' },
         }),
       ],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
   });
 
@@ -44,6 +47,17 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
+  });
+
+  it('does not render the nav or must-change-password banner when unauthenticated', () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    vi.runAllTimers();
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+
+    expect(el.querySelector('app-nav')).toBeNull();
+    expect(el.querySelector('app-must-change-password-banner')).toBeNull();
   });
 
   it('shows the splash first and dismisses it once the intro finishes', () => {

@@ -25,5 +25,17 @@
     "passwordLabel": "Password",
     "submit": "Sign in",
     "genericError": "Could not sign in. Please try again."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "bettingHouses": "Betting houses",
+    "newBet": "Register bet",
+    "history": "History",
+    "users": "Users",
+    "logout": "Log out"
+  },
+  "mustChangePassword": {
+    "message": "You are using a temporary password. Change it as soon as possible.",
+    "dismiss": "Got it"
   }
 }
