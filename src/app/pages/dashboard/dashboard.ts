@@ -107,7 +107,13 @@ export class Dashboard implements OnInit {
 
   /** Money/ROI values are colored consistently with the won/lost badge (docs/DESIGN-SYSTEM.md). */
   protected sign(value: number): 'positive' | 'negative' | 'neutral' {
-    return value > 0 ? 'positive' : value < 0 ? 'negative' : 'neutral';
+    if (value > 0) {
+      return 'positive';
+    }
+    if (value < 0) {
+      return 'negative';
+    }
+    return 'neutral';
   }
 
   protected applyFilter(): void {
