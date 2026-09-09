@@ -30,19 +30,22 @@ jobs:
 
       # 2. Chaves de traducao - ver docs/CONVENTIONS.md secao "Internacionalizacao (i18n)"
       - name: Validar chaves de traducao (pt-BR/en-US/es)
-        # Guarda propria (src/assets/i18n/pt-BR.json), independente do package-lock.json que
+        # Guarda propria (public/i18n/pt-BR.json), independente do package-lock.json que
         # guarda os passos 3-5: feat-001 deste app foi dividida em subtasks incrementais e
         # package-lock.json nasce (feat-001.1, ng new) bem antes dos arquivos de locale
         # (feat-001.3, transloco) - guardar so por package-lock.json quebraria a PR de toda
         # subtask intermediaria por sequenciamento, nao por defeito real. Achado real (SV-210):
         # mesma armadilha ja documentada em docs/CI-CD.md ("Gotcha encontrado em sv-auth-backend")
         # e corrigida proativamente nos 4 repositorios Java, nunca portada pra este ate agora.
-        if: hashFiles('src/assets/i18n/pt-BR.json') != ''
+        # Achado real (SV-212): o caminho original era src/assets/i18n/ (convencao pre-Angular
+        # 22) - o "ng new" real deste app (feat-001.1) usa a pasta public/ pra assets servidos
+        # como estao, nao src/assets/ - corrigido pra public/i18n/ (ver docs/CONVENTIONS.md).
+        if: hashFiles('public/i18n/pt-BR.json') != ''
         run: |
           python3 .github/scripts/validate-i18n-keys.py --format json \
-            --file pt-BR=src/assets/i18n/pt-BR.json \
-            --file en-US=src/assets/i18n/en-US.json \
-            --file es=src/assets/i18n/es.json
+            --file pt-BR=public/i18n/pt-BR.json \
+            --file en-US=public/i18n/en-US.json \
+            --file es=public/i18n/es.json
 
       - uses: actions/setup-node@v4
         # Guarda por arquivo-marcador: enquanto o projeto nao existe (repositorio so com
