@@ -655,7 +655,7 @@
         {
           "id": "feat-011.2",
           "name": "Polish visual - dashboard + casas de apostas",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-257",
           "detail": "Estende o tratamento visual de 011.1 (elevacao/acento de marca/tipografia) pras telas de dashboard (RF10/RF11) e casas de apostas (RF03), mantendo os tokens ja normativos.",
           "checklist": [
