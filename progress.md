@@ -3,9 +3,9 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Feature ativa:** `feat-001` (todas as 9 subtasks `done`; feature em si ainda não marcada `done`
-— fica pra uma edição separada, ver "Regras de trabalho" do `CLAUDE.md` raiz sobre não pular o
-estado `Review`)
+**Feature ativa:** `feat-001` — `done` (todas as 9 subtasks + a feature em si), PR
+`feature/SV-209` → `develop` aberto, achado real de CI corrigido (ver abaixo) antes do merge
+final.
 
 ## Status
 
@@ -390,6 +390,23 @@ repositório Git):
 
 Nenhuma divergência do TCC 1 encontrada nesta feature — não gerou entrada em
 `docs/DECISIONS-LOG.md`.
+
+## Achado real de CI — gate SonarCloud (2026-09-09, PR `feature/SV-209` → `develop`)
+
+**Primeira vez que o gate completo (SonarCloud incluído) roda de verdade neste repositório** —
+todo PR de subtask pula Sonar de propósito (`docs/CI-CD.md`). No PR story→develop, o scanner do
+SonarCloud rodou com sucesso ("ANALYSIS SUCCESSFUL") mas o **quality gate falhou** — log mostrou
+`No LCOV files were found using coverage/lcov.info`, ou seja, cobertura zerada pro SonarCloud
+mesmo com 97.87% real no `vitest`.
+
+Causa raiz, duas partes: (1) `angular.json` nunca configurou `coverageReporters` — o builder
+`@angular/build:unit-test` sem essa opção gera só relatório `html`/console, nunca `lcov.info`;
+(2) mesmo gerando, o builder grava em `coverage/<nome-do-projeto>/` (`coverage/web/lcov.info`
+neste caso), não `coverage/lcov.info` como `sonar-project.properties` assumia (caminho copiado
+de um template genérico, nunca confirmado contra o output real). Corrigido: `angular.json` ganhou
+`"coverageReporters": ["text", "html", "lcovonly"]`; `sonar-project.properties` corrigido pra
+`coverage/web/lcov.info`. Confirmado localmente que o arquivo passa a existir de verdade
+(`find coverage -iname lcov.info` → `coverage/web/lcov.info`) antes de re-empurrar o fix.
 
 ## Evidência de conclusão
 

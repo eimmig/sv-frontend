@@ -77,6 +77,7 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "coverage": true,
+            "coverageReporters": ["text", "html", "lcovonly"],
             "coverageThresholds": {
               "statements": 80,
               "branches": 80,
