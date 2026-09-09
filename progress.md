@@ -3,10 +3,11 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Estado:** `feat-001`, `feat-002`, `feat-003`, `feat-004`, `feat-005`, `feat-007` e `feat-008`
-`done`. Próxima é `feat-006` (RF10/RF11 UI — dashboards). `feat-009` (RF12) e `feat-010` (RF13)
-registradas no backlog, `not-started` — gap real encontrado planejando `feat-005`, decisão do
-usuário (`AskUserQuestion`): ficam fora do escopo de `feat-005`/`feat-006`.
+**Estado:** `feat-001` a `feat-009` `done` (`epic-006` da raiz fechado em `feat-006`). Próxima
+elegível: `feat-010` (RF13, movimentações financeiras) — `feat-011` (polish visual sistema todo,
+pedido do usuário) também elegível, backlog registrado, `plan_review` ainda vazio. Todas as
+branches já mergeadas em `develop` (feature/subtask) foram apagadas local e remotamente
+(`feature/SV-209` até `feature/SV-249` + subtasks correspondentes).
 
 ## `feat-005.2` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
 
@@ -905,3 +906,33 @@ páginas trocaram `calc(100vh - 64px)` por `height: 100%`. Detalhe completo em
 
 2 subtasks (`feat-006.1` implementação, `feat-006.2` i18n/Playwright/fechamento), mesmo padrão
 das features anteriores. `epic-006` (raiz) fecha nesta feature - era a última.
+
+## `feat-009` fechada — RF12 (UI) - atualizar status da aposta (2026-09-09)
+
+`feat-009.1`: `BetsApi.updateStatus` (PATCH `/api/v1/bets/{id}/status`) + 3 botões (Ganha/Perdida/
+Devolvida) em linhas `pending` da aba Apostas do histórico; sucesso substitui a linha localmente
+(sem reload da lista, mantém página/scroll), erro RFC 7807 exibido via `toProblemDetail`. `RN06`
+(transição só `pending`→`won|lost|void`, definitiva) já é imposta pelo backend
+(`bets-service`/`BetService.updateStatus`) — frontend só reflete o resultado.
+
+`feat-009.2`: fluxo Playwright novo (`e2e/history.spec.ts`, describe "RF12 - update bet status"):
+marcar aposta pendente como ganha atualiza a linha sem reload; uma aposta já liquidada (mock com
+2 linhas, uma `pending` e uma `lost`) nunca mostra os botões de ação; erro 422 exibe o detail do
+backend sem quebrar a tabela.
+
+**Achado real de teste (self-review no padrão Delivery Reviewer/Test Suite Auditor, sem
+subagentes — diff pequeno e escopado)**: a primeira versão do mock da rota de lista
+(`page.route('**/api/v1/bets*', ...)`) tinha uma checagem `if (method !== 'GET') return
+route.fallback()` pra evitar que ela interceptasse o PATCH de status — checagem morta, nunca
+disparava, porque um `*` simples do glob do Playwright não cruza `/`: `'**/api/v1/bets*'` não
+casa `'/api/v1/bets/1/status'` (a rota específica registrada no teste já intercepta sozinha, sem
+overlap). Removida a checagem, documentado o gotcha em `docs/TESTING.md` seção "Frontend
+(apps/web)" (raiz), pra não reincidir em mocks futuros de sub-rota.
+
+`./init.sh` verde (35 arquivos, 95 testes, 85.36% stmts). Playwright completo verde (22/22).
+Testado nos dois temas/mobile+desktop já em `feat-009.1` (UI introduzida ali; `feat-009.2` não
+acrescentou UI nova). PR #36 (`subtask/SV-250`→`feature/SV-249`), #37 (`subtask/SV-251`→
+`feature/SV-249`) e #38 (`feature/SV-249`→`develop`, gate completo com SonarCloud) — todos verdes,
+mergeados. Branches apagadas local e remotamente após merge (feature + as 2 subtasks), assim como
+todo o lote de branches antigas já mergeadas que ainda não tinham sido limpas
+(`feature/SV-209`..`SV-246` + subtasks correspondentes, 26 branches no total).
