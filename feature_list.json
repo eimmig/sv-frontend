@@ -628,12 +628,94 @@
         "feat-005",
         "feat-006",
         "feat-008",
-        "feat-009"
+        "feat-009",
+        "feat-010"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (escopo grande mas cada subtask e um passo isolado/testavel, mesmo padrao de risco baixo-medio de feat-001). Veredito: READY com 1 ressalva registrada (nao MAJOR, decisao de sequenciamento): 'moderno e bonito' e subjetivo e esta feature nao tem mockup de referencia como as anteriores (StakeVault/Uphold) - decisao tomada aqui (nao pendente do usuario, mas o primeiro incremento fica deliberadamente pequeno e concreto pra nao gastar esforco grande numa direcao nao validada): comecar pelos 2 bugs reais reportados (contraste do seletor de idioma, visual do toggle de tema) + tela de login (a unica explicitamente citada pelo usuario), entregar como feat-011.1 sozinha, e so entao estender o mesmo tratamento pras demais telas nas subtasks seguintes - cada subtask sobe uma PR real (visivel, revisavel), entao a direcao fica exposta cedo em vez de so no fechamento da feature inteira. Achado real de codigo (nao so leitura do vault): a causa raiz do bug de contraste e concreta - app/core/language-selector/language-selector.scss e app/core/theme-toggle/theme-toggle.scss estao vazios (0 bytes) desde sempre, os dois componentes nunca ganharam estilo proprio, so o mat-select/mat-stroked-button padrao do Angular Material sem nenhum token de tema StakeVault aplicado - nao e um bug de override quebrado, e ausencia total de CSS. app-panel (shared/panel/panel.scss) ja tem --panel-shadow + border-radius:16px aplicados (base solida pra elevacao), mas login.html usa um unico app-panel centralizado num fundo liso, sem nenhum acento visual (sem logo, sem gradiente, sem uso da marca) - e exatamente a leitura 'simples' do usuario. Escopo por subtask: 011.1 painel/topbar globais (language-selector + theme-toggle com estilo real usando os tokens de tema, incluindo dark mode) + tela de login elevada (logo StakeVault, fundo com acento de marca, polish tipografico) - sem novo padrao de token, so aplicar o que ja existe em docs/DESIGN-SYSTEM.md com mais consistencia; se precisar de um padrao novo (gradiente/glass), registrar em docs/DESIGN-SYSTEM.md no mesmo commit. 011.2 dashboard + casas de apostas. 011.3 registro de aposta + historico (apostas/movimentacoes). 011.4 usuarios + catalogos. 011.5 CHANGELOG, auditoria visual final (Impeccable/taste-skill contra as 4 rodadas anteriores, procurando inconsistencia entre telas) e verificacao/fechamento. Impeccable/taste-skill/huashu-design (ja instalados desde feat-001.8) entram em cada subtask de tela (huashu-design pra prototipar a direcao antes de codar aquela tela especifica, Impeccable/taste-skill pra auditar depois) - nao so no fechamento. Persistence Auditor nao se aplica.",
+      "jira": "SV-255",
+      "subtasks": [
+        {
+          "id": "feat-011.1",
+          "name": "Language selector + theme toggle com estilo real (fix de contraste) + tela de login elevada",
+          "status": "in-progress",
+          "jira": "SV-256",
+          "detail": "Corrige a causa raiz do bug de contraste (scss vazio dos dois componentes de topbar) com estilo real usando os tokens de tema StakeVault, e eleva o visual da tela de login (logo, acento de marca, tipografia) - os 3 itens que o usuario reportou concretamente.",
+          "checklist": [
+            "language-selector.scss: estilo real do mat-select (largura, padding, borda sutil, cor de texto/fundo via --color-* tokens) que funciona nos dois temas - testar especificamente o tema escuro (bug original: fundo branco + fonte branca).",
+            "theme-toggle.scss + possivel troca de mat-stroked-button texto por um icon-button (sol/lua) mais compacto e alinhado a identidade StakeVault - decidir forma final via huashu-design antes de codar.",
+            "app-shell__toolbar (app.scss) ganha tratamento visual (fundo/borda sutil) pra se distinguir da pagina, nao só os dois controles soltos no canto.",
+            "login.html/scss: logo StakeVault (logo-mark-{dark,light}.svg conforme tema) acima do card, fundo com leve acento de marca (gradiente sutil ou textura, dentro da paleta ja normativa), polish de espacamento/tipografia do formulario.",
+            "huashu-design pra prototipar a direcao antes de codar; Impeccable/taste-skill (npx impeccable detect + audit) rodado contra /login real depois de implementado.",
+            "Testes: unit tests existentes de login/language-selector/theme-toggle continuam passando (nenhum comportamento muda, so visual) - Playwright de login (feat-002) continua verde."
+          ],
+          "validation": "init.sh verde, Playwright de auth verde, screenshot manual confirmando contraste correto do seletor de idioma no tema escuro.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-011.2",
+          "name": "Polish visual - dashboard + casas de apostas",
+          "status": "not-started",
+          "jira": "SV-257",
+          "detail": "Estende o tratamento visual de 011.1 (elevacao/acento de marca/tipografia) pras telas de dashboard (RF10/RF11) e casas de apostas (RF03), mantendo os tokens ja normativos.",
+          "checklist": [
+            "huashu-design prototipa a direcao pra cada tela antes de codar.",
+            "Dashboard: polish dos cards de KPI, grafico e paineis de breakdown.",
+            "Casas de apostas: polish do painel de formulario + lista.",
+            "Impeccable/taste-skill audit contra as duas telas depois de implementado, comparando com 011.1 pra consistencia."
+          ],
+          "validation": "init.sh verde, Playwright de dashboard/betting-houses verde, sem regressao visual nos dois temas.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-011.3",
+          "name": "Polish visual - registro de aposta + historico (apostas/movimentacoes)",
+          "status": "not-started",
+          "jira": "SV-258",
+          "detail": "Estende o tratamento visual de 011.1 pra tela de registro de aposta (RF04) e historico (RF08/RF12/RF13, as duas abas).",
+          "checklist": [
+            "huashu-design prototipa a direcao antes de codar.",
+            "Registro de aposta: polish dos 3 paineis (evento/detalhes/valores).",
+            "Historico: polish das duas abas (apostas com acoes de status, movimentacoes com o form novo de feat-010).",
+            "Impeccable/taste-skill audit depois de implementado."
+          ],
+          "validation": "init.sh verde, Playwright de register-bet/history verde.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-011.4",
+          "name": "Polish visual - usuarios + catalogos",
+          "status": "not-started",
+          "jira": "SV-259",
+          "detail": "Estende o tratamento visual de 011.1 pra gestao de usuarios do tenant (RF02) e catalogos (esportes/ligas/mercados/tipsters).",
+          "checklist": [
+            "huashu-design prototipa a direcao antes de codar.",
+            "Usuarios: polish do painel de lista + criacao.",
+            "Catalogos: polish do CatalogManager reaproveitavel (4 abas).",
+            "Impeccable/taste-skill audit depois de implementado."
+          ],
+          "validation": "init.sh verde, Playwright de users/catalogs verde.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-011.5",
+          "name": "Auditoria visual final, CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-260",
+          "detail": "Fecha a feature - auditoria de consistencia entre as 4 rodadas anteriores, nao so validacao isolada por tela.",
+          "checklist": [
+            "Impeccable/taste-skill audit final percorrendo todas as telas tocadas, procurando inconsistencia entre 011.1..011.4 (nao so cada tela isolada).",
+            "Todas as strings novas (se houver) traduzidas nos 3 locales.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh e Playwright completo verdes.",
+            "Delivery Reviewer e Test Suite Auditor rodados sobre a feature inteira.",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas, em todas as telas tocadas.",
+            "Vault (docs/) revisado: algum padrao visual novo desta feature (elevacao/gradiente/glass/hover) sem nota correspondente em docs/DESIGN-SYSTEM.md? Se sim, atualizar/criar a nota do assunto no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence.",
+          "owner": "agente"
+        }
+      ],
       "evidence": ""
     }
   ]
