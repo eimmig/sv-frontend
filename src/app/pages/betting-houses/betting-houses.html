@@ -59,7 +59,17 @@
             <tr data-testid="betting-houses-row">
               <td>{{ house.name }}</td>
               <td>{{ formatBrl(house.initialBalance) }}</td>
-              <td>{{ formatBrl(house.balance) }}</td>
+              <td>
+                {{ formatBrl(house.balance) }}
+                <span
+                  class="badge"
+                  [class.badge--positive]="delta(house) > 0"
+                  [class.badge--negative]="delta(house) < 0"
+                  [class.badge--neutral]="delta(house) === 0"
+                  data-testid="betting-houses-delta"
+                  >{{ formatDelta(delta(house)) }}</span
+                >
+              </td>
             </tr>
           }
         </tbody>
