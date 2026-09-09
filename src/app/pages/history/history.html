@@ -79,7 +79,11 @@
                   <td>{{ nameOf(options().sports, bet.sportId) }}</td>
                   <td>{{ formatBrl(bet.stake) }}</td>
                   <td>{{ bet.odd }}</td>
-                  <td>{{ 'history.status.' + bet.status | transloco }}</td>
+                  <td>
+                    <span class="badge" [class]="betStatusBadge(bet.status)" data-testid="history-bets-status-badge">{{
+                      'history.status.' + bet.status | transloco
+                    }}</span>
+                  </td>
                   <td>{{ formatDateTime(bet.betDate) }}</td>
                   <td class="history__actions">
                     @if (bet.status === 'pending') {
@@ -255,7 +259,14 @@
                   @for (transaction of transactionsPage().content; track transaction.id) {
                     <tr data-testid="history-transactions-row">
                       <td>{{ nameOf(options().bettingHouses, transaction.bettingHouseId) }}</td>
-                      <td>{{ 'history.type.' + transaction.type | transloco }}</td>
+                      <td>
+                        <span
+                          class="badge"
+                          [class]="transactionTypeBadge(transaction.type)"
+                          data-testid="history-transactions-type-badge"
+                          >{{ 'history.type.' + transaction.type | transloco }}</span
+                        >
+                      </td>
                       <td>{{ formatBrl(transaction.amount) }}</td>
                       <td>{{ formatDateTime(transaction.createdAt) }}</td>
                     </tr>

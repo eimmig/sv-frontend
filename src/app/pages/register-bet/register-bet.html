@@ -160,6 +160,13 @@
           />
         </mat-form-field>
 
+        @if (potentialReturn() > 0) {
+          <p class="register-bet__potential-return" data-testid="register-bet-potential-return">
+            {{ 'registerBet.potentialReturnLabel' | transloco }}
+            <strong>{{ formatBrl(potentialReturn()) }}</strong>
+          </p>
+        }
+
         <mat-form-field appearance="outline">
           <mat-label>{{ 'registerBet.betDateLabel' | transloco }}</mat-label>
           <input

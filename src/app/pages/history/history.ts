@@ -38,6 +38,18 @@ function emptyPage<T>(): PagedResponse<T> {
   return { content: [], page: 0, size: 0, totalElements: 0, totalPages: 0 };
 }
 
+const BET_STATUS_BADGE: Record<Bet['status'], 'positive' | 'negative' | 'neutral'> = {
+  pending: 'neutral',
+  won: 'positive',
+  lost: 'negative',
+  void: 'neutral',
+};
+
+const TRANSACTION_TYPE_BADGE: Record<TransactionType, 'positive' | 'neutral'> = {
+  deposit: 'positive',
+  withdrawal: 'neutral',
+};
+
 @Component({
   imports: [
     ReactiveFormsModule,
@@ -124,6 +136,15 @@ export class History implements OnInit {
 
   protected formatDateTime(value: string): string {
     return formatDateTime(value, this.language.current());
+  }
+
+  /** Tonal badge (docs/DESIGN-SYSTEM.md item 16, "Badge de resultado de aposta"). */
+  protected betStatusBadge(status: Bet['status']): string {
+    return `badge--${BET_STATUS_BADGE[status]}`;
+  }
+
+  protected transactionTypeBadge(type: TransactionType): string {
+    return `badge--${TRANSACTION_TYPE_BADGE[type]}`;
   }
 
   protected applyBetFilter(): void {
