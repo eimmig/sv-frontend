@@ -449,11 +449,46 @@
       "dependencies": [
         "feat-005"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
-      "evidence": ""
+      "status": "done",
+      "evidence": "feat-009.1 (SV-250) e feat-009.2 (SV-251) done em 2026-09-09, ambas com PR mergeado (subtask->story, CI verde). feat-009.1: BetsApi.updateStatus + 3 botoes (won/lost/void) em linhas pendentes da aba Apostas do historico, atualizacao local da linha (sem reload), erro RFC 7807 exibido via toProblemDetail, i18n dos 3 rotulos nos 3 locales, unit tests (HttpTestingController) cobrindo sucesso e erro 422. feat-009.2: fluxo Playwright novo (e2e/history.spec.ts, describe 'RF12 - update bet status') provando as 3 pontas do RN06 na UI - marcar aposta pendente como ganha atualiza a linha sem reload; uma aposta ja liquidada (status!=pending) nunca renderiza os botoes de acao (linha adicionada ao mock so pra essa asserção); erro 422 exibe o detail do backend sem quebrar a tabela. Self-review no padrao Delivery Reviewer + Test Suite Auditor (review-suite:ln-12/codebase-audit-suite:ln-23, sem subagentes - diff pequeno e escopado, 1 arquivo de teste) achou 1 problema real: branch morto no mock (route.fallback() condicionado a metodo != GET que nunca disparava, porque o glob de um so '*' do Playwright nao cruza '/' - '**/api/v1/bets*' nunca chega a casar '/api/v1/bets/1/status') - removido, e o teste fortalecido com a asercao da linha ja liquidada em vez de so a que muda (achado documentado em docs/TESTING.md, nao so corrigido em silencio). ./init.sh verde (35 arquivos, 95 testes, 85.36% stmts). Playwright completo verde (22/22, incluindo os 2 fluxos novos de RF12). Testado nos dois temas/mobile+desktop na propria feat-009.1 (UI introduzida ali, feat-009.2 nao adicionou UI nova, so cobertura de teste). Vault revisado: gotcha real de glob do Playwright documentado em docs/TESTING.md secao 'Frontend (apps/web)' no mesmo commit da correcao (nao ha divergencia do TCC 1, sem entrada em docs/DECISIONS-LOG.md). RN06 (aposta so sai de pending via won/lost/void, metricas so contam apos liquidacao) e responsabilidade do backend (bets-service) - confirmado no plan_review, sem impacto de frontend.",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (risco baixo/medio - primeira acao destrutiva/irreversivel do app, mitigado por precedente direto do padrao loadInto/submitForm ja usado em toda tela deste app). Veredito: READY. Contrato confirmado no codigo real de bets-service (nao so no vault): PATCH /api/v1/bets/{id}/status (BetsController.updateStatus) aceita UpdateBetStatusRequest{status: 'won'|'lost'|'void'} - 'pending' e rejeitado pelo proprio backend (BetService.updateStatus so aceita transicao PENDING->WON|LOST|VOID via betRepository.transitionStatus, qualquer outra combinacao, incluindo uma aposta ja liquidada de novo, lanca InvalidStatusTransitionException, RFC 7807 422 'invalid-status-transition', mensagem ja localizada nos 3 locales de bets-service - RN06). Transicao e definitiva (sem endpoint de 'desfazer' no backlog) - por isso a UI so oferece a acao em linhas com status='pending', nunca em linhas ja liquidadas (nao ha ambiguidade de estado a esconder, o proprio filtro de status na tabela ja deixa claro). Decisao de escopo (documentada aqui, nao pendente de usuario - a description da feature ja aponta a direcao, mesmo racional de feat-008/009 desta sessao: seguir a pista do vault em vez de perguntar quando so ha uma leitura razoavel): a acao vive na propria aba 'Apostas' de history.html (feat-005), nao numa tela nova - cada linha com status pendente ganha 3 botoes (Ganha/Perdida/Devolvida) que disparam o PATCH direto e recarregam a pagina atual da lista (mesmo padrao de reload apos mutacao ja usado em bettingHouses/users/catalogs); sem dialogo de confirmacao (nenhuma tela deste app usa modal ate agora, e o botao ja e uma acao explicita e nomeada - regra 7 de Shneiderman, locus de controle do usuario - e nao um auto-submit); erro (422 se a aposta ja foi liquidada por outra aba/sessao entre o carregamento da lista e o clique) exibe o detail RFC 7807 ja localizado do backend, reaproveitando toProblemDetail. BetsApi (feat-004/005) ganha updateStatus(id,status) via PATCH, retornando o Bet atualizado - a linha na tabela e atualizada localmente com a resposta (sem precisar recarregar a pagina inteira, evita perder a posicao de scroll/pagina). Sem impacto em stats-service nesta feature (BetSettled ja e publicado pelo backend na propria chamada, consumido de forma assincrona - RN06 ja diz respeito ao backend, fora do escopo do frontend). 2 subtasks (implementacao + fechamento), mesmo padrao das features anteriores.",
+      "jira": "SV-249",
+      "subtasks": [
+        {
+          "id": "feat-009.1",
+          "name": "BetsApi.updateStatus + controles de status na aba Apostas do historico",
+          "status": "done",
+          "jira": "SV-250",
+          "detail": "Estende core/bets-api.ts com updateStatus(id,status). pages/history/history.ts/html: linhas com status='pending' ganham 3 botoes (Ganha/Perdida/Devolvida), sucesso atualiza a linha localmente, erro exibe detail RFC 7807.",
+          "checklist": [
+            "core/bets-api.ts: updateStatus(id: string, status: BetStatus): Observable<Bet> via PATCH /api/v1/bets/{id}/status, body {status}.",
+            "History (pages/history): 3 botoes (won/lost/void) visiveis so em linhas com bet.status==='pending' na tabela da aba Apostas, cada um com id+aria-label (padrao de docs/CONVENTIONS.md).",
+            "Sucesso: substitui o Bet daquela linha no array atual (sem recarregar a pagina/lista inteira) - reaproveita a mesma tecnica de atualizacao local ja usada onde aplicavel neste app, ou um loadBets(pagina atual) simples se nao houver precedente direto.",
+            "Erro (422 aposta ja liquidada por outra sessao, ou qualquer outro RFC 7807): exibe detail via toProblemDetail, sem quebrar a tabela.",
+            "i18n: 3 rotulos de acao (history.markWon/markLost/markVoid) nos 3 locales."
+          ],
+          "validation": "Unit tests (HttpTestingController) cobrindo: botoes aparecem so em linhas pendentes, sucesso atualiza a linha, erro exibe detail. Testado nos dois temas e mobile/desktop.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-009.2",
+          "name": "i18n, Playwright, CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-251",
+          "detail": "Fecha a feature - mesmo padrao das features anteriores.",
+          "checklist": [
+            "Todas as strings novas traduzidas nos 3 locales, validador de chaves rodado localmente.",
+            "Fluxo Playwright novo (mock via page.route): marcar aposta pendente como ganha, ver o status da linha atualizar sem reload de pagina; erro 422 exibido quando o backend rejeita a transicao.",
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh (ng build + ng test com cobertura 80% + Playwright) verde.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done.",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence.",
+          "owner": "agente"
+        }
+      ]
     },
     {
       "id": "feat-010",
@@ -545,6 +580,26 @@
           "owner": "agente"
         }
       ]
+    },
+    {
+      "id": "feat-011",
+      "name": "Polish visual moderno - sistema todo (design refresh cross-screen)",
+      "description": "Feedback real do usuario (2026-09-09), escopo ampliado no mesmo dia de 'so a tela de login' pra 'sistema todo': visual atual das telas ja implementadas (login/feat-002, gestao de usuarios/feat-002, casas de apostas/feat-003, catalogos/feat-008, registro de aposta/feat-004, historico + atualizacao de status/feat-005+feat-009, dashboard/feat-006) e simples/pouco elaborado demais - usuario quer algo moderno, bonito e usavel em todo o app, nao so numa tela isolada. Dentro da paleta StakeVault ja normativa (docs/DESIGN-SYSTEM.md), nao uma paleta nova por conta propria; se a elevacao pedida exigir um padrao visual novo e consistente (ex.: tratamento de elevacao/sombra/gradiente/glass em cards e paineis, ritmo de espacamento, hierarquia tipografica, estado hover/focus mais elaborado), registrar esse padrao no inventario de docs/DESIGN-SYSTEM.md no mesmo commit em vez de inventar por componente/tela isolada - o objetivo e um sistema coerente, nao retoques desencontrados tela a tela. Dois bugs reais de feat-002/feat-001 entram no mesmo esforco (nao subtasks isoladas, fazem parte do mesmo refresh): (1) seletor de idioma com contraste ruim no tema escuro - fundo fica branco com fonte branca (texto ilegivel), provavel <select> nativo nao herdando os tokens de tema M3/CSS custom properties do resto do app; (2) botao de toggle claro/escuro visualmente pobre, sem alinhamento com a identidade StakeVault (ver docs/DESIGN-SYSTEM.md 'Identidade visual'/paleta). **Skills de design devem liderar o refresh, nao so validar no fim** (pedido explicito do usuario): huashu-design pra prototipar as direcoes visuais novas (paineis/cards/formularios/nav) antes de tocar codigo real, Impeccable + taste-skill pra auditar cada tela revisada contra docs/DESIGN-SYSTEM.md e apontar inconsistencia entre telas - ver docs/DESIGN-SYSTEM.md secao 'QA visual e prototipagem'. feat-010 (movimentacoes financeiras, ainda not-started) nao e dependencia desta feature mas deve nascer ja no padrao visual novo se for implementada depois desta - evita retrabalho. Escopo de implementacao (quebra por tela/componente reaproveitavel como app-panel/app-panel-layout, mat-select vs select nativo, redesign do toggle, quais tokens/paineis ganham elevacao nova) fica pro Plan Reviewer decidir quando rodar sobre esta feature, com as subtasks derivadas do veredito dele (mesmo padrao ja usado em feat-001).",
+      "dependencies": [
+        "feat-001",
+        "feat-002",
+        "feat-003",
+        "feat-004",
+        "feat-005",
+        "feat-006",
+        "feat-008",
+        "feat-009"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
     }
   ]
 }

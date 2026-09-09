@@ -148,6 +148,10 @@
     "type": {
       "deposit": "Deposit",
       "withdrawal": "Withdrawal"
-    }
+    },
+    "actionsLabel": "Actions",
+    "markWon": "Won",
+    "markLost": "Lost",
+    "markVoid": "Void"
   }
 }

@@ -52,6 +52,12 @@
   }
 }
 
+.history__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .history__pagination {
   display: flex;
   align-items: center;
