@@ -4,7 +4,35 @@
 
 **Última atualização:** 2026-09-09
 **Estado:** `feat-001`, `feat-002`, `feat-003`, `feat-004`, `feat-007` e `feat-008` `done`.
-Próxima é `feat-005` (RF08 UI — histórico de operações).
+`feat-005` (RF08 UI) `in-progress` — `feat-005.1` `done`, resta `feat-005.2`. `feat-009` (RF12)
+e `feat-010` (RF13) registradas no backlog, `not-started` — gap real encontrado planejando
+`feat-005`, decisão do usuário (`AskUserQuestion`): ficam fora desta feature.
+
+## `feat-005.1` fechada — tela de histórico de operações (2026-09-09)
+
+Somente leitura (2 abas: Apostas/Movimentações), decisão do usuário — RF12 (status)/RF13
+(depósitos/saques) viram `feat-009`/`feat-010` separadas. `BetResponse`/`TransactionResponse` só
+trazem IDs (`bettingHouseId`/`sportId`/etc.), não nomes — resolvidos client-side contra
+`betting-houses`+catálogos já carregados (mesmo `forkJoin` de `feat-004`). Primeira tela com
+paginação de verdade (Anterior/Próxima + "Página X de Y") — as anteriores (catálogos,
+casas de apostas) buscavam 1 página grande por serem listas pequenas por natureza; histórico
+cresce ao longo do tempo. `core/date-format.ts` novo: diferente de `formatBrl` (sempre BRL,
+independente do idioma), datas respeitam o locale ativo de verdade (`Intl.DateTimeFormat`
+parametrizado pelo `Language.current()`).
+
+Aplicado de saída o padrão de `id`+`aria-label`/`<output>` (achado recorrente de
+`feat-002`/`feat-004`, agora documentado em `docs/CONVENTIONS.md`) — sem retrofit necessário
+nesta feature. Achado real de QA visual (não de SonarCloud desta vez): tabelas sem
+`overflow-x:auto` cortavam colunas em mobile sem indicar rolagem — corrigido envolvendo as duas
+tabelas num wrapper com scroll horizontal próprio.
+
+83 testes (33 arquivos) passando, cobertura 86.89%/89.08%/81.75%/92.08%. Verificado no navegador
+(`ng serve` + screenshots Playwright ad-hoc, descartados): as duas abas nos dois temas e mobile/
+desktop, nomes resolvidos corretamente (não UUIDs), status/tipo localizados, paginação
+funcionando.
+
+Delivery Reviewer (passe próprio, sem subagentes): PASS. PR real (`subtask/SV-244` ->
+`feature/SV-243`, PR #28), CI verde antes do merge.
 
 ## `feat-004.2` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
 
