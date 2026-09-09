@@ -39,3 +39,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-240](https://stakevault.atlassian.net/browse/SV-240) - RF04 (UI) - Registro manual de apostas
 - [SV-241](https://stakevault.atlassian.net/browse/SV-241) - BetsApi + formulario real (Idempotency-Key, dropdowns, regras de Shneiderman)
 - [SV-242](https://stakevault.atlassian.net/browse/SV-242) - i18n, Playwright, CHANGELOG e verificacao final
+- [SV-243](https://stakevault.atlassian.net/browse/SV-243) - RF08 (UI) - Historico de operacoes
+- [SV-244](https://stakevault.atlassian.net/browse/SV-244) - BetsApi.list()/TransactionsApi + tela real (2 abas, filtros, paginacao)
+- [SV-245](https://stakevault.atlassian.net/browse/SV-245) - i18n, Playwright, CHANGELOG e verificacao final

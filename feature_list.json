@@ -395,9 +395,72 @@
     {
       "id": "feat-005",
       "name": "RF08 (UI) - Historico de operacoes",
-      "description": "Tela de historico/auditoria de apostas e movimentacoes financeiras.",
+      "description": "Tela de historico/auditoria de apostas e movimentacoes financeiras - somente leitura (listagem + filtros paginados), consumindo GET /api/v1/bets e GET /api/v1/transactions. Decisao do usuario (2026-09-09, AskUserQuestion): RF12 (atualizar status da aposta) e RF13 (depositos/saques) NAO entram aqui - viram feat-009 e feat-010, features dedicadas, mesmo precedente do gap de catalogos (feat-008). Ate feat-010 existir, a aba de movimentacoes financeiras desta tela fica sem forma de popular dados pela UI (so leitura de transacoes que ja existirem via API direta) - aceito pelo usuario, nao e um bloqueio pra feat-005.",
       "dependencies": [
         "feat-004"
+      ],
+      "status": "in-progress",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (risco baixo, precedente direto de feat-003/004/008). Veredito: READY. Contrato confirmado no codigo real de bets-service: GET /api/v1/bets (filtros opcionais bettingHouseId/sportId/leagueId/marketId/tipsterId/from/to, BetResponse so tem IDs, nao nomes - resolvidos client-side contra os catalogos ja carregados, mesmo padrao de forkJoin de feat-004) e GET /api/v1/transactions (filtros bettingHouseId/from/to, TransactionResponse{id,bettingHouseId,type,amount,createdAt}). BetStatus (pending/won/lost/void) e TransactionType (deposit/withdrawal) confirmados como @JsonProperty minusculo no codigo real. Decisao de escopo (RF12/RF13 fora, ver description) ja tomada com o usuario antes desta entrada. Diferente de feat-003/004/008 (listas pequenas, sem paginacao real): historico cresce ao longo do tempo, entao esta e a primeira tela com controles de paginacao de verdade (Anterior/Proximo + indicador de pagina, usando page/totalPages do PagedResponse) em vez de buscar 1 pagina grande. 2 abas (mat-tab-group, mesmo padrao de feat-008): Apostas e Movimentacoes, cada uma com formulario de filtro + tabela paginada. Aplicando de saida o padrao de id+aria-label em inputs e <output> pra banner (docs/CONVENTIONS.md, achado de feat-002/004) - evita repetir o ciclo de achado tardio do SonarCloud pela 3a vez. 2 subtasks (implementacao + fechamento), mesmo padrao das features anteriores.",
+      "jira": "SV-243",
+      "subtasks": [
+        {
+          "id": "feat-005.1",
+          "name": "BetsApi.list()/TransactionsApi + tela real (2 abas, filtros, paginacao)",
+          "status": "in-progress",
+          "jira": "SV-244",
+          "detail": "Estende core/bets-api.ts com list(filter,page,size). Novo core/transactions-api.ts. pages/history real: mat-tab-group (Apostas/Movimentacoes), cada aba com filtro (selects de betting-houses/catalogos + intervalo de data) + tabela paginada, nomes resolvidos client-side contra os catalogos (BetResponse so tem IDs).",
+          "checklist": [
+            "core/bets-api.ts: BetFilter + Bet (shape completo de BetResponse) + list(filter,page,size) via GET /api/v1/bets.",
+            "core/transactions-api.ts: TransactionFilter + Transaction + list(filter,page,size) via GET /api/v1/transactions.",
+            "History real: forkJoin carrega betting-houses+4 catalogos (mesmo padrao de feat-004) pra montar mapas id->nome usados nas duas tabelas.",
+            "Aba Apostas: filtro (bettingHouse/sport/league/market/tipster selects + from/to date) + tabela (casa/esporte/liga/mercado/tipster resolvidos por nome, stake, odd, status como badge localizado, data) + paginacao (Anterior/Proximo, 'Pagina X de Y').",
+            "Aba Movimentacoes: filtro (bettingHouse select + from/to date) + tabela (casa resolvida por nome, tipo como badge localizado, valor em R$, data) + paginacao.",
+            "Rota 'history' ja e guardada por authGuard desde feat-002.2 - sem mudanca de roteamento.",
+            "Inputs com id+aria-label, banner (se houver) com <output> - aplicado de saida (docs/CONVENTIONS.md)."
+          ],
+          "validation": "Unit tests (HttpTestingController) cobrindo list de apostas/movimentacoes com filtro e paginacao, resolucao de nome por ID. Testado nos dois temas e mobile/desktop.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-005.2",
+          "name": "i18n, Playwright, CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-245",
+          "detail": "Fecha a feature - mesmo padrao das features anteriores.",
+          "checklist": [
+            "Todas as strings novas traduzidas nos 3 locales, validador de chaves rodado localmente.",
+            "Fluxo Playwright novo (mock via page.route): listar apostas com filtro aplicado, trocar de pagina, trocar pra aba de movimentacoes.",
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh (ng build + ng test com cobertura 80% + Playwright) verde.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done - conferir explicitamente new_duplicated_lines_density do SonarCloud e os achados de acessibilidade ja recorrentes (Web:InputWithoutLabelCheck/S6819) antes do push, nao so depois do PR final.",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas.",
+            "Vault (docs/) revisado: alguma descoberta desta feature sem nota correspondente? Se sim, atualizar a nota do assunto no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence; ../../feature_list.json (raiz) nao precisa mudar (epic-006 continua in-progress).",
+          "owner": "agente"
+        }
+      ],
+      "evidence": ""
+    },
+    {
+      "id": "feat-009",
+      "name": "RF12 (UI) - Atualizar status da aposta (ganha/perdida/devolvida)",
+      "description": "Gap real encontrado ao planejar feat-005 (2026-09-09, decisao do usuario via AskUserQuestion): RF12 (docs/REQUIREMENTS.md) nao tinha nenhuma feature de UI - sem ela, nenhuma aposta jamais sai de status pendente pela interface web, e stats-service nunca recebe BetSettled (RN06 - aposta so entra em metricas quando status vira won/lost/void). PATCH /api/v1/bets/{id}/status ja existe em bets-service (UpdateBetStatusRequest{status}, transicao atomica pending->won|lost|void, 422 invalid-status-transition pra qualquer outro caso). Decisao do usuario: feature dedicada, separada de feat-005 (historico) - acao de marcar resultado provavelmente vive na propria tela de historico (cada linha de aposta pendente ganha um controle de status), mas o escopo/design fica pra quando esta feature for planejada.",
+      "dependencies": [
+        "feat-005"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-010",
+      "name": "RF13 (UI) - Movimentacoes financeiras (depositos e saques)",
+      "description": "Gap real encontrado ao planejar feat-005 (2026-09-09, decisao do usuario via AskUserQuestion): RF13 (docs/REQUIREMENTS.md) nao tinha nenhuma feature de UI - sem ela, a aba de movimentacoes financeiras de feat-005 (historico) nunca tem dados pra mostrar (nenhum outro caminho cria TRANSACTION pela UI). POST/GET /api/v1/transactions ja existem em bets-service desde feat-003 daquele servico (CreateTransactionRequest{bettingHouseId,type,amount}, tipo deposit/withdrawal). Decisao do usuario: feature dedicada, separada de feat-005 - formulario de deposito/saque provavelmente vive na tela de casas de apostas (feat-003, RF03) ou na propria tela de historico, mas o escopo/design fica pra quando esta feature for planejada.",
+      "dependencies": [
+        "feat-005"
       ],
       "status": "not-started",
       "plan_review": "",
