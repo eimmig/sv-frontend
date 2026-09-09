@@ -3,11 +3,10 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Estado:** `feat-001` a `feat-009` `done` (`epic-006` da raiz fechado em `feat-006`). Próxima
-elegível: `feat-010` (RF13, movimentações financeiras) — `feat-011` (polish visual sistema todo,
-pedido do usuário) também elegível, backlog registrado, `plan_review` ainda vazio. Todas as
-branches já mergeadas em `develop` (feature/subtask) foram apagadas local e remotamente
-(`feature/SV-209` até `feature/SV-249` + subtasks correspondentes).
+**Estado:** `feat-001` a `feat-010` `done`. Próxima elegível: `feat-011` (polish visual sistema
+todo, pedido do usuário) — `plan_review` ainda vazio, escopo grande (todas as telas), fica pro
+Plan Reviewer quebrar em subtasks quando for a vez dela. Todas as branches já mergeadas em
+`develop` (feature/subtask) seguem apagadas local e remotamente a cada fechamento de feature.
 
 ## `feat-005.2` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
 
@@ -936,3 +935,33 @@ acrescentou UI nova). PR #36 (`subtask/SV-250`→`feature/SV-249`), #37 (`subtas
 mergeados. Branches apagadas local e remotamente após merge (feature + as 2 subtasks), assim como
 todo o lote de branches antigas já mergeadas que ainda não tinham sido limpas
 (`feature/SV-209`..`SV-246` + subtasks correspondentes, 26 branches no total).
+
+## `feat-010` fechada — RF13 (UI) - movimentações financeiras (2026-09-09)
+
+`feat-010.1`: `TransactionsApi.create` (POST `/api/v1/transactions`, sem `Idempotency-Key` —
+diferente de `POST /bets`, o contrato do backend não exige uma aqui) + painel novo "Nova
+movimentação" na aba Movimentações do histórico (`app-panel-layout columns='360px 1fr'`, mesmo
+precedente de `betting-houses.html` — painel de formulário + painel de filtro/lista existente).
+Decisão de escopo (form vive no histórico, não em casas de apostas): é onde o usuário já olha o
+efeito (lista) e filtra por casa de apostas. Sucesso reseta o formulário + banner de sucesso
+(mesmo padrão de `register-bet.ts`) + recarrega a página atual da lista (não inserção local — a
+lista é paginada/filtrada, a nova transação pode não caber na página/filtro atual).
+
+**Achado real de teste (cobertura de funções, não achado de produto)**: a suíte caiu pra 79.62%
+de funções (abaixo do gate de 80%) depois do primeiro passe — o `genericError()` novo de
+`createTransaction` só é chamado quando a resposta de erro não tem `detail` no corpo, e o teste
+inicial de erro usava um corpo com `detail`, nunca exercitando esse fallback. Corrigido
+acrescentando um teste que dispara um erro de rede real (`.error(new ProgressEvent('error'), {
+status: 0 })`) em vez de abaixar o gate ou pular a cobertura.
+
+`feat-010.2`: fluxo Playwright novo (`e2e/history.spec.ts`, describe "RF13 - register a
+transaction"): criar um depósito reseta o formulário, mostra o banner de sucesso e a lista
+recarrega com a nova linha; erro 400 exibe o `detail` do backend. `./init.sh` verde (97 testes,
+85.13% stmts/80.24% funcs). Playwright completo verde (24/24).
+
+**Verificação visual real**: 3 screenshots (desktop claro/escuro + mobile claro na aba
+Movimentações, via um spec Playwright descartável — não commitado) confirmando o layout em 2
+painéis nos dois temas e o colapso mobile (painéis empilham, mesmo padrão já usado em
+`betting-houses`/`register-bet`). PR #39 (`subtask/SV-253`→`feature/SV-252`), #40
+(`subtask/SV-254`→`feature/SV-252`) e #41 (`feature/SV-252`→`develop`, gate completo com
+SonarCloud) — todos verdes, mergeados. Branches apagadas após merge.
