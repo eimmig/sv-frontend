@@ -115,7 +115,7 @@
         {
           "id": "feat-001.8",
           "name": "Impeccable + taste-skill + huashu-design + DESIGN.md pre-escrito",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-218",
           "detail": "Ver docs/DESIGN-SYSTEM.md 'QA visual e prototipagem' - DESIGN.md pre-escrito ANTES de qualquer comando document/new-work, pra evitar divergencia.",
           "checklist": [
