@@ -3,7 +3,7 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Feature ativa:** `feat-001` (`feat-001.1`..`.6` done, `feat-001.7`..`.9` restantes)
+**Feature ativa:** `feat-001` (`feat-001.1`..`.7` done, `feat-001.8`..`.9` restantes)
 
 ## Status
 
@@ -18,14 +18,16 @@
 - [x] `feat-001.4` (`app-panel-layout`/`app-panel`) — `done` em 2026-09-09.
 - [x] `feat-001.5` (assets de logo + splash animado) — `done` em 2026-09-09.
 - [x] `feat-001.6` (ngx-echarts instalado e provado) — `done` em 2026-09-09.
+- [x] `feat-001.7` (Playwright + gate de cobertura 80%) — `done` em 2026-09-09.
 
 ### Em andamento
 
-- `feat-001` — próxima subtask: `feat-001.7` (Playwright + gate de cobertura 80%).
+- `feat-001` — próxima subtask: `feat-001.8` (Impeccable + taste-skill + huashu-design +
+  DESIGN.md pré-escrito).
 
 ### Próximos passos (Next Steps)
 
-1. `feat-001.7`..`feat-001.9` (ver `feature_list.json` deste app).
+1. `feat-001.8`..`feat-001.9` (ver `feature_list.json` deste app).
 
 ## Bloqueios / Riscos
 
@@ -253,6 +255,51 @@ Gotcha de teste: jsdom não tem `ResizeObserver` (usado pelo `autoResize` do `ng
 achado (2 riscos residuais documentados: sem verificação visual real do gráfico/recoloração de
 tema, e `withAlpha()` assume formato hex nos tokens de cor — aceitável, é o formato real usado
 hoje). `./init.sh` verde (27 testes, 97.87% stmts). 1 subtask (SV-216).
+
+## `feat-001.7` fechada — Playwright + gate de cobertura 80% (2026-09-09)
+
+**Test runner confirmado**: `vitest` (já sabido desde `feat-001.1`) via `@angular/build:unit-test`.
+Gate de cobertura baked direto nas options do builder (`angular.json`): `coverage:true` +
+`coverageThresholds` (statements/branches/functions/lines: 80). Enforcement real testado, não só
+presença de config — threshold temporariamente setado pra 100%, `npm run test` saiu com exit 1 e
+os números reais de cobertura impressos, depois restaurado pra 80%. `--coverage` da CLI removido
+de `init.sh`/`package.json` (redundante, já é default do builder agora).
+
+**Playwright** (`@playwright/test@1.63.0`, Chromium baixado) com `webServer` no
+`playwright.config.ts` subindo `ng serve` sozinho. `e2e/smoke.spec.ts`: boot + redirect pra
+`/login`, e troca de idioma re-renderizando texto ponta a ponta (pina um idioma inicial conhecido
+explicitamente — o Chromium usa `en-US` como locale padrão, o que fazia uma versão anterior deste
+teste passar pelo motivo errado). Testes localizam elementos por `data-testid`
+(`theme-toggle`/`language-selector`/`panel-body`, adicionados nos componentes reais), nunca por
+texto traduzido ou classe de estilo — corrigido durante a própria revisão desta subtask (achado do
+Delivery Reviewer: usar cópia traduzida como seletor quebra o teste pelo motivo errado se a
+redação mudar).
+
+**Achado real de regressão, encontrado por esta subtask** (feat-001.4, já fechada e mergeada):
+nem `app-panel-layout` nem `app-panel` setavam `:host { display: block }` — a cadeia de
+dimensionamento do CSS Grid nunca chegava a se aplicar de verdade. O painel "Filtros" (30 itens
+mock) crescia a página inteira em vez de travar a própria altura e rolar internamente —
+contradizendo o próprio critério de aceite já registrado em `feat-001.4` ("painel rola dentro de
+si mesmo, pagina inteira nao rola"). Ninguém pegou isso antes porque toda verificação de
+`feat-001.4`/`.5`/`.6` era estática (jsdom não roda layout de verdade, `getComputedStyle` não
+resolve percentuais contra ancestral sem altura definida) — o Playwright desta subtask deu o
+primeiro browser real da sessão pra tirar screenshot. Corrigido: `panel-layout.scss` removeu
+`align-items:start` (deixa o `stretch` padrão do grid dar a mesma altura de linha pra todo painel)
+e ganhou `:host{display:block;height:100%}`; `panel.scss` ganhou o mesmo `:host` e trocou
+`.panel` de `max-height:100%` pra `height:100%`. **Verificado com rigor, não só alegado**: fix
+revertido via `git stash`, confirmado que `e2e/panel-layout.spec.ts` (teste de regressão novo)
+falha contra o código antigo, restaurado, confirmado que passa. Screenshots reais (luz/escuro)
+confirmaram splash (`feat-001.5`) e gráfico (`feat-001.6`) também corretos — os riscos residuais
+de verificação visual registrados nas três subtasks anteriores ficam resolvidos por este achado.
+
+Avaliação de escopo (registrada no `Delivery Reviewer`): corrigir um bug de `feat-001.4` dentro
+desta subtask é apropriado aqui porque a regressão foi descoberta causalmente pela própria
+ferramenta que esta subtask introduz, dentro do mesmo app — não é o caso de "editar arquivo fora
+da feature ativa" que a regra de escopo restrito existe pra evitar. Mesmo padrão já usado em
+`docs/CI-CD.md` ("Segunda camada do mesmo achado").
+
+`./init.sh` verde (27 testes, 97.87% stmts). `npx playwright test` verde (3/3). 1 subtask
+(SV-217).
 
 ## Evidência de conclusão
 
