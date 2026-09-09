@@ -22,3 +22,5 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-211](https://stakevault.atlassian.net/browse/SV-211) - Angular Material M3 + tema claro/escuro + tokens de cor StakeVault
 - [SV-212](https://stakevault.atlassian.net/browse/SV-212) - transloco i18n (pt-BR/en-US/es) + seletor de idioma persistido
 - [SV-213](https://stakevault.atlassian.net/browse/SV-213) - app-panel-layout + app-panel (layout em paineis)
+- [SV-220](https://stakevault.atlassian.net/browse/SV-220) - Retrofit do gate de qualidade do SonarCloud
+- [SV-221](https://stakevault.atlassian.net/browse/SV-221) - sonar.qualitygate.wait + validate-sonar-issues.py

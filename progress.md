@@ -3,9 +3,9 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Feature ativa:** `feat-001` — `done` (todas as 9 subtasks + a feature em si), PR
-`feature/SV-209` → `develop` aberto, achado real de CI corrigido (ver abaixo) antes do merge
-final.
+**Estado:** `feat-001` e `feat-007` ambas `done`, mergeadas em `develop`. Nenhuma feature em
+andamento — próxima é `feat-002` (RF01/RF02 UI), primeira com integração real contra
+`auth-service`.
 
 ## Status
 
@@ -407,6 +407,37 @@ de um template genérico, nunca confirmado contra o output real). Corrigido: `an
 `"coverageReporters": ["text", "html", "lcovonly"]`; `sonar-project.properties` corrigido pra
 `coverage/web/lcov.info`. Confirmado localmente que o arquivo passa a existir de verdade
 (`find coverage -iname lcov.info` → `coverage/web/lcov.info`) antes de re-empurrar o fix.
+
+## `feat-007` fechada — retrofit do gate de qualidade do SonarCloud (2026-09-09)
+
+Fechamento do achado registrado logo acima (lcov.info) — `apps/web` ganhou o mesmo nivel de
+rigor de CI que `auth-service`/`bets-service`/`stats-service`/`telegram-integration` ja tinham:
+`-Dsonar.qualitygate.wait=true` (job de CI falha de verdade quando o quality gate reprova, antes
+so enviava a analise sem esperar) + passo novo `validate-sonar-issues.py` (zero issues/hotspots
+abertos, mais rigoroso que o quality gate padrao). Porte verbatim de
+`services/telegram-integration` (mesmo mecanismo, `SonarSource/sonarqube-scan-action@v4` — os 3
+servicos Java usam o plugin Maven direto, mecanismo diferente mas mesma logica de
+`qualitygate.wait`). Confirmado antes de codificar, via API publica do SonarCloud sem token, que
+`eimmig_sv-frontend` tinha 0 issues/0 hotspots — seguro habilitar o gate rigido sem lidar com
+backlog retroativo.
+
+Reaproveitou o slot de `feat-007` ja existente no backlog ("Pipeline de CI") em vez de criar uma
+feature nova — a description antiga estava obsoleta (pipeline ja existia desde `feat-001.1`,
+caminhos/flags stale), corrigida pra refletir o achado real.
+
+**Verificado de verdade, nao so por leitura estatica**: PR real (`feature/SV-220` -> `develop`,
+#12 — os passos novos sao guardados pra pular em PR de subtask, entao so esse PR os exercita)
+mostra no log do job `-Dsonar.qualitygate.wait=true` presente nos args do scanner e o passo
+"Validar zero issues no SonarCloud" rodando com `--pull-request 12` e retornando
+`OK SonarCloud sem issues nem security hotspots abertos.` contra a API real.
+
+**Segunda ocorrencia da armadilha de chave `evidence` duplicada** (ja documentada em
+`docs/DECISIONS-LOG.md` a partir de um achado em `api-gateway feat-001`) — aconteceu de novo ao
+fechar `feat-007` nesta mesma sessao (a mesma edicao que fechou `feat-001` ja tinha caido nela e
+sido corrigida): inserir `"evidence"` logo apos `status` sem remover a ocorrencia vazia mais a
+frente no objeto zerou o campo silenciosamente, so pego rodando `python -c "json.load(...)"` e
+conferindo o tamanho da string, nao so a validade sintatica do JSON. 1 subtask (SV-221, story
+SV-220).
 
 ## Evidência de conclusão
 
