@@ -152,11 +152,79 @@
       "dependencies": [
         "feat-001"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
-      "evidence": ""
+      "status": "done",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (mesmo padrao ja usado em toda feature deste projeto, independencia reduzida declarada). Veredito: READY WITH CONCERNS, 3 decisoes de escopo assumidas (nenhuma pendente de usuario - nenhuma contradiz nota do vault, todas documentadas aqui para rastreabilidade):\n(1) Dependencia cross-repo real: login so devolve userId/role (necessarios pra esconder a tela de gestao de usuarios de role=member) desde auth-service feat-010 (SV-226, fechada e mergeada em develop nesta mesma sessao, gap encontrado planejando esta propria feature) - dependencies deste JSON continua so ['feat-001'] (harness deste app), a dependencia real de auth-service ja e coberta pela dependencia de epic-002 no feature_list.json da raiz.\n(2) Token PASETO armazenado em localStorage, chave 'stakevault.auth' (JSON {token,userId,role,tenantSlug,mustChangePassword}) - mesmo padrao ja estabelecido por Theme/Language (STORAGE_KEY 'stakevault.*', ver core/theme.ts e core/language.ts), unica forma de persistir sessao entre reloads sem endpoint de refresh/cookie httpOnly no backlog. Risco aceito de XSS e o mesmo de qualquer SPA sem BFF - fora do escopo desta feature introduzir um.\n(3) mustChangePassword (login ja devolve, feat-005/feat-010 de auth-service) vira so um banner nao-bloqueante dismissable na sessao - NAO ha endpoint de troca de senha no backlog de auth-service (decisao do usuario documentada em docs/services/auth-service.md), entao um link/tela de 'trocar senha' aqui seria enganoso; contrato do backend explicitamente devolve o campo 'para o frontend decidir a UX' sem prescrever qual.\nVerificado sem gap: api-gateway ja roteia POST /api/v1/auth/login, POST/GET /api/v1/users (evidencia de epic-008/api-gateway feat-002/003 na raiz) injetando X-User-Id/X-Tenant-Id a partir de 'Authorization: Bearer <token>' - frontend so precisa enviar esse header, nunca X-User-Id/X-Tenant-Id manualmente. RFC 7807 title/detail ja chegam localizados (Accept-Language ja enviado pelo interceptor de feat-001.1) - erro de login/formulario so precisa exibir 'detail' direto, sem tabela de traducao propria de mensagem de erro de backend. Nenhuma tela de autocadastro/criacao de tenant nesta feature (fora de escopo, ver docs/services/web.md). App ainda nao tem nenhuma nav real (app.html so tem splash+seletor de idioma+toggle de tema) - feature inclui uma nav minima (logout + link condicional 'Usuarios' pra admin) so o suficiente pra tornar o login navegavel, nao um redesign de IA completo.",
+      "jira": "SV-228",
+      "subtasks": [
+        {
+          "id": "feat-002.1",
+          "name": "AuthService (Signals) + interceptor de Authorization + tela de login real",
+          "status": "done",
+          "jira": "SV-229",
+          "detail": "AuthService guarda {token,userId,role,tenantSlug,mustChangePassword} em signal + localStorage ('stakevault.auth', mesmo padrao de Theme/Language). Interceptor functional anexa 'Authorization: Bearer <token>' quando ha sessao (sem caso especial de URL - simplesmente omite o header se nao houver token). Helper de parse de RFC 7807 (extrai title/detail/status do corpo de erro HttpErrorResponse) - reaproveitavel por feat-002.3 e features futuras.",
+          "checklist": [
+            "AuthService (core/auth.ts): signal de sessao, login(slug,email,password) via HttpClient POST {gateway}/api/v1/auth/login, logout() limpa signal+localStorage, isAuthenticated()/isAdmin() derivados.",
+            "authInterceptor (core/auth-interceptor.ts) registrado em app.config.ts junto do acceptLanguageInterceptor.",
+            "core/problem-detail.ts: helper puro que extrai {title,detail,status} de um HttpErrorResponse RFC 7807.",
+            "Login (pages/login) real: Reactive Forms com 3 campos (slug, email, senha), submit chama AuthService.login, erro exibe 'detail' do RFC 7807 num alerta Material, sucesso navega pra /dashboard.",
+            "Se ja autenticado, /login redireciona pra /dashboard (nao mostra o formulario de novo)."
+          ],
+          "validation": "Unit tests de AuthService (login sucesso/falha, persistencia localStorage) e do parser RFC 7807. Testado nos dois temas e mobile/desktop.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-002.2",
+          "name": "authGuard/adminGuard + nav minima do app shell + banner mustChangePassword",
+          "status": "done",
+          "jira": "SV-230",
+          "detail": "Sem nav ate agora (app.html so tem splash/idioma/tema) - nav minima o suficiente pra navegar apos login: nome do app, links pras 4 rotas placeholder existentes, link 'Usuarios' so se AuthService.isAdmin(), botao logout.",
+          "checklist": [
+            "authGuard (core/auth-guard.ts): CanActivateFn, redireciona pra /login se nao autenticado.",
+            "adminGuard (core/admin-guard.ts): CanActivateFn, redireciona pra /dashboard se autenticado mas nao-admin (defesa em profundidade - backend ja retorna 403, isto e so UX).",
+            "app.routes.ts: authGuard aplicado a dashboard/historico/casas-de-apostas/registro-de-aposta (e a futura rota de usuarios).",
+            "Nav minima em app.html/app.ts, visivel so quando autenticado - logo/nome, links, logout.",
+            "Banner nao-bloqueante (dismissable na sessao, sem persistencia) quando AuthService.mustChangePassword() - sem link de acao (nao ha endpoint de troca de senha no backlog)."
+          ],
+          "validation": "Navegar direto pra /dashboard sem login redireciona pra /login (Playwright). Logout limpa sessao e redireciona.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-002.3",
+          "name": "Tela de gestao de usuarios do tenant (lista + criar, admin-only)",
+          "status": "done",
+          "jira": "SV-231",
+          "detail": "Rota nova 'usuarios', authGuard+adminGuard. Lista via GET /api/v1/users, formulario de criacao (name/email/password) via POST /api/v1/users - ambos so enviam 'Authorization: Bearer', gateway injeta X-User-Id/X-Tenant-Id.",
+          "checklist": [
+            "Pagina pages/usuarios (app-panel-layout: painel de lista + painel de formulario de criacao).",
+            "Lista consome GET /api/v1/users (ordenada por nome, ja vem assim do backend), exibe nome/email/role/mustChangePassword.",
+            "Formulario de criacao (Reactive Forms) consome POST /api/v1/users, sucesso recarrega a lista e limpa o formulario (feedback informativo - regra de Shneiderman reaproveitada mesmo nao sendo o formulario de aposta), erro exibe 'detail' do RFC 7807.",
+            "Rota registrada em app.routes.ts com authGuard+adminGuard.",
+            "Link 'Usuarios' da nav (feat-002.2) aponta pra esta rota."
+          ],
+          "validation": "Fluxo completo listar+criar testado num teste de componente (HttpTestingController) e num fluxo Playwright (mock de rede via page.route).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-002.4",
+          "name": "i18n, Playwright, CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-232",
+          "detail": "Fecha a feature - Test Suite Auditor sobre a suite completa das 3 subtasks anteriores. Ultima subtask - carrega o item fixo de revisao do vault.",
+          "checklist": [
+            "Todas as strings novas (login, nav, banner, gestao de usuarios) traduzidas nos 3 locales (pt-BR/en-US/es).",
+            "Fluxos Playwright (mock via page.route, sem backend real disponivel neste repositorio): login com sucesso, login com credenciais invalidas (mensagem de erro), rota protegida redireciona sem sessao, tela de usuarios visivel/funcional pra admin e ausente da nav pra member, pelo menos um fluxo com idioma trocado.",
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh (ng build + ng test com cobertura 80% + Playwright) verde.",
+            "QA visual (Impeccable/taste-skill) rodado contra as telas novas (login, nav, usuarios) - UI nova nesta feature.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done.",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence; ../../feature_list.json (raiz) nao precisa mudar (epic-006 continua in-progress, restam feat-003..006).",
+          "owner": "agente"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-09 - 4 subtasks (feat-002.1..4), cada uma via PR real no GitHub (subtask/SV-229..232 -> feature/SV-228) com CI verde antes do merge. Gap real encontrado ao planejar (login PASETO v4.local criptografado, frontend sem como saber userId/role do usuario logado) resolvido reabrindo auth-service (feat-010, SV-226/227, mergeada em develop daquele repositorio na mesma sessao) para o login devolver esses 2 campos - mesmo precedente do gap de auth-service feat-009. Implementado ponta a ponta: AuthService (Signals, localStorage 'stakevault.auth') + authInterceptor (Authorization: Bearer) + helper de RFC 7807 (feat-002.1); authGuard/adminGuard + nav minima do app shell (logo, links, 'Usuarios' so pra admin, logout) + banner mustChangePassword nao-bloqueante (feat-002.2, achado real corrigido: authGuard quebrou um teste Playwright existente de feat-001.7 que navegava direto pra /dashboard sem sessao, corrigido semeando sessao via addInitScript); UsersApi + tela de gestao de usuarios (lista+criar, admin-only, feat-002.3); auditoria de i18n (35 chaves em sincronia nos 3 locales), 7 fluxos Playwright novos, QA visual via Impeccable (feat-002.4 - 1 achado real de contraste marginal documentado em docs/DESIGN-SYSTEM.md do repositorio raiz, nao corrigido por ser valor exato de mockup fora do escopo desta feature; 2 achados avaliados como pre-existentes/falso-positivo). 59 testes unitarios (28 arquivos) + 10 Playwright, cobertura 95.03%/89.37%/94.2%/95.42% (bem acima do gate 80%). Delivery Reviewer e Test Suite Auditor rodados a cada subtask e uma vez mais sobre a feature inteira (passe proprio, sem subagentes, mesmo padrao usado em todo o projeto) - PASS em todas as passadas, sem achado bloqueante. ./init.sh verde, Playwright (10 testes) verde. Vault atualizado no mesmo commit logico (repositorio raiz): docs/services/auth-service.md (contrato de feat-010) e docs/DESIGN-SYSTEM.md (achado de contraste). epic-006 (raiz) permanece in-progress - restam feat-003 (RF03 UI, casas de apostas), feat-004 (RF04 UI, registro manual), feat-005 (RF08 UI, historico) e feat-006 (RF10/RF11 UI, dashboards)."
     },
     {
       "id": "feat-003",

@@ -3,9 +3,134 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Estado:** `feat-001` e `feat-007` ambas `done`, mergeadas em `develop`. Nenhuma feature em
-andamento — próxima é `feat-002` (RF01/RF02 UI), primeira com integração real contra
-`auth-service`.
+**Estado:** `feat-001`, `feat-002` e `feat-007` `done`. Próxima é `feat-003` (RF03 UI - casas de
+apostas).
+
+## `feat-002.4` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
+
+Fecha `feat-002` (RF01/RF02 UI). `validate-i18n-keys.py` confirmou os 35 chaves novas (login/nav/
+mustChangePassword/usuarios) em sincronia nos 3 locales. `e2e/auth.spec.ts` novo (7 fluxos): login
+com sucesso (navega pra `/dashboard`, nav aparece), login com credenciais inválidas (`detail`
+RFC 7807 exibido, permanece em `/login`), mensagem de erro segue o idioma ativo (`en-US`), rota
+protegida sem sessão redireciona pra `/login`, admin vê "Usuários" e consegue gerenciar, member
+não vê o link e é barrado de `/usuarios` (`adminGuard`), banner `mustChangePassword` aparece e é
+dispensável. Suite completa (10 testes: 7 novos + `smoke`/`panel-layout` já existentes) verde.
+
+**QA visual (Impeccable, `npx impeccable detect` contra `/login` real via `ng serve`)**: 9
+achados, nenhum bloqueante desta feature — 2 categorias:
+- `low-contrast` (`--color-text-secondary` `#7A8A93` sobre `--color-surface` `#16232F` no modo
+  escuro, `4.47:1` vs `4.5:1` exigido pela WCAG AA): **achado real, não corrigido** — token de cor
+  vem verbatim do mockup StakeVault (`docs/DESIGN-SYSTEM.md`), fora do escopo desta feature
+  ajustar um valor de marca por conta própria. Documentado em `docs/DESIGN-SYSTEM.md` (repositório
+  raiz) como achado sinalizado pra decisão futura do usuário.
+- `ai-color-palette` ("cyan neon text on dark background"): **falso positivo avaliado e
+  descartado** — o heurístico do Impeccable identifica o azul de marca (`--color-action-neutral`,
+  já documentado e usado desde `feat-001`) como "tell" de UI gerada por IA; não é paleta nova
+  desta feature nem cor inventada, é a marca StakeVault documentada.
+- `bounce-easing` (`cubic-bezier(0.2, 1.3, 0.4, 1)`): rastreado até `core/splash/splash.scss`
+  (`feat-001.5`), não código desta feature — fora de escopo corrigir aqui.
+
+Delivery Reviewer final sobre a feature inteira (não só a subtask, ver `git diff
+develop...feature/SV-228`, 40 arquivos): PASS, sem achado bloqueante. Padrão de duplicação leve
+entre `login.ts`/`usuarios.ts` (mesmo formato de `submit()`/tratamento de erro RFC 7807) avaliado
+e aceito — nível de abstração adequado pro tamanho atual, extrair um helper agora seria
+prematuro (KISS). Test Suite Auditor (mesmo passe): PASS — 59 testes unitários + 10 Playwright,
+cobertura 95%+ em toda a feature, nenhum teste trivial/redundante identificado.
+
+**Vault revisado** (item fixo desta subtask): 1 nota atualizada (`docs/DESIGN-SYSTEM.md`, achado
+de contraste acima). Nenhuma outra lacuna de documentação encontrada — contrato de
+`auth-service feat-010` (login `userId`/`role`) já documentado no mesmo commit daquela feature;
+gateway/telegram-integration não precisaram de mudança.
+
+`./init.sh` verde (`ng build` + `ng test`, cobertura 95.03%/89.37%/94.2%/95.42%), Playwright (10
+testes) verde. `epic-006` (raiz) permanece `in-progress` — restam `feat-003`..`feat-006` deste
+app.
+
+## `feat-002.3` fechada — tela de gestão de usuários do tenant (2026-09-09)
+
+`UsersApi` (`core/users-api.ts`): `list()`/`create()` via `GET`/`POST /api/v1/users`, só enviando
+`Authorization: Bearer` (`authInterceptor` de `feat-002.1`) — gateway injeta `X-User-Id`/
+`X-Tenant-Id` do token, frontend nunca envia esses dois manualmente. `Usuarios`
+(`pages/usuarios`) real: `app-panel-layout` (formulário de criação à esquerda, 360px; lista à
+direita, 1fr — colapsa pra coluna única em mobile), lista carregada no `constructor` e recarregada
+após criação bem-sucedida, erro de qualquer uma das duas chamadas exibe `detail` do RFC 7807.
+Rota `usuarios` já existia como stub guardado (`authGuard`+`adminGuard`, `feat-002.2`) — esta
+subtask só trocou o conteúdo.
+
+52 testes (24 arquivos) passando, cobertura 95.03%/89.37%/94.2%/95.42%. Verificado no navegador
+(`ng serve` + script Playwright ad-hoc com rede mockada, descartado): lista+formulário nos dois
+temas e em mobile/desktop, painéis colapsando corretamente pra coluna única. `./init.sh` verde,
+Playwright (3 testes) verde.
+
+Delivery Reviewer (passe próprio, sem subagentes — diff de 9 arquivos, risco baixo, precedente
+direto de `feat-002.1`): PASS, sem achado. PR real (`subtask/SV-231` -> `feature/SV-228`, PR #15),
+CI verde antes do merge.
+
+## `feat-002.2` fechada — guards + nav mínima do app shell + banner mustChangePassword (2026-09-09)
+
+`authGuard`/`adminGuard` (`CanActivateFn`) aplicados às rotas `dashboard`/`historico`/
+`casas-de-apostas`/`registro-de-aposta` (`authGuard`) e à rota nova `usuarios`
+(`authGuard`+`adminGuard`, stub — tela real é `feat-002.3`). `app.html` não tinha nenhuma nav até
+agora (só splash/idioma/tema) — `AppNav` (`core/app-nav/`) mínima o suficiente pra tornar o login
+navegável: logo, links pras páginas existentes, link "Usuários" só se `Auth.isAdmin()`, logout.
+`MustChangePasswordBanner` não-bloqueante, dismissível na sessão (sem link de ação — não há
+endpoint de troca de senha no backlog de `auth-service`, ver decisão documentada em
+`docs/services/auth-service.md`).
+
+**Achado real corrigido durante a própria subtask** (regressão causada pelo `authGuard` novo):
+`e2e/panel-layout.spec.ts` (de `feat-001.7`) navegava direto pra `/dashboard` sem sessão — antes
+funcionava porque a rota era aberta, agora `authGuard` redireciona pra `/login` e o teste
+quebrava por procurar `panel-body` numa tela errada. Corrigido semeando uma sessão via
+`page.addInitScript` antes do `goto`, em vez de assumir rota aberta — mesmo padrão que
+`feat-002.4` vai usar pros fluxos novos (mock de rede/sessão via Playwright, sem backend real
+disponível neste repositório).
+
+**Observação não-bloqueante, não corrigida**: `dashboard.scss` (`feat-001.4`) já tinha
+`:host { height: calc(100vh - 64px) }`, um valor fixo que por coincidência ainda cabe a nav real
+(sem banner). É frágil — cresce se a nav ganhar mais uma linha, ou some silenciosamente o cálculo
+errado se algum dia o banner ficar sempre visível. Sinalizado aqui para quando `feat-006`
+(dashboard real) mexer nesse arquivo: vale trocar por um layout flex (header com `flex: none` +
+conteúdo com `flex: 1 1 auto`/`min-height: 0`) em vez de um offset em pixels chutado.
+
+56 testes (25 arquivos) passando, cobertura 96.41%/91.33%/96.61%/96.19%. Verificado no navegador
+(`ng serve` + script Playwright ad-hoc, descartado): nav com "Usuários" + banner pro admin, nav
+sem "Usuários" pro member (mobile), navegação direta a `/usuarios` como member redireciona pra
+`/dashboard` (confirmado via `page.url()`). `./init.sh` verde, Playwright (3 testes) verde.
+
+Delivery Reviewer (passe próprio, sem subagentes — diff de 24 arquivos, risco baixo, achado real
+corrigido antes do PR): PASS. PR real (`subtask/SV-230` -> `feature/SV-228`, PR #14), CI verde
+antes do merge.
+
+## `feat-002.1` fechada — AuthService + interceptor de Authorization + login real (2026-09-09)
+
+Gap real encontrado ao planejar esta feature: `POST /api/v1/auth/login` só devolvia
+`token`/`mustChangePassword`, mas o token PASETO v4.local é criptografado simetricamente — o
+frontend não tinha como saber `userId`/`role` do usuário logado (necessários pra esconder a tela
+de gestão de usuários de `role=member`). Resolvido reabrindo `auth-service` (`feat-010`,
+SV-226/227, mergeada em `develop` daquele repositório nesta mesma sessão) para o login devolver
+também `userId`+`role` — mesmo precedente do gap de `feat-009` daquele serviço.
+
+Implementado: `Auth` (`core/auth.ts`, Signals) guarda `{token,userId,role,tenantSlug,
+mustChangePassword}` em `localStorage` (`stakevault.auth`, mesmo padrão de `Theme`/`Language`);
+`authInterceptor` anexa `Authorization: Bearer <token>` quando há sessão (gateway já injeta
+`X-User-Id`/`X-Tenant-Id` a partir disso, frontend nunca envia esses dois manualmente);
+`core/problem-detail.ts` extrai `title`/`detail`/`status` do corpo RFC 7807 (já localizado via
+`Accept-Language`, sem tradução própria de mensagem de erro de backend). Login real (3 campos,
+Reactive Forms) exibe `detail` em caso de erro, redireciona pra `/dashboard` no sucesso (e de
+`/login` pra `/dashboard` se já autenticado).
+
+37 testes (18 arquivos) passando, cobertura 95.93%/90.18%/96%/95.85% (muito acima do gate 80%).
+Verificado manualmente no navegador (`ng serve` + screenshots via Playwright): formulário, erro
+RFC 7807 e botão de ação (azul `--color-action-neutral`, nunca verde) corretos nos dois temas e
+em mobile/desktop — screenshots descartados após a checagem (não fazem parte do repositório).
+`./init.sh` (`ng build` + `ng test`) verde; `ng build` já tinha o warning de budget (586KB vs
+500KB) **antes** desta subtask (confirmado com `git stash` comparando o baseline em 570KB) — não
+é regressão introduzida aqui, sinalizado para revisitar quando o dashboard real (feat-006) ou
+outra feature grande justificar lazy-loading mais agressivo do Angular Material.
+
+Delivery Reviewer (passe próprio, sem subagentes — diff de 8 arquivos, risco baixo/médio,
+independência reduzida declarada): PASS, sem achado. PR real (`subtask/SV-229` ->
+`feature/SV-228`, PR #13), CI verde antes do merge.
 
 ## Status
 

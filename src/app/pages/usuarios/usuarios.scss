@@ -1,0 +1,37 @@
+:host {
+  display: block;
+  height: calc(100vh - 64px);
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.usuarios__form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.usuarios__error {
+  margin: 0 0 8px;
+  color: var(--color-negative);
+  font-size: 14px;
+}
+
+.usuarios__table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    text-align: left;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    padding: 8px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  td {
+    padding: 8px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 14px;
+  }
+}

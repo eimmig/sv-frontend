@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 import { provideTransloco } from '@jsverse/transloco';
 
 import { acceptLanguageInterceptor } from './core/accept-language-interceptor';
+import { authInterceptor } from './core/auth-interceptor';
 import { TranslocoHttpLoader } from './core/transloco-loader';
 import { routes } from './app.routes';
 
@@ -11,7 +12,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([acceptLanguageInterceptor])),
+    provideHttpClient(withInterceptors([acceptLanguageInterceptor, authInterceptor])),
     provideTransloco({
       config: {
         availableLangs: ['pt-BR', 'en-US', 'es'],

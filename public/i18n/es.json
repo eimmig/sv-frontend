@@ -17,5 +17,39 @@
     "metricsTitle": "Métricas",
     "itemPlaceholder": "Elemento {{n}}",
     "metricsPlaceholder": "Marcador del panel central — mecanismo de diseño probado en esta subtarea, el dashboard real es feat-006."
+  },
+  "login": {
+    "title": "Iniciar sesión",
+    "slugLabel": "Organización",
+    "emailLabel": "Correo electrónico",
+    "passwordLabel": "Contraseña",
+    "submit": "Iniciar sesión",
+    "genericError": "No se pudo iniciar sesión. Inténtalo de nuevo."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "bettingHouses": "Casas de apuestas",
+    "newBet": "Registrar apuesta",
+    "history": "Historial",
+    "users": "Usuarios",
+    "logout": "Cerrar sesión"
+  },
+  "mustChangePassword": {
+    "message": "Estás usando una contraseña temporal. Cámbiala lo antes posible.",
+    "dismiss": "Entendido"
+  },
+  "usuarios": {
+    "createTitle": "Nuevo usuario",
+    "listTitle": "Usuarios del tenant",
+    "nameLabel": "Nombre",
+    "emailLabel": "Correo electrónico",
+    "passwordLabel": "Contraseña",
+    "roleLabel": "Rol",
+    "create": "Crear usuario",
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo.",
+    "role": {
+      "ADMIN": "Administrador",
+      "MEMBER": "Miembro"
+    }
   }
 }

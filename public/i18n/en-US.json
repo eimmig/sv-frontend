@@ -17,5 +17,39 @@
     "metricsTitle": "Metrics",
     "itemPlaceholder": "Item {{n}}",
     "metricsPlaceholder": "Center panel placeholder — layout mechanism proven in this subtask, the real dashboard is feat-006."
+  },
+  "login": {
+    "title": "Sign in",
+    "slugLabel": "Organization",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "submit": "Sign in",
+    "genericError": "Could not sign in. Please try again."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "bettingHouses": "Betting houses",
+    "newBet": "Register bet",
+    "history": "History",
+    "users": "Users",
+    "logout": "Log out"
+  },
+  "mustChangePassword": {
+    "message": "You are using a temporary password. Change it as soon as possible.",
+    "dismiss": "Got it"
+  },
+  "usuarios": {
+    "createTitle": "New user",
+    "listTitle": "Tenant users",
+    "nameLabel": "Name",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "roleLabel": "Role",
+    "create": "Create user",
+    "genericError": "Could not complete the operation. Please try again.",
+    "role": {
+      "ADMIN": "Admin",
+      "MEMBER": "Member"
+    }
   }
 }

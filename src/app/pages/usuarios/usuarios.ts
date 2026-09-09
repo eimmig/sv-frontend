@@ -1,15 +1,15 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { Router } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
-import { Auth } from '../../core/auth';
+import { UserSummary, UsersApi } from '../../core/users-api';
 import { toProblemDetail } from '../../core/problem-detail';
 import { Panel } from '../../shared/panel/panel';
+import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 
 @Component({
   imports: [
@@ -19,48 +19,63 @@ import { Panel } from '../../shared/panel/panel';
     MatInputModule,
     TranslocoPipe,
     Panel,
+    PanelLayout,
   ],
-  selector: 'app-login',
-  styleUrl: './login.scss',
-  templateUrl: './login.html',
+  selector: 'app-usuarios',
+  styleUrl: './usuarios.scss',
+  templateUrl: './usuarios.html',
 })
-export class Login implements OnInit {
-  private readonly auth = inject(Auth);
-  private readonly router = inject(Router);
+export class Usuarios {
+  private readonly usersApi = inject(UsersApi);
   private readonly formBuilder = inject(FormBuilder);
   private readonly transloco = inject(TranslocoService);
 
+  protected readonly users = signal<UserSummary[]>([]);
+  protected readonly loadError = signal<string | null>(null);
   protected readonly submitting = signal(false);
-  protected readonly errorMessage = signal<string | null>(null);
+  protected readonly formError = signal<string | null>(null);
 
   protected readonly form = this.formBuilder.nonNullable.group({
-    slug: ['', Validators.required],
+    name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   });
 
-  ngOnInit(): void {
-    if (this.auth.isAuthenticated()) {
-      this.router.navigateByUrl('/dashboard');
-    }
+  constructor() {
+    this.reload();
+  }
+
+  private reload(): void {
+    this.usersApi.list().subscribe({
+      next: (users) => {
+        this.users.set(users);
+        this.loadError.set(null);
+      },
+      error: (error: HttpErrorResponse) => {
+        const problem = toProblemDetail(error);
+        this.loadError.set(problem.detail ?? this.transloco.translate('usuarios.genericError'));
+      },
+    });
   }
 
   protected submit(): void {
     if (this.form.invalid || this.submitting()) {
       return;
     }
-    const { slug, email, password } = this.form.getRawValue();
+    const input = this.form.getRawValue();
     this.submitting.set(true);
-    this.errorMessage.set(null);
+    this.formError.set(null);
 
-    this.auth.login(slug, email, password).subscribe({
+    this.usersApi.create(input).subscribe({
       next: () => {
-        this.router.navigateByUrl('/dashboard');
+        this.submitting.set(false);
+        this.form.reset();
+        this.reload();
       },
       error: (error: HttpErrorResponse) => {
         this.submitting.set(false);
         const problem = toProblemDetail(error);
-        this.errorMessage.set(problem.detail ?? this.transloco.translate('login.genericError'));
+        this.formError.set(problem.detail ?? this.transloco.translate('usuarios.genericError'));
       },
     });
   }

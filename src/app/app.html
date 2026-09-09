@@ -3,4 +3,8 @@
 }
 <app-language-selector />
 <app-theme-toggle />
+@if (auth.isAuthenticated()) {
+  <app-nav />
+  <app-must-change-password-banner />
+}
 <router-outlet />
