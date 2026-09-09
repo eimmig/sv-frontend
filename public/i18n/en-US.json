@@ -1,0 +1,21 @@
+{
+  "theme": {
+    "switchToLight": "Light mode",
+    "switchToDark": "Dark mode"
+  },
+  "language": {
+    "label": "Language"
+  },
+  "splash": {
+    "ariaLabel": "Loading animation that forms the StakeVault logo",
+    "title": "StakeVault animated splash",
+    "desc": "A point of light traces and draws the vault ring, the spokes turn until they lock into place, the bars rise in a cascade, a pulse expands, and the name is revealed by a sweep.",
+    "tagline": "BANKROLL MANAGEMENT"
+  },
+  "dashboard": {
+    "filtersTitle": "Filters",
+    "metricsTitle": "Metrics",
+    "itemPlaceholder": "Item {{n}}",
+    "metricsPlaceholder": "Center panel placeholder — layout mechanism proven in this subtask, the real dashboard is feat-006."
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "theme": {
+    "switchToLight": "Modo claro",
+    "switchToDark": "Modo escuro"
+  },
+  "language": {
+    "label": "Idioma"
+  },
+  "splash": {
+    "ariaLabel": "Animação de carregamento que forma o logo StakeVault",
+    "title": "Splash animado StakeVault",
+    "desc": "Um ponto de luz percorre e desenha o anel do cofre, os raios giram até encaixar, as barras sobem em cascata, um pulso se expande e o nome é revelado por uma varredura.",
+    "tagline": "GESTÃO DE BANCA"
+  },
+  "dashboard": {
+    "filtersTitle": "Filtros",
+    "metricsTitle": "Métricas",
+    "itemPlaceholder": "Item {{n}}",
+    "metricsPlaceholder": "Placeholder do painel central — mecanismo de layout provado nesta subtask, dashboard real é a feat-006."
+  }
+}

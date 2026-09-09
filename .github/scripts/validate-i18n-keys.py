@@ -10,9 +10,9 @@ Uso:
         --file es=services/auth-service/src/main/resources/messages_es.properties
 
     validate-i18n-keys.py --format json \\
-        --file pt-BR=apps/web/src/assets/i18n/pt-BR.json \\
-        --file en-US=apps/web/src/assets/i18n/en-US.json \\
-        --file es=apps/web/src/assets/i18n/es.json
+        --file pt-BR=apps/web/public/i18n/pt-BR.json \\
+        --file en-US=apps/web/public/i18n/en-US.json \\
+        --file es=apps/web/public/i18n/es.json
 """
 from __future__ import annotations
 

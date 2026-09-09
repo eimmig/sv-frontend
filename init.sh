@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verification for the web app (Angular 21.x + TypeScript ES2025).
+# Verification for the web app (Angular 22.x + TypeScript ES2025).
 set -euo pipefail
 
 if ! command -v node >/dev/null 2>&1; then
@@ -20,7 +20,10 @@ if [ -f "package.json" ]; then
     echo "..   installing dependencies (npm ci)"
     npm ci
   fi
-  npm test -- --watch=false --code-coverage
+  echo "..   ng build"
+  npx ng build
+  echo "..   ng test (vitest runner, gate de cobertura 80% em angular.json, ver docs/TESTING.md)"
+  npx ng test --watch=false
 else
   echo "----  No package.json yet — feat-001 not started."
   echo "     See feature_list.json for the next step."

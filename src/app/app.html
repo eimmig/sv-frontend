@@ -1,0 +1,6 @@
+@if (showSplash()) {
+  <app-splash (done)="onSplashDone()" />
+}
+<app-language-selector />
+<app-theme-toggle />
+<router-outlet />

@@ -1,0 +1,56 @@
+// StakeVault color tokens - exact values from docs/DESIGN-SYSTEM.md ("Paleta de cores").
+// Dark values are direct quotes from the StakeVault mockups; light values are derived (no
+// StakeVault light mockup exists yet - see that section's own caveat).
+//
+// --color-positive/--color-negative are app-owned tokens, not M3 roles (docs/DESIGN-SYSTEM.md
+// "Integracao com Angular Material": M3's `error` role means "something went wrong", not "you
+// lost money" - never reuse `error` for prejuizo even though the hex happens to be close).
+//
+// Also overrides the M3 surface/background/on-surface/on-surface-variant system variables so
+// Angular Material's own components (buttons, cards, etc.) pick up the StakeVault navy/off-white
+// instead of the generic M3 neutral generated from the seed color.
+@mixin light-tokens {
+  --color-background: #f2f5f4;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #e7eeeb;
+  --color-border: #dce3e0;
+  --color-text-primary: #0b1622;
+  --color-text-secondary: #5c6b72;
+  --color-brand: #2fa85c;
+  --color-brand-strong: #22803f;
+  --color-positive: var(--color-brand);
+  --color-negative: #c73e3d;
+  --color-action-neutral: #2e70a0;
+  --color-action-neutral-strong: #215680;
+  --color-disabled-bg: #e7eeeb;
+  --color-disabled-text: #9aa6a2;
+  --panel-shadow: 0 4px 24px rgba(20, 20, 30, 0.06);
+
+  --mat-sys-surface: var(--color-surface);
+  --mat-sys-background: var(--color-background);
+  --mat-sys-on-surface: var(--color-text-primary);
+  --mat-sys-on-surface-variant: var(--color-text-secondary);
+}
+
+@mixin dark-tokens {
+  --color-background: #0b1622;
+  --color-surface: #16232f;
+  --color-surface-elevated: #1d2a36;
+  --color-border: #24323f;
+  --color-text-primary: #f2f7f5;
+  --color-text-secondary: #7a8a93;
+  --color-brand: #3ec46d;
+  --color-brand-strong: #26a65b;
+  --color-positive: var(--color-brand);
+  --color-negative: #e24b4a;
+  --color-action-neutral: #3e8cc4;
+  --color-action-neutral-strong: #2e6fa0;
+  --color-disabled-bg: #1d2a36;
+  --color-disabled-text: #4c5a64;
+  --panel-shadow: none;
+
+  --mat-sys-surface: var(--color-surface);
+  --mat-sys-background: var(--color-background);
+  --mat-sys-on-surface: var(--color-text-primary);
+  --mat-sys-on-surface-variant: var(--color-text-secondary);
+}

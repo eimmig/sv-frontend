@@ -1,0 +1,60 @@
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+//
+// StakeVault: primary = --color-action-neutral (blue), tertiary = --color-brand (green) -
+// never the other way around (docs/DESIGN-SYSTEM.md "Regra semantica de cor"). Real M3 tonal
+// palettes generated from the exact brand hex via
+// `ng generate @angular/material:m3-theme --primary-color "#3E8CC4" --tertiary-color "#3EC46D"`
+// (src/theme-colors.scss) - not one of Material's built-in named palettes (azure/violet/etc.),
+// which would drift from the StakeVault palette.
+@use '@angular/material' as mat;
+@use './theme-colors' as stakevault;
+@use './styles/tokens' as tokens;
+@use '@fontsource/inter/400.css' as inter-400;
+@use '@fontsource/inter/500.css' as inter-500;
+@use '@fontsource/inter/600.css' as inter-600;
+@use '@fontsource/inter/700.css' as inter-700;
+
+html {
+  height: 100%;
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: stakevault.$primary-palette,
+        tertiary: stakevault.$tertiary-palette,
+      ),
+      typography: Inter,
+      density: 0,
+    )
+  );
+}
+
+:root {
+  @include tokens.light-tokens;
+}
+
+:root[data-theme='dark'] {
+  @include tokens.dark-tokens;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    @include tokens.dark-tokens;
+  }
+}
+
+body {
+  color-scheme: light dark;
+
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  font: var(--mat-sys-body-medium);
+
+  // Reset the user agent margin.
+  margin: 0;
+  height: 100%;
+}

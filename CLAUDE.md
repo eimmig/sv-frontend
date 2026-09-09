@@ -1,6 +1,6 @@
 # CLAUDE.md — web
 
-SPA Angular 21.x + TypeScript ES2025: autenticação, casas de apostas, registro de apostas,
+SPA Angular 22.x + TypeScript ES2025: autenticação, casas de apostas, registro de apostas,
 histórico e dashboards. Parte do harness multinível do monorepo — leia `../../CLAUDE.md`
 (raiz) para invariantes cross-service antes deste arquivo, e `../../docs/services/web.md` para
 o desenho completo (regras de Shneiderman, RF cobertos). Arquitetura de frontend, testes,
@@ -61,7 +61,7 @@ normativos e já decididos em `../../docs/CONVENTIONS.md`, `../../docs/TESTING.m
   `Accept-Language` conforme o idioma ativo no app (ver bullet de i18n abaixo) para que
   `title`/`detail` já venham no idioma certo.
 - **i18n**: `@jsverse/transloco`, três locales sempre em sincronia — `pt-BR`, `en-US`, `es`,
-  arquivos em `src/assets/i18n/{pt-BR,en-US,es}.json` (ver `../../docs/CONVENTIONS.md` seção
+  arquivos em `public/i18n/{pt-BR,en-US,es}.json` (ver `../../docs/CONVENTIONS.md` seção
   "Internacionalização (i18n)") — decisão do usuário, não é opcional nem um dos três
   "principal". Nenhum componente tem string de UI hardcoded; toda label nova em qualquer
   feature precisa das três traduções antes de a feature ser `done` — validado automaticamente
@@ -69,20 +69,28 @@ normativos e já decididos em `../../docs/CONVENTIONS.md`, `../../docs/TESTING.m
 - **Gráficos (RF10/RF11 UI)**: `ngx-echarts` (Apache ECharts) — decisão de 2026-08-02, ver
   `../../docs/DESIGN-SYSTEM.md` item 6 do inventário. Não introduzir outra biblioteca de
   gráficos (Chart.js, D3 direto, etc.) em nenhuma feature.
-- **Config de ambiente**: `src/environments/environment.ts`/`environment.prod.ts` (build-time,
+- **Config de ambiente**: `src/environments/environment.ts`/`environment.development.ts` (build-time,
   `fileReplacements` do Angular CLI) com a URL base do `api-gateway` — decisão de 2026-08-02, ver
   `../../docs/OBSERVABILITY-AND-CONFIG.md` seção "Configuração de apps/web". Não buscar config
   em runtime (`config.json`) nem hardcodar a URL fora desses arquivos.
-- **QA visual — Impeccable e taste-skill, prioritárias** (instalar em `feat-001`, junto com
-  Angular/Playwright): `npx impeccable install` e `npx skills add
-  https://github.com/leonxlnx/taste-skill`. Ferramenta padrão de QA visual, não opcional — toda
-  UI nova passa por auditoria antes de `done` (ver item na Definição de Pronto abaixo). Uso
-  restrito a auditoria/polish de componentes já implementados (`/impeccable audit`/`polish` etc.)
-  — **não** rodar `/impeccable init` nem aceitar geração de `DESIGN.md` próprio por nenhuma das
-  duas: `../../docs/DESIGN-SYSTEM.md` já é e continua sendo a única fonte de verdade de design
-  deste app — a auditoria confere contra ele, nunca o substitui nem gera decisão paralela. Ver
-  `../../docs/DESIGN-SYSTEM.md` seção "QA visual" para o racional completo. Diferente do
-  Playwright (bullet de testes acima) — aquele é E2E funcional, isto é QA visual.
+- **QA visual e prototipagem — Impeccable, taste-skill e huashu-design, prioritárias** (instalar
+  em `feat-001`, junto com Angular/Playwright): `npx impeccable install`,
+  `npx skills add https://github.com/leonxlnx/taste-skill`,
+  `npx skills add https://github.com/alchaincyf/huashu-design`. Conjunto padrão para qualquer
+  tarefa de frontend, não opcional — toda UI nova passa por auditoria antes de `done` (ver item
+  na Definição de Pronto abaixo). Uso restrito a auditoria/polish de componentes já
+  implementados (`/impeccable audit`/`polish` etc., taste-skill) e prototipagem descartável
+  pré-implementação (huashu-design) — nenhuma das três decide aparência por conta própria:
+  `../../docs/DESIGN-SYSTEM.md` continua a única fonte de verdade de design deste app.
+  **`apps/web/DESIGN.md` é pré-escrito a partir de `DESIGN-SYSTEM.md`** (formato oficial
+  [DESIGN.md](https://github.com/google-labs-code/design.md), primeira tarefa de `feat-001`
+  depois do `npx impeccable install`) — isso é o que impede `/impeccable document`/`new-work` de
+  gerar um `DESIGN.md` divergente: com o arquivo já existindo, o próprio Impeccable pergunta
+  antes de tocar nele (`refresh`/`overwrite`/`merge`), nunca sobrescreve em silêncio. `init` **é**
+  seguro de rodar — só grava `PRODUCT.md` (contexto de produto), não escreve `DESIGN.md`. Ver
+  `../../docs/DESIGN-SYSTEM.md` seção "QA visual" para o racional completo e o mapeamento de
+  seções. Diferente do Playwright (bullet de testes acima) — aquele é E2E funcional, isto é QA
+  visual/prototipagem.
 - **CI/CD (`feat-007`)**: pipeline em `.github/workflows/ci.yml`, **dentro deste repositório**
   (este app é seu próprio repositório Git, não um monorepo — ver `../../docs/DECISIONS-LOG.md`
   "Topologia") — changelog, i18n, build, testes, SonarCloud. Scripts de validação em
@@ -93,7 +101,7 @@ normativos e já decididos em `../../docs/CONVENTIONS.md`, `../../docs/TESTING.m
   Builder` para os fluxos Playwright, `Delivery Reviewer` + `Test Suite Auditor` antes de marcar
   `done` (claude-code-skills) — mapeamento completo em `../../docs/AGENT-SKILLS.md`. Instaladas
   em 2026-08-02 (escopo `user`), ver `../../docs/DECISIONS-LOG.md`. Diferente de
-  Impeccable/taste-skill (QA visual, bullet acima) — isto é revisão de plano/código/teste, não
+  Impeccable/taste-skill/huashu-design (QA visual, bullet acima) — isto é revisão de plano/código/teste, não
   design; essas duas continuam de instalação pendente (dependem de `feat-001` existir primeiro).
 
 ## Definição de pronto (Definition of Done)
@@ -113,7 +121,7 @@ Uma feature deste app só está `done` quando (done only when):
 - [ ] Testes seguindo `../../docs/TESTING.md` (unitários de componente; Playwright para os
       fluxos críticos: cadastro de aposta, atualização de status, filtro de dashboard; pelo
       menos um fluxo rodado com idioma trocado para confirmar que a troca funciona).
-- [ ] Se a feature introduziu UI nova: rodada auditoria de QA visual (Impeccable/taste-skill,
+- [ ] Se a feature introduziu UI nova: rodada auditoria de QA visual (Impeccable/taste-skill/huashu-design,
       ver bullet acima) contra `../../docs/DESIGN-SYSTEM.md`.
 - [ ] `Delivery Reviewer` e `Test Suite Auditor` rodados contra a feature (ver
       `../../docs/AGENT-SKILLS.md`).
