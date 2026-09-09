@@ -15,8 +15,25 @@
   "dashboard": {
     "filtersTitle": "Filters",
     "metricsTitle": "Metrics",
-    "itemPlaceholder": "Item {{n}}",
-    "metricsPlaceholder": "Center panel placeholder — layout mechanism proven in this subtask, the real dashboard is feat-006."
+    "bettingHouseLabel": "Betting house",
+    "sportLabel": "Sport",
+    "leagueLabel": "League",
+    "marketLabel": "Market",
+    "tipsterLabel": "Tipster",
+    "fromLabel": "From",
+    "toLabel": "To",
+    "filterAll": "All",
+    "applyFilter": "Apply filter",
+    "nameLabel": "Name",
+    "totalStakedLabel": "Total staked",
+    "netProfitLabel": "Net profit",
+    "roiLabel": "ROI",
+    "winRateLabel": "Win rate",
+    "settledCountLabel": "Settled bets",
+    "bySportTitle": "By sport",
+    "byMarketTitle": "By market",
+    "byBettingHouseTitle": "By betting house",
+    "genericError": "Could not complete the operation. Please try again."
   },
   "login": {
     "title": "Sign in",
