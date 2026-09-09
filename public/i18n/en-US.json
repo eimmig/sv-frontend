@@ -81,6 +81,8 @@
     "genericError": "Could not complete the operation. Please try again."
   },
   "catalogs": {
+    "createTitle": "New entry",
+    "listTitle": "Registered",
     "nameLabel": "Name",
     "create": "Add",
     "genericError": "Could not complete the operation. Please try again.",
