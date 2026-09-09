@@ -868,3 +868,40 @@ aplica a um build estático). Perguntado ao usuário, decisões:
 Documentado em `docs/DESIGN-SYSTEM.md` (item 6 do inventário), `docs/OBSERVABILITY-AND-CONFIG.md`
 (nova seção "Configuração de apps/web"), `apps/web/CLAUDE.md` e `feat-001` deste
 `feature_list.json`. Nenhum código escrito ainda.
+
+## `feat-006` — RF10/RF11 (UI) - dashboards e filtros dinâmicos (2026-09-09)
+
+Última feature de `epic-006` (raiz). Substitui o placeholder de `feat-001.4`/`feat-001.6`
+(painel com 30 itens fake + `LineChartSample` com dado mockado) por um dashboard real: painel de
+filtros (casa de apostas/esporte/liga/mercado/tipster + período, submit explícito "Aplicar" -
+RN08 satisfeita por uma nova consulta real a `GET /api/v1/statistics` a cada aplicação, não
+filtragem client-side) e painel de métricas (cards de `overall`, gráfico real de lucro líquido
+mensal via `shared/monthly-profit-chart` - substitui `shared/line-chart-sample`, removido por não
+ter mais consumidor -, e `mat-tab-group` com breakdown por esporte/mercado/casa de apostas).
+`core/statistics-api.ts` (novo) + `core/percent.ts` (novo, `roi`/`winRate` são frações 0..1 no
+contrato real, não percentual pronto - confirmado em `CalculateMetricsService.toMetrics` do
+`stats-service`).
+
+**Achado real de teste unitário** (não documentado até agora, vale para qualquer futuro teste
+com `ngx-echarts` real): `jsdom` não implementa `HTMLCanvasElement.getContext('2d')` sem o
+pacote nativo `canvas` (não instalado neste projeto) - `zrender` (renderer do ECharts)
+desreferencia esse contexto `null` tanto no `init()` quanto no `dispose()`, o erro geralmente
+aparecendo no `afterEach`/cleanup do `TestBed` em vez de na asserção do teste, o que confunde a
+causa. Corrigido com um `Proxy` permissivo (`stubCanvasContext`, duplicado por arquivo de teste,
+mesmo padrão do `ResizeObserverStub` de `feat-001.6`) - documentado em `docs/CONVENTIONS.md`.
+
+**Achado real de Playwright, causa raiz não era do dashboard** (já sinalizado como risco em
+`session-handoff.md` da raiz desde `feat-002.2`): `e2e/panel-layout.spec.ts` já falhava em
+`develop` antes desta feature (confirmado rodando a suíte contra o HEAD anterior num worktree
+separado) - toda página fixava `height: calc(100vh - 64px)` chutando a altura da nav, mas
+`app-language-selector`/`app-theme-toggle` nunca tiveram CSS de posicionamento (arquivos `.scss`
+vazios) e ficavam empilhados em fluxo normal acima da nav, e a nav quebra linha conforme mais
+links são adicionados - o cabeçalho real sempre foi maior que 64px. O dashboard real (conteúdo
+mais alto que o placeholder) finalmente expôs a falha via scroll de página. Corrigido na casca
+compartilhada (`app.html`/`app.scss`, não por página): layout flex column real (`.app-shell`
+`height:100%` + `.app-shell__content` `flex:1 1 auto;min-height:0;overflow:hidden`), todas as 6
+páginas trocaram `calc(100vh - 64px)` por `height: 100%`. Detalhe completo em
+`docs/DESIGN-SYSTEM.md` seção "Layout em painéis".
+
+2 subtasks (`feat-006.1` implementação, `feat-006.2` i18n/Playwright/fechamento), mesmo padrão
+das features anteriores. `epic-006` (raiz) fecha nesta feature - era a última.
