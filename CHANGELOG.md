@@ -33,3 +33,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-234](https://stakevault.atlassian.net/browse/SV-234) - BettingHousesApi + tela real (lista + criar)
 - [SV-235](https://stakevault.atlassian.net/browse/SV-235) - i18n, Playwright, CHANGELOG e verificacao final
 - [SV-236](https://stakevault.atlassian.net/browse/SV-236) - BettingHousesApi + tela real (lista + criar)
+- [SV-237](https://stakevault.atlassian.net/browse/SV-237) - Cadastro dos catalogos base (esportes, ligas, mercados, tipsters)
+- [SV-238](https://stakevault.atlassian.net/browse/SV-238) - catalogApi + CatalogManager reaproveitavel + pagina Catalogs (4 abas)
+- [SV-239](https://stakevault.atlassian.net/browse/SV-239) - i18n, Playwright, CHANGELOG e verificacao final
