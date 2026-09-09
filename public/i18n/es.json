@@ -78,5 +78,29 @@
     "tipsters": {
       "title": "Tipsters"
     }
+  },
+  "registerBet": {
+    "eventTitle": "Evento",
+    "detailsTitle": "Detalles",
+    "valuesTitle": "Valores",
+    "bettingHouseLabel": "Casa de apuestas",
+    "sportLabel": "Deporte",
+    "leagueLabel": "Liga",
+    "marketLabel": "Mercado",
+    "tipsterLabel": "Tipster",
+    "tipsterNone": "Ninguno",
+    "ticketNumberLabel": "Número de boleto",
+    "team1Label": "Equipo 1",
+    "team2Label": "Equipo 2",
+    "betTypeLabel": "Tipo de apuesta",
+    "playTypeLabel": "Tipo de jugada",
+    "descriptionLabel": "Descripción",
+    "stakeLabel": "Monto apostado",
+    "oddLabel": "Cuota",
+    "betDateLabel": "Fecha de la apuesta",
+    "reset": "Limpiar",
+    "submit": "Registrar apuesta",
+    "success": "Apuesta registrada con éxito.",
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
   }
 }
