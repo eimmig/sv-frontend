@@ -1,6 +1,11 @@
 // StakeVault color tokens - exact values from docs/DESIGN-SYSTEM.md ("Paleta de cores").
 // Dark values are direct quotes from the StakeVault mockups; light values are derived (no
-// StakeVault light mockup exists yet - see that section's own caveat).
+// StakeVault light mockup exists yet - see that section's own caveat). Exception:
+// dark-tokens' --color-text-secondary was lightened from the mockup's literal #7a8a93 to
+// #8b99a2 in feat-011.5 (explicit user decision - see docs/DESIGN-SYSTEM.md "Paleta de
+// cores") - real WCAG AA contrast failure found by `npx impeccable detect`, first flagged in
+// feat-002 and left unfixed pending this decision (4.47:1 against --color-surface, needs
+// 4.5:1). ~5:1 against both dark surfaces now.
 //
 // --color-positive/--color-negative are app-owned tokens, not M3 roles (docs/DESIGN-SYSTEM.md
 // "Integracao com Angular Material": M3's `error` role means "something went wrong", not "you
@@ -38,7 +43,7 @@
   --color-surface-elevated: #1d2a36;
   --color-border: #24323f;
   --color-text-primary: #f2f7f5;
-  --color-text-secondary: #7a8a93;
+  --color-text-secondary: #8b99a2;
   --color-brand: #3ec46d;
   --color-brand-strong: #26a65b;
   --color-positive: var(--color-brand);
