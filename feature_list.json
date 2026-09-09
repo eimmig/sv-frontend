@@ -159,7 +159,7 @@
         {
           "id": "feat-002.1",
           "name": "AuthService (Signals) + interceptor de Authorization + tela de login real",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-229",
           "detail": "AuthService guarda {token,userId,role,tenantSlug,mustChangePassword} em signal + localStorage ('stakevault.auth', mesmo padrao de Theme/Language). Interceptor functional anexa 'Authorization: Bearer <token>' quando ha sessao (sem caso especial de URL - simplesmente omite o header se nao houver token). Helper de parse de RFC 7807 (extrai title/detail/status do corpo de erro HttpErrorResponse) - reaproveitavel por feat-002.3 e features futuras.",
           "checklist": [
