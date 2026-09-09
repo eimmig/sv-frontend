@@ -3,8 +3,33 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Estado:** `feat-001`, `feat-002` e `feat-007` `done`. `feat-003` (RF03 UI) `in-progress` —
-`feat-003.1`/`feat-003.2` `done`, resta `feat-003.3` (fechamento).
+**Estado:** `feat-001`, `feat-002`, `feat-003` e `feat-007` `done`. Próxima é `feat-004` (RF04 UI
+- registro manual de apostas).
+
+## `feat-003.3` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
+
+Fecha `feat-003` (RF03 UI). `validate-i18n-keys.py` confirmou as 7 chaves novas (`bettingHouses.*`)
+em sincronia nos 3 locales (42 no total). `e2e/betting-houses.spec.ts` novo (2 fluxos): criar casa
+de apostas com sucesso (lista atualiza, valores em R$), erro de nome duplicado (`detail` RFC 7807
+exibido). Suite completa (12 testes: 2 novos + 10 já existentes de `feat-002`) verde.
+
+QA visual: telas novas (`betting-houses`/`users`, pós-rename) reaproveitam 100% dos mesmos
+padrões/tokens já auditados via Impeccable em `feat-002.4` (mesmo `app-panel-layout`, mesma
+paleta, mesmo padrão de formulário+lista) — sem elemento visual novo que justifique nova rodada de
+`npx impeccable detect` (a ferramenta só alcança `/login` sem sessão real, já escaneada). Conferido
+manualmente via `ng serve` + screenshots Playwright ad-hoc (descartados): lista+formulário nos dois
+temas e mobile/desktop, valores formatados corretamente em R$, nav "Casas de apostas" destacada.
+
+Delivery Reviewer final sobre a feature inteira (`git diff develop...feature/SV-233`, 41 arquivos
+entre os 3 PRs): PASS, sem achado bloqueante. Test Suite Auditor (mesmo passe): PASS — 58 testes
+unitários + 12 Playwright, cobertura 94.14%/87.67%/92.5%/95.08%, nenhum teste trivial/redundante.
+
+**Vault revisado** (item fixo desta subtask): nenhuma nota nova necessária — o achado de naming
+já foi documentado nos commits/PRs de `feat-003.1`/`.2` (sem contrato cross-service novo, sem
+gotcha de lib/config além do já registrado em `docs/DESIGN-SYSTEM.md` em `feat-002.4`).
+
+`./init.sh` verde, Playwright (12 testes) verde. `epic-006` (raiz) permanece `in-progress` —
+restam `feat-004` (RF04 UI), `feat-005` (RF08 UI) e `feat-006` (RF10/RF11 UI).
 
 ## `feat-003.1` fechada — renomear páginas/rotas/i18n de português pra inglês (2026-09-09)
 
