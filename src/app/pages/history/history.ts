@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -9,7 +9,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { forkJoin, map } from 'rxjs';
 
-import { loadInto } from '../../core/api-request';
+import { loadInto, submitForm } from '../../core/api-request';
 import { Bet, BetsApi } from '../../core/bets-api';
 import { BettingHouse, BettingHousesApi } from '../../core/betting-houses-api';
 import { CatalogEntry, catalogApi } from '../../core/catalog-api';
@@ -18,7 +18,9 @@ import { formatDateTime } from '../../core/date-format';
 import { Language } from '../../core/language';
 import { PagedResponse } from '../../core/paged-response';
 import { toProblemDetail } from '../../core/problem-detail';
-import { Transaction, TransactionsApi } from '../../core/transactions-api';
+import { Transaction, TransactionsApi, TransactionType } from '../../core/transactions-api';
+import { Panel } from '../../shared/panel/panel';
+import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 
 type SettledBetStatus = 'won' | 'lost' | 'void';
 
@@ -45,6 +47,8 @@ function emptyPage<T>(): PagedResponse<T> {
     MatSelectModule,
     MatTabsModule,
     TranslocoPipe,
+    Panel,
+    PanelLayout,
   ],
   selector: 'app-history',
   styleUrl: './history.scss',
@@ -83,6 +87,15 @@ export class History implements OnInit {
     bettingHouseId: [''],
     from: [''],
     to: [''],
+  });
+
+  protected readonly creatingTransaction = signal(false);
+  protected readonly createTransactionError = signal<string | null>(null);
+  protected readonly createTransactionSuccess = signal<string | null>(null);
+  protected readonly createTransactionForm = this.formBuilder.nonNullable.group({
+    bettingHouseId: ['', Validators.required],
+    type: ['' as '' | TransactionType, Validators.required],
+    amount: [0, [Validators.required, Validators.min(0.01)]],
   });
 
   ngOnInit(): void {
@@ -192,6 +205,29 @@ export class History implements OnInit {
       this.transactionsPage,
       this.transactionsError,
       () => this.transloco.translate('history.genericError'),
+    );
+  }
+
+  protected createTransaction(): void {
+    if (this.createTransactionForm.invalid || this.creatingTransaction()) {
+      return;
+    }
+    const raw = this.createTransactionForm.getRawValue();
+    this.createTransactionSuccess.set(null);
+    submitForm(
+      this.transactionsApi.create({
+        bettingHouseId: raw.bettingHouseId,
+        type: raw.type as TransactionType,
+        amount: raw.amount,
+      }),
+      this.creatingTransaction,
+      this.createTransactionError,
+      () => this.transloco.translate('history.genericError'),
+      () => {
+        this.createTransactionForm.reset({ bettingHouseId: '', type: '', amount: 0 });
+        this.createTransactionSuccess.set(this.transloco.translate('history.transactionSuccess'));
+        this.loadTransactions(this.transactionsPage().page);
+      },
     );
   }
 }

@@ -22,6 +22,9 @@ describe('History', () => {
         toLabel: 'Até',
         filterAll: 'Todas',
         filter: 'Filtrar',
+        newTransactionTitle: 'Nova movimentação',
+        create: 'Registrar',
+        transactionSuccess: 'Movimentação registrada com sucesso.',
         stakeLabel: 'Valor apostado',
         oddLabel: 'Odd',
         statusLabel: 'Status',
@@ -72,6 +75,8 @@ describe('History', () => {
   }
 
   beforeEach(async () => {
+    localStorage.removeItem('stakevault.language');
+    Object.defineProperty(navigator, 'language', { value: 'pt-BR', configurable: true });
     await TestBed.configureTestingModule({
       imports: [
         History,
@@ -93,6 +98,7 @@ describe('History', () => {
 
   afterEach(() => {
     httpMock.verify();
+    delete (navigator as { language?: string }).language;
   });
 
   it('loads betting houses, catalogs, bets and transactions on init', () => {
@@ -213,5 +219,54 @@ describe('History', () => {
       .flush({ detail: 'Transição de status inválida.' }, { status: 422, statusText: 'Unprocessable Entity' });
 
     expect(fixture.componentInstance['settleError']()).toBe('Transição de status inválida.');
+  });
+
+  it('creates a transaction, resets the form and reloads the current transactions page', () => {
+    fixture.componentInstance['transactionsPage'].set({ content: [], page: 1, size: 20, totalElements: 21, totalPages: 2 });
+    fixture.componentInstance['createTransactionForm'].setValue({
+      bettingHouseId: 'bh-1',
+      type: 'deposit',
+      amount: 250,
+    });
+
+    fixture.componentInstance['createTransaction']();
+
+    const request = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/transactions`);
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({ bettingHouseId: 'bh-1', type: 'deposit', amount: 250 });
+    request.flush({ id: 't1', bettingHouseId: 'bh-1', type: 'deposit', amount: 250, createdAt: '2026-03-05T10:00:00Z' });
+
+    expect(fixture.componentInstance['createTransactionForm'].value.amount).toBe(0);
+    expect(fixture.componentInstance['createTransactionSuccess']()).toBe('Movimentação registrada com sucesso.');
+    const reload = httpMock.expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/transactions`);
+    expect(reload.request.params.get('page')).toBe('1');
+    reload.flush({ content: [], page: 1, size: 20, totalElements: 21, totalPages: 2 });
+  });
+
+  it('shows the backend detail when creating a transaction fails', () => {
+    fixture.componentInstance['createTransactionForm'].setValue({ bettingHouseId: 'bh-1', type: 'withdrawal', amount: 50 });
+
+    fixture.componentInstance['createTransaction']();
+
+    httpMock
+      .expectOne(`${environment.apiGatewayUrl}/api/v1/transactions`)
+      .flush({ detail: 'Saldo insuficiente.' }, { status: 400, statusText: 'Bad Request' });
+
+    expect(fixture.componentInstance['createTransactionError']()).toBe('Saldo insuficiente.');
+    expect(fixture.componentInstance['creatingTransaction']()).toBe(false);
+  });
+
+  it('falls back to the generic error message when the backend response has no RFC 7807 detail', () => {
+    fixture.componentInstance['createTransactionForm'].setValue({ bettingHouseId: 'bh-1', type: 'withdrawal', amount: 50 });
+
+    fixture.componentInstance['createTransaction']();
+
+    httpMock
+      .expectOne(`${environment.apiGatewayUrl}/api/v1/transactions`)
+      .error(new ProgressEvent('error'), { status: 0, statusText: 'Unknown Error' });
+
+    expect(fixture.componentInstance['createTransactionError']()).toBe(
+      'Não foi possível completar a operação. Tente novamente.',
+    );
   });
 });
