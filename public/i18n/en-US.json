@@ -31,6 +31,7 @@
     "bettingHouses": "Betting houses",
     "newBet": "Register bet",
     "history": "History",
+    "catalogs": "Catalogs",
     "users": "Users",
     "logout": "Log out"
   },
@@ -60,5 +61,22 @@
     "balanceLabel": "Current balance",
     "create": "Create betting house",
     "genericError": "Could not complete the operation. Please try again."
+  },
+  "catalogs": {
+    "nameLabel": "Name",
+    "create": "Add",
+    "genericError": "Could not complete the operation. Please try again.",
+    "sports": {
+      "title": "Sports"
+    },
+    "leagues": {
+      "title": "Leagues"
+    },
+    "markets": {
+      "title": "Markets"
+    },
+    "tipsters": {
+      "title": "Tipsters"
+    }
   }
 }
