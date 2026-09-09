@@ -4,7 +4,42 @@
 
 **Última atualização:** 2026-09-09
 **Estado:** `feat-001` e `feat-007` `done`. `feat-002` (RF01/RF02 UI) `in-progress` —
-`feat-002.1` `done`, restam `feat-002.2`..`feat-002.4`.
+`feat-002.1`/`feat-002.2` `done`, restam `feat-002.3`/`feat-002.4`.
+
+## `feat-002.2` fechada — guards + nav mínima do app shell + banner mustChangePassword (2026-09-09)
+
+`authGuard`/`adminGuard` (`CanActivateFn`) aplicados às rotas `dashboard`/`historico`/
+`casas-de-apostas`/`registro-de-aposta` (`authGuard`) e à rota nova `usuarios`
+(`authGuard`+`adminGuard`, stub — tela real é `feat-002.3`). `app.html` não tinha nenhuma nav até
+agora (só splash/idioma/tema) — `AppNav` (`core/app-nav/`) mínima o suficiente pra tornar o login
+navegável: logo, links pras páginas existentes, link "Usuários" só se `Auth.isAdmin()`, logout.
+`MustChangePasswordBanner` não-bloqueante, dismissível na sessão (sem link de ação — não há
+endpoint de troca de senha no backlog de `auth-service`, ver decisão documentada em
+`docs/services/auth-service.md`).
+
+**Achado real corrigido durante a própria subtask** (regressão causada pelo `authGuard` novo):
+`e2e/panel-layout.spec.ts` (de `feat-001.7`) navegava direto pra `/dashboard` sem sessão — antes
+funcionava porque a rota era aberta, agora `authGuard` redireciona pra `/login` e o teste
+quebrava por procurar `panel-body` numa tela errada. Corrigido semeando uma sessão via
+`page.addInitScript` antes do `goto`, em vez de assumir rota aberta — mesmo padrão que
+`feat-002.4` vai usar pros fluxos novos (mock de rede/sessão via Playwright, sem backend real
+disponível neste repositório).
+
+**Observação não-bloqueante, não corrigida**: `dashboard.scss` (`feat-001.4`) já tinha
+`:host { height: calc(100vh - 64px) }`, um valor fixo que por coincidência ainda cabe a nav real
+(sem banner). É frágil — cresce se a nav ganhar mais uma linha, ou some silenciosamente o cálculo
+errado se algum dia o banner ficar sempre visível. Sinalizado aqui para quando `feat-006`
+(dashboard real) mexer nesse arquivo: vale trocar por um layout flex (header com `flex: none` +
+conteúdo com `flex: 1 1 auto`/`min-height: 0`) em vez de um offset em pixels chutado.
+
+56 testes (25 arquivos) passando, cobertura 96.41%/91.33%/96.61%/96.19%. Verificado no navegador
+(`ng serve` + script Playwright ad-hoc, descartado): nav com "Usuários" + banner pro admin, nav
+sem "Usuários" pro member (mobile), navegação direta a `/usuarios` como member redireciona pra
+`/dashboard` (confirmado via `page.url()`). `./init.sh` verde, Playwright (3 testes) verde.
+
+Delivery Reviewer (passe próprio, sem subagentes — diff de 24 arquivos, risco baixo, achado real
+corrigido antes do PR): PASS. PR real (`subtask/SV-230` -> `feature/SV-228`, PR #14), CI verde
+antes do merge.
 
 ## `feat-002.1` fechada — AuthService + interceptor de Authorization + login real (2026-09-09)
 

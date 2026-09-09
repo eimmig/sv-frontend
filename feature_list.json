@@ -175,7 +175,7 @@
         {
           "id": "feat-002.2",
           "name": "authGuard/adminGuard + nav minima do app shell + banner mustChangePassword",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-230",
           "detail": "Sem nav ate agora (app.html so tem splash/idioma/tema) - nav minima o suficiente pra navegar apos login: nome do app, links pras 4 rotas placeholder existentes, link 'Usuarios' so se AuthService.isAdmin(), botao logout.",
           "checklist": [
