@@ -3,8 +3,34 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Estado:** `feat-001`, `feat-002`, `feat-003` e `feat-007` `done`. `feat-008` (catálogos,
-inserida antes de `feat-004`) `in-progress` — `feat-008.1` `done`, resta `feat-008.2`.
+**Estado:** `feat-001`, `feat-002`, `feat-003`, `feat-007` e `feat-008` `done`. Próxima é
+`feat-004` (RF04 UI — registro manual de apostas).
+
+## `feat-008.2` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
+
+Fecha `feat-008` (catálogos). `validate-i18n-keys.py` confirmou as 8 chaves novas
+(`nav.catalogs` + `catalogs.*`) em sincronia nos 3 locales (50 no total). `e2e/catalogs.spec.ts`
+novo: cria uma entrada de catálogo (sport), confirma na lista, troca de aba e confirma outro
+catálogo (league) já carregado independentemente. Achado real de ambiente (não de produto): o
+locale padrão do Chromium neste conjunto de testes é `en-US` (já documentado em
+`docs/TESTING.md`), então os rótulos das abas do Material renderizam em inglês
+("Leagues", não "Ligas") sem trocar o idioma primeiro — corrigido no próprio teste antes de
+commitar. Suite completa (13 testes: 1 novo + 12 já existentes) verde.
+
+Delivery Reviewer final sobre a feature inteira (`git diff develop...feature/SV-237`, 19
+arquivos entre os 2 PRs): PASS, sem achado bloqueante — conferido explicitamente que
+`new_duplicated_lines_density` do SonarCloud não repetiu o achado de `feat-003` (o design de
+componente único reaproveitado, decidido no plan_review, evitou 4 telas quase idênticas). Test
+Suite Auditor (mesmo passe): PASS — 69 testes unitários + 13 Playwright, cobertura
+93.17%/89.24%/87.75%/94.57%.
+
+**Vault revisado** (item fixo desta subtask): nenhuma nota nova necessária — a lacuna em si
+(catálogos sem tela) já está documentada na `description` de `feat-008` e neste `progress.md`;
+não há contrato cross-service novo (rotas já existiam desde `bets-service feat-002`/`api-gateway
+feat-007`).
+
+`./init.sh` verde, Playwright (13 testes) verde. `epic-006` (raiz) permanece `in-progress` —
+restam `feat-004` (RF04 UI), `feat-005` (RF08 UI) e `feat-006` (RF10/RF11 UI).
 
 ## `feat-008.1` fechada — catalogApi + CatalogManager reaproveitável + página Catalogs (2026-09-09)
 
