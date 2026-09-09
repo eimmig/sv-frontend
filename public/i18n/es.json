@@ -37,6 +37,7 @@
   },
   "login": {
     "title": "Iniciar sesión",
+    "tagline": "Gestión de banca",
     "slugLabel": "Organización",
     "emailLabel": "Correo electrónico",
     "passwordLabel": "Contraseña",

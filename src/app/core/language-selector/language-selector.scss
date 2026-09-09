@@ -1,0 +1,38 @@
+:host {
+  display: block;
+}
+
+.language-selector {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  color: var(--color-text-secondary);
+  transition: border-color 0.15s ease;
+
+  &:hover,
+  &:focus-within {
+    border-color: var(--color-brand);
+  }
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  mat-select {
+    color: var(--color-text-primary);
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+// panelClass targets the CDK overlay panel, rendered outside this component's view - a global
+// rule is the documented way to reach it (Angular Material "Customizing panel class").
+::ng-deep .language-selector__panel {
+  border-radius: 12px !important;
+}

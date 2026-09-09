@@ -51,3 +51,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-252](https://stakevault.atlassian.net/browse/SV-252) - RF13 (UI) - Movimentacoes financeiras (depositos e saques)
 - [SV-253](https://stakevault.atlassian.net/browse/SV-253) - TransactionsApi.create + formulario de nova movimentacao na aba Movimentacoes do historico
 - [SV-254](https://stakevault.atlassian.net/browse/SV-254) - i18n, Playwright, CHANGELOG e verificacao final
+- [SV-255](https://stakevault.atlassian.net/browse/SV-255) - Polish visual moderno - sistema todo (design refresh cross-screen)
+- [SV-256](https://stakevault.atlassian.net/browse/SV-256) - Language selector + theme toggle com estilo real (fix de contraste) + tela de login elevada
+- [SV-257](https://stakevault.atlassian.net/browse/SV-257) - Polish visual - dashboard + casas de apostas
+- [SV-258](https://stakevault.atlassian.net/browse/SV-258) - Polish visual - registro de aposta + historico (apostas/movimentacoes)
+- [SV-259](https://stakevault.atlassian.net/browse/SV-259) - Polish visual - usuarios + catalogos
+- [SV-260](https://stakevault.atlassian.net/browse/SV-260) - Auditoria visual final, CHANGELOG e verificacao final

@@ -33,6 +33,44 @@ html {
   );
 }
 
+// A single light-only mat.theme() call bakes every Material component token (select panel
+// background, menu/dialog surfaces, etc.) as light-mode values - our app-owned --color-*
+// tokens below only override the 4 generic --mat-sys-* aliases, not the hundreds of
+// component-specific --mat-*/--mdc-* tokens Material actually reads from (e.g. a mat-select's
+// dropdown panel), so those stayed light even in dark mode (real bug: white panel, near-white
+// text - feat-011.1). Regenerating the M3 tokens with theme-type: dark under the same selectors
+// as tokens.dark-tokens (official Angular Material pattern for scoped/multiple themes) fixes
+// every Material overlay app-wide, not just this one component.
+:root[data-theme='dark'] {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: stakevault.$primary-palette,
+        tertiary: stakevault.$tertiary-palette,
+      ),
+      typography: Inter,
+      density: 0,
+    )
+  );
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    @include mat.theme(
+      (
+        color: (
+          theme-type: dark,
+          primary: stakevault.$primary-palette,
+          tertiary: stakevault.$tertiary-palette,
+        ),
+        typography: Inter,
+        density: 0,
+      )
+    );
+  }
+}
+
 :root {
   @include tokens.light-tokens;
 }

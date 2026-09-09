@@ -37,6 +37,7 @@
   },
   "login": {
     "title": "Sign in",
+    "tagline": "Bankroll management",
     "slugLabel": "Organization",
     "emailLabel": "Email",
     "passwordLabel": "Password",
