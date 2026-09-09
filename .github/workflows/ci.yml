@@ -25,10 +25,14 @@ jobs:
 
       # 2. Chaves de traducao - ver docs/CONVENTIONS.md secao "Internacionalizacao (i18n)"
       - name: Validar chaves de traducao (pt-BR/en-US/es)
-        # Guarda por arquivo-marcador: enquanto o projeto nao existe (repositorio so com
-        # harness), este passo e pulado em vez de falhar. Liga sozinho no feat-001 deste
-        # servico, quando o marcador passa a existir. Ver docs/CI-CD.md.
-        if: hashFiles('package-lock.json') != ''
+        # Guarda propria (src/assets/i18n/pt-BR.json), independente do package-lock.json que
+        # guarda os passos 3-5: feat-001 deste app foi dividida em subtasks incrementais e
+        # package-lock.json nasce (feat-001.1, ng new) bem antes dos arquivos de locale
+        # (feat-001.3, transloco) - guardar so por package-lock.json quebraria a PR de toda
+        # subtask intermediaria por sequenciamento, nao por defeito real. Achado real (SV-210):
+        # mesma armadilha ja documentada em docs/CI-CD.md ("Gotcha encontrado em sv-auth-backend")
+        # e corrigida proativamente nos 4 repositorios Java, nunca portada pra este ate agora.
+        if: hashFiles('src/assets/i18n/pt-BR.json') != ''
         run: |
           python3 .github/scripts/validate-i18n-keys.py --format json \
             --file pt-BR=src/assets/i18n/pt-BR.json \
@@ -41,7 +45,7 @@ jobs:
         # servico, quando o marcador passa a existir. Ver docs/CI-CD.md.
         if: hashFiles('package-lock.json') != ''
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       # 3. Build
@@ -60,7 +64,7 @@ jobs:
         # harness), este passo e pulado em vez de falhar. Liga sozinho no feat-001 deste
         # servico, quando o marcador passa a existir. Ver docs/CI-CD.md.
         if: hashFiles('package-lock.json') != ''
-        run: npm run test -- --code-coverage --watch=false
+        run: npm run test -- --coverage --watch=false
 
       # 5. Qualidade de codigo e cobertura (SonarCloud)
       - name: SonarCloud
