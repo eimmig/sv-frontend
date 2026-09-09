@@ -217,7 +217,8 @@
       "dependencies": [
         "feat-001"
       ],
-      "status": "in-progress",
+      "status": "done",
+      "evidence": "feat-007.1 (unica subtask) done em 2026-09-09, Delivery Reviewer PASS no merge subtask->story (PR #11). Verificacao real (nao so leitura estatica de YAML) no PR #12 (feature/SV-220 -> develop, o PR que de fato exercita os passos - guardados pra pular em PR de subtask): log do job confirma '-Dsonar.qualitygate.wait=true' presente nos args do scanner, e o passo novo 'Validar zero issues no SonarCloud' rodou com '--pull-request 12' e retornou 'OK SonarCloud sem issues nem security hotspots abertos.' contra a API real. Checks do PR (pipeline + SonarCloud Code Analysis) verdes. apps/web agora tem o mesmo nivel de rigor de CI que os outros 4 repositorios de aplicacao (auth-service, bets-service, stats-service, telegram-integration).",
       "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (baixo risco, mudanca de config bem entendida, porte verbatim de padrao ja provado em 4 repositorios). Veredito: READY, 1 achado MINOR sem correcao necessaria (auth-service usa um step 'story-gate' compartilhado em vez da condicao inline repetida que telegram-integration/apps/web ja usam - manter o estilo inline ja estabelecido neste repositorio, nao portar o padrao Maven). Confirmado via API publica do SonarCloud (curl direto, sem token) que eimmig_sv-frontend tem 0 issues/0 hotspots abertos - seguro habilitar o gate agora.",
       "jira": "SV-220",
       "subtasks": [
@@ -235,8 +236,7 @@
           "validation": "PR de teste real mostra o passo 'Validar zero issues no SonarCloud' executando (nao guarda pulada) e retornando OK com o projeto limpo atual.",
           "owner": "agente"
         }
-      ],
-      "evidence": ""
+      ]
     }
   ]
 }
