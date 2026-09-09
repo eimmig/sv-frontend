@@ -456,7 +456,7 @@
         {
           "id": "feat-009.1",
           "name": "BetsApi.updateStatus + controles de status na aba Apostas do historico",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-250",
           "detail": "Estende core/bets-api.ts com updateStatus(id,status). pages/history/history.ts/html: linhas com status='pending' ganham 3 botoes (Ganha/Perdida/Devolvida), sucesso atualiza a linha localmente, erro exibe detail RFC 7807.",
           "checklist": [
@@ -472,7 +472,7 @@
         {
           "id": "feat-009.2",
           "name": "i18n, Playwright, CHANGELOG e verificacao final",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-251",
           "detail": "Fecha a feature - mesmo padrao das features anteriores.",
           "checklist": [
@@ -580,6 +580,26 @@
           "owner": "agente"
         }
       ]
+    },
+    {
+      "id": "feat-011",
+      "name": "Polish visual moderno - sistema todo (design refresh cross-screen)",
+      "description": "Feedback real do usuario (2026-09-09), escopo ampliado no mesmo dia de 'so a tela de login' pra 'sistema todo': visual atual das telas ja implementadas (login/feat-002, gestao de usuarios/feat-002, casas de apostas/feat-003, catalogos/feat-008, registro de aposta/feat-004, historico + atualizacao de status/feat-005+feat-009, dashboard/feat-006) e simples/pouco elaborado demais - usuario quer algo moderno, bonito e usavel em todo o app, nao so numa tela isolada. Dentro da paleta StakeVault ja normativa (docs/DESIGN-SYSTEM.md), nao uma paleta nova por conta propria; se a elevacao pedida exigir um padrao visual novo e consistente (ex.: tratamento de elevacao/sombra/gradiente/glass em cards e paineis, ritmo de espacamento, hierarquia tipografica, estado hover/focus mais elaborado), registrar esse padrao no inventario de docs/DESIGN-SYSTEM.md no mesmo commit em vez de inventar por componente/tela isolada - o objetivo e um sistema coerente, nao retoques desencontrados tela a tela. Dois bugs reais de feat-002/feat-001 entram no mesmo esforco (nao subtasks isoladas, fazem parte do mesmo refresh): (1) seletor de idioma com contraste ruim no tema escuro - fundo fica branco com fonte branca (texto ilegivel), provavel <select> nativo nao herdando os tokens de tema M3/CSS custom properties do resto do app; (2) botao de toggle claro/escuro visualmente pobre, sem alinhamento com a identidade StakeVault (ver docs/DESIGN-SYSTEM.md 'Identidade visual'/paleta). **Skills de design devem liderar o refresh, nao so validar no fim** (pedido explicito do usuario): huashu-design pra prototipar as direcoes visuais novas (paineis/cards/formularios/nav) antes de tocar codigo real, Impeccable + taste-skill pra auditar cada tela revisada contra docs/DESIGN-SYSTEM.md e apontar inconsistencia entre telas - ver docs/DESIGN-SYSTEM.md secao 'QA visual e prototipagem'. feat-010 (movimentacoes financeiras, ainda not-started) nao e dependencia desta feature mas deve nascer ja no padrao visual novo se for implementada depois desta - evita retrabalho. Escopo de implementacao (quebra por tela/componente reaproveitavel como app-panel/app-panel-layout, mat-select vs select nativo, redesign do toggle, quais tokens/paineis ganham elevacao nova) fica pro Plan Reviewer decidir quando rodar sobre esta feature, com as subtasks derivadas do veredito dele (mesmo padrao ja usado em feat-001).",
+      "dependencies": [
+        "feat-001",
+        "feat-002",
+        "feat-003",
+        "feat-004",
+        "feat-005",
+        "feat-006",
+        "feat-008",
+        "feat-009"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
     }
   ]
 }
