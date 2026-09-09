@@ -3,8 +3,48 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Estado:** `feat-001` e `feat-007` `done`. `feat-002` (RF01/RF02 UI) `in-progress` —
-`feat-002.1`/`feat-002.2`/`feat-002.3` `done`, resta só `feat-002.4` (fechamento).
+**Estado:** `feat-001`, `feat-002` e `feat-007` `done`. Próxima é `feat-003` (RF03 UI - casas de
+apostas).
+
+## `feat-002.4` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
+
+Fecha `feat-002` (RF01/RF02 UI). `validate-i18n-keys.py` confirmou os 35 chaves novas (login/nav/
+mustChangePassword/usuarios) em sincronia nos 3 locales. `e2e/auth.spec.ts` novo (7 fluxos): login
+com sucesso (navega pra `/dashboard`, nav aparece), login com credenciais inválidas (`detail`
+RFC 7807 exibido, permanece em `/login`), mensagem de erro segue o idioma ativo (`en-US`), rota
+protegida sem sessão redireciona pra `/login`, admin vê "Usuários" e consegue gerenciar, member
+não vê o link e é barrado de `/usuarios` (`adminGuard`), banner `mustChangePassword` aparece e é
+dispensável. Suite completa (10 testes: 7 novos + `smoke`/`panel-layout` já existentes) verde.
+
+**QA visual (Impeccable, `npx impeccable detect` contra `/login` real via `ng serve`)**: 9
+achados, nenhum bloqueante desta feature — 2 categorias:
+- `low-contrast` (`--color-text-secondary` `#7A8A93` sobre `--color-surface` `#16232F` no modo
+  escuro, `4.47:1` vs `4.5:1` exigido pela WCAG AA): **achado real, não corrigido** — token de cor
+  vem verbatim do mockup StakeVault (`docs/DESIGN-SYSTEM.md`), fora do escopo desta feature
+  ajustar um valor de marca por conta própria. Documentado em `docs/DESIGN-SYSTEM.md` (repositório
+  raiz) como achado sinalizado pra decisão futura do usuário.
+- `ai-color-palette` ("cyan neon text on dark background"): **falso positivo avaliado e
+  descartado** — o heurístico do Impeccable identifica o azul de marca (`--color-action-neutral`,
+  já documentado e usado desde `feat-001`) como "tell" de UI gerada por IA; não é paleta nova
+  desta feature nem cor inventada, é a marca StakeVault documentada.
+- `bounce-easing` (`cubic-bezier(0.2, 1.3, 0.4, 1)`): rastreado até `core/splash/splash.scss`
+  (`feat-001.5`), não código desta feature — fora de escopo corrigir aqui.
+
+Delivery Reviewer final sobre a feature inteira (não só a subtask, ver `git diff
+develop...feature/SV-228`, 40 arquivos): PASS, sem achado bloqueante. Padrão de duplicação leve
+entre `login.ts`/`usuarios.ts` (mesmo formato de `submit()`/tratamento de erro RFC 7807) avaliado
+e aceito — nível de abstração adequado pro tamanho atual, extrair um helper agora seria
+prematuro (KISS). Test Suite Auditor (mesmo passe): PASS — 59 testes unitários + 10 Playwright,
+cobertura 95%+ em toda a feature, nenhum teste trivial/redundante identificado.
+
+**Vault revisado** (item fixo desta subtask): 1 nota atualizada (`docs/DESIGN-SYSTEM.md`, achado
+de contraste acima). Nenhuma outra lacuna de documentação encontrada — contrato de
+`auth-service feat-010` (login `userId`/`role`) já documentado no mesmo commit daquela feature;
+gateway/telegram-integration não precisaram de mudança.
+
+`./init.sh` verde (`ng build` + `ng test`, cobertura 95.03%/89.37%/94.2%/95.42%), Playwright (10
+testes) verde. `epic-006` (raiz) permanece `in-progress` — restam `feat-003`..`feat-006` deste
+app.
 
 ## `feat-002.3` fechada — tela de gestão de usuários do tenant (2026-09-09)
 
