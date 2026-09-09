@@ -8,6 +8,8 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 import { loadInto, submitForm } from '../../core/api-request';
 import { CatalogEntry, catalogApi } from '../../core/catalog-api';
+import { Panel } from '../panel/panel';
+import { PanelLayout } from '../panel-layout/panel-layout';
 
 /**
  * Reusable list+create screen for a single catalog resource (sports,
@@ -17,7 +19,7 @@ import { CatalogEntry, catalogApi } from '../../core/catalog-api';
  * reappearing with a 4th near-copy.
  */
 @Component({
-  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, TranslocoPipe],
+  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, TranslocoPipe, Panel, PanelLayout],
   selector: 'app-catalog-manager',
   styleUrl: './catalog-manager.scss',
   templateUrl: './catalog-manager.html',

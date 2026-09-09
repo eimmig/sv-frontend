@@ -53,13 +53,22 @@ describe('Users', () => {
     createComponent();
 
     httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/users`).flush([
-      { id: '1', name: 'Ana', email: 'ana@acme', role: 'ADMIN', mustChangePassword: false, createdAt: '2026-01-01' },
+      { id: '1', name: 'Ana Souza', email: 'ana@acme', role: 'ADMIN', mustChangePassword: false, createdAt: '2026-01-01' },
+      { id: '2', name: 'Bob', email: 'bob@acme', role: 'MEMBER', mustChangePassword: false, createdAt: '2026-01-01' },
     ]);
     fixture.detectChanges();
 
     const rows = fixture.nativeElement.querySelectorAll('[data-testid="users-row"]');
-    expect(rows).toHaveLength(1);
-    expect(rows[0].textContent).toContain('Ana');
+    expect(rows).toHaveLength(2);
+    expect(rows[0].textContent).toContain('Ana Souza');
+
+    const avatars: HTMLElement[] = fixture.nativeElement.querySelectorAll('[data-testid="users-avatar"]');
+    expect(avatars[0].textContent?.trim()).toBe('AS');
+    expect(avatars[1].textContent?.trim()).toBe('B');
+
+    const roleBadges: HTMLElement[] = fixture.nativeElement.querySelectorAll('[data-testid="users-role-badge"]');
+    expect(roleBadges[0].classList).toContain('users__role--admin');
+    expect(roleBadges[1].classList).not.toContain('users__role--admin');
   });
 
   it('creates a user and reloads the list', () => {
