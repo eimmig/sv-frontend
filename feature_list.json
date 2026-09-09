@@ -308,7 +308,7 @@
         {
           "id": "feat-008.1",
           "name": "catalogApi + CatalogManager reaproveitavel + pagina Catalogs (4 abas)",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-238",
           "detail": "core/catalog-api.ts: factory catalogApi(resourcePath) (nao Injectable singleton - parametrizado por recurso, inject(HttpClient) dentro da factory chamada em contexto de injecao). shared/catalog-manager: componente reaproveitavel (lista+criar, usa loadInto/submitForm de feat-003), instanciado 4x (sports/leagues/markets/tipsters) dentro de pages/catalogs com mat-tab-group.",
           "checklist": [

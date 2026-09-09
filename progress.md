@@ -3,8 +3,39 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Estado:** `feat-001`, `feat-002`, `feat-003` e `feat-007` `done`. Próxima é `feat-004` (RF04 UI
-- registro manual de apostas).
+**Estado:** `feat-001`, `feat-002`, `feat-003` e `feat-007` `done`. `feat-008` (catálogos,
+inserida antes de `feat-004`) `in-progress` — `feat-008.1` `done`, resta `feat-008.2`.
+
+## `feat-008.1` fechada — catalogApi + CatalogManager reaproveitável + página Catalogs (2026-09-09)
+
+Gap real encontrado ao planejar `feat-004` (RF04 UI — registro de aposta): o formulário precisa
+de dropdowns de `sport`/`league`/`market`/`tipster`, e o bot Telegram (`telegram-integration
+feat-004`) já orienta o usuário a "cadastrar em `apps/web`" quando o catálogo do tenant está
+vazio — mas nenhuma feature deste app cobria essa tela (só `betting-houses`, RF03). Perguntado ao
+usuário como fechar a lacuna (tela dedicada / cadastro inline no formulário de aposta / outra
+abordagem) via `AskUserQuestion` — decisão: tela dedicada, inserida como `feat-008` antes de
+`feat-004` (que passou a depender dela).
+
+Confirmado no código real de `bets-service` (não só a nota do vault):
+`SportsController`/`LeaguesController`/`MarketsController`/`TipstersController` são
+estruturalmente idênticos (só o nome do recurso muda) — mesmo `CatalogResponse{id,name}`,
+`CreateCatalogRequest{name}`, `PagedResponse`, erro `409 <slug>-already-registered`. Decisão de
+design para não reincidir no achado de duplicação do SonarCloud de `feat-003` (4 telas quase
+idênticas estourariam o gate de novo): `core/catalog-api.ts` (factory parametrizada por
+`resourcePath`, não 4 `Injectable` quase-cópias) + `shared/catalog-manager` (1 componente
+reaproveitável, lista+criar, usa `loadInto`/`submitForm` de `feat-003`) instanciado 4x dentro de
+`pages/catalogs` com `mat-tab-group`, em vez de 4 páginas quase idênticas. Achado de timing do
+Angular: `resourcePath` (signal input `required`) não está garantidamente disponível no
+`constructor` — `catalogApi()` foi desenhado pra receber `HttpClient` como parâmetro (em vez de
+chamar `inject()` internamente) e é construído em `ngOnInit()`, não no constructor, evitando o
+erro de "input required mas ainda sem valor".
+
+69 testes (30 arquivos) passando, cobertura 93.17%/89.24%/87.75%/94.57%. Verificado no navegador
+(`ng serve` + screenshots Playwright ad-hoc, descartados): 4 abas (Esportes/Ligas/Mercados/
+Tipsters) nos dois temas e mobile/desktop, nav "Catálogos" destacada.
+
+Delivery Reviewer (passe próprio, sem subagentes): PASS. PR real (`subtask/SV-238` ->
+`feature/SV-237`, PR #22), CI verde antes do merge.
 
 ## `feat-003.3` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
 
