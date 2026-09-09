@@ -102,5 +102,35 @@
     "submit": "Registrar aposta",
     "success": "Aposta registrada com sucesso.",
     "genericError": "Não foi possível completar a operação. Tente novamente."
+  },
+  "history": {
+    "betsTitle": "Apostas",
+    "transactionsTitle": "Movimentações",
+    "bettingHouseLabel": "Casa de apostas",
+    "sportLabel": "Esporte",
+    "fromLabel": "De",
+    "toLabel": "Até",
+    "filterAll": "Todas",
+    "filter": "Filtrar",
+    "stakeLabel": "Valor apostado",
+    "oddLabel": "Odd",
+    "statusLabel": "Status",
+    "dateLabel": "Data",
+    "typeLabel": "Tipo",
+    "amountLabel": "Valor",
+    "previousPage": "Anterior",
+    "nextPage": "Próxima",
+    "pageIndicator": "Página {{page}} de {{totalPages}}",
+    "genericError": "Não foi possível completar a operação. Tente novamente.",
+    "status": {
+      "pending": "Pendente",
+      "won": "Ganha",
+      "lost": "Perdida",
+      "void": "Devolvida"
+    },
+    "type": {
+      "deposit": "Depósito",
+      "withdrawal": "Saque"
+    }
   }
 }
