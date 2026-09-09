@@ -36,3 +36,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-237](https://stakevault.atlassian.net/browse/SV-237) - Cadastro dos catalogos base (esportes, ligas, mercados, tipsters)
 - [SV-238](https://stakevault.atlassian.net/browse/SV-238) - catalogApi + CatalogManager reaproveitavel + pagina Catalogs (4 abas)
 - [SV-239](https://stakevault.atlassian.net/browse/SV-239) - i18n, Playwright, CHANGELOG e verificacao final
+- [SV-240](https://stakevault.atlassian.net/browse/SV-240) - RF04 (UI) - Registro manual de apostas
+- [SV-241](https://stakevault.atlassian.net/browse/SV-241) - BetsApi + formulario real (Idempotency-Key, dropdowns, regras de Shneiderman)
+- [SV-242](https://stakevault.atlassian.net/browse/SV-242) - i18n, Playwright, CHANGELOG e verificacao final
