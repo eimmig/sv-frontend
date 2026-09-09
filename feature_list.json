@@ -504,7 +504,7 @@
         {
           "id": "feat-010.1",
           "name": "TransactionsApi.create + formulario de nova movimentacao na aba Movimentacoes do historico",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-253",
           "detail": "Estende core/transactions-api.ts com create(bettingHouseId,type,amount). pages/history: aba Movimentacoes ganha app-panel-layout (panel de formulario + panel existente de filtro/lista), submit reseta form + recarrega a pagina atual da lista, erro exibe detail RFC 7807.",
           "checklist": [
