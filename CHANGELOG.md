@@ -24,3 +24,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-213](https://stakevault.atlassian.net/browse/SV-213) - app-panel-layout + app-panel (layout em paineis)
 - [SV-220](https://stakevault.atlassian.net/browse/SV-220) - Retrofit do gate de qualidade do SonarCloud
 - [SV-221](https://stakevault.atlassian.net/browse/SV-221) - sonar.qualitygate.wait + validate-sonar-issues.py
+- [SV-228](https://stakevault.atlassian.net/browse/SV-228) - RF01/RF02 (UI) - Autenticacao e gestao de usuarios do tenant
+- [SV-229](https://stakevault.atlassian.net/browse/SV-229) - AuthService (Signals) + interceptor de Authorization + tela de login real
+- [SV-230](https://stakevault.atlassian.net/browse/SV-230) - authGuard/adminGuard + nav minima do app shell + banner mustChangePassword
+- [SV-231](https://stakevault.atlassian.net/browse/SV-231) - Tela de gestao de usuarios do tenant (lista + criar, admin-only)
+- [SV-232](https://stakevault.atlassian.net/browse/SV-232) - i18n, Playwright, CHANGELOG e verificacao final
