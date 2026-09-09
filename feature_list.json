@@ -700,7 +700,7 @@
         {
           "id": "feat-011.5",
           "name": "Auditoria visual final, CHANGELOG e verificacao final",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-260",
           "detail": "Fecha a feature - auditoria de consistencia entre as 4 rodadas anteriores, nao so validacao isolada por tela.",
           "checklist": [
