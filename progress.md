@@ -3,10 +3,33 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Estado:** `feat-001`, `feat-002`, `feat-003`, `feat-004`, `feat-007` e `feat-008` `done`.
-`feat-005` (RF08 UI) `in-progress` — `feat-005.1` `done`, resta `feat-005.2`. `feat-009` (RF12)
-e `feat-010` (RF13) registradas no backlog, `not-started` — gap real encontrado planejando
-`feat-005`, decisão do usuário (`AskUserQuestion`): ficam fora desta feature.
+**Estado:** `feat-001`, `feat-002`, `feat-003`, `feat-004`, `feat-005`, `feat-007` e `feat-008`
+`done`. Próxima é `feat-006` (RF10/RF11 UI — dashboards). `feat-009` (RF12) e `feat-010` (RF13)
+registradas no backlog, `not-started` — gap real encontrado planejando `feat-005`, decisão do
+usuário (`AskUserQuestion`): ficam fora do escopo de `feat-005`/`feat-006`.
+
+## `feat-005.2` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
+
+Fecha `feat-005` (RF08 UI). `validate-i18n-keys.py` confirmou as 24 chaves novas (`history.*`)
+em sincronia nos 3 locales (96 no total). `e2e/history.spec.ts` novo (2 fluxos): filtrar apostas
+por casa de apostas (nome resolvido, nunca o UUID cru, na linha da tabela), trocar pra aba de
+movimentações e paginar (indicador "Page X of Y" avançando). Suite completa (17 testes: 2 novos +
+15 já existentes) verde.
+
+Delivery Reviewer final sobre a feature inteira (`git diff develop...feature/SV-243`, 15
+arquivos entre os 2 PRs): PASS, sem achado bloqueante — conferido explicitamente que
+`new_duplicated_lines_density` do SonarCloud não estourou e que os inputs novos já nasceram com
+`id`+`aria-label` (aplicado de saída, sem retrofit necessário desta vez). Test Suite Auditor
+(mesmo passe): PASS — 83 testes unitários + 17 Playwright, cobertura
+86.89%/89.08%/81.75%/92.08%.
+
+**Vault revisado** (item fixo desta subtask): nenhuma nota nova necessária além do que já foi
+registrado em `feat-005.1` (`core/date-format.ts` vs `core/currency.ts` — data respeita idioma,
+moeda não) e do gap de RF12/RF13 já documentado na `description` de `feat-005`/`feat-009`/
+`feat-010`.
+
+`./init.sh` verde, Playwright (17 testes) verde. `epic-006` (raiz) permanece `in-progress` —
+resta só `feat-006` (RF10/RF11 UI).
 
 ## `feat-005.1` fechada — tela de histórico de operações (2026-09-09)
 
