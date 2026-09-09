@@ -45,3 +45,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-246](https://stakevault.atlassian.net/browse/SV-246) - RF10/RF11 (UI) - Dashboards e filtros dinamicos
 - [SV-247](https://stakevault.atlassian.net/browse/SV-247) - StatisticsApi + core/percent.ts + monthly-profit-chart + Dashboard real (filtros, cards, grafico, breakdown por aba)
 - [SV-248](https://stakevault.atlassian.net/browse/SV-248) - i18n, Playwright, CHANGELOG e verificacao final
+- [SV-249](https://stakevault.atlassian.net/browse/SV-249) - RF12 (UI) - Atualizar status da aposta (ganha/perdida/devolvida)
+- [SV-250](https://stakevault.atlassian.net/browse/SV-250) - BetsApi.updateStatus + controles de status na aba Apostas do historico
+- [SV-251](https://stakevault.atlassian.net/browse/SV-251) - i18n, Playwright, CHANGELOG e verificacao final
