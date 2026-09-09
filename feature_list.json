@@ -233,10 +233,46 @@
       "dependencies": [
         "feat-002"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (risco baixo, precedente direto de feat-002.3, mesmo padrao lista+criar ja usado e testado). Veredito: READY WITH CONCERNS, 2 decisoes de escopo assumidas: (1) Sem UI de paginacao - GET /api/v1/betting-houses (bets-service, verificado no codigo real: BettingHousesController/PagedResponse) pagina de verdade (page/size, max 100), mas o numero de casas de apostas cadastradas por um tenant e pequeno por natureza (mesmo racional ja aceito em auth-service feat-009 pra GET /users sem paginacao) - busca 1 pagina com size=100 (o maximo permitido pelo backend), sem controles de pagina na UI; se um tenant algum dia tiver mais de 100 casas, e um limite documentado, nao um bug silencioso. (2) Formatacao de moeda (R$, ver docs/services/bets-service.md e mockups citados em DESIGN-SYSTEM.md) usa Intl.NumberFormat('pt-BR', {style:'currency',currency:'BRL'}) fixo, independente do idioma ativo da UI - dinheiro do bankroll e sempre Real brasileiro neste TCC (sem multi-moeda no backlog), formatar diferente por idioma da interface confundiria mais do que ajudaria; usar o CurrencyPipe nativo do Angular exigiria registrar dados de locale (@angular/common/locales) que o projeto nao usa (i18n e via transloco, nao @angular/localize). Verificado sem gap: api-gateway ja roteia /api/v1/betting-houses/** pro bets-service (RouteConfig.java, confirmado no codigo-fonte); contrato exato confirmado no codigo real (nao so na nota do vault) - CreateBettingHouseRequest{name,initialBalance}, BettingHouseResponse{id,name,initialBalance,balance,createdAt}, PagedResponse{content,page,size,totalElements,totalPages} - bate com docs/API-CONTRACTS.md secao 'Paginacao'. Sem restricao de role (diferente da tela de usuarios) - qualquer usuario autenticado do tenant pode gerenciar casas de apostas, so authGuard (ja aplicado a rota casas-de-apostas desde feat-002.2). Erros: 409 betting-house-already-registered (nome duplicado), 400 validation-failed (nome vazio ou initialBalance negativo/ausente) - mesmo helper toProblemDetail de feat-002.1, sem novo tratamento. 2 subtasks: implementacao (API client + tela real) e fechamento (i18n/Playwright/CHANGELOG/auditorias), mesmo padrao de feat-002.",
+      "jira": "SV-233",
+      "subtasks": [
+        {
+          "id": "feat-003.1",
+          "name": "BettingHousesApi + tela real (lista + criar)",
+          "status": "in-progress",
+          "jira": "SV-234",
+          "detail": "Mesmo padrao de UsersApi/Usuarios (feat-002.3) - PagedResponse generico novo (reaproveitavel por feat-004/005/006), BettingHousesApi.list()/create(), pagina CasasDeApostas com app-panel-layout (formulario + lista).",
+          "checklist": [
+            "core/paged-response.ts: interface generica PagedResponse<T> (content/page/size/totalElements/totalPages) - reaproveitavel pelas proximas features paginadas.",
+            "core/betting-houses-api.ts: list(size=100)/create({name,initialBalance}) via GET/POST /api/v1/betting-houses.",
+            "core/currency.ts: helper formatBrl(value) via Intl.NumberFormat('pt-BR', {style:'currency',currency:'BRL'}).",
+            "CasasDeApostas (pages/casas-de-apostas) real: lista (nome/saldo inicial/saldo atual) + formulario de criacao (nome, saldo inicial), erro exibe detail do RFC 7807 (toProblemDetail reaproveitado), sucesso recarrega a lista e limpa o formulario.",
+            "Rota 'casas-de-apostas' ja e guardada por authGuard desde feat-002.2 - sem mudanca de roteamento."
+          ],
+          "validation": "Unit tests (HttpTestingController) cobrindo list/create sucesso e erro (409/400). Testado nos dois temas e mobile/desktop.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-003.2",
+          "name": "i18n, Playwright, CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-235",
+          "detail": "Fecha a feature - mesmo padrao de feat-002.4.",
+          "checklist": [
+            "Todas as strings novas traduzidas nos 3 locales (pt-BR/en-US/es), validador de chaves rodado localmente.",
+            "Fluxo Playwright novo (mock via page.route): criar casa de apostas com sucesso (lista atualiza), erro de nome duplicado exibido.",
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh (ng build + ng test com cobertura 80% + Playwright) verde.",
+            "QA visual (Impeccable) rodado contra a tela nova.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done.",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas.",
+            "Vault (docs/) revisado: alguma descoberta desta feature sem nota correspondente? Se sim, atualizar a nota do assunto no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence; ../../feature_list.json (raiz) nao precisa mudar (epic-006 continua in-progress, restam feat-004..006).",
+          "owner": "agente"
+        }
+      ],
       "evidence": ""
     },
     {

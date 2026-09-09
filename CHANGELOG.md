@@ -29,3 +29,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-230](https://stakevault.atlassian.net/browse/SV-230) - authGuard/adminGuard + nav minima do app shell + banner mustChangePassword
 - [SV-231](https://stakevault.atlassian.net/browse/SV-231) - Tela de gestao de usuarios do tenant (lista + criar, admin-only)
 - [SV-232](https://stakevault.atlassian.net/browse/SV-232) - i18n, Playwright, CHANGELOG e verificacao final
+- [SV-233](https://stakevault.atlassian.net/browse/SV-233) - RF03 (UI) - Gestao de casas de apostas
+- [SV-234](https://stakevault.atlassian.net/browse/SV-234) - BettingHousesApi + tela real (lista + criar)
+- [SV-235](https://stakevault.atlassian.net/browse/SV-235) - i18n, Playwright, CHANGELOG e verificacao final
