@@ -166,8 +166,9 @@ describe('Dashboard', () => {
     fixture.componentInstance['applyFilter']();
 
     const request = httpMock.expectOne(
-      (req) => req.url === `${environment.apiGatewayUrl}/api/v1/statistics` && req.params.get('bettingHouseId') === 'bh-1',
+      (req) => req.url === `${environment.apiGatewayUrl}/api/v1/statistics`,
     );
+    expect(request.request.params.get('bettingHouseId')).toBe('bh-1');
     request.flush({
       overall: { totalStaked: 0, netProfit: 0, roi: 0, winRate: 0, settledCount: 0 },
       bySport: [],
