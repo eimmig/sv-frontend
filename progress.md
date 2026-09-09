@@ -3,9 +3,39 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Estado:** `feat-001` e `feat-007` ambas `done`, mergeadas em `develop`. Nenhuma feature em
-andamento — próxima é `feat-002` (RF01/RF02 UI), primeira com integração real contra
-`auth-service`.
+**Estado:** `feat-001` e `feat-007` `done`. `feat-002` (RF01/RF02 UI) `in-progress` —
+`feat-002.1` `done`, restam `feat-002.2`..`feat-002.4`.
+
+## `feat-002.1` fechada — AuthService + interceptor de Authorization + login real (2026-09-09)
+
+Gap real encontrado ao planejar esta feature: `POST /api/v1/auth/login` só devolvia
+`token`/`mustChangePassword`, mas o token PASETO v4.local é criptografado simetricamente — o
+frontend não tinha como saber `userId`/`role` do usuário logado (necessários pra esconder a tela
+de gestão de usuários de `role=member`). Resolvido reabrindo `auth-service` (`feat-010`,
+SV-226/227, mergeada em `develop` daquele repositório nesta mesma sessão) para o login devolver
+também `userId`+`role` — mesmo precedente do gap de `feat-009` daquele serviço.
+
+Implementado: `Auth` (`core/auth.ts`, Signals) guarda `{token,userId,role,tenantSlug,
+mustChangePassword}` em `localStorage` (`stakevault.auth`, mesmo padrão de `Theme`/`Language`);
+`authInterceptor` anexa `Authorization: Bearer <token>` quando há sessão (gateway já injeta
+`X-User-Id`/`X-Tenant-Id` a partir disso, frontend nunca envia esses dois manualmente);
+`core/problem-detail.ts` extrai `title`/`detail`/`status` do corpo RFC 7807 (já localizado via
+`Accept-Language`, sem tradução própria de mensagem de erro de backend). Login real (3 campos,
+Reactive Forms) exibe `detail` em caso de erro, redireciona pra `/dashboard` no sucesso (e de
+`/login` pra `/dashboard` se já autenticado).
+
+37 testes (18 arquivos) passando, cobertura 95.93%/90.18%/96%/95.85% (muito acima do gate 80%).
+Verificado manualmente no navegador (`ng serve` + screenshots via Playwright): formulário, erro
+RFC 7807 e botão de ação (azul `--color-action-neutral`, nunca verde) corretos nos dois temas e
+em mobile/desktop — screenshots descartados após a checagem (não fazem parte do repositório).
+`./init.sh` (`ng build` + `ng test`) verde; `ng build` já tinha o warning de budget (586KB vs
+500KB) **antes** desta subtask (confirmado com `git stash` comparando o baseline em 570KB) — não
+é regressão introduzida aqui, sinalizado para revisitar quando o dashboard real (feat-006) ou
+outra feature grande justificar lazy-loading mais agressivo do Angular Material.
+
+Delivery Reviewer (passe próprio, sem subagentes — diff de 8 arquivos, risco baixo/médio,
+independência reduzida declarada): PASS, sem achado. PR real (`subtask/SV-229` ->
+`feature/SV-228`, PR #13), CI verde antes do merge.
 
 ## Status
 
