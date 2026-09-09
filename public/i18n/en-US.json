@@ -37,5 +37,19 @@
   "mustChangePassword": {
     "message": "You are using a temporary password. Change it as soon as possible.",
     "dismiss": "Got it"
+  },
+  "usuarios": {
+    "createTitle": "New user",
+    "listTitle": "Tenant users",
+    "nameLabel": "Name",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "roleLabel": "Role",
+    "create": "Create user",
+    "genericError": "Could not complete the operation. Please try again.",
+    "role": {
+      "ADMIN": "Admin",
+      "MEMBER": "Member"
+    }
   }
 }

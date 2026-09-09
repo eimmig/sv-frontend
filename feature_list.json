@@ -191,7 +191,7 @@
         {
           "id": "feat-002.3",
           "name": "Tela de gestao de usuarios do tenant (lista + criar, admin-only)",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-231",
           "detail": "Rota nova 'usuarios', authGuard+adminGuard. Lista via GET /api/v1/users, formulario de criacao (name/email/password) via POST /api/v1/users - ambos so enviam 'Authorization: Bearer', gateway injeta X-User-Id/X-Tenant-Id.",
           "checklist": [
