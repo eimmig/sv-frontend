@@ -3,8 +3,51 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Estado:** `feat-001`, `feat-002` e `feat-007` `done`. Próxima é `feat-003` (RF03 UI - casas de
-apostas).
+**Estado:** `feat-001`, `feat-002` e `feat-007` `done`. `feat-003` (RF03 UI) `in-progress` —
+`feat-003.1`/`feat-003.2` `done`, resta `feat-003.3` (fechamento).
+
+## `feat-003.1` fechada — renomear páginas/rotas/i18n de português pra inglês (2026-09-09)
+
+Achado do usuário, não do Plan Reviewer: `docs/CONVENTIONS.md` já dizia "nomes de rota, evento e
+código, todos já em inglês", mas `pages/historico`, `pages/registro-de-aposta` e `pages/usuarios`
+(criadas em `feat-001.1`) e a `pages/casas-de-apostas` desta própria feature, ainda em andamento,
+estavam em português — 3 features já mergeadas (`feat-001`/`feat-002`) carregavam essa dívida sem
+nenhuma sessão anterior ter cruzado a convenção contra o nome real dos arquivos. Perguntado ao
+usuário como proceder (renomear agora / só documentar a exceção / só daqui pra frente) — decisão:
+renomear tudo agora, antes de mais features construírem em cima do padrão errado.
+
+`git mv` pra `history`/`register-bet`/`users` (classes, selectors, CSS, i18n keys `usuarios.*` ->
+`users.*`, `app.routes.ts`, links da nav, `e2e/auth.spec.ts`) — `casas-de-apostas` não passou por
+esse rename porque nunca teve conteúdo real sob esse nome; virou `betting-houses` direto em
+`feat-003.2`. Achado real durante a correção: `app.routes.ts` já esperava `m.BettingHouses` mas o
+stub renomeado ainda exportava `CasasDeApostas` (a classe do componente também precisava do
+rename, não só a pasta) — build quebrou no PR real (não localmente, só a suíte de unit tests
+rodou antes do push), corrigido num commit de fix separado antes do merge.
+
+`./init.sh` e Playwright verdes após a correção. Delivery Reviewer (passe próprio, sem
+subagentes): PASS. PR real (`subtask/SV-234` -> `feature/SV-233`, PR #18, 2 commits — rename +
+fix do stub), CI verde antes do merge.
+
+## `feat-003.2` fechada — BettingHousesApi + tela real (lista + criar) (2026-09-09)
+
+Mesmo padrão de `UsersApi`/`Users` (`feat-002.3`), já nascendo com nomenclatura em inglês
+(`feat-003.1` pagou a dívida de nomenclatura primeiro). `PagedResponse<T>` genérico novo
+(`core/paged-response.ts`, reaproveitável por `feat-004`/`005`/`006`) — confirmado contra o código
+real de `bets-service` (`BettingHousesController`/`PagedResponse.java`), não só a nota do vault.
+Sem paginação na UI (busca 1 página com `size=100`, o máximo do backend) — mesmo racional já
+aceito em `auth-service feat-009` pra `GET /users`. `formatBrl` (`core/currency.ts`,
+`Intl.NumberFormat('pt-BR', {currency:'BRL'})`) fixo independente do idioma ativo da UI — dinheiro
+do bankroll é sempre Real brasileiro, sem multi-moeda no backlog.
+
+58 testes (26 arquivos) passando, cobertura 94.14%/87.67%/92.5%/95.08%. Achado de teste real
+(não de produto): `Intl.NumberFormat('pt-BR')` separa o símbolo do valor com espaço **não-quebrável**
+(U+00A0), não espaço comum — asserção inicial com espaço comum falhava silenciosamente parecendo
+idêntica no editor; corrigido com comentário explicando o motivo pra não reincidir. Verificado no
+navegador (`ng serve` + script Playwright ad-hoc, descartado): lista+formulário nos dois temas e
+mobile/desktop, valores formatados corretamente em R$.
+
+Delivery Reviewer (passe próprio, sem subagentes): PASS. PR real (`subtask/SV-236` ->
+`feature/SV-233`, PR #19), CI verde antes do merge.
 
 ## `feat-002.4` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
 

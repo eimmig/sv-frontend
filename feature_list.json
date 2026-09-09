@@ -259,7 +259,7 @@
         {
           "id": "feat-003.2",
           "name": "BettingHousesApi + tela real (lista + criar)",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-236",
           "detail": "Mesmo padrao de UsersApi/Users (feat-002.3) - PagedResponse generico novo (reaproveitavel por feat-004/005/006), BettingHousesApi.list()/create(), pagina BettingHouses com app-panel-layout (formulario + lista). Ja nasce com nomenclatura em ingles (feat-003.1 fechou a divida das paginas anteriores primeiro).",
           "checklist": [
