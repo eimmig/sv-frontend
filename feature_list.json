@@ -349,10 +349,47 @@
       "dependencies": [
         "feat-008"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (risco medio - primeiro formulario com regras de UX explicitas do TCC1, mitigado por precedente direto de feat-003/008 pro resto). Veredito: READY WITH CONCERNS, decisoes de escopo documentadas (nenhuma pendente de usuario). Contrato confirmado no codigo real de bets-service (BetsController/CreateBetRequest/BetResponse), nao so no vault: POST /api/v1/bets - bettingHouseId/sportId/leagueId/marketId (UUID, obrigatorios), tipsterId (UUID, opcional), ticketNumber/team1/team2/description/betType/playType (String, opcionais, sem enum - texto livre), stake (BigDecimal > 0, 422 invalid-stake), odd (BigDecimal > 1.00 estrito, 422 invalid-odd), betDate (Instant, obrigatorio). Header Idempotency-Key opcional (reenvio da mesma chave retorna a aposta ja criada, 200 em vez de 201) - gerado client-side (crypto.randomUUID()) por 'sessao de formulario', regenerado a cada reset/sucesso, protege contra duplo-submit em retry de rede ou duplo-clique (regra 5 de Shneiderman). 404 <recurso>-not-found se qualquer FK nao existir - mitigado por usar dropdowns (nao texto livre) alimentados por feat-003 (betting-houses) e feat-008 (sports/leagues/markets/tipsters), reduzindo a chance de FK invalida a quase zero. Mapeamento das 8 regras de ouro de Shneiderman (docs/services/web.md) pras decisoes de UI: (1) consistencia - reaproveita padrao de formulario/erro RFC 7807 ja estabelecido (loadInto/submitForm de feat-003); (2) atalhos - betDate default 'agora' (nao precisa digitar data em quase todo lancamento), formulario nao navega apos sucesso, so limpa e fica pronto pro proximo lancamento (fluxo de multiplos registros seguidos); (3) feedback informativo - banner de sucesso apos criar; (4) fechamento - banner de sucesso e o sinal explicito de que a transacao terminou (nao so o formulario limpar silenciosamente); (5) prevencao/tratamento de erro simples - dropdowns em vez de IDs digitados, validacao inline (stake>0, odd>1), Idempotency-Key contra duplo-submit; (6) reversao facil - botao 'Limpar' reseta o formulario inteiro antes de enviar (a acao so e irreversivel depois do submit, que e explicito); (7) locus de controle do usuario - nenhum auto-submit, botao explicito; (8) reducao de carga de memoria - dropdowns mostram nome (nao UUID), formulario agrupado em paineis por assunto (evento/detalhes/valores). 2 subtasks (implementacao + fechamento), mesmo padrao de feat-003/008.",
+      "jira": "SV-240",
+      "subtasks": [
+        {
+          "id": "feat-004.1",
+          "name": "BetsApi + formulario real (Idempotency-Key, dropdowns, regras de Shneiderman)",
+          "status": "in-progress",
+          "jira": "SV-241",
+          "detail": "core/bets-api.ts (create() com header Idempotency-Key). pages/register-bet real: carrega betting-houses (feat-003) + 4 catalogos (feat-008) via forkJoin, formulario com dropdowns, validacao inline, banner de sucesso, botao Limpar.",
+          "checklist": [
+            "core/bets-api.ts: interface CreateBetInput/Bet, create(input, idempotencyKey) via POST /api/v1/bets com header Idempotency-Key.",
+            "RegisterBet real: forkJoin carrega BettingHousesApi.list() + catalogApi('sports'|'leagues'|'markets'|'tipsters').list() num unico loadInto, erro de carga bloqueia o formulario (sem catalogo, sem como escolher FK valida).",
+            "Formulario (Reactive Forms): bettingHouseId/sportId/leagueId/marketId (select, obrigatorios), tipsterId (select, opcional, opcao vazia), ticketNumber/team1/team2/description/betType/playType (text, opcionais), stake (number, min>0), odd (number, min>1), betDate (datetime-local, default agora).",
+            "Idempotency-Key: crypto.randomUUID() gerado no ngOnInit e apos cada reset/sucesso, enviado no header a cada submit.",
+            "Banner de sucesso apos criar (regra 3/4 de Shneiderman) - formulario limpa e gera nova Idempotency-Key, sem navegar pra outra rota (permite registrar varias apostas seguidas).",
+            "Botao 'Limpar' reseta o formulario inteiro sem submeter (regra 6 - reversao facil antes do submit).",
+            "Erro de submit exibe detail do RFC 7807 (toProblemDetail/submitForm reaproveitados)."
+          ],
+          "validation": "Unit tests (HttpTestingController) cobrindo carga dos dropdowns, submit com sucesso (Idempotency-Key no header, banner de sucesso, formulario limpo), submit com erro (404/422). Testado nos dois temas e mobile/desktop.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-004.2",
+          "name": "i18n, Playwright, CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-242",
+          "detail": "Fecha a feature - mesmo padrao de feat-003.3/008.2.",
+          "checklist": [
+            "Todas as strings novas traduzidas nos 3 locales, validador de chaves rodado localmente.",
+            "Fluxo Playwright novo (mock via page.route): registrar aposta com sucesso (banner aparece, formulario limpa), erro de validacao (422 invalid-odd, por exemplo) exibido.",
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh (ng build + ng test com cobertura 80% + Playwright) verde.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done - conferir explicitamente que new_duplicated_lines_density do SonarCloud nao estoura (achado real de feat-003).",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas.",
+            "Vault (docs/) revisado: alguma descoberta desta feature sem nota correspondente? Se sim, atualizar a nota do assunto no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence; ../../feature_list.json (raiz) nao precisa mudar (epic-006 continua in-progress).",
+          "owner": "agente"
+        }
+      ],
       "evidence": ""
     },
     {
