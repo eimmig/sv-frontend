@@ -1,0 +1,14 @@
+<mat-tab-group class="catalogs" data-testid="catalogs-tabs">
+  <mat-tab [label]="'catalogs.sports.title' | transloco">
+    <app-catalog-manager resourcePath="sports" />
+  </mat-tab>
+  <mat-tab [label]="'catalogs.leagues.title' | transloco">
+    <app-catalog-manager resourcePath="leagues" />
+  </mat-tab>
+  <mat-tab [label]="'catalogs.markets.title' | transloco">
+    <app-catalog-manager resourcePath="markets" />
+  </mat-tab>
+  <mat-tab [label]="'catalogs.tipsters.title' | transloco">
+    <app-catalog-manager resourcePath="tipsters" />
+  </mat-tab>
+</mat-tab-group>
