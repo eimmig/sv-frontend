@@ -38,7 +38,7 @@
     "message": "You are using a temporary password. Change it as soon as possible.",
     "dismiss": "Got it"
   },
-  "usuarios": {
+  "users": {
     "createTitle": "New user",
     "listTitle": "Tenant users",
     "nameLabel": "Name",
@@ -51,5 +51,14 @@
       "ADMIN": "Admin",
       "MEMBER": "Member"
     }
+  },
+  "bettingHouses": {
+    "createTitle": "New betting house",
+    "listTitle": "Betting houses",
+    "nameLabel": "Name",
+    "initialBalanceLabel": "Initial balance",
+    "balanceLabel": "Current balance",
+    "create": "Create betting house",
+    "genericError": "Could not complete the operation. Please try again."
   }
 }

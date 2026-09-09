@@ -38,7 +38,7 @@
     "message": "Você está usando uma senha temporária. Troque-a assim que possível.",
     "dismiss": "Entendi"
   },
-  "usuarios": {
+  "users": {
     "createTitle": "Novo usuário",
     "listTitle": "Usuários do tenant",
     "nameLabel": "Nome",
@@ -51,5 +51,14 @@
       "ADMIN": "Administrador",
       "MEMBER": "Membro"
     }
+  },
+  "bettingHouses": {
+    "createTitle": "Nova casa de apostas",
+    "listTitle": "Casas de apostas",
+    "nameLabel": "Nome",
+    "initialBalanceLabel": "Saldo inicial",
+    "balanceLabel": "Saldo atual",
+    "create": "Criar casa de apostas",
+    "genericError": "Não foi possível completar a operação. Tente novamente."
   }
 }

@@ -239,22 +239,41 @@
       "subtasks": [
         {
           "id": "feat-003.1",
+          "name": "Renomear paginas/rotas/i18n de portugues pra ingles (divida de feat-001/002)",
+          "status": "done",
+          "jira": "SV-234",
+          "detail": "Achado real levantado pelo usuario durante esta subtask (nao pelo Plan Reviewer): docs/CONVENTIONS.md secao Git ja dizia 'nomes de rota, evento e codigo, todos ja em ingles', mas pages/historico, pages/registro-de-aposta, pages/usuarios e a propria pages/casas-de-apostas em andamento estavam em portugues desde feat-001.1 - nenhuma sessao anterior tinha cruzado a convencao contra o nome real dos arquivos. Usuario decidiu renomear tudo agora (nao so daqui pra frente) para nao deixar 3 features ja mergeadas como divida crescente.",
+          "checklist": [
+            "git mv pages/historico -> pages/history (Historico -> History, selector app-historico -> app-history).",
+            "git mv pages/registro-de-aposta -> pages/register-bet (RegistroDeAposta -> RegisterBet, selector app-registro-de-aposta -> app-register-bet).",
+            "git mv pages/usuarios -> pages/users (Usuarios -> Users, selector app-usuarios -> app-users, classes CSS .usuarios__* -> .users__*, i18n key 'usuarios.*' -> 'users.*' nos 3 locales).",
+            "pages/casas-de-apostas (ainda nao commitada) recriada direto como pages/betting-houses (sem passar por casas-de-apostas) - ver feat-003.2.",
+            "app.routes.ts: paths 'historico'->'history', 'registro-de-aposta'->'register-bet', 'usuarios'->'users', 'casas-de-apostas'->'betting-houses'.",
+            "core/app-nav/app-nav.html: routerLink dos 4 links atualizados.",
+            "e2e/auth.spec.ts: URLs e testids /usuarios->/users, usuarios-row->users-row.",
+            "validate-i18n-keys.py rodado apos a renomeacao - chaves continuam em sincronia nos 3 locales."
+          ],
+          "validation": "grep por 'usuarios|historico|registro-de-aposta|casas-de-apostas' em src/ e e2e/ sem resultado. ./init.sh e Playwright verdes apos a renomeacao.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-003.2",
           "name": "BettingHousesApi + tela real (lista + criar)",
           "status": "in-progress",
-          "jira": "SV-234",
-          "detail": "Mesmo padrao de UsersApi/Usuarios (feat-002.3) - PagedResponse generico novo (reaproveitavel por feat-004/005/006), BettingHousesApi.list()/create(), pagina CasasDeApostas com app-panel-layout (formulario + lista).",
+          "jira": "SV-236",
+          "detail": "Mesmo padrao de UsersApi/Users (feat-002.3) - PagedResponse generico novo (reaproveitavel por feat-004/005/006), BettingHousesApi.list()/create(), pagina BettingHouses com app-panel-layout (formulario + lista). Ja nasce com nomenclatura em ingles (feat-003.1 fechou a divida das paginas anteriores primeiro).",
           "checklist": [
             "core/paged-response.ts: interface generica PagedResponse<T> (content/page/size/totalElements/totalPages) - reaproveitavel pelas proximas features paginadas.",
             "core/betting-houses-api.ts: list(size=100)/create({name,initialBalance}) via GET/POST /api/v1/betting-houses.",
             "core/currency.ts: helper formatBrl(value) via Intl.NumberFormat('pt-BR', {style:'currency',currency:'BRL'}).",
-            "CasasDeApostas (pages/casas-de-apostas) real: lista (nome/saldo inicial/saldo atual) + formulario de criacao (nome, saldo inicial), erro exibe detail do RFC 7807 (toProblemDetail reaproveitado), sucesso recarrega a lista e limpa o formulario.",
-            "Rota 'casas-de-apostas' ja e guardada por authGuard desde feat-002.2 - sem mudanca de roteamento."
+            "BettingHouses (pages/betting-houses) real: lista (nome/saldo inicial/saldo atual) + formulario de criacao (nome, saldo inicial), erro exibe detail do RFC 7807 (toProblemDetail reaproveitado), sucesso recarrega a lista e limpa o formulario.",
+            "Rota 'betting-houses' ja e guardada por authGuard desde feat-002.2 - sem mudanca de roteamento."
           ],
           "validation": "Unit tests (HttpTestingController) cobrindo list/create sucesso e erro (409/400). Testado nos dois temas e mobile/desktop.",
           "owner": "agente"
         },
         {
-          "id": "feat-003.2",
+          "id": "feat-003.3",
           "name": "i18n, Playwright, CHANGELOG e verificacao final",
           "status": "not-started",
           "jira": "SV-235",

@@ -3,16 +3,16 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
-import { Usuarios } from './usuarios';
+import { Users } from './users';
 import { environment } from '../../../environments/environment';
 
-describe('Usuarios', () => {
-  let fixture: ComponentFixture<Usuarios>;
+describe('Users', () => {
+  let fixture: ComponentFixture<Users>;
   let httpMock: HttpTestingController;
 
   const langs = {
     'pt-BR': {
-      usuarios: {
+      users: {
         createTitle: 'Novo usuário',
         listTitle: 'Usuários do tenant',
         nameLabel: 'Nome',
@@ -27,7 +27,7 @@ describe('Usuarios', () => {
   };
 
   function createComponent() {
-    fixture = TestBed.createComponent(Usuarios);
+    fixture = TestBed.createComponent(Users);
     httpMock = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
   }
@@ -35,7 +35,7 @@ describe('Usuarios', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        Usuarios,
+        Users,
         TranslocoTestingModule.forRoot({
           langs,
           translocoConfig: { availableLangs: ['pt-BR'], defaultLang: 'pt-BR' },
@@ -57,7 +57,7 @@ describe('Usuarios', () => {
     ]);
     fixture.detectChanges();
 
-    const rows = fixture.nativeElement.querySelectorAll('[data-testid="usuarios-row"]');
+    const rows = fixture.nativeElement.querySelectorAll('[data-testid="users-row"]');
     expect(rows).toHaveLength(1);
     expect(rows[0].textContent).toContain('Ana');
   });
