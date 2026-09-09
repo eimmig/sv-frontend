@@ -48,3 +48,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-249](https://stakevault.atlassian.net/browse/SV-249) - RF12 (UI) - Atualizar status da aposta (ganha/perdida/devolvida)
 - [SV-250](https://stakevault.atlassian.net/browse/SV-250) - BetsApi.updateStatus + controles de status na aba Apostas do historico
 - [SV-251](https://stakevault.atlassian.net/browse/SV-251) - i18n, Playwright, CHANGELOG e verificacao final
+- [SV-252](https://stakevault.atlassian.net/browse/SV-252) - RF13 (UI) - Movimentacoes financeiras (depositos e saques)
+- [SV-253](https://stakevault.atlassian.net/browse/SV-253) - TransactionsApi.create + formulario de nova movimentacao na aba Movimentacoes do historico
+- [SV-254](https://stakevault.atlassian.net/browse/SV-254) - i18n, Playwright, CHANGELOG e verificacao final

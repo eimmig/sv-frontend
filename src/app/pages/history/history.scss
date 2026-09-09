@@ -12,6 +12,22 @@
   font-size: 14px;
 }
 
+.history__success {
+  margin: 0;
+  color: var(--color-positive);
+  font-size: 14px;
+}
+
+.history__create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  mat-form-field {
+    display: block;
+  }
+}
+
 .history__filters {
   display: flex;
   flex-wrap: wrap;

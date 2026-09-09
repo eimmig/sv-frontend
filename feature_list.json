@@ -497,11 +497,46 @@
       "dependencies": [
         "feat-005"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
-      "evidence": ""
+      "status": "done",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (risco baixo - CRUD simples, dois precedentes diretos ja no codigo real: painel form+lista de betting-houses.html, feat-003, e submit/reset/successMessage de register-bet.ts, feat-004). Veredito: READY, sem achado. Contrato confirmado no codigo real de bets-service (nao so no vault): POST /api/v1/transactions (TransactionsController.create) aceita CreateTransactionRequest{bettingHouseId: UUID, type: deposit|withdrawal, amount: BigDecimal @Positive} e retorna 201 com o Transaction criado - sem Idempotency-Key (diferente de POST /bets), sem regra de negocio adicional alem da validacao de campo (bean validation, 400 se invalido). Decisao de escopo (documentada aqui, nao pendente de usuario - description da feature ja deixava as duas opcoes, mesmo racional de feat-008/009 de seguir a pista do vault): formulario vive na propria tela de historico (History, feat-005), aba Movimentacoes - nao em casas de apostas (feat-003) - porque e la que o usuario ja esta olhando o efeito (lista de transacoes) e filtrando por casa de apostas, mesma tela onde a lista fica sem dados hoje. Layout: aba Movimentacoes ganha app-panel-layout (columns='360px 1fr', mesmo breakpoint de betting-houses.html) com um app-panel novo 'Nova movimentacao' (form: bettingHouseId select, type select deposit/withdrawal, amount number min=0.01/step=0.01 - espelha @Positive do backend) a esquerda do panel de filtro+lista existente (sem app-panel ainda - aba Apostas fica fora de escopo, so a de Movimentacoes ganha os panels). Submit chama TransactionsApi.create (novo metodo), sucesso reseta o formulario + mostra successMessage (mesmo padrao de register-bet.ts) + recarrega a pagina atual da lista de transacoes (loadTransactions(pagina atual), respeitando os filtros ja aplicados - nao insercao local, porque a lista e paginada/filtrada e a nova transacao pode nao caber na pagina/filtro atual). Erro (400 bean validation, ou qualquer outro RFC 7807) exibe o detail via toProblemDetail, mesmo padrao de markStatus (feat-009). Sem dialogo de confirmacao - mesmo padrao ja usado em betting-houses.create (acao real de bankroll sem confirmacao extra, botao ja e explicito - regra 7 de Shneiderman). i18n: reaproveita history.bettingHouseLabel/typeLabel/amountLabel/type.deposit/type.withdrawal ja existentes, so 3 chaves novas (newTransactionTitle/create/transactionSuccess) nos 3 locales. 2 subtasks (implementacao + fechamento), mesmo padrao das features anteriores. Persistence Auditor nao se aplica (frontend sem persistencia propria).",
+      "jira": "SV-252",
+      "subtasks": [
+        {
+          "id": "feat-010.1",
+          "name": "TransactionsApi.create + formulario de nova movimentacao na aba Movimentacoes do historico",
+          "status": "done",
+          "jira": "SV-253",
+          "detail": "Estende core/transactions-api.ts com create(bettingHouseId,type,amount). pages/history: aba Movimentacoes ganha app-panel-layout (panel de formulario + panel existente de filtro/lista), submit reseta form + recarrega a pagina atual da lista, erro exibe detail RFC 7807.",
+          "checklist": [
+            "core/transactions-api.ts: create(bettingHouseId: string, type: TransactionType, amount: number): Observable<Transaction> via POST /api/v1/transactions, body {bettingHouseId,type,amount}.",
+            "History (pages/history): aba Movimentacoes envolvida em app-panel-layout (columns='360px 1fr') com app-panel novo 'Nova movimentacao' (select casa de apostas, select tipo deposit/withdrawal, input number valor) a esquerda do panel existente de filtro+lista (aba Apostas nao muda).",
+            "Sucesso: form.reset() (idempotencyKey nao se aplica aqui, sem token pra renovar) + successMessage (mesmo padrao de register-bet.ts) + loadTransactions(pagina atual) pra puxar a nova transacao respeitando filtro ativo.",
+            "Erro (400 bean validation ou qualquer outro RFC 7807): exibe detail via toProblemDetail, sem quebrar a tabela.",
+            "i18n: history.newTransactionTitle/create/transactionSuccess nos 3 locales (bettingHouseLabel/typeLabel/amountLabel/type.deposit/type.withdrawal ja existem)."
+          ],
+          "validation": "Unit tests (HttpTestingController) cobrindo: submit valido cria a transacao e recarrega a lista, erro exibe detail. Testado nos dois temas e mobile/desktop (RNF01, colapso do app-panel-layout).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-010.2",
+          "name": "i18n, Playwright, CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-254",
+          "detail": "Fecha a feature - mesmo padrao das features anteriores.",
+          "checklist": [
+            "Todas as strings novas traduzidas nos 3 locales, validador de chaves rodado localmente.",
+            "Fluxo Playwright novo (mock via page.route): criar uma movimentacao (deposito ou saque) na aba Movimentacoes, ver a lista recarregar e a nova linha aparecer; erro exibido quando o backend rejeita.",
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh (ng build + ng test com cobertura 80% + Playwright) verde.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done.",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence.",
+          "owner": "agente"
+        }
+      ],
+      "evidence": "feat-010.1 (SV-253) e feat-010.2 (SV-254) done em 2026-09-09, ambas com PR mergeado (subtask->story, CI verde). feat-010.1: TransactionsApi.create (POST /api/v1/transactions, sem Idempotency-Key) + form 'Nova movimentacao' na aba Movimentacoes do historico, mesmo precedente de app-panel-layout (form+lista) ja usado em betting-houses.html e mesmo padrao de submit/reset/successMessage de register-bet.ts. Sucesso reseta o form e recarrega a pagina atual da lista (respeita filtro ativo); erro exibe o detail RFC 7807. Unit tests (HttpTestingController) cobrindo sucesso (reload disparado com o page certo) e erro sem detail (fallback pro genericError traduzido). feat-010.2: fluxo Playwright novo (e2e/history.spec.ts, describe 'RF13 - register a transaction'): criar um deposito reseta o form, mostra o success banner e a lista recarrega com a nova linha; erro 400 exibe o detail do backend. ./init.sh verde (35 arquivos, 97 testes, 85.13% stmts/80.24% funcs - cobertura de funcoes caiu pra 79.62% no meio do caminho por causa de um genericError() novo nao exercitado, corrigido acrescentando um teste que forca esse fallback via .error() sem body RFC 7807 em vez de abaixar o gate). Playwright completo verde (24/24). Verificacao visual real (nao so leitura de codigo) via 3 screenshots (desktop claro/escuro + mobile claro na aba Movimentacoes, script descartavel em e2e/, apagado antes do commit) confirmando o layout em 2 paineis (form + lista) nos dois temas e o colapso mobile (paineis empilham, mesmo padrao ja usado em betting-houses/register-bet). Self-review no padrao Delivery Reviewer/Test Suite Auditor (sem subagentes, diff pequeno e com 2 precedentes diretos no codigo) sem achado bloqueante. Vault revisado: nenhuma nota nova necessaria (reaproveita app-panel-layout e o padrao submit/reset ja documentados, sem gotcha novo)."
     },
     {
       "id": "feat-006",
