@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { BettingHouses } from './betting-houses';
+import { formatBrl } from '../../core/currency';
 import { environment } from '../../../environments/environment';
 
 describe('BettingHouses', () => {
@@ -67,6 +68,35 @@ describe('BettingHouses', () => {
     expect(rows).toHaveLength(1);
     expect(rows[0].textContent).toContain('Bet365');
     expect(rows[0].textContent).toContain('R$');
+  });
+
+  it('badges the balance delta positive/negative/neutral against the initial balance', () => {
+    createComponent();
+
+    expectListRequest().flush({
+      content: [
+        { id: '1', name: 'Bet365', initialBalance: 100, balance: 150, createdAt: '2026-01-01' },
+        { id: '2', name: 'Betano', initialBalance: 300, balance: 210, createdAt: '2026-01-01' },
+        { id: '3', name: 'Sportingbet', initialBalance: 50, balance: 50, createdAt: '2026-01-01' },
+      ],
+      page: 0,
+      size: 100,
+      totalElements: 3,
+      totalPages: 1,
+    });
+    fixture.detectChanges();
+
+    const badges: HTMLElement[] = fixture.nativeElement.querySelectorAll('[data-testid="betting-houses-delta"]');
+    expect(badges).toHaveLength(3);
+
+    expect(badges[0].classList).toContain('badge--positive');
+    expect(badges[0].textContent?.trim()).toBe(`+${formatBrl(50)}`);
+
+    expect(badges[1].classList).toContain('badge--negative');
+    expect(badges[1].textContent?.trim()).toBe(formatBrl(-90));
+
+    expect(badges[2].classList).toContain('badge--neutral');
+    expect(badges[2].textContent?.trim()).toBe(formatBrl(0));
   });
 
   it('creates a betting house and reloads the list', () => {

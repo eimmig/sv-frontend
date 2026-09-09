@@ -120,6 +120,8 @@ test.describe('RF01/RF02 - authentication and tenant user management', () => {
 
     await expect(page).toHaveURL(/\/users$/);
     await expect(page.getByTestId('users-row')).toContainText('Ana');
+    await expect(page.getByTestId('users-avatar')).toHaveText('A');
+    await expect(page.getByTestId('users-role-badge')).toHaveClass(/users__role--admin/);
   });
 
   test('a member does not see the "Usuários" link and is bounced from /users', async ({ page }) => {

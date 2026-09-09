@@ -55,6 +55,15 @@ export class BettingHouses {
     );
   }
 
+  /** Tonal badge next to the current balance (docs/DESIGN-SYSTEM.md "Badge de resultado"). */
+  protected delta(house: BettingHouse): number {
+    return house.balance - house.initialBalance;
+  }
+
+  protected formatDelta(value: number): string {
+    return value > 0 ? `+${formatBrl(value)}` : formatBrl(value);
+  }
+
   protected submit(): void {
     if (this.form.invalid || this.submitting()) {
       return;

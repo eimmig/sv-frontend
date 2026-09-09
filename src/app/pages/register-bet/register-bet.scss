@@ -39,3 +39,18 @@ mat-form-field {
   gap: 12px;
   margin-top: 8px;
 }
+
+.register-bet__potential-return {
+  margin: -4px 0 4px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-positive) 10%, transparent);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+
+  strong {
+    margin-left: 4px;
+    color: var(--color-positive);
+    font-size: 15px;
+  }
+}

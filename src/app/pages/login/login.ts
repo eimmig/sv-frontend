@@ -8,6 +8,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 import { submitForm } from '../../core/api-request';
 import { Auth } from '../../core/auth';
+import { Theme } from '../../core/theme';
 import { Panel } from '../../shared/panel/panel';
 
 @Component({
@@ -28,6 +29,7 @@ export class Login implements OnInit {
   private readonly router = inject(Router);
   private readonly formBuilder = inject(FormBuilder);
   private readonly transloco = inject(TranslocoService);
+  protected readonly theme = inject(Theme);
 
   protected readonly submitting = signal(false);
   protected readonly errorMessage = signal<string | null>(null);

@@ -63,9 +63,22 @@
         <tbody>
           @for (user of users(); track user.id) {
             <tr data-testid="users-row">
-              <td>{{ user.name }}</td>
+              <td>
+                <div class="users__identity">
+                  <span class="users__avatar" data-testid="users-avatar">{{ initials(user.name) }}</span>
+                  {{ user.name }}
+                </div>
+              </td>
               <td>{{ user.email }}</td>
-              <td>{{ 'users.role.' + user.role | transloco }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [class.badge--neutral]="user.role !== 'ADMIN'"
+                  [class.users__role--admin]="user.role === 'ADMIN'"
+                  data-testid="users-role-badge"
+                  >{{ 'users.role.' + user.role | transloco }}</span
+                >
+              </td>
             </tr>
           }
         </tbody>

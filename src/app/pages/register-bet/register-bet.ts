@@ -12,6 +12,7 @@ import { loadInto, submitForm } from '../../core/api-request';
 import { BetsApi } from '../../core/bets-api';
 import { BettingHouse, BettingHousesApi } from '../../core/betting-houses-api';
 import { CatalogEntry, catalogApi } from '../../core/catalog-api';
+import { formatBrl } from '../../core/currency';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 
@@ -53,6 +54,7 @@ export class RegisterBet implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly transloco = inject(TranslocoService);
 
+  protected readonly formatBrl = formatBrl;
   protected readonly options = signal<FormOptions>(EMPTY_OPTIONS);
   protected readonly loadError = signal<string | null>(null);
   protected readonly submitting = signal(false);
@@ -95,6 +97,12 @@ export class RegisterBet implements OnInit {
       this.loadError,
       () => this.transloco.translate('registerBet.genericError'),
     );
+  }
+
+  /** Live preview next to stake/odd - purely derived, no new business rule (stake × odd). */
+  protected potentialReturn(): number {
+    const raw = this.form.getRawValue();
+    return raw.stake > 0 && raw.odd > 0 ? raw.stake * raw.odd : 0;
   }
 
   protected reset(): void {

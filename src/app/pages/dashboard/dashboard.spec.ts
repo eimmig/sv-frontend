@@ -145,6 +145,18 @@ describe('Dashboard', () => {
     expect(roi.textContent).toContain('%');
   });
 
+  it('colors net profit/ROI negative when overall metrics show a loss', () => {
+    createComponent();
+    flushOptions();
+    flushStatistics({ overall: { totalStaked: 1000, netProfit: -150, roi: -0.15, winRate: 0.4, settledCount: 10 } });
+    fixture.detectChanges();
+
+    const netProfitCard = fixture.nativeElement.querySelector('[data-testid="dashboard-net-profit"]').closest('.dashboard__card');
+    const roiCard = fixture.nativeElement.querySelector('[data-testid="dashboard-roi"]').closest('.dashboard__card');
+    expect(netProfitCard.classList).toContain('dashboard__card--negative');
+    expect(roiCard.classList).toContain('dashboard__card--negative');
+  });
+
   it('renders segmented breakdown rows', () => {
     createComponent();
     flushOptions();

@@ -23,11 +23,11 @@ test.describe('smoke', () => {
     // Chromium defaults to en-US, which would make this test pass by accident.
     await languageSelector.click();
     await page.getByRole('option', { name: 'Português' }).click();
-    await expect(themeToggle).toHaveText(/modo (claro|escuro)/i);
+    await expect(themeToggle).toHaveAttribute('aria-label', /modo (claro|escuro)/i);
 
     await languageSelector.click();
     await page.getByRole('option', { name: 'English' }).click();
 
-    await expect(themeToggle).toHaveText(/(light|dark) mode/i);
+    await expect(themeToggle).toHaveAttribute('aria-label', /(light|dark) mode/i);
   });
 });

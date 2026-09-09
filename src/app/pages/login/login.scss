@@ -4,11 +4,50 @@
   align-items: center;
   justify-content: center;
   padding: 16px;
+  background:
+    radial-gradient(ellipse 640px 420px at 50% 0%, color-mix(in srgb, var(--color-brand) 12%, transparent), transparent),
+    var(--color-background);
 }
 
 .login {
   width: 100%;
   max-width: 360px;
+}
+
+.login__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.login__logo {
+  margin-bottom: 4px;
+}
+
+.login__wordmark {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.login__wordmark-stake {
+  font-weight: 400;
+  color: var(--color-text-primary);
+}
+
+.login__wordmark-vault {
+  font-weight: 500;
+  color: var(--color-brand);
+}
+
+.login__tagline {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
 }
 
 .login__form {

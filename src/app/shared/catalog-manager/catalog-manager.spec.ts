@@ -13,6 +13,8 @@ describe('CatalogManager', () => {
   const langs = {
     'pt-BR': {
       catalogs: {
+        createTitle: 'Nova entrada',
+        listTitle: 'Cadastradas',
         nameLabel: 'Nome',
         create: 'Adicionar',
         genericError: 'Não foi possível completar a operação. Tente novamente.',

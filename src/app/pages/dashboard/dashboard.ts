@@ -3,6 +3,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -45,6 +46,7 @@ const EMPTY_DASHBOARD: StatisticsDashboard = {
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
     MatSelectModule,
     MatTabsModule,
@@ -101,6 +103,17 @@ export class Dashboard implements OnInit {
 
   protected formatPercent(value: number): string {
     return formatPercent(value, this.language.current());
+  }
+
+  /** Money/ROI values are colored consistently with the won/lost badge (docs/DESIGN-SYSTEM.md). */
+  protected sign(value: number): 'positive' | 'negative' | 'neutral' {
+    if (value > 0) {
+      return 'positive';
+    }
+    if (value < 0) {
+      return 'negative';
+    }
+    return 'neutral';
   }
 
   protected applyFilter(): void {

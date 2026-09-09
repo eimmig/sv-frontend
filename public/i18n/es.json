@@ -37,6 +37,7 @@
   },
   "login": {
     "title": "Iniciar sesión",
+    "tagline": "Gestión de banca",
     "slugLabel": "Organización",
     "emailLabel": "Correo electrónico",
     "passwordLabel": "Contraseña",
@@ -80,6 +81,8 @@
     "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
   },
   "catalogs": {
+    "createTitle": "Nueva entrada",
+    "listTitle": "Registradas",
     "nameLabel": "Nombre",
     "create": "Agregar",
     "genericError": "No se pudo completar la operación. Inténtalo de nuevo.",
@@ -100,6 +103,7 @@
     "eventTitle": "Evento",
     "detailsTitle": "Detalles",
     "valuesTitle": "Valores",
+    "potentialReturnLabel": "Retorno potencial:",
     "bettingHouseLabel": "Casa de apuestas",
     "sportLabel": "Deporte",
     "leagueLabel": "Liga",

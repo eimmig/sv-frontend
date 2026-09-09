@@ -71,6 +71,7 @@ test.describe('RF08 - operations history', () => {
     expect(lastBettingHouseFilter).toBe('bh-1');
     await expect(page.getByTestId('history-bets-row')).toContainText('Bet365');
     await expect(page.getByTestId('history-bets-row')).not.toContainText('bh-1');
+    await expect(page.getByTestId('history-bets-status-badge')).toHaveClass(/badge--positive/);
   });
 
   test('switches to the transactions tab and paginates', async ({ page }) => {
@@ -103,6 +104,7 @@ test.describe('RF08 - operations history', () => {
     await page.getByRole('tab', { name: 'Transactions' }).click();
 
     await expect(page.getByTestId('history-transactions-row')).toContainText('Bet365');
+    await expect(page.getByTestId('history-transactions-type-badge')).toHaveClass(/badge--positive/);
     await expect(page.getByTestId('history-transactions-page-indicator')).toHaveText('Page 1 of 2');
 
     await page.getByTestId('history-transactions-next-page').click();
