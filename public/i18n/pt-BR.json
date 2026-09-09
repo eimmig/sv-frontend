@@ -31,6 +31,7 @@
     "bettingHouses": "Casas de apostas",
     "newBet": "Registrar aposta",
     "history": "Histórico",
+    "catalogs": "Catálogos",
     "users": "Usuários",
     "logout": "Sair"
   },
@@ -60,5 +61,22 @@
     "balanceLabel": "Saldo atual",
     "create": "Criar casa de apostas",
     "genericError": "Não foi possível completar a operação. Tente novamente."
+  },
+  "catalogs": {
+    "nameLabel": "Nome",
+    "create": "Adicionar",
+    "genericError": "Não foi possível completar a operação. Tente novamente.",
+    "sports": {
+      "title": "Esportes"
+    },
+    "leagues": {
+      "title": "Ligas"
+    },
+    "markets": {
+      "title": "Mercados"
+    },
+    "tipsters": {
+      "title": "Tipsters"
+    }
   }
 }
