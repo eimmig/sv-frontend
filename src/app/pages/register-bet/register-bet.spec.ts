@@ -128,6 +128,8 @@ describe('RegisterBet', () => {
   });
 
   it('does not submit while the form is invalid', () => {
+    expect(fixture.componentInstance['form'].invalid).toBe(true);
+
     fixture.componentInstance['submit']();
 
     httpMock.expectNone(`${environment.apiGatewayUrl}/api/v1/bets`);

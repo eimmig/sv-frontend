@@ -3,7 +3,7 @@
 } @else {
   <form [formGroup]="form" (ngSubmit)="submit()">
     @if (successMessage(); as message) {
-      <p class="register-bet__success" role="status" data-testid="register-bet-success">{{ message }}</p>
+      <output class="register-bet__success" data-testid="register-bet-success">{{ message }}</output>
     }
     @if (formError(); as message) {
       <p class="register-bet__error" role="alert" data-testid="register-bet-form-error">{{ message }}</p>
@@ -61,49 +61,115 @@
       <app-panel [title]="'registerBet.detailsTitle' | transloco">
         <mat-form-field appearance="outline">
           <mat-label>{{ 'registerBet.ticketNumberLabel' | transloco }}</mat-label>
-          <input matInput type="text" formControlName="ticketNumber" data-testid="register-bet-ticket-number" />
+          <input
+            matInput
+            id="register-bet-ticket-number-input"
+            type="text"
+            formControlName="ticketNumber"
+            data-testid="register-bet-ticket-number"
+            [attr.aria-label]="'registerBet.ticketNumberLabel' | transloco"
+          />
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>{{ 'registerBet.team1Label' | transloco }}</mat-label>
-          <input matInput type="text" formControlName="team1" data-testid="register-bet-team1" />
+          <input
+            matInput
+            id="register-bet-team1-input"
+            type="text"
+            formControlName="team1"
+            data-testid="register-bet-team1"
+            [attr.aria-label]="'registerBet.team1Label' | transloco"
+          />
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>{{ 'registerBet.team2Label' | transloco }}</mat-label>
-          <input matInput type="text" formControlName="team2" data-testid="register-bet-team2" />
+          <input
+            matInput
+            id="register-bet-team2-input"
+            type="text"
+            formControlName="team2"
+            data-testid="register-bet-team2"
+            [attr.aria-label]="'registerBet.team2Label' | transloco"
+          />
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>{{ 'registerBet.betTypeLabel' | transloco }}</mat-label>
-          <input matInput type="text" formControlName="betType" data-testid="register-bet-bet-type" />
+          <input
+            matInput
+            id="register-bet-bet-type-input"
+            type="text"
+            formControlName="betType"
+            data-testid="register-bet-bet-type"
+            [attr.aria-label]="'registerBet.betTypeLabel' | transloco"
+          />
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>{{ 'registerBet.playTypeLabel' | transloco }}</mat-label>
-          <input matInput type="text" formControlName="playType" data-testid="register-bet-play-type" />
+          <input
+            matInput
+            id="register-bet-play-type-input"
+            type="text"
+            formControlName="playType"
+            data-testid="register-bet-play-type"
+            [attr.aria-label]="'registerBet.playTypeLabel' | transloco"
+          />
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>{{ 'registerBet.descriptionLabel' | transloco }}</mat-label>
-          <textarea matInput formControlName="description" data-testid="register-bet-description"></textarea>
+          <textarea
+            matInput
+            id="register-bet-description-input"
+            formControlName="description"
+            data-testid="register-bet-description"
+            [attr.aria-label]="'registerBet.descriptionLabel' | transloco"
+          ></textarea>
         </mat-form-field>
       </app-panel>
 
       <app-panel [title]="'registerBet.valuesTitle' | transloco">
         <mat-form-field appearance="outline">
           <mat-label>{{ 'registerBet.stakeLabel' | transloco }}</mat-label>
-          <input matInput type="number" min="0.01" step="0.01" formControlName="stake" data-testid="register-bet-stake" />
+          <input
+            matInput
+            id="register-bet-stake-input"
+            type="number"
+            min="0.01"
+            step="0.01"
+            formControlName="stake"
+            data-testid="register-bet-stake"
+            [attr.aria-label]="'registerBet.stakeLabel' | transloco"
+          />
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>{{ 'registerBet.oddLabel' | transloco }}</mat-label>
-          <input matInput type="number" min="1.01" step="0.01" formControlName="odd" data-testid="register-bet-odd" />
+          <input
+            matInput
+            id="register-bet-odd-input"
+            type="number"
+            min="1.01"
+            step="0.01"
+            formControlName="odd"
+            data-testid="register-bet-odd"
+            [attr.aria-label]="'registerBet.oddLabel' | transloco"
+          />
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>{{ 'registerBet.betDateLabel' | transloco }}</mat-label>
-          <input matInput type="datetime-local" formControlName="betDate" data-testid="register-bet-date" />
+          <input
+            matInput
+            id="register-bet-date-input"
+            type="datetime-local"
+            formControlName="betDate"
+            data-testid="register-bet-date"
+            [attr.aria-label]="'registerBet.betDateLabel' | transloco"
+          />
         </mat-form-field>
 
         <div class="register-bet__actions">
