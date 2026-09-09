@@ -78,5 +78,29 @@
     "tipsters": {
       "title": "Tipsters"
     }
+  },
+  "registerBet": {
+    "eventTitle": "Event",
+    "detailsTitle": "Details",
+    "valuesTitle": "Values",
+    "bettingHouseLabel": "Betting house",
+    "sportLabel": "Sport",
+    "leagueLabel": "League",
+    "marketLabel": "Market",
+    "tipsterLabel": "Tipster",
+    "tipsterNone": "None",
+    "ticketNumberLabel": "Ticket number",
+    "team1Label": "Team 1",
+    "team2Label": "Team 2",
+    "betTypeLabel": "Bet type",
+    "playTypeLabel": "Play type",
+    "descriptionLabel": "Description",
+    "stakeLabel": "Stake",
+    "oddLabel": "Odd",
+    "betDateLabel": "Bet date",
+    "reset": "Clear",
+    "submit": "Register bet",
+    "success": "Bet registered successfully.",
+    "genericError": "Could not complete the operation. Please try again."
   }
 }

@@ -1,0 +1,41 @@
+:host {
+  display: block;
+  height: calc(100vh - 64px);
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
+
+app-panel-layout {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+mat-form-field {
+  display: block;
+}
+
+.register-bet__error {
+  margin: 0;
+  color: var(--color-negative);
+  font-size: 14px;
+}
+
+.register-bet__success {
+  margin: 0;
+  color: var(--color-positive);
+  font-size: 14px;
+}
+
+.register-bet__actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}

@@ -1,1 +1,125 @@
-<p>register-bet works!</p>
+@if (loadError(); as message) {
+  <p class="register-bet__error" role="alert" data-testid="register-bet-load-error">{{ message }}</p>
+} @else {
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    @if (successMessage(); as message) {
+      <p class="register-bet__success" role="status" data-testid="register-bet-success">{{ message }}</p>
+    }
+    @if (formError(); as message) {
+      <p class="register-bet__error" role="alert" data-testid="register-bet-form-error">{{ message }}</p>
+    }
+
+    <app-panel-layout columns="1fr 1fr 1fr">
+      <app-panel [title]="'registerBet.eventTitle' | transloco">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'registerBet.bettingHouseLabel' | transloco }}</mat-label>
+          <mat-select formControlName="bettingHouseId" data-testid="register-bet-betting-house">
+            @for (house of options().bettingHouses; track house.id) {
+              <mat-option [value]="house.id">{{ house.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'registerBet.sportLabel' | transloco }}</mat-label>
+          <mat-select formControlName="sportId" data-testid="register-bet-sport">
+            @for (sport of options().sports; track sport.id) {
+              <mat-option [value]="sport.id">{{ sport.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'registerBet.leagueLabel' | transloco }}</mat-label>
+          <mat-select formControlName="leagueId" data-testid="register-bet-league">
+            @for (league of options().leagues; track league.id) {
+              <mat-option [value]="league.id">{{ league.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'registerBet.marketLabel' | transloco }}</mat-label>
+          <mat-select formControlName="marketId" data-testid="register-bet-market">
+            @for (market of options().markets; track market.id) {
+              <mat-option [value]="market.id">{{ market.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'registerBet.tipsterLabel' | transloco }}</mat-label>
+          <mat-select formControlName="tipsterId" data-testid="register-bet-tipster">
+            <mat-option value="">{{ 'registerBet.tipsterNone' | transloco }}</mat-option>
+            @for (tipster of options().tipsters; track tipster.id) {
+              <mat-option [value]="tipster.id">{{ tipster.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </app-panel>
+
+      <app-panel [title]="'registerBet.detailsTitle' | transloco">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'registerBet.ticketNumberLabel' | transloco }}</mat-label>
+          <input matInput type="text" formControlName="ticketNumber" data-testid="register-bet-ticket-number" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'registerBet.team1Label' | transloco }}</mat-label>
+          <input matInput type="text" formControlName="team1" data-testid="register-bet-team1" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'registerBet.team2Label' | transloco }}</mat-label>
+          <input matInput type="text" formControlName="team2" data-testid="register-bet-team2" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'registerBet.betTypeLabel' | transloco }}</mat-label>
+          <input matInput type="text" formControlName="betType" data-testid="register-bet-bet-type" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'registerBet.playTypeLabel' | transloco }}</mat-label>
+          <input matInput type="text" formControlName="playType" data-testid="register-bet-play-type" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'registerBet.descriptionLabel' | transloco }}</mat-label>
+          <textarea matInput formControlName="description" data-testid="register-bet-description"></textarea>
+        </mat-form-field>
+      </app-panel>
+
+      <app-panel [title]="'registerBet.valuesTitle' | transloco">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'registerBet.stakeLabel' | transloco }}</mat-label>
+          <input matInput type="number" min="0.01" step="0.01" formControlName="stake" data-testid="register-bet-stake" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'registerBet.oddLabel' | transloco }}</mat-label>
+          <input matInput type="number" min="1.01" step="0.01" formControlName="odd" data-testid="register-bet-odd" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'registerBet.betDateLabel' | transloco }}</mat-label>
+          <input matInput type="datetime-local" formControlName="betDate" data-testid="register-bet-date" />
+        </mat-form-field>
+
+        <div class="register-bet__actions">
+          <button mat-stroked-button type="button" data-testid="register-bet-reset" (click)="reset()">
+            {{ 'registerBet.reset' | transloco }}
+          </button>
+          <button
+            mat-flat-button
+            type="submit"
+            data-testid="register-bet-submit"
+            [disabled]="form.invalid || submitting()"
+          >
+            {{ 'registerBet.submit' | transloco }}
+          </button>
+        </div>
+      </app-panel>
+    </app-panel-layout>
+  </form>
+}
