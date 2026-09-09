@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { History } from './history';
+import { Bet } from '../../core/bets-api';
 import { environment } from '../../../environments/environment';
 
 describe('History', () => {
@@ -25,6 +26,10 @@ describe('History', () => {
         oddLabel: 'Odd',
         statusLabel: 'Status',
         dateLabel: 'Data',
+        actionsLabel: 'Ações',
+        markWon: 'Ganha',
+        markLost: 'Perdida',
+        markVoid: 'Devolvida',
         typeLabel: 'Tipo',
         amountLabel: 'Valor',
         previousPage: 'Anterior',
@@ -146,5 +151,67 @@ describe('History', () => {
 
   it('formats a date using the active language', () => {
     expect(fixture.componentInstance['formatDateTime']('2026-03-05T14:30:00.000Z')).toBeTruthy();
+  });
+
+  it('marks a pending bet as won and replaces it in place, without reloading the list', () => {
+    const pendingBet: Bet = {
+      id: '1',
+      bettingHouseId: 'bh-1',
+      sportId: 'sp-1',
+      leagueId: 'lg-1',
+      marketId: 'mk-1',
+      tipsterId: null,
+      ticketNumber: null,
+      team1: null,
+      team2: null,
+      description: null,
+      betType: null,
+      playType: null,
+      stake: 100,
+      odd: 1.85,
+      status: 'pending',
+      betDate: '2026-03-01T18:00:00Z',
+    };
+    fixture.componentInstance['betsPage'].set({ content: [pendingBet], page: 0, size: 20, totalElements: 1, totalPages: 1 });
+
+    fixture.componentInstance['markStatus'](pendingBet, 'won');
+
+    const request = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/bets/1/status`);
+    expect(request.request.method).toBe('PATCH');
+    expect(request.request.body).toEqual({ status: 'won' });
+    request.flush({ ...pendingBet, status: 'won' });
+
+    expect(fixture.componentInstance['betsPage']().content[0].status).toBe('won');
+    expect(fixture.componentInstance['settlingBetId']()).toBeNull();
+  });
+
+  it('shows the RFC 7807 detail when the status transition is rejected', () => {
+    const pendingBet: Bet = {
+      id: '1',
+      bettingHouseId: 'bh-1',
+      sportId: 'sp-1',
+      leagueId: 'lg-1',
+      marketId: 'mk-1',
+      tipsterId: null,
+      ticketNumber: null,
+      team1: null,
+      team2: null,
+      description: null,
+      betType: null,
+      playType: null,
+      stake: 100,
+      odd: 1.85,
+      status: 'pending',
+      betDate: '2026-03-01T18:00:00Z',
+    };
+    fixture.componentInstance['betsPage'].set({ content: [pendingBet], page: 0, size: 20, totalElements: 1, totalPages: 1 });
+
+    fixture.componentInstance['markStatus'](pendingBet, 'won');
+
+    httpMock
+      .expectOne(`${environment.apiGatewayUrl}/api/v1/bets/1/status`)
+      .flush({ detail: 'Transição de status inválida.' }, { status: 422, statusText: 'Unprocessable Entity' });
+
+    expect(fixture.componentInstance['settleError']()).toBe('Transição de status inválida.');
   });
 });

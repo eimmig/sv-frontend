@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,7 +17,10 @@ import { formatBrl } from '../../core/currency';
 import { formatDateTime } from '../../core/date-format';
 import { Language } from '../../core/language';
 import { PagedResponse } from '../../core/paged-response';
+import { toProblemDetail } from '../../core/problem-detail';
 import { Transaction, TransactionsApi } from '../../core/transactions-api';
+
+type SettledBetStatus = 'won' | 'lost' | 'void';
 
 interface Options {
   readonly bettingHouses: BettingHouse[];
@@ -62,6 +65,8 @@ export class History implements OnInit {
 
   protected readonly betsPage = signal<PagedResponse<Bet>>(emptyPage());
   protected readonly betsError = signal<string | null>(null);
+  protected readonly settlingBetId = signal<string | null>(null);
+  protected readonly settleError = signal<string | null>(null);
   protected readonly betFilterForm = this.formBuilder.nonNullable.group({
     bettingHouseId: [''],
     sportId: [''],
@@ -139,6 +144,26 @@ export class History implements OnInit {
       this.betsError,
       () => this.transloco.translate('history.genericError'),
     );
+  }
+
+  protected markStatus(bet: Bet, status: SettledBetStatus): void {
+    this.settlingBetId.set(bet.id);
+    this.settleError.set(null);
+    this.betsApi.updateStatus(bet.id, status).subscribe({
+      next: (updated) => {
+        this.settlingBetId.set(null);
+        const page = this.betsPage();
+        this.betsPage.set({
+          ...page,
+          content: page.content.map((current) => (current.id === updated.id ? updated : current)),
+        });
+      },
+      error: (httpError: HttpErrorResponse) => {
+        this.settlingBetId.set(null);
+        const problem = toProblemDetail(httpError);
+        this.settleError.set(problem.detail ?? this.transloco.translate('history.genericError'));
+      },
+    });
   }
 
   protected applyTransactionFilter(): void {

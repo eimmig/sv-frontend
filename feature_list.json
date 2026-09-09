@@ -449,10 +449,45 @@
       "dependencies": [
         "feat-005"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (risco baixo/medio - primeira acao destrutiva/irreversivel do app, mitigado por precedente direto do padrao loadInto/submitForm ja usado em toda tela deste app). Veredito: READY. Contrato confirmado no codigo real de bets-service (nao so no vault): PATCH /api/v1/bets/{id}/status (BetsController.updateStatus) aceita UpdateBetStatusRequest{status: 'won'|'lost'|'void'} - 'pending' e rejeitado pelo proprio backend (BetService.updateStatus so aceita transicao PENDING->WON|LOST|VOID via betRepository.transitionStatus, qualquer outra combinacao, incluindo uma aposta ja liquidada de novo, lanca InvalidStatusTransitionException, RFC 7807 422 'invalid-status-transition', mensagem ja localizada nos 3 locales de bets-service - RN06). Transicao e definitiva (sem endpoint de 'desfazer' no backlog) - por isso a UI so oferece a acao em linhas com status='pending', nunca em linhas ja liquidadas (nao ha ambiguidade de estado a esconder, o proprio filtro de status na tabela ja deixa claro). Decisao de escopo (documentada aqui, nao pendente de usuario - a description da feature ja aponta a direcao, mesmo racional de feat-008/009 desta sessao: seguir a pista do vault em vez de perguntar quando so ha uma leitura razoavel): a acao vive na propria aba 'Apostas' de history.html (feat-005), nao numa tela nova - cada linha com status pendente ganha 3 botoes (Ganha/Perdida/Devolvida) que disparam o PATCH direto e recarregam a pagina atual da lista (mesmo padrao de reload apos mutacao ja usado em bettingHouses/users/catalogs); sem dialogo de confirmacao (nenhuma tela deste app usa modal ate agora, e o botao ja e uma acao explicita e nomeada - regra 7 de Shneiderman, locus de controle do usuario - e nao um auto-submit); erro (422 se a aposta ja foi liquidada por outra aba/sessao entre o carregamento da lista e o clique) exibe o detail RFC 7807 ja localizado do backend, reaproveitando toProblemDetail. BetsApi (feat-004/005) ganha updateStatus(id,status) via PATCH, retornando o Bet atualizado - a linha na tabela e atualizada localmente com a resposta (sem precisar recarregar a pagina inteira, evita perder a posicao de scroll/pagina). Sem impacto em stats-service nesta feature (BetSettled ja e publicado pelo backend na propria chamada, consumido de forma assincrona - RN06 ja diz respeito ao backend, fora do escopo do frontend). 2 subtasks (implementacao + fechamento), mesmo padrao das features anteriores.",
+      "jira": "SV-249",
+      "subtasks": [
+        {
+          "id": "feat-009.1",
+          "name": "BetsApi.updateStatus + controles de status na aba Apostas do historico",
+          "status": "in-progress",
+          "jira": "SV-250",
+          "detail": "Estende core/bets-api.ts com updateStatus(id,status). pages/history/history.ts/html: linhas com status='pending' ganham 3 botoes (Ganha/Perdida/Devolvida), sucesso atualiza a linha localmente, erro exibe detail RFC 7807.",
+          "checklist": [
+            "core/bets-api.ts: updateStatus(id: string, status: BetStatus): Observable<Bet> via PATCH /api/v1/bets/{id}/status, body {status}.",
+            "History (pages/history): 3 botoes (won/lost/void) visiveis so em linhas com bet.status==='pending' na tabela da aba Apostas, cada um com id+aria-label (padrao de docs/CONVENTIONS.md).",
+            "Sucesso: substitui o Bet daquela linha no array atual (sem recarregar a pagina/lista inteira) - reaproveita a mesma tecnica de atualizacao local ja usada onde aplicavel neste app, ou um loadBets(pagina atual) simples se nao houver precedente direto.",
+            "Erro (422 aposta ja liquidada por outra sessao, ou qualquer outro RFC 7807): exibe detail via toProblemDetail, sem quebrar a tabela.",
+            "i18n: 3 rotulos de acao (history.markWon/markLost/markVoid) nos 3 locales."
+          ],
+          "validation": "Unit tests (HttpTestingController) cobrindo: botoes aparecem so em linhas pendentes, sucesso atualiza a linha, erro exibe detail. Testado nos dois temas e mobile/desktop.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-009.2",
+          "name": "i18n, Playwright, CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-251",
+          "detail": "Fecha a feature - mesmo padrao das features anteriores.",
+          "checklist": [
+            "Todas as strings novas traduzidas nos 3 locales, validador de chaves rodado localmente.",
+            "Fluxo Playwright novo (mock via page.route): marcar aposta pendente como ganha, ver o status da linha atualizar sem reload de pagina; erro 422 exibido quando o backend rejeita a transicao.",
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh (ng build + ng test com cobertura 80% + Playwright) verde.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done.",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence.",
+          "owner": "agente"
+        }
+      ],
       "evidence": ""
     },
     {
