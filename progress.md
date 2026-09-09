@@ -3,7 +3,7 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Feature ativa:** `feat-001` (`feat-001.1`/`.2` done, `feat-001.3`..`.9` restantes)
+**Feature ativa:** `feat-001` (`feat-001.1`/`.2`/`.3` done, `feat-001.4`..`.9` restantes)
 
 ## Status
 
@@ -14,14 +14,15 @@
       em 2026-09-09.
 - [x] `feat-001.2` (Angular Material M3 + tema claro/escuro + tokens StakeVault) — `done` em
       2026-09-09.
+- [x] `feat-001.3` (transloco i18n + seletor de idioma persistido) — `done` em 2026-09-09.
 
 ### Em andamento
 
-- `feat-001` — próxima subtask: `feat-001.3` (transloco i18n).
+- `feat-001` — próxima subtask: `feat-001.4` (`app-panel-layout`/`app-panel`).
 
 ### Próximos passos (Next Steps)
 
-1. `feat-001.3`..`feat-001.9` (ver `feature_list.json` deste app).
+1. `feat-001.4`..`feat-001.9` (ver `feature_list.json` deste app).
 
 ## Bloqueios / Riscos
 
@@ -127,6 +128,40 @@ cor semente literal pro papel `primary` em tema claro, usa o tom calculado - com
 esperado do algoritmo, não bug); `--color-action-neutral` presente nos dois blocos claro/escuro
 com os valores exatos do vault. `ng serve` testado manualmente (porta 4301), sem erro de console.
 1 subtask (SV-211). `./init.sh` verde (12 testes, 0 falhas, cobertura 98.82% stmts).
+
+## `feat-001.3` fechada — transloco i18n + seletor de idioma persistido (2026-09-09)
+
+`Language` (`src/app/core/language.ts`) substitui o `ActiveLocale` provisório: mesmo padrão do
+serviço `Theme` (signal + `localStorage`, default calculado se nada persistido) — aqui o default é
+o idioma do navegador (`navigator.language` mapeado pra `pt-BR`/`en-US`/`es`, caindo pra `pt-BR`
+se não reconhecido), não um valor fixo. `Language` é a única fonte de verdade: dirige tanto o
+`TranslocoService` (`setActiveLang()`) quanto o interceptor de `Accept-Language`, que agora injeta
+`Language` em vez do `ActiveLocale` removido.
+
+**Achado real de estrutura (mesma classe dos gotchas de `feat-001.1`/`.2`)**: toda a documentação
+(`CLAUDE.md` deste app, `docs/CONVENTIONS.md`, `docs/CI-CD.md`, o próprio
+`validate-i18n-keys.py` e o `ci.yml` deste repositório) fixava `src/assets/i18n/*.json` como
+caminho dos arquivos de locale — convenção pré-Angular 22. O `ng new` real deste app (`feat-001.1`)
+usa `public/` (não `src/assets/`) pra arquivos servidos como estão; o guard do passo de i18n no CI
+nunca teria ativado. Corrigido nos 3 lugares (`ci.yml`, `validate-i18n-keys.py`,
+`docs/CI-CD.md`/`CLAUDE.md`) — arquivos reais em `public/i18n/{pt-BR,en-US,es}.json`, confirmado
+servindo em `/i18n/{lang}.json` via `ng serve` real (não só inspeção estática).
+
+`TranslocoHttpLoader` customizado (`src/app/core/transloco-loader.ts`) busca as traduções via
+`HttpClient` em vez do pacote `@ngneat/transloco-http-loader` separado — evita mais uma
+dependência pra um `get()` de uma linha. `theme-toggle.html` migrado pra usar o pipe `transloco`
+(única string de UI hardcoded que já existia no app) — prova a integração ponta a ponta, não só a
+infraestrutura.
+
+Testes: `TranslocoTestingModule.forRoot()` nos specs que tocam componentes/serviços dependentes de
+`TranslocoService` (`language.spec.ts`, `language-selector.spec.ts`, `accept-language-interceptor.spec.ts`,
+`theme-toggle.spec.ts`, `app.spec.ts`) — `navigator.language` stubado via `Object.defineProperty`
+nos testes que dependem do locale default do navegador, já que o jsdom do vitest usa `en-US` por
+padrão (não `pt-BR`). `Delivery Reviewer` rodado sobre o diff (achados P3, não bloqueantes:
+`TranslocoHttpLoader` usa path absoluto `/i18n/` — assume deploy na raiz, sem evidência de
+subpath neste projeto; `mat-select` do seletor de idioma fora de `mat-form-field` — polish visual
+fica pra `feat-001.8`/Impeccable). `./init.sh` verde (18 testes, 96.77% stmts). Smoke manual via
+`ng serve` confirmando os 3 JSONs servidos corretamente. 1 subtask (SV-212).
 
 ## Evidência de conclusão
 

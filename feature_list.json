@@ -44,7 +44,7 @@
         {
           "id": "feat-001.3",
           "name": "transloco i18n (pt-BR/en-US/es) + seletor de idioma persistido",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-212",
           "detail": "Tres locales sempre em sincronia - ver docs/CONVENTIONS.md 'Internacionalizacao (i18n)'. Interceptor de Accept-Language da subtask 1 passa a refletir o idioma ativo de verdade.",
           "checklist": [
