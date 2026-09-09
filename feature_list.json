@@ -219,13 +219,13 @@
       ],
       "status": "in-progress",
       "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (baixo risco, mudanca de config bem entendida, porte verbatim de padrao ja provado em 4 repositorios). Veredito: READY, 1 achado MINOR sem correcao necessaria (auth-service usa um step 'story-gate' compartilhado em vez da condicao inline repetida que telegram-integration/apps/web ja usam - manter o estilo inline ja estabelecido neste repositorio, nao portar o padrao Maven). Confirmado via API publica do SonarCloud (curl direto, sem token) que eimmig_sv-frontend tem 0 issues/0 hotspots abertos - seguro habilitar o gate agora.",
-      "jira": "",
+      "jira": "SV-220",
       "subtasks": [
         {
           "id": "feat-007.1",
           "name": "sonar.qualitygate.wait + validate-sonar-issues.py",
           "status": "in-progress",
-          "jira": "",
+          "jira": "SV-221",
           "detail": "Porta o padrao exato de services/telegram-integration/.github/workflows/ci.yml (mesmo mecanismo, sonarqube-scan-action) e .github/scripts/validate-sonar-issues.py, so trocando o projectKey pra eimmig_sv-frontend.",
           "checklist": [
             "Passo 'SonarCloud' do ci.yml deste repositorio ganha -Dsonar.qualitygate.wait=true, pulado so em push direto pra develop (API do plano gratuito recusa computar gate pra branch != main, mesma causa raiz do proximo passo).",
