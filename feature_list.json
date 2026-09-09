@@ -399,7 +399,7 @@
       "dependencies": [
         "feat-004"
       ],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (risco baixo, precedente direto de feat-003/004/008). Veredito: READY. Contrato confirmado no codigo real de bets-service: GET /api/v1/bets (filtros opcionais bettingHouseId/sportId/leagueId/marketId/tipsterId/from/to, BetResponse so tem IDs, nao nomes - resolvidos client-side contra os catalogos ja carregados, mesmo padrao de forkJoin de feat-004) e GET /api/v1/transactions (filtros bettingHouseId/from/to, TransactionResponse{id,bettingHouseId,type,amount,createdAt}). BetStatus (pending/won/lost/void) e TransactionType (deposit/withdrawal) confirmados como @JsonProperty minusculo no codigo real. Decisao de escopo (RF12/RF13 fora, ver description) ja tomada com o usuario antes desta entrada. Diferente de feat-003/004/008 (listas pequenas, sem paginacao real): historico cresce ao longo do tempo, entao esta e a primeira tela com controles de paginacao de verdade (Anterior/Proximo + indicador de pagina, usando page/totalPages do PagedResponse) em vez de buscar 1 pagina grande. 2 abas (mat-tab-group, mesmo padrao de feat-008): Apostas e Movimentacoes, cada uma com formulario de filtro + tabela paginada. Aplicando de saida o padrao de id+aria-label em inputs e <output> pra banner (docs/CONVENTIONS.md, achado de feat-002/004) - evita repetir o ciclo de achado tardio do SonarCloud pela 3a vez. 2 subtasks (implementacao + fechamento), mesmo padrao das features anteriores.",
       "jira": "SV-243",
       "subtasks": [
@@ -440,7 +440,7 @@
           "owner": "agente"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-09 - 2 subtasks (feat-005.1..2), cada uma via PR real no GitHub (subtask/SV-244, SV-245 -> feature/SV-243) com CI verde antes do merge. Tela de historico somente leitura (2 abas: Apostas/Movimentacoes) - RF12/RF13 excluidos por decisao do usuario, viram feat-009/feat-010. BetResponse/TransactionResponse so trazem IDs, nomes resolvidos client-side contra betting-houses+catalogos (mesmo forkJoin de feat-004). Primeira tela com paginacao de verdade (Anterior/Proxima + indicador de pagina) - as anteriores buscavam 1 pagina grande por serem listas pequenas por natureza. core/date-format.ts novo: datas respeitam o idioma ativo de verdade (diferente de formatBrl, sempre BRL). Padrao de id+aria-label/<output> (docs/CONVENTIONS.md, achado de feat-002/004) aplicado de saida - sem retrofit de SonarCloud necessario desta vez. Achado real de QA visual (nao SonarCloud): tabelas sem overflow-x:auto cortavam colunas em mobile - corrigido com wrapper de scroll horizontal. 83 testes unitarios (33 arquivos) + 17 Playwright, cobertura 86.89%/89.08%/81.75%/92.08%. Delivery Reviewer e Test Suite Auditor (passe proprio, sem subagentes): PASS em todas as passadas, sem achado bloqueante. ./init.sh verde, Playwright (17 testes) verde. epic-006 (raiz) permanece in-progress - resta so feat-006 (RF10/RF11 UI). feat-009 (RF12) e feat-010 (RF13) registradas no backlog, not-started."
     },
     {
       "id": "feat-009",
