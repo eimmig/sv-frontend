@@ -1,1 +1,59 @@
-<p>usuarios works!</p>
+<app-panel-layout columns="360px 1fr">
+  <app-panel [title]="'usuarios.createTitle' | transloco">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="usuarios__form">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'usuarios.nameLabel' | transloco }}</mat-label>
+        <input matInput type="text" formControlName="name" data-testid="usuarios-name" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'usuarios.emailLabel' | transloco }}</mat-label>
+        <input matInput type="email" formControlName="email" data-testid="usuarios-email" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'usuarios.passwordLabel' | transloco }}</mat-label>
+        <input
+          matInput
+          type="password"
+          formControlName="password"
+          data-testid="usuarios-password"
+          autocomplete="new-password"
+        />
+      </mat-form-field>
+
+      @if (formError(); as message) {
+        <p class="usuarios__error" role="alert" data-testid="usuarios-form-error">{{ message }}</p>
+      }
+
+      <button mat-flat-button type="submit" data-testid="usuarios-submit" [disabled]="form.invalid || submitting()">
+        {{ 'usuarios.create' | transloco }}
+      </button>
+    </form>
+  </app-panel>
+
+  <app-panel [title]="'usuarios.listTitle' | transloco">
+    @if (loadError(); as message) {
+      <p class="usuarios__error" role="alert" data-testid="usuarios-load-error">{{ message }}</p>
+    } @else {
+      <table class="usuarios__table" data-testid="usuarios-list">
+        <thead>
+          <tr>
+            <th>{{ 'usuarios.nameLabel' | transloco }}</th>
+            <th>{{ 'usuarios.emailLabel' | transloco }}</th>
+            <th>{{ 'usuarios.roleLabel' | transloco }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users(); track user.id) {
+            <tr data-testid="usuarios-row">
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ 'usuarios.role.' + user.role | transloco }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </app-panel>
+</app-panel-layout>

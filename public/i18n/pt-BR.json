@@ -37,5 +37,19 @@
   "mustChangePassword": {
     "message": "Você está usando uma senha temporária. Troque-a assim que possível.",
     "dismiss": "Entendi"
+  },
+  "usuarios": {
+    "createTitle": "Novo usuário",
+    "listTitle": "Usuários do tenant",
+    "nameLabel": "Nome",
+    "emailLabel": "E-mail",
+    "passwordLabel": "Senha",
+    "roleLabel": "Papel",
+    "create": "Criar usuário",
+    "genericError": "Não foi possível completar a operação. Tente novamente.",
+    "role": {
+      "ADMIN": "Administrador",
+      "MEMBER": "Membro"
+    }
   }
 }
