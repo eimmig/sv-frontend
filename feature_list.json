@@ -28,7 +28,7 @@
         {
           "id": "feat-001.2",
           "name": "Angular Material M3 + tema claro/escuro + tokens de cor StakeVault",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-211",
           "detail": "Tema M3 gerado a partir de --color-action-neutral (azul) como primary, --color-brand (verde) como secondary/tertiary - ver docs/DESIGN-SYSTEM.md 'Integracao com Angular Material'. Toggle claro/escuro com localStorage sobrepondo prefers-color-scheme.",
           "checklist": [

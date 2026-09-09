@@ -3,7 +3,7 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Feature ativa:** `feat-001` (`feat-001.1` done, `feat-001.2`..`.9` restantes)
+**Feature ativa:** `feat-001` (`feat-001.1`/`.2` done, `feat-001.3`..`.9` restantes)
 
 ## Status
 
@@ -12,14 +12,16 @@
 - [x] Harness deste app criado.
 - [x] `feat-001.1` (`ng new` real + roteamento + HttpClient/interceptor + environments) — `done`
       em 2026-09-09.
+- [x] `feat-001.2` (Angular Material M3 + tema claro/escuro + tokens StakeVault) — `done` em
+      2026-09-09.
 
 ### Em andamento
 
-- `feat-001` — próxima subtask: `feat-001.2` (Angular Material M3 + tema claro/escuro).
+- `feat-001` — próxima subtask: `feat-001.3` (transloco i18n).
 
 ### Próximos passos (Next Steps)
 
-1. `feat-001.2`..`feat-001.9` (ver `feature_list.json` deste app).
+1. `feat-001.3`..`feat-001.9` (ver `feature_list.json` deste app).
 
 ## Bloqueios / Riscos
 
@@ -85,6 +87,46 @@ nada falha ainda se cair abaixo.
 `ng serve` testado manualmente (porta 4300, smoke via curl) — `/` redireciona pra `/login`,
 HTTP 200, processos encerrados ao final. 1 subtask (SV-210, story SV-209). `./init.sh` verde
 (build + 7 arquivos de teste, 8 testes, 0 falhas).
+
+## `feat-001.2` fechada — Angular Material M3 + tema claro/escuro (2026-09-09)
+
+**`mat.theme()` não aceita cor hex solta** — só mapas de paleta M3 completos (tons 0–100 +
+`neutral`/`neutral-variant`/`secondary`/`error`). Resolvido com o schematic real do CLI:
+`ng generate @angular/material:m3-theme --primary-color "#3E8CC4" --tertiary-color "#3EC46D"`
+(gera `src/theme-colors.scss` com os tons reais derivados das duas cores StakeVault — moveu pra
+`src/` a partir da raiz, onde o `--directory` do schematic gravou por padrão). `primary` =
+`--color-action-neutral` (azul), `tertiary` = `--color-brand` (verde) — nunca o inverso, ver
+`docs/DESIGN-SYSTEM.md` "Regra semântica de cor".
+
+**Abordagem de troca de tema (exigida pela description da feature)**: media query **e** classe
+manual, as duas juntas — `@media (prefers-color-scheme: dark)` decide o default (guardada por
+`:root:not([data-theme='light'])`, pra não vencer depois de uma escolha explícita de "light");
+uma escolha explícita do usuário (serviço `Theme`: `signal` + `localStorage`, chave
+`stakevault.theme`) grava `data-theme="dark"`/`"light"` em `<html>`, com prioridade sobre a media
+query. `src/styles/_tokens.scss` define os dois blocos de custom properties (claro/escuro, tabelas
+exatas de `docs/DESIGN-SYSTEM.md`) e também sobrescreve `--mat-sys-surface`/`background`/
+`on-surface`/`on-surface-variant` — assim os componentes do Material usam o navy/off-white do
+StakeVault, não o neutro genérico do M3. `--color-positive`/`--color-negative` ficam como tokens
+próprios da app (não reaproveitam o papel `error` do M3, ver a mesma seção do vault).
+
+Tipografia: **Inter** via `@fontsource/inter` (pesos 400/500/600/700, ver `docs/DESIGN-SYSTEM.md`
+"Tipografia") — decisão de instalar como dependência npm em vez de CDN do Google Fonts (bundle
+único, sem depender de rede externa em produção).
+
+Gotcha real de teste: `window.matchMedia` não existe no ambiente jsdom do vitest — lançava
+`TypeError` na primeira injeção do serviço `Theme` nos testes. Corrigido com guarda defensiva
+(`typeof window.matchMedia === 'function'`) em vez de polyfill — também mais correto em runtime
+real, já que `matchMedia` pode genuinamente não existir em alguns ambientes. Segundo gotcha: usar
+Angular `effect()` pra aplicar o `data-theme` inicial não funciona em teste síncrono (effects são
+agendados, não síncronos) — corrigido aplicando o atributo diretamente no construtor e no
+`toggle()`, sem `effect()`.
+
+Verificado via CSS compilado real (`dist/web/browser/styles-*.css`, não só inspeção visual):
+`--mat-sys-primary` resolve pro tom 40 da paleta gerada a partir do azul StakeVault (M3 não usa a
+cor semente literal pro papel `primary` em tema claro, usa o tom calculado - comportamento
+esperado do algoritmo, não bug); `--color-action-neutral` presente nos dois blocos claro/escuro
+com os valores exatos do vault. `ng serve` testado manualmente (porta 4301), sem erro de console.
+1 subtask (SV-211). `./init.sh` verde (12 testes, 0 falhas, cobertura 98.82% stmts).
 
 ## Evidência de conclusão
 
