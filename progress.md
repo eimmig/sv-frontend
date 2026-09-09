@@ -3,7 +3,7 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-09
-**Feature ativa:** `feat-001` (`feat-001.1`/`.2`/`.3` done, `feat-001.4`..`.9` restantes)
+**Feature ativa:** `feat-001` (`feat-001.1`..`.4` done, `feat-001.5`..`.9` restantes)
 
 ## Status
 
@@ -15,14 +15,15 @@
 - [x] `feat-001.2` (Angular Material M3 + tema claro/escuro + tokens StakeVault) — `done` em
       2026-09-09.
 - [x] `feat-001.3` (transloco i18n + seletor de idioma persistido) — `done` em 2026-09-09.
+- [x] `feat-001.4` (`app-panel-layout`/`app-panel`) — `done` em 2026-09-09.
 
 ### Em andamento
 
-- `feat-001` — próxima subtask: `feat-001.4` (`app-panel-layout`/`app-panel`).
+- `feat-001` — próxima subtask: `feat-001.5` (assets de logo + splash animado).
 
 ### Próximos passos (Next Steps)
 
-1. `feat-001.4`..`feat-001.9` (ver `feature_list.json` deste app).
+1. `feat-001.5`..`feat-001.9` (ver `feature_list.json` deste app).
 
 ## Bloqueios / Riscos
 
@@ -162,6 +163,33 @@ padrão (não `pt-BR`). `Delivery Reviewer` rodado sobre o diff (achados P3, nã
 subpath neste projeto; `mat-select` do seletor de idioma fora de `mat-form-field` — polish visual
 fica pra `feat-001.8`/Impeccable). `./init.sh` verde (18 testes, 96.77% stmts). Smoke manual via
 `ng serve` confirmando os 3 JSONs servidos corretamente. 1 subtask (SV-212).
+
+## `feat-001.4` fechada — app-panel-layout + app-panel (2026-09-09)
+
+`app-panel-layout` (`src/app/shared/panel-layout/`) é um grid CSS reutilizável: `columns` input
+vira a custom property `--panel-columns` (proporções por página, ex.: `320px 1fr`), colapsando
+via media query pra `repeat(2, 1fr)` em `≤1024px` e `1fr` em `≤600px` (confirmado no CSS
+compilado real, não só no SCSS fonte). `app-panel` (`src/app/shared/panel/`) é a superfície de
+rolagem independente — `max-height: 100%` funciona porque o grid container mantém
+`align-content: stretch` (default do CSS Grid, não precisou ser setado explicitamente) mesmo com
+`align-items: start` no container — a área do grid item continua tendo altura definida
+(100% do container) mesmo que o item em si não seja esticado até ela, então cada painel encolhe
+pro próprio conteúdo até o teto da área, só rolando internamente depois disso.
+
+Novo token `--panel-shadow` em `_tokens.scss` (claro: `0 4px 24px rgba(20, 20, 30, 0.06)`, escuro:
+`none`) — mesma regra de elevação já documentada em `docs/DESIGN-SYSTEM.md`.
+
+Aplicado na rota `/dashboard` (2 painéis placeholder, proporção `320px 1fr`) só pra provar o
+mecanismo — conteúdo real do dashboard é `feat-006`/RF10-11 UI, fora de escopo aqui.
+`dashboard.scss` usa `calc(100vh - 64px)` como aproximação da altura disponível (`64px` é um
+chute, não medição real — ainda não existe app-shell/header com altura fixa; revisitar quando
+`feat-006` ou um header real existir).
+
+**Limitação de verificação**: sem ferramenta de automação de browser nesta sessão — o colapso
+responsivo dos 2 breakpoints foi confirmado via inspeção do CSS **compilado** (`dist/web/browser/chunk-*.js`,
+não só o SCSS fonte), não visualmente em DevTools real. `Delivery Reviewer` rodado sobre o diff
+(achado único, P3 não bloqueante: o `64px` do dashboard já citado acima). `./init.sh` verde (23
+testes, 97.51% stmts). 1 subtask (SV-213).
 
 ## Evidência de conclusão
 

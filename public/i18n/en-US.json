@@ -5,5 +5,11 @@
   },
   "language": {
     "label": "Language"
+  },
+  "dashboard": {
+    "filtersTitle": "Filters",
+    "metricsTitle": "Metrics",
+    "itemPlaceholder": "Item {{n}}",
+    "metricsPlaceholder": "Center panel placeholder — layout mechanism proven in this subtask, the real dashboard is feat-006."
   }
 }

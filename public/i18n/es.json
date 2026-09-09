@@ -5,5 +5,11 @@
   },
   "language": {
     "label": "Idioma"
+  },
+  "dashboard": {
+    "filtersTitle": "Filtros",
+    "metricsTitle": "Métricas",
+    "itemPlaceholder": "Elemento {{n}}",
+    "metricsPlaceholder": "Marcador del panel central — mecanismo de diseño probado en esta subtarea, el dashboard real es feat-006."
   }
 }

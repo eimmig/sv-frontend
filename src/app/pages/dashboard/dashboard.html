@@ -1,1 +1,10 @@
-<p>dashboard works!</p>
+<app-panel-layout columns="320px 1fr">
+  <app-panel [title]="'dashboard.filtersTitle' | transloco">
+    @for (row of placeholderRows; track row) {
+      <p>{{ 'dashboard.itemPlaceholder' | transloco: { n: row } }}</p>
+    }
+  </app-panel>
+  <app-panel [title]="'dashboard.metricsTitle' | transloco">
+    <p>{{ 'dashboard.metricsPlaceholder' | transloco }}</p>
+  </app-panel>
+</app-panel-layout>
