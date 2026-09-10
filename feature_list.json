@@ -783,7 +783,7 @@
           ],
           "validation": "npm test verde, componente testado em mobile/desktop e claro/escuro (QA visual Impeccable/taste-skill antes de done).",
           "owner": "agente",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-307"
         },
         {
