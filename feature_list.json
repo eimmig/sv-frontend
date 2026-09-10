@@ -740,7 +740,7 @@
           ],
           "validation": "npm test verde, cobertura mantida.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-304"
         },
         {
