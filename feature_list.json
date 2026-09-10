@@ -725,7 +725,7 @@
       "dependencies": [
         "feat-006"
       ],
-      "status": "not-started",
+      "status": "in-progress",
       "plan_review": "2026-09-10, Plan Reviewer (review-suite:ln-11-plan-reviewer, 1 revisor independente em contexto isolado) - veredito READY WITH CONCERNS, sem BLOCKER. 3 achados MAJOR incorporados ao plano antes de codificar: (1) card de betCount ausente do plano original - adicionado como card novo (tambem serve de gatilho pro estado vazio de zero resultados); (2) atribuicao errada no rascunho (filterParams vive em statistics-api.ts, nao em catalog-api.ts) - corrigido, extraido pra util compartilhada; (3) corrida de troca rapida de esporte no autocomplete de time (2 chamadas listTeams(sportId) em voo, a mais lenta podia sobrescrever a lista certa) - resolvido com switchMap nas valueChanges do controle sportId (cancela a chamada anterior automaticamente), sem guard manual de requestId. 5 achados MINOR aceitos/incorporados: extracao de shared/kpi-card (ja sinalizada como justificada no plan_review conjunto de stats-service feat-013) com refactor do dashboard.html existente pra reusa-lo (nao so a tela nova); extracao de util de tema de grafico (readCssColor/withAlpha) reusado por shared/equity-curve-chart e shared/monthly-profit-chart; assimetria liga (global) vs time (escopado por esporte) confirmada intencional (DIM_LEAGUE sem FK de esporte, ver DATA-MODEL) - documentada, nao um gap a corrigir; sinal explicito hasSearched (sem precedente no dashboard, que auto-carrega no ngOnInit) pra distinguir 'nunca buscou' de 'buscou e zerou'; erro de listTeams tratado como sinal proprio (nao conflado com optionsError do resto dos catalogos). docs/TESTING.md ganha este fluxo na lista de flows Playwright obrigatorios no mesmo commit do spec novo.",
       "jira": "SV-303",
       "subtasks": [
@@ -740,7 +740,7 @@
           ],
           "validation": "npm test verde, cobertura mantida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-304"
         },
         {
