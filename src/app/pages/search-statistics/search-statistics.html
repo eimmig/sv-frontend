@@ -73,12 +73,26 @@
 
         <mat-form-field appearance="outline">
           <mat-label>{{ 'searchStatistics.fromLabel' | transloco }}</mat-label>
-          <input matInput type="date" formControlName="from" data-testid="search-statistics-filter-from" />
+          <input
+            matInput
+            id="search-statistics-from-input"
+            type="date"
+            formControlName="from"
+            data-testid="search-statistics-filter-from"
+            [attr.aria-label]="'searchStatistics.fromLabel' | transloco"
+          />
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>{{ 'searchStatistics.toLabel' | transloco }}</mat-label>
-          <input matInput type="date" formControlName="to" data-testid="search-statistics-filter-to" />
+          <input
+            matInput
+            id="search-statistics-to-input"
+            type="date"
+            formControlName="to"
+            data-testid="search-statistics-filter-to"
+            [attr.aria-label]="'searchStatistics.toLabel' | transloco"
+          />
         </mat-form-field>
 
         <button mat-flat-button type="submit" [disabled]="filterForm.invalid" data-testid="search-statistics-submit">
