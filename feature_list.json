@@ -826,7 +826,7 @@
           ],
           "validation": "./init.sh raiz e do app saem 0; evidence da feature preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-310"
         }
       ],

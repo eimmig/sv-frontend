@@ -149,4 +149,14 @@ test.describe('epic-012 - "Buscar Estatisticas" pre-bet decision screen', () => 
     await expect(page.getByRole('option', { name: 'Vasco' })).toBeVisible();
     await expect(page.getByRole('option', { name: 'Flamengo' })).toHaveCount(0);
   });
+
+  test('screen text follows the active language', async ({ page }) => {
+    await page.goto('/search-statistics');
+    await expect(page.getByTestId('search-statistics-submit')).toHaveText('Search');
+
+    await page.getByTestId('language-selector').click();
+    await page.getByRole('option', { name: 'Português' }).click();
+
+    await expect(page.getByTestId('search-statistics-submit')).toHaveText('Buscar');
+  });
 });
