@@ -37,6 +37,12 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'search-statistics',
+    loadComponent: () =>
+      import('./pages/search-statistics/search-statistics').then((m) => m.SearchStatistics),
+    canActivate: [authGuard],
+  },
+  {
     path: 'users',
     loadComponent: () => import('./pages/users/users').then((m) => m.Users),
     canActivate: [authGuard, adminGuard],

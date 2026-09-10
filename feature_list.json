@@ -796,7 +796,7 @@
           ],
           "validation": "npm run build + validate-i18n-keys.py verdes; navegacao manual confirma rota acessivel.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-308"
         },
         {
