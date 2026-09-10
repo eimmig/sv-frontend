@@ -2,12 +2,50 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-09-09
-**Estado:** `feat-001` a `feat-011` `done` — backlog de `apps/web` inteiro concluído (11
-features, 0 pendências). Próxima sessão: nenhuma feature elegível neste harness até o usuário
-trazer escopo novo; outros harnesses (`infra/feat-002`/`feat-004`) têm story no Jira (Backlog)
-mas sem `plan_review`. Todas as branches já mergeadas em `develop` (feature/subtask) seguem
-apagadas local e remotamente a cada fechamento de feature.
+**Última atualização:** 2026-09-10
+**Estado:** `feat-001` a `feat-012` `done`. `feat-012` (tela "Buscar Estatísticas", `epic-012` da
+raiz, escopo novo fora do TCC1) fechada nesta sessão. Próxima sessão: `epic-013` (`bets-service`)
+e `epic-016`/`epic-018` (`stats-service`) liberam `epic-015`/`epic-017`/`epic-019`/`epic-020`/
+`epic-021` deste harness mais adiante — nenhuma feature nova elegível aqui até esses backends
+existirem.
+
+## `feat-012` fechada — tela "Buscar Estatísticas" (2026-09-10)
+
+7 subtasks (story SV-303, PRs #48-55). `feat-012.1` (core: `StatisticsSearchApi`,
+`toHttpParams` extraído de `statistics-api.ts`, `formatDay`/`formatOdd` novos), `feat-012.2`
+(`shared/kpi-card` extraído + `dashboard.html` refatorado pra reusá-lo — `data-testid`
+preservados), `feat-012.3` (`shared/equity-curve-chart` + `core/chart-theme.ts`), `feat-012.4`
+(componente da página: form reativo sportId/leagueId obrigatórios, autocomplete de time em
+cascata via `switchMap` — cancela chamada obsoleta na troca rápida de esporte —, sinal
+`hasSearched` distinguindo "nunca buscou" de "buscou e zerou", 8 cards incluindo `betCount`,
+`sharpeRatio` null vira texto localizado), `feat-012.5` (rota + nav + i18n 3 locales),
+`feat-012.6` (testes unitários restantes + e2e + `docs/TESTING.md`), `feat-012.7` (fechamento).
+
+**Achado real corrigido em `feat-012.6`**: mock do e2e pra `GET /api/v1/statistics/teams` usava
+por engano o envelope paginado (`{content:[...]}`) dos outros catálogos, quando o endpoint real
+devolve array puro — causava `TypeError: newCollection[Symbol.iterator] is not a function`
+dentro do `@for`, só reproduzível em browser real (Chromium via Playwright), nunca nos testes
+unitários (fixtures do `HttpTestingController` já tinham a forma certa desde o início).
+Documentado em `docs/TESTING.md` (raiz).
+
+**Gate story→develop falhou 3 vezes antes de passar** — todos achados reais do SonarCloud,
+corrigidos no lugar certo (não contornados): (1) 2 inputs de data sem `id`/`aria-label`
+(a11y, mesmo padrão já usado em `dashboard.html`); (2) 5.4% de duplicação em código novo
+(gate ≤3%) — raiz real era `equity-curve-chart.ts` copiando ~50 linhas do
+`buildChartOption` de `monthly-profit-chart.ts` quase inteiro, e `search-statistics.ts`
+duplicando o `sign()` de `dashboard.ts`; corrigido extraindo `chart-theme.ts#buildLineChartOption`
+(usado pelos 2 gráficos) e `kpi-card.ts#kpiSign` (usado pelas 2 telas) — não só o achado superficial
+(3 selects opcionais quase idênticos em `search-statistics.html`, também deduplicado num `@for`
+sobre `optionalCatalogFilters()`).
+
+Delivery Reviewer (1 revisor independente em contexto isolado, rodou `npm test`/`playwright test`
+de verdade): PASS, 2 achados P3 (fluxo de idioma trocado ausente no e2e — corrigido na mesma
+sessão; locator por classe CSS em `kpi-card.spec.ts` — aceito, é o próprio spec do componente
+testando sua saída encapsulada). Test Suite Auditor: PASS. `npm test` 41/41 (127/127 testes),
+Playwright 28/28. QA visual real via Playwright (screenshots claro/escuro, desktop/mobile) nas 2
+telas tocadas — sem achado (a "quebra" inicial do gráfico numa captura era só timing do
+screenshot, confirmado lendo o estado real do componente via `window.ng.getComponent`, não um bug
+de produção). `./init.sh` verde. Fecha `epic-012` (raiz).
 
 ## `feat-005.2` fechada — i18n, Playwright, CHANGELOG e verificação final (2026-09-09)
 
