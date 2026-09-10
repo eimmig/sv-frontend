@@ -126,6 +126,21 @@ export class SearchStatistics implements OnInit {
       .subscribe((teams) => this.teamOptions.set(teams));
   }
 
+  /** bettingHouse/market/tipster are structurally identical optional single-select filters (label + "All" option + catalog list) - one @for in the template instead of 3 near-copies. */
+  protected optionalCatalogFilters(): {
+    readonly controlName: 'bettingHouseId' | 'marketId' | 'tipsterId';
+    readonly labelKey: string;
+    readonly testId: string;
+    readonly items: { readonly id: string; readonly name: string }[];
+  }[] {
+    const options = this.options();
+    return [
+      { controlName: 'bettingHouseId', labelKey: 'searchStatistics.bettingHouseLabel', testId: 'search-statistics-filter-betting-house', items: options.bettingHouses },
+      { controlName: 'marketId', labelKey: 'searchStatistics.marketLabel', testId: 'search-statistics-filter-market', items: options.markets },
+      { controlName: 'tipsterId', labelKey: 'searchStatistics.tipsterLabel', testId: 'search-statistics-filter-tipster', items: options.tipsters },
+    ];
+  }
+
   protected formatPercent(value: number): string {
     return formatPercent(value, this.language.current());
   }

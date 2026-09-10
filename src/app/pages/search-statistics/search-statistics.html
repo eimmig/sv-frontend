@@ -41,35 +41,17 @@
           <p class="search-statistics__error" role="alert" data-testid="search-statistics-teams-error">{{ message }}</p>
         }
 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'searchStatistics.bettingHouseLabel' | transloco }}</mat-label>
-          <mat-select formControlName="bettingHouseId" data-testid="search-statistics-filter-betting-house">
-            <mat-option value="">{{ 'searchStatistics.filterAll' | transloco }}</mat-option>
-            @for (house of options().bettingHouses; track house.id) {
-              <mat-option [value]="house.id">{{ house.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'searchStatistics.marketLabel' | transloco }}</mat-label>
-          <mat-select formControlName="marketId" data-testid="search-statistics-filter-market">
-            <mat-option value="">{{ 'searchStatistics.filterAll' | transloco }}</mat-option>
-            @for (market of options().markets; track market.id) {
-              <mat-option [value]="market.id">{{ market.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'searchStatistics.tipsterLabel' | transloco }}</mat-label>
-          <mat-select formControlName="tipsterId" data-testid="search-statistics-filter-tipster">
-            <mat-option value="">{{ 'searchStatistics.filterAll' | transloco }}</mat-option>
-            @for (tipster of options().tipsters; track tipster.id) {
-              <mat-option [value]="tipster.id">{{ tipster.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        @for (filter of optionalCatalogFilters(); track filter.controlName) {
+          <mat-form-field appearance="outline">
+            <mat-label>{{ filter.labelKey | transloco }}</mat-label>
+            <mat-select [formControlName]="filter.controlName" [attr.data-testid]="filter.testId">
+              <mat-option value="">{{ 'searchStatistics.filterAll' | transloco }}</mat-option>
+              @for (item of filter.items; track item.id) {
+                <mat-option [value]="item.id">{{ item.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        }
 
         <mat-form-field appearance="outline">
           <mat-label>{{ 'searchStatistics.fromLabel' | transloco }}</mat-label>
