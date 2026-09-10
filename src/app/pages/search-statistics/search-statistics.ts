@@ -72,7 +72,7 @@ export class SearchStatistics implements OnInit {
   protected readonly filterForm = this.formBuilder.nonNullable.group({
     sportId: ['', Validators.required],
     leagueId: ['', Validators.required],
-    teamId: [''],
+    teamId: [{ value: '', disabled: true }],
     bettingHouseId: [''],
     marketId: [''],
     tipsterId: [''],
@@ -99,9 +99,16 @@ export class SearchStatistics implements OnInit {
     // navigated away from, so it can never overwrite the current selection.
     this.filterForm.controls.sportId.valueChanges
       .pipe(
-        tap(() => {
+        tap((sportId) => {
           this.filterForm.controls.teamId.setValue('');
           this.teamsError.set(null);
+          // Disabling via the control (not a template [disabled] binding) avoids the
+          // "disabled attribute with reactive form directive" conflict Angular warns about.
+          if (sportId) {
+            this.filterForm.controls.teamId.enable();
+          } else {
+            this.filterForm.controls.teamId.disable();
+          }
         }),
         switchMap((sportId) => {
           if (!sportId) {

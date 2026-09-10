@@ -30,7 +30,7 @@
 
         <mat-form-field appearance="outline">
           <mat-label>{{ 'searchStatistics.teamLabel' | transloco }}</mat-label>
-          <mat-select formControlName="teamId" [disabled]="!filterForm.controls.sportId.value" data-testid="search-statistics-filter-team">
+          <mat-select formControlName="teamId" data-testid="search-statistics-filter-team">
             <mat-option value="">{{ 'searchStatistics.filterAll' | transloco }}</mat-option>
             @for (team of teamOptions(); track team.id) {
               <mat-option [value]="team.id">{{ team.name }}</mat-option>
