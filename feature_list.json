@@ -767,7 +767,7 @@
           ],
           "validation": "npm test verde (specs novo e existente).",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-306"
         },
         {
