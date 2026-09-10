@@ -754,7 +754,7 @@
           ],
           "validation": "npm test + Playwright (dashboard.spec.ts) verdes sem alteracao nos specs existentes.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-305"
         },
         {
