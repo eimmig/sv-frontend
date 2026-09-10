@@ -726,9 +726,110 @@
         "feat-006"
       ],
       "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "plan_review": "2026-09-10, Plan Reviewer (review-suite:ln-11-plan-reviewer, 1 revisor independente em contexto isolado) - veredito READY WITH CONCERNS, sem BLOCKER. 3 achados MAJOR incorporados ao plano antes de codificar: (1) card de betCount ausente do plano original - adicionado como card novo (tambem serve de gatilho pro estado vazio de zero resultados); (2) atribuicao errada no rascunho (filterParams vive em statistics-api.ts, nao em catalog-api.ts) - corrigido, extraido pra util compartilhada; (3) corrida de troca rapida de esporte no autocomplete de time (2 chamadas listTeams(sportId) em voo, a mais lenta podia sobrescrever a lista certa) - resolvido com switchMap nas valueChanges do controle sportId (cancela a chamada anterior automaticamente), sem guard manual de requestId. 5 achados MINOR aceitos/incorporados: extracao de shared/kpi-card (ja sinalizada como justificada no plan_review conjunto de stats-service feat-013) com refactor do dashboard.html existente pra reusa-lo (nao so a tela nova); extracao de util de tema de grafico (readCssColor/withAlpha) reusado por shared/equity-curve-chart e shared/monthly-profit-chart; assimetria liga (global) vs time (escopado por esporte) confirmada intencional (DIM_LEAGUE sem FK de esporte, ver DATA-MODEL) - documentada, nao um gap a corrigir; sinal explicito hasSearched (sem precedente no dashboard, que auto-carrega no ngOnInit) pra distinguir 'nunca buscou' de 'buscou e zerou'; erro de listTeams tratado como sinal proprio (nao conflado com optionsError do resto dos catalogos). docs/TESTING.md ganha este fluxo na lista de flows Playwright obrigatorios no mesmo commit do spec novo.",
+      "jira": "SV-303",
+      "subtasks": [
+        {
+          "id": "feat-012.1",
+          "name": "Camada core: statistics-search-api + utils compartilhados",
+          "detail": "src/app/core/statistics-search-api.ts novo: StatisticsSearchFilter (sportId/leagueId obrigatorios no tipo, resto opcional), StatisticsSearchResult (filters/summary/timeline, sharpeRatio nullable), StatisticsSearchApi injectable com search(filter) e listTeams(sportId) (GET /api/v1/statistics/search e /api/v1/statistics/teams). Extrai o helper de query params hoje privado em core/statistics-api.ts (filterParams) pra um lugar compartilhado (core/http-params.ts) e refatora statistics-api.ts pra reusar - mesmo comportamento, sem duplicar a logica de montar HttpParams. Adiciona core/date-format.ts#formatDay(value, locale) pra datas yyyy-MM-dd (timeline nao serve nem formatDateTime nem formatMonth). Adiciona core/number-format.ts#formatOdd(value, locale) (Intl.NumberFormat 2 casas fixas) pra oddMedia.",
+          "checklist": [
+            "statistics-search-api.ts com os 2 metodos, tipos batendo com o contrato de docs/API-CONTRACTS.md",
+            "http-params.ts extraido e reusado por statistics-api.ts (teste existente de statistics-api continua verde sem mudanca de assercao)",
+            "formatDay/formatOdd com teste unitario cobrindo pt-BR e en-US (separador decimal/formato de data diferentes)"
+          ],
+          "validation": "npm test verde, cobertura mantida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-304"
+        },
+        {
+          "id": "feat-012.2",
+          "name": "shared/kpi-card + refactor do dashboard pra reusa-lo",
+          "detail": "Componente novo shared/kpi-card (title/value/icon inputs, sign opcional pra classe de cor positive/negative/neutral, mesmo racional hoje inline em dashboard.html). Refatora dashboard.html pra usar o componente nos 5 cards existentes (sem mudar data-testid nem comportamento - e2e de dashboard.spec.ts continua passando sem alteracao). Decisao ja aceita no plan_review conjunto com stats-service feat-013 (residual sinalizado, nao inventado agora).",
+          "checklist": [
+            "shared/kpi-card criado com spec proprio",
+            "dashboard.html usa app-kpi-card nos 5 cards, mesmos data-testid preservados",
+            "e2e/dashboard.spec.ts passa sem alteracao"
+          ],
+          "validation": "npm test + Playwright (dashboard.spec.ts) verdes sem alteracao nos specs existentes.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-305"
+        },
+        {
+          "id": "feat-012.3",
+          "name": "shared/equity-curve-chart",
+          "detail": "Componente novo espelhando shared/monthly-profit-chart (mesmo setup ngx-echarts tree-shaken), eixo X = timeline[].date (formatDay) em vez de mes, serie unica = cumulativeProfit. Extrai core/chart-theme.ts (readCssColor/withAlpha, hoje duplicado dentro de monthly-profit-chart.ts) e refatora monthly-profit-chart.ts pra reusar - sem mudar o grafico existente visualmente.",
+          "checklist": [
+            "chart-theme.ts extraido, monthly-profit-chart.ts refatorado pra reusar (spec existente continua verde)",
+            "equity-curve-chart novo com spec proprio (stub de canvas 2D, mesmo padrao de monthly-profit-chart.spec.ts)"
+          ],
+          "validation": "npm test verde (specs novo e existente).",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-306"
+        },
+        {
+          "id": "feat-012.4",
+          "name": "Pagina search-statistics: formulario, cascata sport->time, cards, estados vazios",
+          "detail": "src/app/pages/search-statistics/ novo (component+html+scss+spec), app-panel-layout/app-panel mesmo padrao do dashboard. Reactive form: sportId/leagueId (Validators.required, submit desabilitado ate ambos preenchidos), teamId/bettingHouseId/marketId/tipsterId/from/to opcionais. Catalogos (sport/league/market/tipster/betting-house) via catalogApi/BettingHousesApi identico ao dashboard.ts. teamId: opcoes carregadas via listTeams(sportId) nas valueChanges do controle sportId com switchMap (cancela chamada anterior automaticamente na troca rapida de esporte) - controle teamId resetado a cada troca de sportId; erro de listTeams em sinal proprio (teamsError), nao conflado com optionsError. Sinal hasSearched distingue 'nunca buscou' (nenhum card/grafico) de 'buscou, summary.betCount=0' (mensagem explicita de sem apostas liquidadas pra combinacao). Cards via app-kpi-card (feat-012.2): betCount, totalStaked, netProfit, roi, winRate, avgOdd (formatOdd), maxDrawdown, sharpeRatio (formatado, texto localizado 'indeterminado' quando null). Grafico via app-equity-curve-chart (feat-012.3) alimentado por result().timeline.",
+          "checklist": [
+            "Form com validacao client-side sportId/leagueId obrigatorios, submit desabilitado sem os dois",
+            "Troca de sportId reseta teamId e recarrega opcoes via switchMap (teste unitario prova cancelamento da chamada anterior)",
+            "Estado 'nunca buscou' distinto de 'buscou e zerou' (2 testes unitarios separados)",
+            "8 cards renderizando summary (incluindo betCount), sharpeRatio null renderiza texto localizado, nao 'null'/NaN",
+            "Grafico renderiza a partir de result().timeline"
+          ],
+          "validation": "npm test verde, componente testado em mobile/desktop e claro/escuro (QA visual Impeccable/taste-skill antes de done).",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-307"
+        },
+        {
+          "id": "feat-012.5",
+          "name": "Rota, nav e i18n (3 locales)",
+          "detail": "app.routes.ts: /search-statistics lazy-loaded com authGuard, mesmo padrao das demais rotas. app-nav.html/app-nav.ts: link novo (nav.searchStatistics) - sem guard de admin, visivel pra qualquer role autenticado. i18n: chave nav.searchStatistics + secao searchStatistics completa (labels de campo, cards, estados vazio/erro, texto de sharpe indeterminado) em public/i18n/{pt-BR,en-US,es}.json, as 3 sempre em sincronia (CI valida chaves faltando).",
+          "checklist": [
+            "Rota registrada, navegavel via link da nav",
+            "3 locales com as mesmas chaves (validate-i18n-keys.py local antes do commit)"
+          ],
+          "validation": "npm run build + validate-i18n-keys.py verdes; navegacao manual confirma rota acessivel.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-308"
+        },
+        {
+          "id": "feat-012.6",
+          "name": "Testes: unitarios restantes + Playwright E2E + docs/TESTING.md",
+          "detail": "Completa cobertura unitaria de search-statistics.spec.ts (casos do checklist de feat-012.4). Playwright novo e2e/search-statistics.spec.ts: fluxo de ouro (escolher esporte+liga, submeter, ver cards+grafico), validacao de submit bloqueado sem esporte/liga, e ao menos 1 fluxo com idioma trocado (reusa o padrao ja estabelecido, nao precisa duplicar todos os fluxos). docs/TESTING.md ganha este fluxo na lista de flows Playwright obrigatorios (secao Frontend) no mesmo commit.",
+          "checklist": [
+            "search-statistics.spec.ts cobrindo os cenarios de feat-012.4",
+            "e2e/search-statistics.spec.ts com o fluxo de ouro + submit bloqueado + 1 fluxo em idioma trocado",
+            "docs/TESTING.md atualizado no mesmo commit"
+          ],
+          "validation": "npm test + Playwright completo verdes.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-309"
+        },
+        {
+          "id": "feat-012.7",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento formal: CHANGELOG.md, ./init.sh, QA visual (Impeccable/taste-skill) nas telas tocadas (search-statistics nova + dashboard refatorado), Delivery Reviewer + Test Suite Auditor, e o item fixo de vault desta feature.",
+          "checklist": [
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes",
+            "QA visual (claro/escuro, mobile/desktop) nas telas tocadas",
+            "Delivery Reviewer + Test Suite Auditor rodados sem achado bloqueante nao resolvido",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC1) no mesmo commit"
+          ],
+          "validation": "./init.sh raiz e do app saem 0; evidence da feature preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-310"
+        }
+      ],
       "evidence": ""
     }
   ]

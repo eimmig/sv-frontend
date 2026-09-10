@@ -57,3 +57,11 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-258](https://stakevault.atlassian.net/browse/SV-258) - Polish visual - registro de aposta + historico (apostas/movimentacoes)
 - [SV-259](https://stakevault.atlassian.net/browse/SV-259) - Polish visual - usuarios + catalogos
 - [SV-260](https://stakevault.atlassian.net/browse/SV-260) - Auditoria visual final, CHANGELOG e verificacao final
+- [SV-303](https://stakevault.atlassian.net/browse/SV-303) - Tela "Buscar Estatisticas"
+- [SV-304](https://stakevault.atlassian.net/browse/SV-304) - Camada core: statistics-search-api + utils compartilhados
+- [SV-305](https://stakevault.atlassian.net/browse/SV-305) - shared/kpi-card + refactor do dashboard pra reusa-lo
+- [SV-306](https://stakevault.atlassian.net/browse/SV-306) - shared/equity-curve-chart
+- [SV-307](https://stakevault.atlassian.net/browse/SV-307) - Pagina search-statistics: formulario, cascata sport->time, cards, estados vazios
+- [SV-308](https://stakevault.atlassian.net/browse/SV-308) - Rota, nav e i18n (3 locales)
+- [SV-309](https://stakevault.atlassian.net/browse/SV-309) - Testes: unitarios restantes + Playwright E2E + docs/TESTING.md
+- [SV-310](https://stakevault.atlassian.net/browse/SV-310) - CHANGELOG e verificacao final
