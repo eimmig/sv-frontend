@@ -16,7 +16,7 @@ import { formatBrl } from '../../core/currency';
 import { Language } from '../../core/language';
 import { formatPercent } from '../../core/percent';
 import { BetMetrics, SegmentedBetMetrics, StatisticsApi, StatisticsDashboard } from '../../core/statistics-api';
-import { KpiCard, KpiCardSign } from '../../shared/kpi-card/kpi-card';
+import { KpiCard, KpiCardSign, kpiSign } from '../../shared/kpi-card/kpi-card';
 import { MonthlyProfitChart } from '../../shared/monthly-profit-chart/monthly-profit-chart';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
@@ -105,15 +105,8 @@ export class Dashboard implements OnInit {
     return formatPercent(value, this.language.current());
   }
 
-  /** Money/ROI values are colored consistently with the won/lost badge (docs/DESIGN-SYSTEM.md). */
   protected sign(value: number): KpiCardSign {
-    if (value > 0) {
-      return 'positive';
-    }
-    if (value < 0) {
-      return 'negative';
-    }
-    return 'neutral';
+    return kpiSign(value);
   }
 
   protected applyFilter(): void {

@@ -3,6 +3,17 @@ import { MatIconModule } from '@angular/material/icon';
 
 export type KpiCardSign = 'positive' | 'negative' | 'neutral';
 
+/** Maps a money/ROI-shaped value to the kpi-card sign it should render with (docs/DESIGN-SYSTEM.md color semantics) - shared by every screen with kpi-card metrics. */
+export function kpiSign(value: number): KpiCardSign {
+  if (value > 0) {
+    return 'positive';
+  }
+  if (value < 0) {
+    return 'negative';
+  }
+  return 'neutral';
+}
+
 /**
  * Single stat card (icon + label + value), extracted from the dashboard's
  * inline markup (feat-006) once the "Buscar Estatisticas" screen (feat-012)

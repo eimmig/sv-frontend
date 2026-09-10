@@ -18,7 +18,7 @@ import { formatPercent } from '../../core/percent';
 import { toProblemDetail } from '../../core/problem-detail';
 import { StatisticsSearchApi, StatisticsSearchResult, StatisticsTeam } from '../../core/statistics-search-api';
 import { EquityCurveChart } from '../../shared/equity-curve-chart/equity-curve-chart';
-import { KpiCard, KpiCardSign } from '../../shared/kpi-card/kpi-card';
+import { KpiCard, kpiSign } from '../../shared/kpi-card/kpi-card';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 
@@ -149,16 +149,7 @@ export class SearchStatistics implements OnInit {
     return formatOdd(value, this.language.current());
   }
 
-  /** Money/ROI values are colored consistently with the dashboard's kpi-card usage. */
-  protected sign(value: number): KpiCardSign {
-    if (value > 0) {
-      return 'positive';
-    }
-    if (value < 0) {
-      return 'negative';
-    }
-    return 'neutral';
-  }
+  protected readonly sign = kpiSign;
 
   protected search(): void {
     if (this.filterForm.invalid) {
