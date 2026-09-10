@@ -1,7 +1,8 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { toHttpParams } from './http-params';
 import { environment } from '../../environments/environment';
 
 export interface BetMetrics {
@@ -42,16 +43,6 @@ export interface StatisticsFilter {
   readonly to?: string;
 }
 
-function filterParams(filter: StatisticsFilter): HttpParams {
-  let params = new HttpParams();
-  for (const [key, value] of Object.entries(filter) as [string, string | undefined][]) {
-    if (value) {
-      params = params.set(key, value);
-    }
-  }
-  return params;
-}
-
 /**
  * GET /api/v1/statistics - only sends 'Authorization: Bearer' (authInterceptor),
  * the gateway injects X-User-Id/X-Tenant-Id from the token. Every filter change
@@ -64,7 +55,7 @@ export class StatisticsApi {
 
   get(filter: StatisticsFilter): Observable<StatisticsDashboard> {
     return this.http.get<StatisticsDashboard>(`${environment.apiGatewayUrl}/api/v1/statistics`, {
-      params: filterParams(filter),
+      params: toHttpParams(filter),
     });
   }
 }

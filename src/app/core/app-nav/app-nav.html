@@ -15,6 +15,13 @@
   <a routerLink="/catalogs" routerLinkActive="app-nav__link--active" class="app-nav__link" data-testid="nav-catalogs">{{
     'nav.catalogs' | transloco
   }}</a>
+  <a
+    routerLink="/search-statistics"
+    routerLinkActive="app-nav__link--active"
+    class="app-nav__link"
+    data-testid="nav-search-statistics"
+    >{{ 'nav.searchStatistics' | transloco }}</a
+  >
   @if (auth.isAdmin()) {
     <a routerLink="/users" routerLinkActive="app-nav__link--active" class="app-nav__link" data-testid="nav-users">{{
       'nav.users' | transloco

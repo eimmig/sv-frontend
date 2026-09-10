@@ -7,41 +7,39 @@ import { CanvasRenderer } from 'echarts/renderers';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 
 import { buildLineChartOption, readCssColor } from '../../core/chart-theme';
-import { formatMonth } from '../../core/date-format';
+import { formatDay } from '../../core/date-format';
 import { Language } from '../../core/language';
-import { MonthlyBetMetrics } from '../../core/statistics-api';
+import { StatisticsTimelinePoint } from '../../core/statistics-search-api';
 import { Theme } from '../../core/theme';
 
-// Tree-shaken build registered inside this lazy-loaded component rather than
-// app.config.ts, so echarts' ~500kB core only ships to the dashboard route
-// (see docs/DESIGN-SYSTEM.md item 6, same scoping already used by the
-// feat-001.6 proof-of-concept this component supersedes).
+// Same tree-shaken registration as shared/monthly-profit-chart - this
+// component is lazy-loaded only by the search-statistics page.
 echarts.use([LineChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
 function buildChartOption(
-  months: MonthlyBetMetrics[],
+  timeline: StatisticsTimelinePoint[],
   locale: string,
   brandColor: string,
   borderColor: string,
 ): EChartsCoreOption {
-  const labels = months.map((entry) => formatMonth(entry.year, entry.month, locale));
-  const netProfit = months.map((entry) => entry.metrics.netProfit);
-  return buildLineChartOption(labels, netProfit, brandColor, borderColor);
+  const labels = timeline.map((point) => formatDay(point.date, locale));
+  const cumulativeProfit = timeline.map((point) => point.cumulativeProfit);
+  return buildLineChartOption(labels, cumulativeProfit, brandColor, borderColor);
 }
 
-/** Real dashboard chart (feat-006) - monthly net profit trend from StatisticsDashboard.monthly. */
+/** Equity curve (cumulative profit) for the "Buscar Estatisticas" screen (feat-012) - one series over StatisticsSearchResult.timeline. */
 @Component({
   imports: [NgxEchartsDirective],
   providers: [provideEchartsCore({ echarts })],
-  selector: 'app-monthly-profit-chart',
-  templateUrl: './monthly-profit-chart.html',
-  styleUrl: './monthly-profit-chart.scss',
+  selector: 'app-equity-curve-chart',
+  templateUrl: './equity-curve-chart.html',
+  styleUrl: './equity-curve-chart.scss',
 })
-export class MonthlyProfitChart {
+export class EquityCurveChart {
   private readonly theme = inject(Theme);
   private readonly language = inject(Language);
 
-  readonly data = input<MonthlyBetMetrics[]>([]);
+  readonly data = input<StatisticsTimelinePoint[]>([]);
 
   protected readonly chartOptions = computed<EChartsCoreOption>(() => {
     this.theme.current();

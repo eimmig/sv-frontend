@@ -90,53 +90,38 @@
       <p class="dashboard__error" role="alert" data-testid="dashboard-metrics-error">{{ message }}</p>
     } @else {
       <div class="dashboard__cards" data-testid="dashboard-overall-cards">
-        <div class="dashboard__card">
-          <div class="dashboard__card-icon"><mat-icon aria-hidden="true">account_balance_wallet</mat-icon></div>
-          <div class="dashboard__card-body">
-            <span class="dashboard__card-label">{{ 'dashboard.totalStakedLabel' | transloco }}</span>
-            <span class="dashboard__card-value" data-testid="dashboard-total-staked">{{
-              formatBrl(dashboard().overall.totalStaked)
-            }}</span>
-          </div>
-        </div>
-        <div class="dashboard__card" [class]="'dashboard__card--' + sign(dashboard().overall.netProfit)">
-          <div class="dashboard__card-icon">
-            <mat-icon aria-hidden="true">{{ dashboard().overall.netProfit >= 0 ? 'trending_up' : 'trending_down' }}</mat-icon>
-          </div>
-          <div class="dashboard__card-body">
-            <span class="dashboard__card-label">{{ 'dashboard.netProfitLabel' | transloco }}</span>
-            <span class="dashboard__card-value" data-testid="dashboard-net-profit">{{
-              formatBrl(dashboard().overall.netProfit)
-            }}</span>
-          </div>
-        </div>
-        <div class="dashboard__card" [class]="'dashboard__card--' + sign(dashboard().overall.roi)">
-          <div class="dashboard__card-icon"><mat-icon aria-hidden="true">percent</mat-icon></div>
-          <div class="dashboard__card-body">
-            <span class="dashboard__card-label">{{ 'dashboard.roiLabel' | transloco }}</span>
-            <span class="dashboard__card-value" data-testid="dashboard-roi">{{
-              formatPercent(dashboard().overall.roi)
-            }}</span>
-          </div>
-        </div>
-        <div class="dashboard__card">
-          <div class="dashboard__card-icon"><mat-icon aria-hidden="true">emoji_events</mat-icon></div>
-          <div class="dashboard__card-body">
-            <span class="dashboard__card-label">{{ 'dashboard.winRateLabel' | transloco }}</span>
-            <span class="dashboard__card-value" data-testid="dashboard-win-rate">{{
-              formatPercent(dashboard().overall.winRate)
-            }}</span>
-          </div>
-        </div>
-        <div class="dashboard__card">
-          <div class="dashboard__card-icon"><mat-icon aria-hidden="true">receipt_long</mat-icon></div>
-          <div class="dashboard__card-body">
-            <span class="dashboard__card-label">{{ 'dashboard.settledCountLabel' | transloco }}</span>
-            <span class="dashboard__card-value" data-testid="dashboard-settled-count">{{
-              dashboard().overall.settledCount
-            }}</span>
-          </div>
-        </div>
+        <app-kpi-card
+          icon="account_balance_wallet"
+          [label]="'dashboard.totalStakedLabel' | transloco"
+          [value]="formatBrl(dashboard().overall.totalStaked)"
+          testId="dashboard-total-staked"
+        />
+        <app-kpi-card
+          [icon]="dashboard().overall.netProfit >= 0 ? 'trending_up' : 'trending_down'"
+          [label]="'dashboard.netProfitLabel' | transloco"
+          [value]="formatBrl(dashboard().overall.netProfit)"
+          [sign]="sign(dashboard().overall.netProfit)"
+          testId="dashboard-net-profit"
+        />
+        <app-kpi-card
+          icon="percent"
+          [label]="'dashboard.roiLabel' | transloco"
+          [value]="formatPercent(dashboard().overall.roi)"
+          [sign]="sign(dashboard().overall.roi)"
+          testId="dashboard-roi"
+        />
+        <app-kpi-card
+          icon="emoji_events"
+          [label]="'dashboard.winRateLabel' | transloco"
+          [value]="formatPercent(dashboard().overall.winRate)"
+          testId="dashboard-win-rate"
+        />
+        <app-kpi-card
+          icon="receipt_long"
+          [label]="'dashboard.settledCountLabel' | transloco"
+          [value]="dashboard().overall.settledCount.toString()"
+          testId="dashboard-settled-count"
+        />
       </div>
 
       <app-monthly-profit-chart [data]="dashboard().monthly" />

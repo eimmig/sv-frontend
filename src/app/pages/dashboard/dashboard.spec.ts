@@ -151,10 +151,10 @@ describe('Dashboard', () => {
     flushStatistics({ overall: { totalStaked: 1000, netProfit: -150, roi: -0.15, winRate: 0.4, settledCount: 10 } });
     fixture.detectChanges();
 
-    const netProfitCard = fixture.nativeElement.querySelector('[data-testid="dashboard-net-profit"]').closest('.dashboard__card');
-    const roiCard = fixture.nativeElement.querySelector('[data-testid="dashboard-roi"]').closest('.dashboard__card');
-    expect(netProfitCard.classList).toContain('dashboard__card--negative');
-    expect(roiCard.classList).toContain('dashboard__card--negative');
+    const netProfitCard = fixture.nativeElement.querySelector('[data-testid="dashboard-net-profit"]');
+    const roiCard = fixture.nativeElement.querySelector('[data-testid="dashboard-roi"]');
+    expect(netProfitCard.classList).toContain('kpi-card--negative');
+    expect(roiCard.classList).toContain('kpi-card--negative');
   });
 
   it('renders segmented breakdown rows', () => {

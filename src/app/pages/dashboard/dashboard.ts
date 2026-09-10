@@ -3,7 +3,6 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -17,6 +16,7 @@ import { formatBrl } from '../../core/currency';
 import { Language } from '../../core/language';
 import { formatPercent } from '../../core/percent';
 import { BetMetrics, SegmentedBetMetrics, StatisticsApi, StatisticsDashboard } from '../../core/statistics-api';
+import { KpiCard, KpiCardSign, kpiSign } from '../../shared/kpi-card/kpi-card';
 import { MonthlyProfitChart } from '../../shared/monthly-profit-chart/monthly-profit-chart';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
@@ -46,10 +46,10 @@ const EMPTY_DASHBOARD: StatisticsDashboard = {
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatIconModule,
     MatInputModule,
     MatSelectModule,
     MatTabsModule,
+    KpiCard,
     MonthlyProfitChart,
     Panel,
     PanelLayout,
@@ -105,15 +105,8 @@ export class Dashboard implements OnInit {
     return formatPercent(value, this.language.current());
   }
 
-  /** Money/ROI values are colored consistently with the won/lost badge (docs/DESIGN-SYSTEM.md). */
-  protected sign(value: number): 'positive' | 'negative' | 'neutral' {
-    if (value > 0) {
-      return 'positive';
-    }
-    if (value < 0) {
-      return 'negative';
-    }
-    return 'neutral';
+  protected sign(value: number): KpiCardSign {
+    return kpiSign(value);
   }
 
   protected applyFilter(): void {
