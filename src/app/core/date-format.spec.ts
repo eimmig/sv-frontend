@@ -1,4 +1,4 @@
-import { formatDateTime, formatMonth } from './date-format';
+import { formatDateTime, formatDay, formatMonth } from './date-format';
 
 describe('formatDateTime', () => {
   it('formats an ISO instant using the given locale', () => {
@@ -25,6 +25,19 @@ describe('formatMonth', () => {
   it('produces different output for different locales', () => {
     const en = formatMonth(2026, 3, 'en-US');
     const ptBr = formatMonth(2026, 3, 'pt-BR');
+
+    expect(en).not.toBe(ptBr);
+  });
+});
+
+describe('formatDay', () => {
+  it('formats a bare yyyy-MM-dd date without any time-zone shift', () => {
+    expect(formatDay('2026-07-01', 'en-US')).toMatch(/Jul.*01|01.*Jul/);
+  });
+
+  it('produces different output for different locales', () => {
+    const en = formatDay('2026-07-03', 'en-US');
+    const ptBr = formatDay('2026-07-03', 'pt-BR');
 
     expect(en).not.toBe(ptBr);
   });
