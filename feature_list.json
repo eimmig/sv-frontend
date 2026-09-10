@@ -810,7 +810,7 @@
           ],
           "validation": "npm test + Playwright completo verdes.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-309"
         },
         {
