@@ -937,7 +937,7 @@
         {
           "id": "feat-014.2",
           "name": "shared/period-preset-filter (presets + date range picker)",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-364",
           "detail": "Componente novo em shared/ (nao dentro de pages/dashboard/) porque epic-017/epic-020 vao reusa-lo - mesmo precedente de kpi-card/equity-curve-chart, extraidos quando uma segunda tela precisou da mesma peca.",
           "checklist": [

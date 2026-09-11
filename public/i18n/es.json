@@ -12,6 +12,17 @@
     "desc": "Un punto de luz recorre y dibuja el anillo de la bóveda, los radios giran hasta encajar, las barras suben en cascada, un pulso se expande y el nombre se revela con un barrido.",
     "tagline": "GESTIÓN DE BANCA"
   },
+  "periodPresetFilter": {
+    "label": "Período",
+    "presetToday": "Hoy",
+    "presetLastWeek": "Última semana",
+    "presetLast15Days": "Últimos 15 días",
+    "presetLastMonth": "Último mes",
+    "presetThisMonth": "Este mes",
+    "presetCustom": "Personalizado",
+    "fromLabel": "Desde",
+    "toLabel": "Hasta"
+  },
   "dashboard": {
     "filtersTitle": "Filtros",
     "metricsTitle": "Métricas",

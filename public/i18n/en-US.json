@@ -12,6 +12,17 @@
     "desc": "A point of light traces and draws the vault ring, the spokes turn until they lock into place, the bars rise in a cascade, a pulse expands, and the name is revealed by a sweep.",
     "tagline": "BANKROLL MANAGEMENT"
   },
+  "periodPresetFilter": {
+    "label": "Period",
+    "presetToday": "Today",
+    "presetLastWeek": "Last week",
+    "presetLast15Days": "Last 15 days",
+    "presetLastMonth": "Last month",
+    "presetThisMonth": "This month",
+    "presetCustom": "Custom",
+    "fromLabel": "From",
+    "toLabel": "To"
+  },
   "dashboard": {
     "filtersTitle": "Filters",
     "metricsTitle": "Metrics",
