@@ -19,7 +19,7 @@ import { Language } from '../../core/language';
 import { formatOdd } from '../../core/number-format';
 import { formatPercent } from '../../core/percent';
 import { SettingsApi } from '../../core/settings-api';
-import { BetMetrics, SegmentedBetMetrics, StatisticsApi, StatisticsDashboard } from '../../core/statistics-api';
+import { EMPTY_BET_METRICS, SegmentedBetMetrics, StatisticsApi, StatisticsDashboard } from '../../core/statistics-api';
 import { KpiCard, KpiCardSign, kpiSign } from '../../shared/kpi-card/kpi-card';
 import { MonthlyProfitChart } from '../../shared/monthly-profit-chart/monthly-profit-chart';
 import { Panel } from '../../shared/panel/panel';
@@ -36,22 +36,8 @@ interface Options {
 
 const EMPTY_OPTIONS: Options = { bettingHouses: [], sports: [], leagues: [], markets: [], tipsters: [] };
 
-const EMPTY_METRICS: BetMetrics = {
-  totalStaked: 0,
-  netProfit: 0,
-  roi: 0,
-  winRate: 0,
-  settledCount: 0,
-  wonCount: 0,
-  lostCount: 0,
-  voidCount: 0,
-  preCount: 0,
-  liveCount: 0,
-  avgOdd: null,
-};
-
 const EMPTY_DASHBOARD: StatisticsDashboard = {
-  overall: EMPTY_METRICS,
+  overall: EMPTY_BET_METRICS,
   bySport: [],
   byMarket: [],
   byBettingHouse: [],

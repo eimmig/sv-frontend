@@ -81,6 +81,26 @@
     "sharpeIndeterminate": "Indeterminado",
     "genericError": "Não foi possível completar a operação. Tente novamente."
   },
+  "periodReport": {
+    "filtersTitle": "Filtros",
+    "summaryTitle": "Resumo",
+    "roiBankrollLabel": "ROI Bankroll",
+    "averageProfitLabel": "ROI médio diário",
+    "profitUnitsLabel": "Profit (unidades)",
+    "profitReaisLabel": "Profit (R$)",
+    "unitPercentLabel": "% Unidade",
+    "averageStakeLabel": "Stake médio",
+    "greenRedDaysLabel": "Dias green / red",
+    "greenRedEntriesLabel": "Entradas green / red",
+    "evLabel": "+EV",
+    "indeterminate": "Indeterminado",
+    "dateLabel": "Data",
+    "roiPercentLabel": "ROI %",
+    "roiUnitsLabel": "ROI (unidades)",
+    "roiReaisLabel": "ROI (R$)",
+    "betsLabel": "Apostas",
+    "genericError": "Não foi possível completar a operação. Tente novamente."
+  },
   "login": {
     "title": "Entrar",
     "tagline": "Gestão de banca",
@@ -97,6 +117,7 @@
     "history": "Histórico",
     "catalogs": "Catálogos",
     "searchStatistics": "Buscar estatísticas",
+    "periodReport": "Relatório do período",
     "users": "Usuários",
     "logout": "Sair"
   },
