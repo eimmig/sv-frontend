@@ -22,6 +22,23 @@ export interface BetMetrics {
   readonly avgOdd: number | null;
 }
 
+/** Shared zero-value default, used by any page/signal whose data hasn't loaded yet
+ *  (dashboard.ts, pages/period-report) - kept in one place so a future BetMetrics field
+ *  addition doesn't need updating in more than one component. */
+export const EMPTY_BET_METRICS: BetMetrics = {
+  totalStaked: 0,
+  netProfit: 0,
+  roi: 0,
+  winRate: 0,
+  settledCount: 0,
+  wonCount: 0,
+  lostCount: 0,
+  voidCount: 0,
+  preCount: 0,
+  liveCount: 0,
+  avgOdd: null,
+};
+
 export interface SegmentedBetMetrics {
   readonly dimensionId: string;
   readonly dimensionName: string;
@@ -52,8 +69,18 @@ export interface StatisticsFilter {
   readonly to?: string;
 }
 
+/** GET /api/v1/statistics/daily (stats-service epic-016) - sparse array, only days with at
+ *  least 1 settled bet; the caller fills the missing days with zero (see pages/period-report). */
+export interface DailyBetMetrics {
+  readonly date: string;
+  readonly totalStaked: number;
+  readonly netProfit: number;
+  readonly roi: number;
+  readonly betCount: number;
+}
+
 /**
- * GET /api/v1/statistics - only sends 'Authorization: Bearer' (authInterceptor),
+ * GET /api/v1/statistics(/daily) - only sends 'Authorization: Bearer' (authInterceptor),
  * the gateway injects X-User-Id/X-Tenant-Id from the token. Every filter change
  * is a new request (RN08 - metrics are recalculated server-side, not filtered
  * client-side over already-loaded data).
@@ -64,6 +91,14 @@ export class StatisticsApi {
 
   get(filter: StatisticsFilter): Observable<StatisticsDashboard> {
     return this.http.get<StatisticsDashboard>(`${environment.apiGatewayUrl}/api/v1/statistics`, {
+      params: toHttpParams(filter),
+    });
+  }
+
+  /** feat-015 (web "Relatório do período") - real endpoint existed in stats-service since
+   *  epic-016, never consumed by the frontend until now. Same 7 optional filters as get(). */
+  getDaily(filter: StatisticsFilter): Observable<DailyBetMetrics[]> {
+    return this.http.get<DailyBetMetrics[]>(`${environment.apiGatewayUrl}/api/v1/statistics/daily`, {
       params: toHttpParams(filter),
     });
   }

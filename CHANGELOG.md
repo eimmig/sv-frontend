@@ -75,3 +75,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-365](https://stakevault.atlassian.net/browse/SV-365) - Dashboard: period-preset-filter substitui inputs crus, forkJoin com bankroll/settings, cards novos
 - [SV-366](https://stakevault.atlassian.net/browse/SV-366) - Campo admin-only de configuracao de unidade (PATCH /api/v1/settings)
 - [SV-367](https://stakevault.atlassian.net/browse/SV-367) - Playwright, QA visual final, CHANGELOG e verificacao final
+- [SV-368](https://stakevault.atlassian.net/browse/SV-368) - Pagina "Relatorio do periodo"
+- [SV-369](https://stakevault.atlassian.net/browse/SV-369) - StatisticsApi.getDaily() novo (GET /api/v1/statistics/daily)
+- [SV-370](https://stakevault.atlassian.net/browse/SV-370) - Modulo de calculo puro (period-report-metrics.ts) com oraculo do print de referencia
+- [SV-371](https://stakevault.atlassian.net/browse/SV-371) - Pagina period-report: forkJoin, tabela dia a dia, cards de resumo, rota + nav + i18n
+- [SV-372](https://stakevault.atlassian.net/browse/SV-372) - Playwright, QA visual final, CHANGELOG e verificacao final

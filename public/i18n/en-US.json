@@ -81,6 +81,26 @@
     "sharpeIndeterminate": "Indeterminate",
     "genericError": "Could not complete the operation. Please try again."
   },
+  "periodReport": {
+    "filtersTitle": "Filters",
+    "summaryTitle": "Summary",
+    "roiBankrollLabel": "ROI Bankroll",
+    "averageProfitLabel": "Average daily ROI",
+    "profitUnitsLabel": "Profit (units)",
+    "profitReaisLabel": "Profit (R$)",
+    "unitPercentLabel": "% Unit",
+    "averageStakeLabel": "Average stake",
+    "greenRedDaysLabel": "Green / red days",
+    "greenRedEntriesLabel": "Green / red entries",
+    "evLabel": "+EV",
+    "indeterminate": "Indeterminate",
+    "dateLabel": "Date",
+    "roiPercentLabel": "ROI %",
+    "roiUnitsLabel": "ROI (units)",
+    "roiReaisLabel": "ROI (R$)",
+    "betsLabel": "Bets",
+    "genericError": "Could not complete the operation. Please try again."
+  },
   "login": {
     "title": "Sign in",
     "tagline": "Bankroll management",
@@ -97,6 +117,7 @@
     "history": "History",
     "catalogs": "Catalogs",
     "searchStatistics": "Search statistics",
+    "periodReport": "Period report",
     "users": "Users",
     "logout": "Log out"
   },

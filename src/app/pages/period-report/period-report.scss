@@ -1,0 +1,53 @@
+:host {
+  display: block;
+  height: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.period-report__error {
+  margin: 0;
+  color: var(--color-negative);
+  font-size: 14px;
+}
+
+.period-report__cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.period-report__value--positive {
+  color: var(--color-positive);
+}
+
+.period-report__value--negative {
+  color: var(--color-negative);
+}
+
+.period-report__table-wrap {
+  overflow-x: auto;
+  margin-top: 8px;
+}
+
+.period-report__table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+
+  th {
+    text-align: left;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    padding: 8px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  td {
+    padding: 8px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 14px;
+  }
+}
