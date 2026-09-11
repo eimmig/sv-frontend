@@ -1299,7 +1299,7 @@
         {
           "id": "feat-018.4",
           "name": "QA visual final (Impeccable), testes, docs e verificacao final",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-389",
           "detail": "Fecha a feature - Impeccable audit/polish como criterio externo de qualidade visual, nao so gosto da sessao.",
           "checklist": [

@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -14,11 +14,23 @@ import { ThemeToggle } from '../theme-toggle/theme-toggle';
 
 const STORAGE_KEY = 'stakevault.navCollapsed';
 
+function prefersNarrowViewport(): boolean {
+  return (
+    typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 599px)').matches
+  );
+}
+
+// Real bug found via QA screenshots (feat-018.4): an expanded 232px sidebar eats almost the
+// entire viewport below the ~600px breakpoint docs/DESIGN-SYSTEM.md already uses for "mobile,
+// coluna única" (RNF01) elsewhere in the app - defaults to collapsed there, same as Theme/
+// Language default to the system preference until the user picks explicitly (a stored choice,
+// from either width, always wins over this default).
 function storedCollapsed(): boolean {
   if (typeof localStorage === 'undefined') {
-    return false;
+    return prefersNarrowViewport();
   }
-  return localStorage.getItem(STORAGE_KEY) === 'true';
+  const stored = localStorage.getItem(STORAGE_KEY);
+  return stored === null ? prefersNarrowViewport() : stored === 'true';
 }
 
 /**
@@ -50,14 +62,6 @@ export class AppSideNav {
     { initialValue: this.router.url },
   );
 
-  constructor() {
-    effect(() => {
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem(STORAGE_KEY, String(this.collapsed()));
-      }
-    });
-  }
-
   protected readonly logoSrc = computed(() => `assets/logo/logo-mark-${this.theme.current()}.svg`);
 
   // Data-driven instead of repeating near-identical markup per item (SonarCloud flagged the
@@ -88,7 +92,15 @@ export class AppSideNav {
   ];
 
   protected toggleCollapsed(): void {
-    this.collapsed.update((value) => !value);
+    const next = !this.collapsed();
+    this.collapsed.set(next);
+    // Only an explicit toggle persists - the initial value (viewport default or a previous
+    // explicit choice) must not be written back as if the user had just chosen it, or a mobile
+    // visit's viewport-based default would incorrectly become "the user's choice" the next time
+    // they open the app from a desktop-width browser.
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, String(next));
+    }
   }
 
   protected isResourceActive(routes: string[]): boolean {

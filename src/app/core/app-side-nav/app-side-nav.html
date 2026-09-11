@@ -100,7 +100,9 @@
   <div class="side-nav__spacer"></div>
 
   <div class="side-nav__footer">
-    <app-language-selector />
+    @if (!collapsed()) {
+      <app-language-selector />
+    }
     <app-theme-toggle />
     <button
       type="button"
