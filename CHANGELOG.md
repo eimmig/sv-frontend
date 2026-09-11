@@ -65,3 +65,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-308](https://stakevault.atlassian.net/browse/SV-308) - Rota, nav e i18n (3 locales)
 - [SV-309](https://stakevault.atlassian.net/browse/SV-309) - Testes: unitarios restantes + Playwright E2E + docs/TESTING.md
 - [SV-310](https://stakevault.atlassian.net/browse/SV-310) - CHANGELOG e verificacao final
+- [SV-339](https://stakevault.atlassian.net/browse/SV-339) - Dockerfile de producao + build e push da imagem no CI
+- [SV-340](https://stakevault.atlassian.net/browse/SV-340) - Dockerfile + nginx.conf + .dockerignore + job build-and-push-image
+- [SV-341](https://stakevault.atlassian.net/browse/SV-341) - CHANGELOG e verificacao final
