@@ -844,7 +844,7 @@
       ],
       "description": "Ate agora este app nunca tinha sido containerizado - infra/k8s/ nao tem manifest pra ele, diferente dos outros 5 servicos (epic-010). Verificado nesta sessao: docker build real passou, docker run real respondeu 200 em / e /dashboard (prova o fallback de SPA), output de build confirmado em dist/web/browser (projeto 'web' no angular.json, sem outputPath customizado).",
       "dependencies": [],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "2026-09-10, Plan Reviewer (review-suite:ln-11-plan-reviewer) - READY WITH CONCERNS. Evidencia real ja coletada antes da revisao: docker build + docker run reais, curl 200 em / e /dashboard (SPA fallback provado, nao suposto), nginxinc/nginx-unprivileged:alpine confirmado escutando 8080 sem root no mesmo teste. Sem achado bloqueante. Risco residual aceito, fora de escopo: apiGatewayUrl de producao hardcoded pra dominio placeholder (https://api.stakevault.example.com) - imagem builda e funciona, mas apontaria pro lugar errado em runtime real ate a resolucao de dominio ficar decidida (fora deste repositorio).",
       "jira": "SV-339",
       "subtasks": [
@@ -894,7 +894,7 @@
           "jira": "SV-342"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-10. Primeiro Dockerfile deste app (dos 6 repositorios de aplicacao, era o unico sem - os outros 5 ganharam em epic-010). Multi-stage node:24-alpine + nginxinc/nginx-unprivileged:alpine, build e run verificados de verdade localmente (docker build, docker run, curl 200 em / e /dashboard provando o fallback de SPA) antes de abrir PR. Job build-and-push-image publicando de verdade em ghcr.io/eimmig/sv-frontend - confirmado via log real (containerimage.digest: sha256:a9b9ff3...). Actions ja pinadas por SHA completo e guard de sonar.qualitygate.wait ja corrigido proativamente desde o primeiro commit (licoes dos outros 4 repositorios aplicadas sem repetir o ciclo de descoberta) - SonarCloud passou de primeira no PR feature->develop. Mesmo assim, o primeiro develop->main de verdade deste repositorio expos 2 achados pre-existentes na janela de new code (feat-013.3): typescript:S7761 (setAttribute -> dataset) e css:S4666 (selector :root[data-theme='dark'] duplicado, mesclado em um bloco so). npm run build + npm test (127 testes) verdes depois da correcao. Delivery Reviewer: PASS (nenhum achado bloqueante alem dos 2 ja corrigidos). Workflow permissions do repositorio confirmado 'Read and write'. ./init.sh do app e da raiz verdes. Risco residual aceito, fora de escopo: apiGatewayUrl de producao ainda aponta pra dominio placeholder."
     }
   ]
 }
