@@ -1068,7 +1068,7 @@
         {
           "id": "feat-015.4",
           "name": "Playwright, QA visual final, CHANGELOG e verificacao final",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-372",
           "detail": "Fecha a feature - fluxo critico novo (pagina inteira) precisa de prova E2E real.",
           "checklist": [
