@@ -30,4 +30,23 @@ test.describe('smoke', () => {
 
     await expect(themeToggle).toHaveAttribute('aria-label', /(light|dark) mode/i);
   });
+
+  // Real bug (feat-018.2): MatSelect's overlay panel matched the trigger's width, which shrinks
+  // to fit whichever locale is currently selected - once "English" (short) was active, the
+  // panel reopened too narrow and clipped "Português" (longer). Fixed with a min-width on the
+  // trigger; this proves the option's full text stays visible regardless of which locale opened
+  // the panel.
+  test('the language panel does not clip a longer locale label after a shorter one was selected', async ({ page }) => {
+    await page.goto('/');
+    const languageSelector = page.getByTestId('language-selector');
+
+    await languageSelector.click();
+    await page.getByRole('option', { name: 'English' }).click();
+
+    await languageSelector.click();
+    const option = page.getByRole('option', { name: 'Português' });
+    await expect(option).toBeVisible();
+    const overflow = await option.evaluate((el) => el.scrollWidth - el.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
 });

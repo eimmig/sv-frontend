@@ -56,7 +56,7 @@ describe('App', () => {
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
 
-    expect(el.querySelector('app-nav')).toBeNull();
+    expect(el.querySelector('app-side-nav')).toBeNull();
     expect(el.querySelector('app-must-change-password-banner')).toBeNull();
   });
 

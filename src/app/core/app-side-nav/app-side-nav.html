@@ -1,0 +1,121 @@
+<nav class="side-nav" [class.side-nav--collapsed]="collapsed()" data-testid="app-nav">
+  <div class="side-nav__brand">
+    <img class="side-nav__logo" [src]="logoSrc()" alt="" aria-hidden="true" width="28" height="28" />
+    @if (!collapsed()) {
+      <span class="side-nav__wordmark"
+        ><span class="side-nav__wordmark-stake">Stake</span><span class="side-nav__wordmark-vault">Vault</span></span
+      >
+    }
+    <button
+      mat-icon-button
+      type="button"
+      class="side-nav__collapse-toggle"
+      data-testid="nav-collapse-toggle"
+      [attr.aria-label]="(collapsed() ? 'nav.expand' : 'nav.collapse') | transloco"
+      (click)="toggleCollapsed()"
+    >
+      <mat-icon>{{ collapsed() ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+    </button>
+  </div>
+
+  <div class="side-nav__links">
+    @for (link of primaryLinks; track link.route) {
+      <a
+        [routerLink]="'/' + link.route"
+        routerLinkActive="side-nav__link--active"
+        class="side-nav__link"
+        [attr.data-testid]="link.testid"
+        [matTooltip]="collapsed() ? (link.labelKey | transloco) : ''"
+        matTooltipPosition="right"
+      >
+        <mat-icon>{{ link.icon }}</mat-icon>
+        @if (!collapsed()) {
+          <span>{{ link.labelKey | transloco }}</span>
+        }
+      </a>
+    }
+
+    <div class="side-nav__divider"></div>
+
+    @for (resource of resources; track resource.id) {
+      <button
+        type="button"
+        class="side-nav__link"
+        [class.side-nav__link--active]="isResourceActive([resource.registerRoute, resource.dashboardRoute])"
+        [matMenuTriggerFor]="resourceMenu"
+        [attr.data-testid]="'nav-' + resource.id + '-menu'"
+        [matTooltip]="collapsed() ? (resource.labelKey | transloco) : ''"
+        matTooltipPosition="right"
+      >
+        <mat-icon>{{ resource.icon }}</mat-icon>
+        @if (!collapsed()) {
+          <span>{{ resource.labelKey | transloco }}</span>
+        }
+      </button>
+      <mat-menu #resourceMenu="matMenu" xPosition="after">
+        <a mat-menu-item [routerLink]="'/' + resource.registerRoute" [attr.data-testid]="'nav-' + resource.id + '-register'">{{
+          'nav.registerMenuItem' | transloco
+        }}</a>
+        <a mat-menu-item [routerLink]="'/' + resource.dashboardRoute" [attr.data-testid]="'nav-' + resource.id + '-dashboard'">{{
+          'nav.dashboardMenuItem' | transloco
+        }}</a>
+      </mat-menu>
+    }
+
+    <div class="side-nav__divider"></div>
+
+    @for (link of secondaryLinks; track link.route) {
+      <a
+        [routerLink]="'/' + link.route"
+        routerLinkActive="side-nav__link--active"
+        class="side-nav__link"
+        [attr.data-testid]="link.testid"
+        [matTooltip]="collapsed() ? (link.labelKey | transloco) : ''"
+        matTooltipPosition="right"
+      >
+        <mat-icon>{{ link.icon }}</mat-icon>
+        @if (!collapsed()) {
+          <span>{{ link.labelKey | transloco }}</span>
+        }
+      </a>
+    }
+
+    @if (auth.isAdmin()) {
+      <a
+        routerLink="/users"
+        routerLinkActive="side-nav__link--active"
+        class="side-nav__link"
+        data-testid="nav-users"
+        [matTooltip]="collapsed() ? ('nav.users' | transloco) : ''"
+        matTooltipPosition="right"
+      >
+        <mat-icon>manage_accounts</mat-icon>
+        @if (!collapsed()) {
+          <span>{{ 'nav.users' | transloco }}</span>
+        }
+      </a>
+    }
+  </div>
+
+  <div class="side-nav__spacer"></div>
+
+  <div class="side-nav__footer">
+    @if (!collapsed()) {
+      <app-language-selector />
+    }
+    <app-theme-toggle />
+    <button
+      type="button"
+      class="side-nav__link"
+      data-testid="nav-logout"
+      [matTooltip]="collapsed() ? ('nav.logout' | transloco) : ''"
+      matTooltipPosition="right"
+      (click)="logout()"
+    >
+      <mat-icon>logout</mat-icon>
+      @if (!collapsed()) {
+        <span>{{ 'nav.logout' | transloco }}</span>
+      }
+    </button>
+  </div>
+</nav>

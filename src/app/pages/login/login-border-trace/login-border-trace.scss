@@ -1,0 +1,44 @@
+:host {
+  position: absolute;
+  inset: -2px;
+  display: block;
+  pointer-events: none;
+}
+
+.login-border-trace {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.login-border-trace__segment {
+  fill: none;
+  stroke: var(--color-brand);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.85;
+  animation: login-border-trace-draw 3.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+// Draw from the start point (0% -> 45%), hold the full outline briefly (45% -> 55%), then
+// retract back toward the start point (55% -> 100%) - a "breathing" loop, not a one-shot reveal.
+@keyframes login-border-trace-draw {
+  0% {
+    stroke-dashoffset: var(--trace-length);
+  }
+  45%,
+  55% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: var(--trace-length);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-border-trace__segment {
+    animation: none;
+    stroke-dashoffset: 0;
+    opacity: 0.5;
+  }
+}

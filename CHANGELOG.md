@@ -89,3 +89,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-379](https://stakevault.atlassian.net/browse/SV-379) - Corrigir apiGatewayUrl hardcoded (residual da feat-013) - CORS bloqueando login real
 - [SV-380](https://stakevault.atlassian.net/browse/SV-380) - apiGatewayUrl vazio (caminho relativo) em environment.ts
 - [SV-381](https://stakevault.atlassian.net/browse/SV-381) - CHANGELOG e verificacao final
+- [SV-385](https://stakevault.atlassian.net/browse/SV-385) - Navegacao lateral (sidebar) substitui nav superior, animacoes no shell e no login
+- [SV-386](https://stakevault.atlassian.net/browse/SV-386) - app-side-nav (sidebar colapsavel) substitui app-nav
+- [SV-387](https://stakevault.atlassian.net/browse/SV-387) - language-selector: fix de min-width (causa raiz do corte) + controles flutuantes no login
+- [SV-388](https://stakevault.atlassian.net/browse/SV-388) - Motion pass: view transitions, collapse do sidebar, animacao autoral do login
+- [SV-389](https://stakevault.atlassian.net/browse/SV-389) - QA visual final (Impeccable), testes, docs e verificacao final

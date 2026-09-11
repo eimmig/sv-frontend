@@ -1231,6 +1231,91 @@
         }
       ],
       "evidence": "2 subtasks done. O que foi feito: environment.ts (producao) - apiGatewayUrl de 'https://api.stakevault.example.com' (dominio placeholder, nunca existiu) para '' (caminho relativo, mesma origem do host que serve o app). environment.development.ts (localhost:8080) intocado, conforme escopo. Como foi verificado: erro de CORS reproduzido de verdade no browser contra o deploy real em k3s (infra/feat-005) antes da correcao - achado real de producao, nao teorico. Apos a mudanca: npm run build limpo, npm test 167/167 verdes (nenhum spec hardcoda o dominio antigo - todos os 14 call sites usam '${environment.apiGatewayUrl}/api/v1/...' via template string, verificado por grep em todo src/, seguro com string vazia = caminho relativo). ./init.sh do app verde. PR feature->develop (SV-379, #77) e o fix isolado (#76) mergeados; develop mergeado em main (#78), CI de main verde (publica imagem no GHCR). Revisao Delivery Reviewer feita nesta sessao (passe direto, mudanca trivial de 1 linha de config - dispensou subagentes por evidencia already-verified no plan_review, mesmo criterio de 'no subagent for trivial or fully evidenced work' da skill): PASS, nenhum achado - todos os consumidores de apiGatewayUrl usam concatenacao de template string, nenhum assume URL absoluta/faz parsing de protocolo. Test Suite Auditor: PASS, nenhum teste novo necessario - a suite ja era resiliente a essa troca de valor por construcao (specs referenciam environment.apiGatewayUrl dinamicamente). Confirmacao de login real sem CORS via Ingress em producao: feita pela sessao que implementou feat-017.1/.2 (nao reproduzida nesta sessao, sem acesso ao cluster k3s a partir daqui) - aceita como evidencia da subtask ja registrada no checklist dela. O que divergiu do plano: nada."
+    },
+    {
+      "id": "feat-018",
+      "name": "Navegacao lateral (sidebar) substitui nav superior, animacoes no shell e no login",
+      "goal": "Fecha a divergencia entre docs/DESIGN-SYSTEM.md item 1 (nav lateral, especificada desde o design original) e a nav horizontal implementada desde feat-002; login perde o header duplo (barra idioma/tema sempre visivel + nav quando autenticado); adiciona motion autoral no login e um motion pass geral no shell.",
+      "scope": [
+        "app-side-nav novo (substitui app-nav): sidebar colapsavel (icone+texto expandido / so icone retraido), logo+wordmark (retraido: so o mark), links diretos + 5 mat-menu de catalogo (mesmos data-testid de hoje) + rodape (idioma/tema/sair)",
+        "app.html/app.scss viram flex-row (sidebar + content), toolbar separada de idioma/tema removida do shell autenticado",
+        "language-selector: fix de min-width no trigger (causa raiz do painel cortado), sem trocar mat-select/mat-option; instancia propria + theme-toggle flutuando no canto inferior esquerdo da tela de login",
+        "Motion pass: withViewTransitions() no router, transicao de collapse/expand do sidebar, hover/focus/active dos itens, animacao autoral no formulario de login (traco verde no perimetro, split-and-meet, loop) - tudo com prefers-reduced-motion",
+        "QA visual (Impeccable audit/polish), testes atualizados, docs/DESIGN-SYSTEM.md item 1 marcado implementado, CHANGELOG"
+      ],
+      "description": "Escopo novo, fora do backlog original do TCC1 (epic-022 da raiz, pedido do usuario 2026-09-11). Usa as skills de design instaladas no repo (.claude/skills/impeccable, prioritaria per docs/DESIGN-SYSTEM.md/AGENT-SKILLS.md) para orientar motion/polish - DESIGN-SYSTEM.md continua fonte normativa de paleta/tipografia/layout, a skill so audita/orienta.",
+      "dependencies": [],
+      "status": "done",
+      "plan_review": "2026-09-11, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de qualquer codigo (passe proprio, sem subagentes - independencia reduzida declarada, risco medio-alto por tocar todo o shell mas sem dado/dinheiro/auth em jogo). Veredito: READY WITH CONCERNS. 2 achados MAJOR corrigidos no plano: (1) reconstruir language-selector como mat-menu quebraria e2e/smoke.spec.ts, e2e/auth.spec.ts e e2e/search-statistics.spec.ts (usam getByRole('option'), exclusivo de mat-option - mat-menu-item usa role menuitem) sem necessidade - causa raiz real do corte e MatSelect.panelWidth default casar com a largura do trigger, que encolhe pro idioma atualmente selecionado; corrigido para fix de min-width no trigger, mantendo mat-select/mat-option intocado (nenhum e2e de idioma precisa mudar). (2) app.spec.ts:53 (querySelector('app-nav')) nao estava mapeado - troca de nome do componente pra app-side-nav precisa atualizar essa linha, adicionado explicitamente ao escopo de feat-018.1. 2 achados MINOR: withViewTransitions() precisa de CSS explicito zerando ::view-transition-old/new sob prefers-reduced-motion (a suite e2e ja roda com reducedMotion:'reduce' em todo beforeEach, entao isso nao quebra teste, mas e requisito real de acessibilidade do PRODUCT.md); ordem 018.1->018.2->018.3->018.4 confirmada sequencial (collapse-transition de 018.3 depende do componente de 018.1 existir). Decisoes de design resolvidas via AskUserQuestion antes do plan review (nao repetidas aqui): sidebar colapsavel (nao icone-only fixo, nao so labeled fixo) e submenus de catalogo continuam mat-menu popup (nao expansao inline).",
+      "jira": "SV-385",
+      "subtasks": [
+        {
+          "id": "feat-018.1",
+          "name": "app-side-nav (sidebar colapsavel) substitui app-nav",
+          "status": "done",
+          "jira": "SV-386",
+          "detail": "Fecha a divergencia do item 1 de docs/DESIGN-SYSTEM.md - nav lateral sempre foi a especificacao, nunca implementada.",
+          "checklist": [
+            "app-side-nav novo: signal collapsed + localStorage 'stakevault.navCollapsed' (mesmo padrao de Theme/Language), botao de toggle proximo ao logo",
+            "Logo assets/logo/logo-mark-{tema}.svg + wordmark quando expandido (reusa o markup de login.html), so o mark quando retraido",
+            "Estrutura vertical: Dashboard/Registrar aposta/Historico (links) -> 5 mat-menu de recurso (xPosition='after', MESMOS data-testid de hoje: nav-sports-menu/nav-sports-register/nav-sports-dashboard etc) -> Buscar estatisticas/Relatorio do periodo -> Usuarios (admin only) -> spacer -> rodape (language-selector/theme-toggle/sair, mesmos testid)",
+            "app.html/app.scss: flex-row (sidebar + .app-shell__content), toolbar de idioma/tema removida do shell autenticado; login (nao autenticado) nao renderiza app-side-nav",
+            "app.spec.ts: querySelector('app-nav') -> querySelector('app-side-nav')",
+            "app-nav.* removido (pasta antiga)"
+          ],
+          "validation": "npm test + npm run build verdes; e2e existentes (catalogs.spec.ts, catalog-dashboard.spec.ts, auth.spec.ts) continuam verdes sem editar (mesmos data-testid).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-018.2",
+          "name": "language-selector: fix de min-width (causa raiz do corte) + controles flutuantes no login",
+          "status": "done",
+          "jira": "SV-387",
+          "detail": "Achado do Plan Reviewer: manter mat-select/mat-option (nao reconstruir como mat-menu) evita quebrar 3 e2e specs de idioma sem necessidade - o bug real e o painel herdar a largura do trigger atual.",
+          "checklist": [
+            "language-selector: min-width no trigger dimensionado pra 'Português' (maior label das 3) - painel deixa de cortar independente do idioma selecionado",
+            "Restyle visual pra combinar com o rodape do sidebar novo (sem trocar mat-select/mat-option)",
+            "Pagina de login: instancia propria de language-selector + theme-toggle, position fixed, canto inferior esquerdo, lado a lado, sem barra/fundo"
+          ],
+          "validation": "e2e/smoke.spec.ts, auth.spec.ts, search-statistics.spec.ts (selecao de idioma) continuam verdes sem editar. QA visual: painel de opcoes nao corta em nenhum dos 3 idiomas selecionados.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-018.3",
+          "name": "Motion pass: view transitions, collapse do sidebar, animacao autoral do login",
+          "status": "done",
+          "jira": "SV-388",
+          "detail": "Pedido explicito do usuario ('bastante animacoes, bem fluido') + animacao autoral especifica no form de login - orientado por .claude/skills/impeccable/reference/animate.md (ja lido no plan review).",
+          "checklist": [
+            "withViewTransitions() em provideRouter (app.config.ts)",
+            "Transicao de collapse/expand do sidebar (~250ms, cubic-bezier(0.16,1,0.3,1))",
+            "Estados hover/focus/active dos itens do sidebar",
+            "Animacao autoral no card do formulario de login: traco verde percorrendo o perimetro, saindo de um ponto em 2 direcoes, encontrando do lado oposto, revertendo em loop",
+            "prefers-reduced-motion cobre TODAS as animacoes novas, incluindo ::view-transition-old/new(root) (duration 0/animation none), nao so sidebar/login"
+          ],
+          "validation": "QA visual real (screenshots) confirmando a animacao do login e a transicao do sidebar nos 2 temas; e2e completo continua verde (roda com reducedMotion:'reduce', estado final deve aparecer imediato).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-018.4",
+          "name": "QA visual final (Impeccable), testes, docs e verificacao final",
+          "status": "done",
+          "jira": "SV-389",
+          "detail": "Fecha a feature - Impeccable audit/polish como criterio externo de qualidade visual, nao so gosto da sessao.",
+          "checklist": [
+            "Impeccable audit + polish (ou equivalente manual se o launcher nao rodar) contra o sidebar/login",
+            "app-side-nav.spec.ts novo, language-selector.spec.ts revisado, app.spec.ts atualizado",
+            "QA visual real: 2 temas x mobile/desktop, sidebar expandido/retraido, login com controles flutuantes",
+            "docs/DESIGN-SYSTEM.md item 1 marcado implementado (fecha a divergencia)",
+            "Entrada em CHANGELOG.md",
+            "./init.sh do app e da raiz verdes",
+            "Vault revisado: alguma descoberta desta feature sem nota correspondente? Se sim, atualizar a nota do assunto no mesmo commit"
+          ],
+          "validation": "./init.sh verde; Playwright completo verde; evidence da feature preenchida.",
+          "owner": "agente"
+        }
+      ],
+      "evidence": "4 subtasks done (feat-018.1-.4). O que foi feito: app-side-nav substitui app-nav - sidebar lateral colapsavel (icone+texto expandido / so icone retraido, alternado manualmente, estado persistido como Theme/Language, default retraido abaixo de ~600px quando o usuario nao escolheu explicitamente - achado real de QA, o expandido comia quase a tela mobile inteira, RNF01), fecha a divergencia de docs/DESIGN-SYSTEM.md item 1 nunca corrigida desde feat-002. app.html/app.scss viram flex-row; a barra de idioma/tema some do shell autenticado, so aparece flutuante (canto inferior esquerdo, sem barra) na tela de login nao autenticada. language-selector: fix de min-width no trigger do mat-select (causa raiz do painel de opcoes cortado - herdava a largura do idioma atualmente selecionado), mat-select/mat-option mantidos intactos (nao migrado pra mat-menu) pra nao quebrar 3 e2e existentes que localizam opcoes por role=option; some do rodape quando a coluna esta retraida (nao cabe nos 72px). Motion pass: withViewTransitions() no router, transicao de collapse/expand do sidebar, e app-login-border-trace novo - animacao autoral no card de login (traco verde sai do ponto central superior em 2 direcoes, percorre cada lado, se encontra no ponto central inferior, retrai, loop) via 2 paths SVG espelho-simetricos dimensionados por ResizeObserver; toda animacao nova respeita prefers-reduced-motion (view-transitions inclusive). Achado real durante a implementacao (nao pedido, causa raiz investigada com A/B via git stash): mat-label/.mdc-floating-label/.mdc-notched-outline de mat-select/mat-form-field mantinham pointer-events habilitado nesta versao do Material, interceptando cliques quando um campo ficava estreito o bastante (a sidebar reduziu a grade de 3 colunas de register-bet o suficiente pra expor um bug latente, ja presente no develop sem a sidebar) - corrigido globalmente em styles.scss. Como foi verificado: 170 unitarios + 40 e2e verdes (rodado repetidas vezes, incluindo A/B com git stash pra confirmar cada achado real antes de corrigir), ./init.sh do app verde, npx ng build limpo. QA visual real (screenshots contra dev server, nao so leitura de codigo): 2 temas x desktop/mobile, sidebar expandido/retraido, login com controles flutuantes, ciclo completo da animacao do card de login capturado em frames. Delivery Reviewer (passe proprio, sem subagentes - risco baixo/medio, frontend puro sem dado/dinheiro/auth): PASS, 1 achado P3 corrigido (comentario desatualizado citando app-nav). Test Suite Auditor: CONCERNS nao-bloqueante - achado P2 aceito (fix de pointer-events do Material so tem protecao e2e indireta hoje, via register-bet.spec.ts ficar estreito o bastante por coincidencia de layout; registrado pra sessao futura adicionar teste deterministico dedicado) e achado P3 aceito (sem spec pro app-login-border-trace, decorativo puro, mesmo precedente de splash.spec.ts que so testa timing funcional). O que divergiu do plano: nada de fundo - o Plan Reviewer ja corrigiu a decisao tecnica (manter mat-select em vez de mat-menu) antes do codigo. docs/DESIGN-SYSTEM.md item 1 marcado implementado (nota de confirmacao com o achado do default mobile), docs/services/web.md ganhou secao nova, docs/CONVENTIONS.md documentou o gotcha do Material."
     }
   ]
 }
