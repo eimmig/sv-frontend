@@ -1138,7 +1138,7 @@
         {
           "id": "feat-016.3",
           "name": "Rotas novas (Cadastrar + Dashboard) via withComponentInputBinding, app-nav com 5 mat-menu",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-376",
           "detail": "Achado tecnico do Plan Reviewer: route data + withComponentInputBinding evita 9 paginas-wrapper quase identicas.",
           "checklist": [
