@@ -1,0 +1,16 @@
+@if (showSplash()) {
+  <app-splash (done)="onSplashDone()" />
+}
+<div class="app-shell">
+  <div class="app-shell__toolbar">
+    <app-language-selector />
+    <app-theme-toggle />
+  </div>
+  @if (auth.isAuthenticated()) {
+    <app-nav />
+    <app-must-change-password-banner />
+  }
+  <div class="app-shell__content">
+    <router-outlet />
+  </div>
+</div>

@@ -1,0 +1,192 @@
+{
+  "theme": {
+    "switchToLight": "Light mode",
+    "switchToDark": "Dark mode"
+  },
+  "language": {
+    "label": "Language"
+  },
+  "splash": {
+    "ariaLabel": "Loading animation that forms the StakeVault logo",
+    "title": "StakeVault animated splash",
+    "desc": "A point of light traces and draws the vault ring, the spokes turn until they lock into place, the bars rise in a cascade, a pulse expands, and the name is revealed by a sweep.",
+    "tagline": "BANKROLL MANAGEMENT"
+  },
+  "dashboard": {
+    "filtersTitle": "Filters",
+    "metricsTitle": "Metrics",
+    "bettingHouseLabel": "Betting house",
+    "sportLabel": "Sport",
+    "leagueLabel": "League",
+    "marketLabel": "Market",
+    "tipsterLabel": "Tipster",
+    "fromLabel": "From",
+    "toLabel": "To",
+    "filterAll": "All",
+    "applyFilter": "Apply filter",
+    "nameLabel": "Name",
+    "totalStakedLabel": "Total staked",
+    "netProfitLabel": "Net profit",
+    "roiLabel": "ROI",
+    "winRateLabel": "Win rate",
+    "settledCountLabel": "Settled bets",
+    "bySportTitle": "By sport",
+    "byMarketTitle": "By market",
+    "byBettingHouseTitle": "By betting house",
+    "genericError": "Could not complete the operation. Please try again."
+  },
+  "searchStatistics": {
+    "filtersTitle": "Filters",
+    "resultsTitle": "Results",
+    "sportLabel": "Sport",
+    "leagueLabel": "League",
+    "teamLabel": "Team",
+    "bettingHouseLabel": "Betting house",
+    "marketLabel": "Market",
+    "tipsterLabel": "Tipster",
+    "fromLabel": "From",
+    "toLabel": "To",
+    "filterAll": "All",
+    "requiredError": "Required",
+    "search": "Search",
+    "emptyBeforeSearch": "Choose a sport and league, then search to see this combination's statistics.",
+    "emptyResult": "No settled bets found for this combination.",
+    "betCountLabel": "Bets",
+    "totalStakedLabel": "Total staked",
+    "netProfitLabel": "Net profit",
+    "roiLabel": "ROI",
+    "winRateLabel": "Win rate",
+    "avgOddLabel": "Average odd",
+    "maxDrawdownLabel": "Max drawdown",
+    "sharpeRatioLabel": "Sharpe ratio",
+    "sharpeIndeterminate": "Indeterminate",
+    "genericError": "Could not complete the operation. Please try again."
+  },
+  "login": {
+    "title": "Sign in",
+    "tagline": "Bankroll management",
+    "slugLabel": "Organization",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "submit": "Sign in",
+    "genericError": "Could not sign in. Please try again."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "bettingHouses": "Betting houses",
+    "newBet": "Register bet",
+    "history": "History",
+    "catalogs": "Catalogs",
+    "searchStatistics": "Search statistics",
+    "users": "Users",
+    "logout": "Log out"
+  },
+  "mustChangePassword": {
+    "message": "You are using a temporary password. Change it as soon as possible.",
+    "dismiss": "Got it"
+  },
+  "users": {
+    "createTitle": "New user",
+    "listTitle": "Tenant users",
+    "nameLabel": "Name",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "roleLabel": "Role",
+    "create": "Create user",
+    "genericError": "Could not complete the operation. Please try again.",
+    "role": {
+      "ADMIN": "Admin",
+      "MEMBER": "Member"
+    }
+  },
+  "bettingHouses": {
+    "createTitle": "New betting house",
+    "listTitle": "Betting houses",
+    "nameLabel": "Name",
+    "initialBalanceLabel": "Initial balance",
+    "balanceLabel": "Current balance",
+    "create": "Create betting house",
+    "genericError": "Could not complete the operation. Please try again."
+  },
+  "catalogs": {
+    "createTitle": "New entry",
+    "listTitle": "Registered",
+    "nameLabel": "Name",
+    "create": "Add",
+    "genericError": "Could not complete the operation. Please try again.",
+    "sports": {
+      "title": "Sports"
+    },
+    "leagues": {
+      "title": "Leagues"
+    },
+    "markets": {
+      "title": "Markets"
+    },
+    "tipsters": {
+      "title": "Tipsters"
+    }
+  },
+  "registerBet": {
+    "eventTitle": "Event",
+    "detailsTitle": "Details",
+    "valuesTitle": "Values",
+    "potentialReturnLabel": "Potential return:",
+    "bettingHouseLabel": "Betting house",
+    "sportLabel": "Sport",
+    "leagueLabel": "League",
+    "marketLabel": "Market",
+    "tipsterLabel": "Tipster",
+    "tipsterNone": "None",
+    "ticketNumberLabel": "Ticket number",
+    "team1Label": "Team 1",
+    "team2Label": "Team 2",
+    "betTypeLabel": "Bet type",
+    "playTypeLabel": "Play type",
+    "descriptionLabel": "Description",
+    "stakeLabel": "Stake",
+    "oddLabel": "Odd",
+    "betDateLabel": "Bet date",
+    "reset": "Clear",
+    "submit": "Register bet",
+    "success": "Bet registered successfully.",
+    "genericError": "Could not complete the operation. Please try again."
+  },
+  "history": {
+    "betsTitle": "Bets",
+    "transactionsTitle": "Transactions",
+    "bettingHouseLabel": "Betting house",
+    "sportLabel": "Sport",
+    "fromLabel": "From",
+    "toLabel": "To",
+    "filterAll": "All",
+    "filter": "Filter",
+    "newTransactionTitle": "New transaction",
+    "create": "Register",
+    "transactionSuccess": "Transaction registered successfully.",
+    "stakeLabel": "Stake",
+    "oddLabel": "Odd",
+    "statusLabel": "Status",
+    "dateLabel": "Date",
+    "typeLabel": "Type",
+    "amountLabel": "Amount",
+    "previousPage": "Previous",
+    "nextPage": "Next",
+    "pageIndicator": "Page {{page}} of {{totalPages}}",
+    "genericError": "Could not complete the operation. Please try again.",
+    "status": {
+      "pending": "Pending",
+      "won": "Won",
+      "lost": "Lost",
+      "void": "Void"
+    },
+    "type": {
+      "deposit": "Deposit",
+      "withdrawal": "Withdrawal"
+    },
+    "actionsLabel": "Actions",
+    "markWon": "Won",
+    "markLost": "Lost",
+    "markVoid": "Void"
+  }
+}

@@ -1,0 +1,7 @@
+<div class="kpi-card" [class]="sign() ? 'kpi-card--' + sign() : ''" [attr.data-testid]="testId() ?? null">
+  <div class="kpi-card__icon"><mat-icon aria-hidden="true">{{ icon() }}</mat-icon></div>
+  <div class="kpi-card__body">
+    <span class="kpi-card__label">{{ label() }}</span>
+    <span class="kpi-card__value">{{ value() }}</span>
+  </div>
+</div>

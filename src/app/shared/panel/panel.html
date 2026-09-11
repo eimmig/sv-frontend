@@ -1,0 +1,11 @@
+<section class="panel">
+  @if (title(); as panelTitle) {
+    <header class="panel__header">
+      <h2>{{ panelTitle }}</h2>
+      <ng-content select="[panel-actions]" />
+    </header>
+  }
+  <div class="panel__body" data-testid="panel-body">
+    <ng-content />
+  </div>
+</section>

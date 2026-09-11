@@ -1,0 +1,35 @@
+// Real bug found via feat-006's own Playwright run (docs/CONVENTIONS.md, session-handoff.md
+// risk table already flagged this as fragile since feat-002.2): every page hardcoded
+// `height: calc(100vh - 64px)` assuming the app-nav row was the only chrome above the routed
+// page, at a fixed 64px. app-language-selector/app-theme-toggle were never positioned (no CSS
+// at all) and sat in normal document flow above the nav, and the nav itself wraps to more than
+// one line once enough links accumulate - both silently grew the real offset well past 64px,
+// which the fixed calc() never adjusted for. A flex column shell fixes this at the source: the
+// header block (toolbar + nav + banner) sizes itself naturally, and `.app-shell__content` gets
+// whatever space is left - routed pages set `height: 100%` (not a hardcoded calc) to fill it.
+:host {
+  display: block;
+  height: 100%;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.app-shell__toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.app-shell__content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}

@@ -1,0 +1,34 @@
+<nav class="app-nav" data-testid="app-nav">
+  <span class="app-nav__brand">StakeVault</span>
+  <a routerLink="/dashboard" routerLinkActive="app-nav__link--active" class="app-nav__link">{{
+    'nav.dashboard' | transloco
+  }}</a>
+  <a routerLink="/betting-houses" routerLinkActive="app-nav__link--active" class="app-nav__link">{{
+    'nav.bettingHouses' | transloco
+  }}</a>
+  <a routerLink="/register-bet" routerLinkActive="app-nav__link--active" class="app-nav__link">{{
+    'nav.newBet' | transloco
+  }}</a>
+  <a routerLink="/history" routerLinkActive="app-nav__link--active" class="app-nav__link">{{
+    'nav.history' | transloco
+  }}</a>
+  <a routerLink="/catalogs" routerLinkActive="app-nav__link--active" class="app-nav__link" data-testid="nav-catalogs">{{
+    'nav.catalogs' | transloco
+  }}</a>
+  <a
+    routerLink="/search-statistics"
+    routerLinkActive="app-nav__link--active"
+    class="app-nav__link"
+    data-testid="nav-search-statistics"
+    >{{ 'nav.searchStatistics' | transloco }}</a
+  >
+  @if (auth.isAdmin()) {
+    <a routerLink="/users" routerLinkActive="app-nav__link--active" class="app-nav__link" data-testid="nav-users">{{
+      'nav.users' | transloco
+    }}</a>
+  }
+  <span class="app-nav__spacer"></span>
+  <button mat-stroked-button type="button" data-testid="nav-logout" (click)="logout()">
+    {{ 'nav.logout' | transloco }}
+  </button>
+</nav>

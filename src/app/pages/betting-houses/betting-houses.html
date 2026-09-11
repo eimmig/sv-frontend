@@ -1,0 +1,79 @@
+<app-panel-layout columns="360px 1fr">
+  <app-panel [title]="'bettingHouses.createTitle' | transloco">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="betting-houses__form">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'bettingHouses.nameLabel' | transloco }}</mat-label>
+        <input
+          matInput
+          id="betting-houses-name-input"
+          type="text"
+          formControlName="name"
+          data-testid="betting-houses-name"
+          [attr.aria-label]="'bettingHouses.nameLabel' | transloco"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'bettingHouses.initialBalanceLabel' | transloco }}</mat-label>
+        <input
+          matInput
+          id="betting-houses-initial-balance-input"
+          type="number"
+          min="0"
+          step="0.01"
+          formControlName="initialBalance"
+          data-testid="betting-houses-initial-balance"
+          [attr.aria-label]="'bettingHouses.initialBalanceLabel' | transloco"
+        />
+      </mat-form-field>
+
+      @if (formError(); as message) {
+        <p class="betting-houses__error" role="alert" data-testid="betting-houses-form-error">{{ message }}</p>
+      }
+
+      <button
+        mat-flat-button
+        type="submit"
+        data-testid="betting-houses-submit"
+        [disabled]="form.invalid || submitting()"
+      >
+        {{ 'bettingHouses.create' | transloco }}
+      </button>
+    </form>
+  </app-panel>
+
+  <app-panel [title]="'bettingHouses.listTitle' | transloco">
+    @if (loadError(); as message) {
+      <p class="betting-houses__error" role="alert" data-testid="betting-houses-load-error">{{ message }}</p>
+    } @else {
+      <table class="betting-houses__table" data-testid="betting-houses-list">
+        <thead>
+          <tr>
+            <th>{{ 'bettingHouses.nameLabel' | transloco }}</th>
+            <th>{{ 'bettingHouses.initialBalanceLabel' | transloco }}</th>
+            <th>{{ 'bettingHouses.balanceLabel' | transloco }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (house of bettingHouses(); track house.id) {
+            <tr data-testid="betting-houses-row">
+              <td>{{ house.name }}</td>
+              <td>{{ formatBrl(house.initialBalance) }}</td>
+              <td>
+                {{ formatBrl(house.balance) }}
+                <span
+                  class="badge"
+                  [class.badge--positive]="delta(house) > 0"
+                  [class.badge--negative]="delta(house) < 0"
+                  [class.badge--neutral]="delta(house) === 0"
+                  data-testid="betting-houses-delta"
+                  >{{ formatDelta(delta(house)) }}</span
+                >
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </app-panel>
+</app-panel-layout>

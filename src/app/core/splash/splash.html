@@ -1,0 +1,62 @@
+<div class="splash">
+  <svg
+    width="100%"
+    viewBox="0 0 400 220"
+    class="splash__svg"
+    role="img"
+    [attr.aria-label]="'splash.ariaLabel' | transloco"
+  >
+    <title>{{ 'splash.title' | transloco }}</title>
+    <desc>{{ 'splash.desc' | transloco }}</desc>
+    <defs>
+      <mask id="sv2-mask">
+        <rect class="sv2-wipe" x="0" y="140" width="420" height="70" fill="#ffffff" />
+      </mask>
+    </defs>
+    <g class="sv2-stage">
+      <circle
+        class="sv2-dial"
+        cx="200"
+        cy="78"
+        r="53"
+        fill="none"
+        stroke="#2C3B49"
+        stroke-width="1.5"
+        stroke-dasharray="2 9"
+        stroke-linecap="round"
+      />
+      <circle class="sv2-pulse" cx="200" cy="78" r="36" fill="none" stroke="#3EC46D" stroke-width="2" />
+      <circle class="sv2-pulse sv2-p2" cx="200" cy="78" r="36" fill="none" stroke="#3EC46D" stroke-width="1.5" />
+      <g class="sv2-icon">
+        <circle
+          class="sv2-ring"
+          cx="200"
+          cy="78"
+          r="36"
+          fill="none"
+          stroke="#3EC46D"
+          stroke-width="6"
+          transform="rotate(-90 200 78)"
+        />
+        <g class="sv2-spokes" stroke="#3EC46D" stroke-width="6" stroke-linecap="round">
+          <line class="sv2-spoke" x1="219.8" y1="58.2" x2="232.5" y2="45.5" />
+          <line class="sv2-spoke" x1="180.2" y1="58.2" x2="167.5" y2="45.5" />
+          <line class="sv2-spoke" x1="219.8" y1="97.8" x2="232.5" y2="110.5" />
+          <line class="sv2-spoke" x1="180.2" y1="97.8" x2="167.5" y2="110.5" />
+        </g>
+        <rect class="sv2-bar" x="182" y="82" width="8" height="14" rx="3" fill="#F2F7F5" opacity="0.45" />
+        <rect class="sv2-bar sv2-b2" x="196" y="72" width="8" height="24" rx="3" fill="#F2F7F5" opacity="0.75" />
+        <rect class="sv2-bar sv2-b3" x="210" y="62" width="8" height="34" rx="3" fill="#F2F7F5" />
+      </g>
+      <g class="sv2-comet"><circle cx="200" cy="42" r="5" fill="#F2F7F5" /></g>
+      <g class="sv2-word" mask="url(#sv2-mask)">
+        <text x="200" y="172" fill="#FFFFFF" font-size="30" font-weight="400" letter-spacing="-0.5" text-anchor="middle">
+          Stake<tspan fill="#3EC46D" font-weight="500">Vault</tspan>
+        </text>
+        <text x="200" y="194" fill="#7A8A93" font-size="11" letter-spacing="2.2" text-anchor="middle">
+          {{ 'splash.tagline' | transloco }}
+        </text>
+      </g>
+    </g>
+  </svg>
+</div>

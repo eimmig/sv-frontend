@@ -1,0 +1,157 @@
+<app-panel-layout columns="320px 1fr">
+  <app-panel [title]="'searchStatistics.filtersTitle' | transloco">
+    @if (optionsError(); as message) {
+      <p class="search-statistics__error" role="alert" data-testid="search-statistics-options-error">{{ message }}</p>
+    } @else {
+      <form [formGroup]="filterForm" (ngSubmit)="search()" class="search-statistics__filters">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'searchStatistics.sportLabel' | transloco }}</mat-label>
+          <mat-select formControlName="sportId" data-testid="search-statistics-filter-sport">
+            @for (sport of options().sports; track sport.id) {
+              <mat-option [value]="sport.id">{{ sport.name }}</mat-option>
+            }
+          </mat-select>
+          @if (filterForm.controls.sportId.invalid && filterForm.controls.sportId.touched) {
+            <mat-error>{{ 'searchStatistics.requiredError' | transloco }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'searchStatistics.leagueLabel' | transloco }}</mat-label>
+          <mat-select formControlName="leagueId" data-testid="search-statistics-filter-league">
+            @for (league of options().leagues; track league.id) {
+              <mat-option [value]="league.id">{{ league.name }}</mat-option>
+            }
+          </mat-select>
+          @if (filterForm.controls.leagueId.invalid && filterForm.controls.leagueId.touched) {
+            <mat-error>{{ 'searchStatistics.requiredError' | transloco }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'searchStatistics.teamLabel' | transloco }}</mat-label>
+          <mat-select formControlName="teamId" data-testid="search-statistics-filter-team">
+            <mat-option value="">{{ 'searchStatistics.filterAll' | transloco }}</mat-option>
+            @for (team of teamOptions(); track team.id) {
+              <mat-option [value]="team.id">{{ team.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        @if (teamsError(); as message) {
+          <p class="search-statistics__error" role="alert" data-testid="search-statistics-teams-error">{{ message }}</p>
+        }
+
+        @for (filter of optionalCatalogFilters(); track filter.controlName) {
+          <mat-form-field appearance="outline">
+            <mat-label>{{ filter.labelKey | transloco }}</mat-label>
+            <mat-select [formControlName]="filter.controlName" [attr.data-testid]="filter.testId">
+              <mat-option value="">{{ 'searchStatistics.filterAll' | transloco }}</mat-option>
+              @for (item of filter.items; track item.id) {
+                <mat-option [value]="item.id">{{ item.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        }
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'searchStatistics.fromLabel' | transloco }}</mat-label>
+          <input
+            matInput
+            id="search-statistics-from-input"
+            type="date"
+            formControlName="from"
+            data-testid="search-statistics-filter-from"
+            [attr.aria-label]="'searchStatistics.fromLabel' | transloco"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'searchStatistics.toLabel' | transloco }}</mat-label>
+          <input
+            matInput
+            id="search-statistics-to-input"
+            type="date"
+            formControlName="to"
+            data-testid="search-statistics-filter-to"
+            [attr.aria-label]="'searchStatistics.toLabel' | transloco"
+          />
+        </mat-form-field>
+
+        <button mat-flat-button type="submit" [disabled]="filterForm.invalid" data-testid="search-statistics-submit">
+          {{ 'searchStatistics.search' | transloco }}
+        </button>
+      </form>
+    }
+  </app-panel>
+
+  <app-panel [title]="'searchStatistics.resultsTitle' | transloco">
+    @if (!hasSearched()) {
+      <p class="search-statistics__empty" data-testid="search-statistics-empty-before-search">
+        {{ 'searchStatistics.emptyBeforeSearch' | transloco }}
+      </p>
+    } @else if (resultError(); as message) {
+      <p class="search-statistics__error" role="alert" data-testid="search-statistics-result-error">{{ message }}</p>
+    } @else if (result(); as r) {
+      @if (r.summary.betCount === 0) {
+        <p class="search-statistics__empty" data-testid="search-statistics-empty-result">
+          {{ 'searchStatistics.emptyResult' | transloco }}
+        </p>
+      } @else {
+        <div class="search-statistics__cards" data-testid="search-statistics-cards">
+          <app-kpi-card
+            icon="receipt_long"
+            [label]="'searchStatistics.betCountLabel' | transloco"
+            [value]="r.summary.betCount.toString()"
+            testId="search-statistics-bet-count"
+          />
+          <app-kpi-card
+            icon="account_balance_wallet"
+            [label]="'searchStatistics.totalStakedLabel' | transloco"
+            [value]="formatBrl(r.summary.totalStaked)"
+            testId="search-statistics-total-staked"
+          />
+          <app-kpi-card
+            [icon]="r.summary.netProfit >= 0 ? 'trending_up' : 'trending_down'"
+            [label]="'searchStatistics.netProfitLabel' | transloco"
+            [value]="formatBrl(r.summary.netProfit)"
+            [sign]="sign(r.summary.netProfit)"
+            testId="search-statistics-net-profit"
+          />
+          <app-kpi-card
+            icon="percent"
+            [label]="'searchStatistics.roiLabel' | transloco"
+            [value]="formatPercent(r.summary.roi)"
+            [sign]="sign(r.summary.roi)"
+            testId="search-statistics-roi"
+          />
+          <app-kpi-card
+            icon="emoji_events"
+            [label]="'searchStatistics.winRateLabel' | transloco"
+            [value]="formatPercent(r.summary.winRate)"
+            testId="search-statistics-win-rate"
+          />
+          <app-kpi-card
+            icon="local_offer"
+            [label]="'searchStatistics.avgOddLabel' | transloco"
+            [value]="formatOdd(r.summary.avgOdd)"
+            testId="search-statistics-avg-odd"
+          />
+          <app-kpi-card
+            icon="south"
+            [label]="'searchStatistics.maxDrawdownLabel' | transloco"
+            [value]="formatBrl(r.summary.maxDrawdown)"
+            testId="search-statistics-max-drawdown"
+          />
+          <app-kpi-card
+            icon="insights"
+            [label]="'searchStatistics.sharpeRatioLabel' | transloco"
+            [value]="r.summary.sharpeRatio === null ? ('searchStatistics.sharpeIndeterminate' | transloco) : formatOdd(r.summary.sharpeRatio)"
+            testId="search-statistics-sharpe-ratio"
+          />
+        </div>
+
+        <app-equity-curve-chart [data]="r.timeline" />
+      }
+    }
+  </app-panel>
+</app-panel-layout>

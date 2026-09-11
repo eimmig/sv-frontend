@@ -1,0 +1,192 @@
+{
+  "theme": {
+    "switchToLight": "Modo claro",
+    "switchToDark": "Modo oscuro"
+  },
+  "language": {
+    "label": "Idioma"
+  },
+  "splash": {
+    "ariaLabel": "Animación de carga que forma el logo de StakeVault",
+    "title": "Splash animado de StakeVault",
+    "desc": "Un punto de luz recorre y dibuja el anillo de la bóveda, los radios giran hasta encajar, las barras suben en cascada, un pulso se expande y el nombre se revela con un barrido.",
+    "tagline": "GESTIÓN DE BANCA"
+  },
+  "dashboard": {
+    "filtersTitle": "Filtros",
+    "metricsTitle": "Métricas",
+    "bettingHouseLabel": "Casa de apuestas",
+    "sportLabel": "Deporte",
+    "leagueLabel": "Liga",
+    "marketLabel": "Mercado",
+    "tipsterLabel": "Tipster",
+    "fromLabel": "Desde",
+    "toLabel": "Hasta",
+    "filterAll": "Todas",
+    "applyFilter": "Aplicar filtro",
+    "nameLabel": "Nombre",
+    "totalStakedLabel": "Total apostado",
+    "netProfitLabel": "Beneficio neto",
+    "roiLabel": "ROI",
+    "winRateLabel": "Tasa de acierto",
+    "settledCountLabel": "Apuestas liquidadas",
+    "bySportTitle": "Por deporte",
+    "byMarketTitle": "Por mercado",
+    "byBettingHouseTitle": "Por casa de apuestas",
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
+  },
+  "searchStatistics": {
+    "filtersTitle": "Filtros",
+    "resultsTitle": "Resultados",
+    "sportLabel": "Deporte",
+    "leagueLabel": "Liga",
+    "teamLabel": "Equipo",
+    "bettingHouseLabel": "Casa de apuestas",
+    "marketLabel": "Mercado",
+    "tipsterLabel": "Tipster",
+    "fromLabel": "Desde",
+    "toLabel": "Hasta",
+    "filterAll": "Todas",
+    "requiredError": "Obligatorio",
+    "search": "Buscar",
+    "emptyBeforeSearch": "Elige deporte y liga, luego busca para ver las estadísticas de esa combinación.",
+    "emptyResult": "No se encontraron apuestas liquidadas para esa combinación.",
+    "betCountLabel": "Apuestas",
+    "totalStakedLabel": "Total apostado",
+    "netProfitLabel": "Ganancia neta",
+    "roiLabel": "ROI",
+    "winRateLabel": "Tasa de acierto",
+    "avgOddLabel": "Cuota media",
+    "maxDrawdownLabel": "Drawdown máximo",
+    "sharpeRatioLabel": "Índice de Sharpe",
+    "sharpeIndeterminate": "Indeterminado",
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
+  },
+  "login": {
+    "title": "Iniciar sesión",
+    "tagline": "Gestión de banca",
+    "slugLabel": "Organización",
+    "emailLabel": "Correo electrónico",
+    "passwordLabel": "Contraseña",
+    "submit": "Iniciar sesión",
+    "genericError": "No se pudo iniciar sesión. Inténtalo de nuevo."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "bettingHouses": "Casas de apuestas",
+    "newBet": "Registrar apuesta",
+    "history": "Historial",
+    "catalogs": "Catálogos",
+    "searchStatistics": "Buscar estadísticas",
+    "users": "Usuarios",
+    "logout": "Cerrar sesión"
+  },
+  "mustChangePassword": {
+    "message": "Estás usando una contraseña temporal. Cámbiala lo antes posible.",
+    "dismiss": "Entendido"
+  },
+  "users": {
+    "createTitle": "Nuevo usuario",
+    "listTitle": "Usuarios del tenant",
+    "nameLabel": "Nombre",
+    "emailLabel": "Correo electrónico",
+    "passwordLabel": "Contraseña",
+    "roleLabel": "Rol",
+    "create": "Crear usuario",
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo.",
+    "role": {
+      "ADMIN": "Administrador",
+      "MEMBER": "Miembro"
+    }
+  },
+  "bettingHouses": {
+    "createTitle": "Nueva casa de apuestas",
+    "listTitle": "Casas de apuestas",
+    "nameLabel": "Nombre",
+    "initialBalanceLabel": "Saldo inicial",
+    "balanceLabel": "Saldo actual",
+    "create": "Crear casa de apuestas",
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
+  },
+  "catalogs": {
+    "createTitle": "Nueva entrada",
+    "listTitle": "Registradas",
+    "nameLabel": "Nombre",
+    "create": "Agregar",
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo.",
+    "sports": {
+      "title": "Deportes"
+    },
+    "leagues": {
+      "title": "Ligas"
+    },
+    "markets": {
+      "title": "Mercados"
+    },
+    "tipsters": {
+      "title": "Tipsters"
+    }
+  },
+  "registerBet": {
+    "eventTitle": "Evento",
+    "detailsTitle": "Detalles",
+    "valuesTitle": "Valores",
+    "potentialReturnLabel": "Retorno potencial:",
+    "bettingHouseLabel": "Casa de apuestas",
+    "sportLabel": "Deporte",
+    "leagueLabel": "Liga",
+    "marketLabel": "Mercado",
+    "tipsterLabel": "Tipster",
+    "tipsterNone": "Ninguno",
+    "ticketNumberLabel": "Número de boleto",
+    "team1Label": "Equipo 1",
+    "team2Label": "Equipo 2",
+    "betTypeLabel": "Tipo de apuesta",
+    "playTypeLabel": "Tipo de jugada",
+    "descriptionLabel": "Descripción",
+    "stakeLabel": "Monto apostado",
+    "oddLabel": "Cuota",
+    "betDateLabel": "Fecha de la apuesta",
+    "reset": "Limpiar",
+    "submit": "Registrar apuesta",
+    "success": "Apuesta registrada con éxito.",
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
+  },
+  "history": {
+    "betsTitle": "Apuestas",
+    "transactionsTitle": "Movimientos",
+    "bettingHouseLabel": "Casa de apuestas",
+    "sportLabel": "Deporte",
+    "fromLabel": "Desde",
+    "toLabel": "Hasta",
+    "filterAll": "Todas",
+    "filter": "Filtrar",
+    "newTransactionTitle": "Nuevo movimiento",
+    "create": "Registrar",
+    "transactionSuccess": "Movimiento registrado con éxito.",
+    "stakeLabel": "Monto apostado",
+    "oddLabel": "Cuota",
+    "statusLabel": "Estado",
+    "dateLabel": "Fecha",
+    "typeLabel": "Tipo",
+    "amountLabel": "Monto",
+    "previousPage": "Anterior",
+    "nextPage": "Siguiente",
+    "pageIndicator": "Página {{page}} de {{totalPages}}",
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo.",
+    "status": {
+      "pending": "Pendiente",
+      "won": "Ganada",
+      "lost": "Perdida",
+      "void": "Anulada"
+    },
+    "type": {
+      "deposit": "Depósito",
+      "withdrawal": "Retiro"
+    },
+    "actionsLabel": "Acciones",
+    "markWon": "Ganada",
+    "markLost": "Perdida",
+    "markVoid": "Anulada"
+  }
+}

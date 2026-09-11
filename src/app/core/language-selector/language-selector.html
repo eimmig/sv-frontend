@@ -1,0 +1,14 @@
+<div class="language-selector">
+  <mat-icon aria-hidden="true">language</mat-icon>
+  <mat-select
+    [value]="language.current()"
+    [aria-label]="'language.label' | transloco"
+    data-testid="language-selector"
+    panelClass="language-selector__panel"
+    (selectionChange)="onLocaleSelected($event.value)"
+  >
+    @for (locale of locales; track locale.value) {
+      <mat-option [value]="locale.value">{{ locale.label }}</mat-option>
+    }
+  </mat-select>
+</div>

@@ -1,0 +1,42 @@
+:host {
+  display: block;
+  height: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.search-statistics__error {
+  margin: 0;
+  color: var(--color-negative);
+  font-size: 14px;
+}
+
+.search-statistics__empty {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.search-statistics__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 0;
+
+  mat-form-field {
+    min-width: 160px;
+  }
+
+  button {
+    margin-top: 8px;
+  }
+}
+
+.search-statistics__cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 0;
+}

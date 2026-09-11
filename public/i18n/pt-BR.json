@@ -1,0 +1,192 @@
+{
+  "theme": {
+    "switchToLight": "Modo claro",
+    "switchToDark": "Modo escuro"
+  },
+  "language": {
+    "label": "Idioma"
+  },
+  "splash": {
+    "ariaLabel": "Animação de carregamento que forma o logo StakeVault",
+    "title": "Splash animado StakeVault",
+    "desc": "Um ponto de luz percorre e desenha o anel do cofre, os raios giram até encaixar, as barras sobem em cascata, um pulso se expande e o nome é revelado por uma varredura.",
+    "tagline": "GESTÃO DE BANCA"
+  },
+  "dashboard": {
+    "filtersTitle": "Filtros",
+    "metricsTitle": "Métricas",
+    "bettingHouseLabel": "Casa de apostas",
+    "sportLabel": "Esporte",
+    "leagueLabel": "Liga",
+    "marketLabel": "Mercado",
+    "tipsterLabel": "Tipster",
+    "fromLabel": "De",
+    "toLabel": "Até",
+    "filterAll": "Todas",
+    "applyFilter": "Aplicar filtro",
+    "nameLabel": "Nome",
+    "totalStakedLabel": "Total apostado",
+    "netProfitLabel": "Lucro líquido",
+    "roiLabel": "ROI",
+    "winRateLabel": "Taxa de acerto",
+    "settledCountLabel": "Apostas liquidadas",
+    "bySportTitle": "Por esporte",
+    "byMarketTitle": "Por mercado",
+    "byBettingHouseTitle": "Por casa de apostas",
+    "genericError": "Não foi possível completar a operação. Tente novamente."
+  },
+  "searchStatistics": {
+    "filtersTitle": "Filtros",
+    "resultsTitle": "Resultados",
+    "sportLabel": "Esporte",
+    "leagueLabel": "Liga",
+    "teamLabel": "Time",
+    "bettingHouseLabel": "Casa de apostas",
+    "marketLabel": "Mercado",
+    "tipsterLabel": "Tipster",
+    "fromLabel": "De",
+    "toLabel": "Até",
+    "filterAll": "Todas",
+    "requiredError": "Obrigatório",
+    "search": "Buscar",
+    "emptyBeforeSearch": "Escolha esporte e liga e busque para ver as estatísticas dessa combinação.",
+    "emptyResult": "Nenhuma aposta liquidada encontrada para essa combinação.",
+    "betCountLabel": "Apostas",
+    "totalStakedLabel": "Total apostado",
+    "netProfitLabel": "Lucro líquido",
+    "roiLabel": "ROI",
+    "winRateLabel": "Taxa de acerto",
+    "avgOddLabel": "Odd média",
+    "maxDrawdownLabel": "Drawdown máximo",
+    "sharpeRatioLabel": "Índice de Sharpe",
+    "sharpeIndeterminate": "Indeterminado",
+    "genericError": "Não foi possível completar a operação. Tente novamente."
+  },
+  "login": {
+    "title": "Entrar",
+    "tagline": "Gestão de banca",
+    "slugLabel": "Organização",
+    "emailLabel": "E-mail",
+    "passwordLabel": "Senha",
+    "submit": "Entrar",
+    "genericError": "Não foi possível entrar. Tente novamente."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "bettingHouses": "Casas de apostas",
+    "newBet": "Registrar aposta",
+    "history": "Histórico",
+    "catalogs": "Catálogos",
+    "searchStatistics": "Buscar estatísticas",
+    "users": "Usuários",
+    "logout": "Sair"
+  },
+  "mustChangePassword": {
+    "message": "Você está usando uma senha temporária. Troque-a assim que possível.",
+    "dismiss": "Entendi"
+  },
+  "users": {
+    "createTitle": "Novo usuário",
+    "listTitle": "Usuários do tenant",
+    "nameLabel": "Nome",
+    "emailLabel": "E-mail",
+    "passwordLabel": "Senha",
+    "roleLabel": "Papel",
+    "create": "Criar usuário",
+    "genericError": "Não foi possível completar a operação. Tente novamente.",
+    "role": {
+      "ADMIN": "Administrador",
+      "MEMBER": "Membro"
+    }
+  },
+  "bettingHouses": {
+    "createTitle": "Nova casa de apostas",
+    "listTitle": "Casas de apostas",
+    "nameLabel": "Nome",
+    "initialBalanceLabel": "Saldo inicial",
+    "balanceLabel": "Saldo atual",
+    "create": "Criar casa de apostas",
+    "genericError": "Não foi possível completar a operação. Tente novamente."
+  },
+  "catalogs": {
+    "createTitle": "Nova entrada",
+    "listTitle": "Cadastradas",
+    "nameLabel": "Nome",
+    "create": "Adicionar",
+    "genericError": "Não foi possível completar a operação. Tente novamente.",
+    "sports": {
+      "title": "Esportes"
+    },
+    "leagues": {
+      "title": "Ligas"
+    },
+    "markets": {
+      "title": "Mercados"
+    },
+    "tipsters": {
+      "title": "Tipsters"
+    }
+  },
+  "registerBet": {
+    "eventTitle": "Evento",
+    "detailsTitle": "Detalhes",
+    "valuesTitle": "Valores",
+    "potentialReturnLabel": "Retorno potencial:",
+    "bettingHouseLabel": "Casa de apostas",
+    "sportLabel": "Esporte",
+    "leagueLabel": "Liga",
+    "marketLabel": "Mercado",
+    "tipsterLabel": "Tipster",
+    "tipsterNone": "Nenhum",
+    "ticketNumberLabel": "Número do bilhete",
+    "team1Label": "Time 1",
+    "team2Label": "Time 2",
+    "betTypeLabel": "Tipo de aposta",
+    "playTypeLabel": "Tipo de jogada",
+    "descriptionLabel": "Descrição",
+    "stakeLabel": "Valor apostado",
+    "oddLabel": "Odd",
+    "betDateLabel": "Data da aposta",
+    "reset": "Limpar",
+    "submit": "Registrar aposta",
+    "success": "Aposta registrada com sucesso.",
+    "genericError": "Não foi possível completar a operação. Tente novamente."
+  },
+  "history": {
+    "betsTitle": "Apostas",
+    "transactionsTitle": "Movimentações",
+    "bettingHouseLabel": "Casa de apostas",
+    "sportLabel": "Esporte",
+    "fromLabel": "De",
+    "toLabel": "Até",
+    "filterAll": "Todas",
+    "filter": "Filtrar",
+    "newTransactionTitle": "Nova movimentação",
+    "create": "Registrar",
+    "transactionSuccess": "Movimentação registrada com sucesso.",
+    "stakeLabel": "Valor apostado",
+    "oddLabel": "Odd",
+    "statusLabel": "Status",
+    "dateLabel": "Data",
+    "typeLabel": "Tipo",
+    "amountLabel": "Valor",
+    "previousPage": "Anterior",
+    "nextPage": "Próxima",
+    "pageIndicator": "Página {{page}} de {{totalPages}}",
+    "genericError": "Não foi possível completar a operação. Tente novamente.",
+    "status": {
+      "pending": "Pendente",
+      "won": "Ganha",
+      "lost": "Perdida",
+      "void": "Devolvida"
+    },
+    "type": {
+      "deposit": "Depósito",
+      "withdrawal": "Saque"
+    },
+    "actionsLabel": "Ações",
+    "markWon": "Ganha",
+    "markLost": "Perdida",
+    "markVoid": "Devolvida"
+  }
+}

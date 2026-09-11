@@ -1,41 +1,35 @@
 # Session Handoff — web
 
-## Current Objective
+> Estado atual, não histórico. O diário cronológico é o `progress.md` — este arquivo é reescrito
+> a cada sessão para responder "o que a próxima sessão precisa saber agora".
 
-- Goal: bootstrap the web app harness.
-- Current status: harness created, no code yet.
-- Branch / commit: (not committed yet)
+**Última atualização:** 2026-09-10
 
-## Completed This Session
+## Objetivo atual
 
-- [x] Created `CLAUDE.md`, `feature_list.json`, `init.sh`, `progress.md`, `session-handoff.md`.
+`feat-001`..`feat-012` `done` — todo o backlog atual deste harness está concluído. `feat-012`
+(tela "Buscar Estatísticas") fechou nesta sessão, fecha `epic-012` (raiz).
 
-## Verification Evidence
+## Concluído nesta sessão (2026-09-10)
 
-| Check | Command | Result | Notes |
-|---|---|---|---|
-| Build/test | `./init.sh` | not run yet | No package.json yet (feat-001). |
+- [x] `feat-012` fechada (7 subtasks, story SV-303, PRs #48-55). Ver `progress.md` para o
+      detalhe completo — inclui um achado real de mock de teste (envelope errado no e2e) e 2
+      achados reais de SonarCloud no gate final (a11y + duplicação de código), todos corrigidos
+      na raiz do problema, não contornados.
 
-## Files Changed
+## Bloqueios / Riscos
 
-- All files in this directory — created.
+Nenhum.
 
-## Decisions Made
+## Próxima sessão — por onde começar
 
-- None specific to this session — state management (Signals, not NgRx) and standalone
-  components were already decided project-wide in `../../docs/CONVENTIONS.md`, not reopened per
-  session.
-
-## Blockers / Risks
-
-- Real integration needs `auth-service` and `bets-service` endpoints to exist.
-
-## Next Session Startup
-
-1. Read `../../CLAUDE.md` and `../../docs/services/web.md`.
-2. Read this directory's `CLAUDE.md`, `feature_list.json`, `progress.md`.
-3. Run `./init.sh`.
-
-## Recommended Next Step
-
-- Start `feat-001` (Angular project setup).
+1. Rodar `./init.sh` (deve sair `0`).
+2. Nenhuma feature elegível neste harness até `bets-service epic-013` (saldo consolidado,
+   `betType` enum, config de unidade) ou `stats-service epic-016`/`epic-018` (quebra diária,
+   segmentos `byLeague`/`byTipster`) existirem — eles liberam `epic-015`/`epic-017`/`epic-019`/
+   `epic-020`/`epic-021` deste harness (dashboard consolidado reespecificado, relatório do
+   período, menu por cadastro, grade de drawdown mensal, tela "Visão geral").
+3. Padrão estabelecido nesta sessão, reaproveitável: extrair lógica de gráfico/sinal de cor
+   compartilhada (`core/chart-theme.ts#buildLineChartOption`, `shared/kpi-card.ts#kpiSign`) *antes*
+   de duplicar entre 2 telas — o gate do SonarCloud (`new_duplicated_lines_density ≤ 3%`) vai
+   pegar isso de qualquer forma, mais barato prevenir no plano do que corrigir depois do PR falhar.

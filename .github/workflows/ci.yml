@@ -15,9 +15,14 @@ jobs:
 
       # 1. Changelog - ver docs/CI-CD.md (vault local, nao versionado neste repo)
       - name: Validar atualizacao do CHANGELOG.md
-        # Todo PR valida, inclusive subtask -> branch da story: cada subtarefa adiciona a
-        # propria linha em [Unreleased], que se acumula ate o merge em develop.
-        if: github.event_name == 'pull_request'
+        # So no PR story -> develop/main, ver docs/CI-CD.md "Quais passos rodam em qual PR":
+        # a linha de cada subtask nasce (via jira_story.py) antes da branch daquela subtask
+        # existir, entao o diff de uma PR subtask/ -> story nunca toca CHANGELOG.md por
+        # sequenciamento, nao por esquecimento real - exigir o toque tambem ali quebraria todo
+        # PR de subtask. Achado real (SV-211): guarda deste repositorio nunca teve essa condicao,
+        # mesma armadilha ja documentada em docs/CI-CD.md e corrigida nos outros 6 repositorios,
+        # nunca portada pra este ate agora.
+        if: github.event_name == 'pull_request' && (github.base_ref == 'develop' || github.base_ref == 'main')
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
@@ -25,15 +30,22 @@ jobs:
 
       # 2. Chaves de traducao - ver docs/CONVENTIONS.md secao "Internacionalizacao (i18n)"
       - name: Validar chaves de traducao (pt-BR/en-US/es)
-        # Guarda por arquivo-marcador: enquanto o projeto nao existe (repositorio so com
-        # harness), este passo e pulado em vez de falhar. Liga sozinho no feat-001 deste
-        # servico, quando o marcador passa a existir. Ver docs/CI-CD.md.
-        if: hashFiles('package-lock.json') != ''
+        # Guarda propria (public/i18n/pt-BR.json), independente do package-lock.json que
+        # guarda os passos 3-5: feat-001 deste app foi dividida em subtasks incrementais e
+        # package-lock.json nasce (feat-001.1, ng new) bem antes dos arquivos de locale
+        # (feat-001.3, transloco) - guardar so por package-lock.json quebraria a PR de toda
+        # subtask intermediaria por sequenciamento, nao por defeito real. Achado real (SV-210):
+        # mesma armadilha ja documentada em docs/CI-CD.md ("Gotcha encontrado em sv-auth-backend")
+        # e corrigida proativamente nos 4 repositorios Java, nunca portada pra este ate agora.
+        # Achado real (SV-212): o caminho original era src/assets/i18n/ (convencao pre-Angular
+        # 22) - o "ng new" real deste app (feat-001.1) usa a pasta public/ pra assets servidos
+        # como estao, nao src/assets/ - corrigido pra public/i18n/ (ver docs/CONVENTIONS.md).
+        if: hashFiles('public/i18n/pt-BR.json') != ''
         run: |
           python3 .github/scripts/validate-i18n-keys.py --format json \
-            --file pt-BR=src/assets/i18n/pt-BR.json \
-            --file en-US=src/assets/i18n/en-US.json \
-            --file es=src/assets/i18n/es.json
+            --file pt-BR=public/i18n/pt-BR.json \
+            --file en-US=public/i18n/en-US.json \
+            --file es=public/i18n/es.json
 
       - uses: actions/setup-node@v4
         # Guarda por arquivo-marcador: enquanto o projeto nao existe (repositorio so com
@@ -41,7 +53,7 @@ jobs:
         # servico, quando o marcador passa a existir. Ver docs/CI-CD.md.
         if: hashFiles('package-lock.json') != ''
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       # 3. Build
@@ -60,7 +72,7 @@ jobs:
         # harness), este passo e pulado em vez de falhar. Liga sozinho no feat-001 deste
         # servico, quando o marcador passa a existir. Ver docs/CI-CD.md.
         if: hashFiles('package-lock.json') != ''
-        run: npm run test -- --code-coverage --watch=false
+        run: npm run test -- --coverage --watch=false
 
       # 5. Qualidade de codigo e cobertura (SonarCloud)
       - name: SonarCloud
@@ -69,6 +81,12 @@ jobs:
         # Guarda por arquivo-marcador: enquanto o projeto nao existe (repositorio so com
         # harness), este passo e pulado em vez de falhar. Liga sozinho no feat-001 deste
         # servico, quando o marcador passa a existir. Ver docs/CI-CD.md.
+        # sonar.qualitygate.wait pulado em qualquer push direto (nao so develop - achado real
+        # feat-013/CI, 2026-09-11: a expressao "cond && '' || flag" nunca funciona, string vazia
+        # do ramo verdadeiro e falsy pro GitHub Actions, o "||" sempre cai no flag; e mesmo
+        # corrigida, a causa raiz - primeira analise de uma branch longa sem leak period, API
+        # devolve status NONE tratado como reprovado - vale pra qualquer push, main incluso, nao
+        # so develop. Ver docs/CI-CD.md "Sexta"/"Setima armadilha".
         if: hashFiles('package-lock.json') != '' && (github.event_name != 'pull_request' || github.base_ref == 'develop' || github.base_ref == 'main')
         uses: SonarSource/sonarqube-scan-action@v4
         env:
@@ -78,3 +96,43 @@ jobs:
           args: >
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
             -Dsonar.host.url=https://sonarcloud.io
+            ${{ github.event_name != 'push' && '-Dsonar.qualitygate.wait=true' || '' }}
+
+      # 6. Gate de issue/hotspot do SonarCloud - pulado em qualquer push direto (mesmo racional do passo 5)
+      - name: Validar zero issues no SonarCloud
+        if: hashFiles('package-lock.json') != '' && (github.event_name != 'pull_request' || github.base_ref == 'develop' || github.base_ref == 'main') && github.event_name != 'push'
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: >
+          python3 .github/scripts/validate-sonar-issues.py
+          --project-key eimmig_sv-frontend
+          ${{ github.event_name == 'pull_request' && format('--pull-request {0}', github.event.pull_request.number) || format('--branch {0}', github.ref_name) }}
+
+  build-and-push-image:
+    needs: pipeline
+    if: github.event_name == 'push' && github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+
+      - name: Login no GHCR
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build e push da imagem
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/eimmig/sv-frontend:${{ github.sha }}
+            ghcr.io/eimmig/sv-frontend:latest

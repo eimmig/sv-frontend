@@ -1,0 +1,56 @@
+:host {
+  display: block;
+  height: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
+
+app-panel-layout {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+mat-form-field {
+  display: block;
+}
+
+.register-bet__error {
+  margin: 0;
+  color: var(--color-negative);
+  font-size: 14px;
+}
+
+.register-bet__success {
+  margin: 0;
+  color: var(--color-positive);
+  font-size: 14px;
+}
+
+.register-bet__actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.register-bet__potential-return {
+  margin: -4px 0 4px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-positive) 10%, transparent);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+
+  strong {
+    margin-left: 4px;
+    color: var(--color-positive);
+    font-size: 15px;
+  }
+}

@@ -3,13 +3,147 @@
     {
       "id": "feat-001",
       "name": "Setup do projeto Angular",
-      "description": "Inicializar projeto Angular 21.x + TypeScript ES2025 (componentes standalone, sem NgModule), roteamento base, cliente HTTP configurado para o API Gateway (envia Accept-Language conforme idioma ativo), layout responsivo base (RNF01), gate de cobertura 80% configurado no test runner (ver docs/TESTING.md), Playwright instalado para e2e. Tema Angular Material M3 (claro/escuro com toggle) configurado com --color-action-neutral (azul) como cor primaria e --color-brand (verde) como secondary/tertiary - ver docs/DESIGN-SYSTEM.md secao 'Regra semantica de cor' - registrar em progress.md a abordagem exata de troca de tema usada. Assets do logo StakeVault copiados de docs/design-references/ (logo-mark-dark.svg, logo-mark-light.svg, logo-mark-solid.svg como favicon/app icon, logo-bars-only.svg) para o projeto Angular. Splash de carregamento animado (ver docs/DESIGN-SYSTEM.md item 17 do inventario) baseado em docs/design-references/splash-animation-artistic.html (versao recomendada - anel de guia com giro continuo, cometa tracando o anel, raios girando ate destravar, pop+pulso de confirmacao, wordmark revelado por mask/wipe) tocando uma vez e travando no logo formado, nao em loop infinito, reaproveitando o giro do anel de guia como loop discreto se o carregamento passar de ~3s, respeitando prefers-reduced-motion (bloco @media ja pronto no arquivo de referencia). Componente base de layout em paineis (app-panel-layout + app-panel, grid multi-coluna com rolagem independente por painel, colapso responsivo desktop/tablet/mobile) - ver docs/DESIGN-SYSTEM.md secao 'Layout em paineis'. @jsverse/transloco instalado e configurado com os tres locales sempre em sincronia (pt-BR/en-US/es, arquivos JSON base + seletor de idioma persistido em localStorage) - ver docs/CONVENTIONS.md secao 'Internacionalizacao (i18n)'. ngx-echarts (Apache ECharts) instalado como biblioteca de graficos para RF10/RF11 - ver docs/DESIGN-SYSTEM.md item 6 do inventario (decisao de 2026-08-02). src/environments/environment.ts + environment.prod.ts configurados com a URL base do api-gateway (build-time, fileReplacements do Angular CLI) - ver docs/OBSERVABILITY-AND-CONFIG.md secao 'Configuracao de apps/web' (decisao de 2026-08-02). Ferramentas de QA visual instaladas (decisao de 2026-08-02, ver docs/DESIGN-SYSTEM.md secao 'QA visual'): npx impeccable install (https://github.com/pbakaus/impeccable) e npx skills add https://github.com/leonxlnx/taste-skill - uso restrito a auditoria/polish de componentes ja implementados, nao gerar DESIGN.md proprio (docs/DESIGN-SYSTEM.md continua sendo a unica fonte de verdade de design).",
+      "description": "Inicializar projeto Angular 22.x + TypeScript ES2025 (componentes standalone, sem NgModule), roteamento base, cliente HTTP configurado para o API Gateway (envia Accept-Language conforme idioma ativo), layout responsivo base (RNF01), gate de cobertura 80% configurado no test runner (ver docs/TESTING.md), Playwright instalado para e2e. Tema Angular Material M3 (claro/escuro com toggle) configurado com --color-action-neutral (azul) como cor primaria e --color-brand (verde) como secondary/tertiary - ver docs/DESIGN-SYSTEM.md secao 'Regra semantica de cor' - registrar em progress.md a abordagem exata de troca de tema usada. Assets do logo StakeVault copiados de docs/design-references/ (logo-mark-dark.svg, logo-mark-light.svg, logo-mark-solid.svg como favicon/app icon, logo-bars-only.svg) para o projeto Angular. Splash de carregamento animado (ver docs/DESIGN-SYSTEM.md item 17 do inventario) baseado em docs/design-references/splash-animation-artistic.html (versao recomendada - anel de guia com giro continuo, cometa tracando o anel, raios girando ate destravar, pop+pulso de confirmacao, wordmark revelado por mask/wipe) tocando uma vez e travando no logo formado, nao em loop infinito, reaproveitando o giro do anel de guia como loop discreto se o carregamento passar de ~3s, respeitando prefers-reduced-motion (bloco @media ja pronto no arquivo de referencia). Componente base de layout em paineis (app-panel-layout + app-panel, grid multi-coluna com rolagem independente por painel, colapso responsivo desktop/tablet/mobile) - ver docs/DESIGN-SYSTEM.md secao 'Layout em paineis'. @jsverse/transloco instalado e configurado com os tres locales sempre em sincronia (pt-BR/en-US/es, arquivos JSON base + seletor de idioma persistido em localStorage) - ver docs/CONVENTIONS.md secao 'Internacionalizacao (i18n)'. ngx-echarts (Apache ECharts) instalado como biblioteca de graficos para RF10/RF11 - ver docs/DESIGN-SYSTEM.md item 6 do inventario (decisao de 2026-08-02). src/environments/environment.ts + environment.development.ts configurados com a URL base do api-gateway (build-time, fileReplacements do Angular CLI) - ver docs/OBSERVABILITY-AND-CONFIG.md secao 'Configuracao de apps/web' (decisao de 2026-08-02). Ferramentas de QA visual e prototipagem instaladas (decisao de 2026-08-02, estendida em 2026-09-03, ver docs/DESIGN-SYSTEM.md secao 'QA visual e prototipagem'): npx impeccable install, npx skills add https://github.com/leonxlnx/taste-skill, npx skills add https://github.com/alchaincyf/huashu-design - uso restrito a auditoria/polish de componentes ja implementados (impeccable/taste-skill) e prototipagem descartavel pre-implementacao (huashu-design), nenhuma decide aparencia por conta propria. Logo apos o install: apps/web/DESIGN.md e pre-escrito a partir de docs/DESIGN-SYSTEM.md, no formato oficial DESIGN.md (https://github.com/google-labs-code/design.md - front-matter YAML de tokens + 8 secoes canonicas: Overview, Colors, Typography, Layout, Elevation & Depth, Shapes, Components, Do's and Don'ts). Isso e o que impede /impeccable document/new-work de gerar um DESIGN.md divergente depois: com o arquivo ja existindo, o proprio Impeccable pergunta antes de tocar nele (refresh/overwrite/merge) em vez de sobrescrever - docs/DESIGN-SYSTEM.md continua a unica fonte de verdade de design.",
       "dependencies": [],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
-      "evidence": ""
+      "status": "done",
+      "evidence": "Todas as 9 subtasks (feat-001.1..feat-001.9) done em 2026-09-09, cada uma com Delivery Reviewer (PASS) no merge subtask->story - ver apps/web/progress.md para o detalhe por subtask. Resumo: ng new real (Angular 22.1.7) + roteamento + HttpClient/interceptor Accept-Language + environments (feat-001.1); Angular Material M3 (mat.theme() via schematic real, --color-action-neutral azul como primary, --color-brand verde como tertiary) + tema claro/escuro (media query + classe manual, as duas) (feat-001.2); transloco i18n (pt-BR/en-US/es) + Language service + interceptor real (feat-001.3, achado real: assets servidos de public/ nao src/assets/ no Angular 22, corrigido em CI/docs); app-panel-layout/app-panel (feat-001.4, bug real de :host sem display:block so descoberto e corrigido em feat-001.7 via Playwright); assets de logo + splash animado porta fiel de docs/design-references/splash-animation-artistic.html, one-shot com anel de guia continuo como loop discreto (feat-001.5); ngx-echarts provado com grafico placeholder, escopado no componente pra nao estourar o budget do bundle (feat-001.6); Playwright + gate de cobertura 80% real (coverageThresholds em angular.json, testado com threshold 100% forcando falha antes de fixar em 80%) (feat-001.7); Impeccable (provider Claude Code, nao o Copilot auto-detectado)/taste-skill/huashu-design instalados + DESIGN.md/PRODUCT.md pre-escritos (feat-001.8); Test Suite Auditor sobre a suite completa (27 unit + 3 Playwright, veredito PASS) + verificacao visual real via 4 screenshots (desktop/mobile x claro/escuro, incluindo fallback de prefers-color-scheme) confirmando RNF01 e docs/DESIGN-SYSTEM.md + revisao do vault (3 achados reais documentados em docs/CONVENTIONS.md/docs/TESTING.md do repositorio raiz) (feat-001.9). Delivery Reviewer final sobre a feature inteira (nao so cada subtask isolada) rodado nesta sessao, veredito PASS - build limpo + testes + Playwright reconfirmados no HEAD final antes de fechar. ./init.sh verde. Nenhuma divergencia do TCC 1 encontrada (sem entrada em docs/DECISIONS-LOG.md). SonarCloud roda no PR feature/SV-209 -> develop (gate completo), ainda nao aberto no momento deste registro.",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (primeiro app frontend do backlog, risco baixo/medio mitigado com grounding real via npm view em vez de so a description escrita quando o harness foi criado). Veredito: REVISE, 1 achado MAJOR corrigido no plano (nao exigia decisao do usuario - mesmo padrao ja usado pra Spring Boot/Java em auth-service e uv/PyPI em telegram-integration: versao real resolvida pela ferramenta no bootstrap e a fonte de verdade). (MAJOR) description e 5 notas do vault (docs/CONVENTIONS.md, docs/DESIGN-SYSTEM.md x2, docs/ARCHITECTURE.md, docs/TESTING.md, apps/web/CLAUDE.md) fixavam 'Angular 21.x', mas 'npm view @angular/cli version' confirma 22.1.7 como estavel atual (22.2.0-next.* em pre-release) - corrigidas todas pra '22.x' no mesmo commit (docs/ARCHITECTURE.md editado com cuidado - outra sessao tinha mudancas nao commitadas em secao diferente do mesmo arquivo, verificado sem overlap antes de editar). Achado real adicional durante a verificacao (nao um achado de plano, gotcha de ambiente): Angular CLI 22.1.7 exige Node ^22.22.3 || ^24.15.0 || >=26.0.0 (engines), mas a maquina tinha Node 24.9.0 (EBADENGINE) - corrigido via 'nvm install 24.21.0' (LTS) + 'nvm use 24.21.0', documentado em docs/CONVENTIONS.md. Escopo da feature (9 subtasks abaixo, sequenciais - cada uma e uma parte real e testavel do bootstrap, nao ceremonia): Angular Material 22.x/tema M3/paleta ja fechados em docs/DESIGN-SYSTEM.md (nao decisao em aberto); transloco/ngx-echarts/Playwright ja decididos em docs/CONVENTIONS.md; nenhuma subtask introduz biblioteca nao autorizada. Delivery Reviewer roda sobre o diff real de cada subtask; Test Suite Auditor roda uma vez ao final (feat-001.9) sobre a suite completa, nao subtask por subtask (risco baixo, testes unitarios simples de componente/servico nesta fase de bootstrap). Persistence Auditor nao se aplica (frontend sem persistencia propria).",
+      "jira": "SV-209",
+      "subtasks": [
+        {
+          "id": "feat-001.1",
+          "name": "ng new real (Angular 22.x) + roteamento + HttpClient com interceptor Accept-Language + environments",
+          "status": "done",
+          "jira": "SV-210",
+          "detail": "Bootstrap real via Angular CLI (nao escrito a mao) - mesmo padrao de start.spring.io/uv init usado nos outros servicos. environments/environment.ts + environment.development.ts com a URL base do api-gateway (fileReplacements do Angular CLI, ver docs/OBSERVABILITY-AND-CONFIG.md).",
+          "checklist": [
+            "'npx @angular/cli@22 new web --standalone --routing --style=scss --ssr=false' (ou equivalente atual do CLI 22.x) dentro de apps/web, sem sobrescrever CLAUDE.md/feature_list.json/init.sh/progress.md/session-handoff.md/CHANGELOG.md/sonar-project.properties ja existentes.",
+            "Roteamento base (rotas placeholder pras telas futuras: login, dashboard, historico, casas de apostas, registro de aposta) - sem paginas reais ainda, so estrutura.",
+            "HttpClient configurado com interceptor functional que envia Accept-Language conforme o idioma ativo (mesmo que o idioma ainda seja fixo nesta subtask - a integracao real com o seletor de idioma persistido vem na subtask de transloco).",
+            "environment.ts/environment.development.ts com a URL base do api-gateway (build-time, fileReplacements) - ver docs/OBSERVABILITY-AND-CONFIG.md secao 'Configuracao de apps/web'.",
+            "Ajustar apps/web/init.sh se o comando de build/test real divergir do que o script generico assume (ver script atual)."
+          ],
+          "validation": "'ng serve' sobe sem erro, rota placeholder renderiza, init.sh roda 'ng build'/'ng test' de verdade (nao guarda 'No package.json' mais).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-001.2",
+          "name": "Angular Material M3 + tema claro/escuro + tokens de cor StakeVault",
+          "status": "done",
+          "jira": "SV-211",
+          "detail": "Tema M3 gerado a partir de --color-action-neutral (azul) como primary, --color-brand (verde) como secondary/tertiary - ver docs/DESIGN-SYSTEM.md 'Integracao com Angular Material'. Toggle claro/escuro com localStorage sobrepondo prefers-color-scheme.",
+          "checklist": [
+            "'ng add @angular/material' (versao 22.x resolvida pelo CLI).",
+            "Tema M3 (mat.theme()) com --color-action-neutral como primary, --color-brand como secondary/tertiary - nao o inverso.",
+            "CSS custom properties dos tokens de cor (claro e escuro, tabelas completas de docs/DESIGN-SYSTEM.md) mapeadas pros papeis M3 equivalentes (surface/background/on-surface/on-surface-variant).",
+            "Toggle de tema com persistencia em localStorage, [data-theme] no elemento raiz, default seguindo prefers-color-scheme.",
+            "Registrar em progress.md a abordagem exata usada (media query vs classe manual vs as duas) - exigido pela description da feature."
+          ],
+          "validation": "Toggle funciona nos dois temas, cores batem com as tabelas de docs/DESIGN-SYSTEM.md (inspecionado visualmente), nenhum uso de --color-brand como cor de CTA generica.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-001.3",
+          "name": "transloco i18n (pt-BR/en-US/es) + seletor de idioma persistido",
+          "status": "done",
+          "jira": "SV-212",
+          "detail": "Tres locales sempre em sincronia - ver docs/CONVENTIONS.md 'Internacionalizacao (i18n)'. Interceptor de Accept-Language da subtask 1 passa a refletir o idioma ativo de verdade.",
+          "checklist": [
+            "'@jsverse/transloco' instalado e configurado, arquivos src/assets/i18n/{pt-BR,en-US,es}.json com as mesmas chaves.",
+            "Seletor de idioma (componente simples) persistido em localStorage.",
+            "Interceptor de Accept-Language (subtask 1) atualizado pra usar o idioma ativo do transloco, nao mais fixo.",
+            "Validador de chaves de traducao (mesmo mecanismo usado nos outros servicos, ver docs/CI-CD.md) funcionando localmente antes do CI existir."
+          ],
+          "validation": "Troca de idioma no seletor reflete nas strings da UI e no header Accept-Language das chamadas HTTP.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-001.4",
+          "name": "app-panel-layout + app-panel (layout em paineis)",
+          "status": "done",
+          "jira": "SV-213",
+          "detail": "Ver docs/DESIGN-SYSTEM.md 'Layout em paineis' - grid multi-coluna, rolagem independente por painel, colapso desktop/tablet/mobile.",
+          "checklist": [
+            "app-panel-layout (grid CSS, colunas configuraveis por pagina) + app-panel (container --color-surface, cabecalho opcional, rolagem interna propria via overflow-y).",
+            "Colapso responsivo: desktop >=1024px multi-coluna, tablet ~600-1024px 2 colunas, mobile <600px coluna unica.",
+            "Aplicado numa tela placeholder (ex.: a rota de dashboard da subtask 1) pra provar o mecanismo, sem construir o dashboard real ainda (isso e feat-005/RF10/11, fora de escopo aqui)."
+          ],
+          "validation": "Testado numa resolucao mobile e uma desktop (RNF01) - painel rola dentro de si mesmo, pagina inteira nao rola.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-001.5",
+          "name": "Assets de logo + splash animado",
+          "status": "done",
+          "jira": "SV-215",
+          "detail": "Baseado em docs/design-references/splash-animation-artistic.html - toca uma vez, trava no logo formado, respeita prefers-reduced-motion (bloco @media ja pronto no arquivo de referencia).",
+          "checklist": [
+            "Assets de logo (logo-mark-{dark,light,solid}.svg, logo-bars-only.svg) copiados pra apps/web/src/assets/ (ou public/, conforme estrutura do CLI 22.x).",
+            "Splash animado baseado em splash-animation-artistic.html - anel de guia, cometa, raios, pop+pulso, wordmark por mask/wipe.",
+            "Toca uma vez e trava no logo formado (nao loop infinito) - loop discreto do anel de guia so entra se o carregamento passar de ~3s.",
+            "prefers-reduced-motion respeitado (mesmo mecanismo do arquivo de referencia)."
+          ],
+          "validation": "Splash roda uma vez e trava; com prefers-reduced-motion ativado (DevTools), estado final aparece direto sem animacao.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-001.6",
+          "name": "ngx-echarts instalado e provado",
+          "status": "done",
+          "jira": "SV-216",
+          "detail": "So a biblioteca instalada e provada (grafico placeholder) nesta feature - dashboard real (RF10/RF11 UI) e feature futura.",
+          "checklist": [
+            "'ngx-echarts' + 'echarts' instalados.",
+            "Um grafico de linha placeholder (dados mock) renderizado numa rota de teste, usando a paleta de cores de docs/DESIGN-SYSTEM.md (item 6 do inventario - traco --color-brand, gradiente, grid sutil) - prova a integracao, nao e o dashboard final."
+          ],
+          "validation": "Grafico placeholder renderiza nos dois temas sem erro de console.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-001.7",
+          "name": "Playwright + gate de cobertura 80%",
+          "status": "done",
+          "jira": "SV-217",
+          "detail": "Ver docs/TESTING.md - unitarios de componente + Playwright pros fluxos criticos (ainda nao existem fluxos reais nesta subtask, so a infraestrutura de teste).",
+          "checklist": [
+            "Playwright instalado e configurado (ver docs/TESTING.md).",
+            "Gate de cobertura 80% configurado no test runner real usado pelo CLI 22.x (Karma ou o que o 'ng new' de fato instalou - confirmar e registrar em progress.md, ver nota de docs/TESTING.md).",
+            "Um teste unitario e um teste Playwright minimos (smoke) provando que a infraestrutura funciona - fluxos criticos reais (cadastro de aposta, etc.) vem quando aquelas features existirem."
+          ],
+          "validation": "'ng test'/cobertura e Playwright rodam de verdade via init.sh, nao guarda pulada.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-001.8",
+          "name": "Impeccable + taste-skill + huashu-design + DESIGN.md pre-escrito",
+          "status": "done",
+          "jira": "SV-218",
+          "detail": "Ver docs/DESIGN-SYSTEM.md 'QA visual e prototipagem' - DESIGN.md pre-escrito ANTES de qualquer comando document/new-work, pra evitar divergencia.",
+          "checklist": [
+            "'npx impeccable install', 'npx skills add https://github.com/leonxlnx/taste-skill', 'npx skills add https://github.com/alchaincyf/huashu-design'.",
+            "apps/web/DESIGN.md pre-escrito a partir de docs/DESIGN-SYSTEM.md, formato oficial DESIGN.md (front-matter YAML de tokens + 8 secoes canonicas: Overview, Colors, Typography, Layout, Elevation & Depth, Shapes, Components, Do's and Don'ts).",
+            "'npx impeccable init' (seguro, so grava PRODUCT.md) - nao rodar 'document'/'new-work' nesta subtask (DESIGN.md ja escrito a mao, nao ha nada pra auditar ainda)."
+          ],
+          "validation": "DESIGN.md existe e reflete docs/DESIGN-SYSTEM.md antes de qualquer comando Impeccable que possa gera-lo.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-001.9",
+          "name": "CHANGELOG, Test Suite Auditor e verificacao final",
+          "status": "done",
+          "jira": "SV-219",
+          "detail": "Fecha a feature - Test Suite Auditor roda uma vez sobre a suite completa das 8 subtasks anteriores.",
+          "checklist": [
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh deste app e da raiz rodando sem erro.",
+            "Test Suite Auditor rodado sobre a suite completa (unitarios + Playwright).",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas (RNF01 + DESIGN-SYSTEM).",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit."
+          ],
+          "validation": "init.sh verde, Test Suite Auditor sem achado real pendente, evidence preenchida, epic-006 (raiz) permanece in-progress ate as demais features deste app tambem fecharem.",
+          "owner": "agente"
+        }
+      ]
     },
     {
       "id": "feat-002",
@@ -18,11 +152,79 @@
       "dependencies": [
         "feat-001"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
-      "evidence": ""
+      "status": "done",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (mesmo padrao ja usado em toda feature deste projeto, independencia reduzida declarada). Veredito: READY WITH CONCERNS, 3 decisoes de escopo assumidas (nenhuma pendente de usuario - nenhuma contradiz nota do vault, todas documentadas aqui para rastreabilidade):\n(1) Dependencia cross-repo real: login so devolve userId/role (necessarios pra esconder a tela de gestao de usuarios de role=member) desde auth-service feat-010 (SV-226, fechada e mergeada em develop nesta mesma sessao, gap encontrado planejando esta propria feature) - dependencies deste JSON continua so ['feat-001'] (harness deste app), a dependencia real de auth-service ja e coberta pela dependencia de epic-002 no feature_list.json da raiz.\n(2) Token PASETO armazenado em localStorage, chave 'stakevault.auth' (JSON {token,userId,role,tenantSlug,mustChangePassword}) - mesmo padrao ja estabelecido por Theme/Language (STORAGE_KEY 'stakevault.*', ver core/theme.ts e core/language.ts), unica forma de persistir sessao entre reloads sem endpoint de refresh/cookie httpOnly no backlog. Risco aceito de XSS e o mesmo de qualquer SPA sem BFF - fora do escopo desta feature introduzir um.\n(3) mustChangePassword (login ja devolve, feat-005/feat-010 de auth-service) vira so um banner nao-bloqueante dismissable na sessao - NAO ha endpoint de troca de senha no backlog de auth-service (decisao do usuario documentada em docs/services/auth-service.md), entao um link/tela de 'trocar senha' aqui seria enganoso; contrato do backend explicitamente devolve o campo 'para o frontend decidir a UX' sem prescrever qual.\nVerificado sem gap: api-gateway ja roteia POST /api/v1/auth/login, POST/GET /api/v1/users (evidencia de epic-008/api-gateway feat-002/003 na raiz) injetando X-User-Id/X-Tenant-Id a partir de 'Authorization: Bearer <token>' - frontend so precisa enviar esse header, nunca X-User-Id/X-Tenant-Id manualmente. RFC 7807 title/detail ja chegam localizados (Accept-Language ja enviado pelo interceptor de feat-001.1) - erro de login/formulario so precisa exibir 'detail' direto, sem tabela de traducao propria de mensagem de erro de backend. Nenhuma tela de autocadastro/criacao de tenant nesta feature (fora de escopo, ver docs/services/web.md). App ainda nao tem nenhuma nav real (app.html so tem splash+seletor de idioma+toggle de tema) - feature inclui uma nav minima (logout + link condicional 'Usuarios' pra admin) so o suficiente pra tornar o login navegavel, nao um redesign de IA completo.",
+      "jira": "SV-228",
+      "subtasks": [
+        {
+          "id": "feat-002.1",
+          "name": "AuthService (Signals) + interceptor de Authorization + tela de login real",
+          "status": "done",
+          "jira": "SV-229",
+          "detail": "AuthService guarda {token,userId,role,tenantSlug,mustChangePassword} em signal + localStorage ('stakevault.auth', mesmo padrao de Theme/Language). Interceptor functional anexa 'Authorization: Bearer <token>' quando ha sessao (sem caso especial de URL - simplesmente omite o header se nao houver token). Helper de parse de RFC 7807 (extrai title/detail/status do corpo de erro HttpErrorResponse) - reaproveitavel por feat-002.3 e features futuras.",
+          "checklist": [
+            "AuthService (core/auth.ts): signal de sessao, login(slug,email,password) via HttpClient POST {gateway}/api/v1/auth/login, logout() limpa signal+localStorage, isAuthenticated()/isAdmin() derivados.",
+            "authInterceptor (core/auth-interceptor.ts) registrado em app.config.ts junto do acceptLanguageInterceptor.",
+            "core/problem-detail.ts: helper puro que extrai {title,detail,status} de um HttpErrorResponse RFC 7807.",
+            "Login (pages/login) real: Reactive Forms com 3 campos (slug, email, senha), submit chama AuthService.login, erro exibe 'detail' do RFC 7807 num alerta Material, sucesso navega pra /dashboard.",
+            "Se ja autenticado, /login redireciona pra /dashboard (nao mostra o formulario de novo)."
+          ],
+          "validation": "Unit tests de AuthService (login sucesso/falha, persistencia localStorage) e do parser RFC 7807. Testado nos dois temas e mobile/desktop.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-002.2",
+          "name": "authGuard/adminGuard + nav minima do app shell + banner mustChangePassword",
+          "status": "done",
+          "jira": "SV-230",
+          "detail": "Sem nav ate agora (app.html so tem splash/idioma/tema) - nav minima o suficiente pra navegar apos login: nome do app, links pras 4 rotas placeholder existentes, link 'Usuarios' so se AuthService.isAdmin(), botao logout.",
+          "checklist": [
+            "authGuard (core/auth-guard.ts): CanActivateFn, redireciona pra /login se nao autenticado.",
+            "adminGuard (core/admin-guard.ts): CanActivateFn, redireciona pra /dashboard se autenticado mas nao-admin (defesa em profundidade - backend ja retorna 403, isto e so UX).",
+            "app.routes.ts: authGuard aplicado a dashboard/historico/casas-de-apostas/registro-de-aposta (e a futura rota de usuarios).",
+            "Nav minima em app.html/app.ts, visivel so quando autenticado - logo/nome, links, logout.",
+            "Banner nao-bloqueante (dismissable na sessao, sem persistencia) quando AuthService.mustChangePassword() - sem link de acao (nao ha endpoint de troca de senha no backlog)."
+          ],
+          "validation": "Navegar direto pra /dashboard sem login redireciona pra /login (Playwright). Logout limpa sessao e redireciona.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-002.3",
+          "name": "Tela de gestao de usuarios do tenant (lista + criar, admin-only)",
+          "status": "done",
+          "jira": "SV-231",
+          "detail": "Rota nova 'usuarios', authGuard+adminGuard. Lista via GET /api/v1/users, formulario de criacao (name/email/password) via POST /api/v1/users - ambos so enviam 'Authorization: Bearer', gateway injeta X-User-Id/X-Tenant-Id.",
+          "checklist": [
+            "Pagina pages/usuarios (app-panel-layout: painel de lista + painel de formulario de criacao).",
+            "Lista consome GET /api/v1/users (ordenada por nome, ja vem assim do backend), exibe nome/email/role/mustChangePassword.",
+            "Formulario de criacao (Reactive Forms) consome POST /api/v1/users, sucesso recarrega a lista e limpa o formulario (feedback informativo - regra de Shneiderman reaproveitada mesmo nao sendo o formulario de aposta), erro exibe 'detail' do RFC 7807.",
+            "Rota registrada em app.routes.ts com authGuard+adminGuard.",
+            "Link 'Usuarios' da nav (feat-002.2) aponta pra esta rota."
+          ],
+          "validation": "Fluxo completo listar+criar testado num teste de componente (HttpTestingController) e num fluxo Playwright (mock de rede via page.route).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-002.4",
+          "name": "i18n, Playwright, CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-232",
+          "detail": "Fecha a feature - Test Suite Auditor sobre a suite completa das 3 subtasks anteriores. Ultima subtask - carrega o item fixo de revisao do vault.",
+          "checklist": [
+            "Todas as strings novas (login, nav, banner, gestao de usuarios) traduzidas nos 3 locales (pt-BR/en-US/es).",
+            "Fluxos Playwright (mock via page.route, sem backend real disponivel neste repositorio): login com sucesso, login com credenciais invalidas (mensagem de erro), rota protegida redireciona sem sessao, tela de usuarios visivel/funcional pra admin e ausente da nav pra member, pelo menos um fluxo com idioma trocado.",
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh (ng build + ng test com cobertura 80% + Playwright) verde.",
+            "QA visual (Impeccable/taste-skill) rodado contra as telas novas (login, nav, usuarios) - UI nova nesta feature.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done.",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence; ../../feature_list.json (raiz) nao precisa mudar (epic-006 continua in-progress, restam feat-003..006).",
+          "owner": "agente"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-09 - 4 subtasks (feat-002.1..4), cada uma via PR real no GitHub (subtask/SV-229..232 -> feature/SV-228) com CI verde antes do merge. Gap real encontrado ao planejar (login PASETO v4.local criptografado, frontend sem como saber userId/role do usuario logado) resolvido reabrindo auth-service (feat-010, SV-226/227, mergeada em develop daquele repositorio na mesma sessao) para o login devolver esses 2 campos - mesmo precedente do gap de auth-service feat-009. Implementado ponta a ponta: AuthService (Signals, localStorage 'stakevault.auth') + authInterceptor (Authorization: Bearer) + helper de RFC 7807 (feat-002.1); authGuard/adminGuard + nav minima do app shell (logo, links, 'Usuarios' so pra admin, logout) + banner mustChangePassword nao-bloqueante (feat-002.2, achado real corrigido: authGuard quebrou um teste Playwright existente de feat-001.7 que navegava direto pra /dashboard sem sessao, corrigido semeando sessao via addInitScript); UsersApi + tela de gestao de usuarios (lista+criar, admin-only, feat-002.3); auditoria de i18n (35 chaves em sincronia nos 3 locales), 7 fluxos Playwright novos, QA visual via Impeccable (feat-002.4 - 1 achado real de contraste marginal documentado em docs/DESIGN-SYSTEM.md do repositorio raiz, nao corrigido por ser valor exato de mockup fora do escopo desta feature; 2 achados avaliados como pre-existentes/falso-positivo). 59 testes unitarios (28 arquivos) + 10 Playwright, cobertura 95.03%/89.37%/94.2%/95.42% (bem acima do gate 80%). Delivery Reviewer e Test Suite Auditor rodados a cada subtask e uma vez mais sobre a feature inteira (passe proprio, sem subagentes, mesmo padrao usado em todo o projeto) - PASS em todas as passadas, sem achado bloqueante. ./init.sh verde, Playwright (10 testes) verde. Vault atualizado no mesmo commit logico (repositorio raiz): docs/services/auth-service.md (contrato de feat-010) e docs/DESIGN-SYSTEM.md (achado de contraste). epic-006 (raiz) permanece in-progress - restam feat-003 (RF03 UI, casas de apostas), feat-004 (RF04 UI, registro manual), feat-005 (RF08 UI, historico) e feat-006 (RF10/RF11 UI, dashboards)."
     },
     {
       "id": "feat-003",
@@ -31,62 +233,667 @@
       "dependencies": [
         "feat-002"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
-      "evidence": ""
+      "status": "done",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (risco baixo, precedente direto de feat-002.3, mesmo padrao lista+criar ja usado e testado). Veredito: READY WITH CONCERNS, 2 decisoes de escopo assumidas: (1) Sem UI de paginacao - GET /api/v1/betting-houses (bets-service, verificado no codigo real: BettingHousesController/PagedResponse) pagina de verdade (page/size, max 100), mas o numero de casas de apostas cadastradas por um tenant e pequeno por natureza (mesmo racional ja aceito em auth-service feat-009 pra GET /users sem paginacao) - busca 1 pagina com size=100 (o maximo permitido pelo backend), sem controles de pagina na UI; se um tenant algum dia tiver mais de 100 casas, e um limite documentado, nao um bug silencioso. (2) Formatacao de moeda (R$, ver docs/services/bets-service.md e mockups citados em DESIGN-SYSTEM.md) usa Intl.NumberFormat('pt-BR', {style:'currency',currency:'BRL'}) fixo, independente do idioma ativo da UI - dinheiro do bankroll e sempre Real brasileiro neste TCC (sem multi-moeda no backlog), formatar diferente por idioma da interface confundiria mais do que ajudaria; usar o CurrencyPipe nativo do Angular exigiria registrar dados de locale (@angular/common/locales) que o projeto nao usa (i18n e via transloco, nao @angular/localize). Verificado sem gap: api-gateway ja roteia /api/v1/betting-houses/** pro bets-service (RouteConfig.java, confirmado no codigo-fonte); contrato exato confirmado no codigo real (nao so na nota do vault) - CreateBettingHouseRequest{name,initialBalance}, BettingHouseResponse{id,name,initialBalance,balance,createdAt}, PagedResponse{content,page,size,totalElements,totalPages} - bate com docs/API-CONTRACTS.md secao 'Paginacao'. Sem restricao de role (diferente da tela de usuarios) - qualquer usuario autenticado do tenant pode gerenciar casas de apostas, so authGuard (ja aplicado a rota casas-de-apostas desde feat-002.2). Erros: 409 betting-house-already-registered (nome duplicado), 400 validation-failed (nome vazio ou initialBalance negativo/ausente) - mesmo helper toProblemDetail de feat-002.1, sem novo tratamento. 2 subtasks: implementacao (API client + tela real) e fechamento (i18n/Playwright/CHANGELOG/auditorias), mesmo padrao de feat-002.",
+      "jira": "SV-233",
+      "subtasks": [
+        {
+          "id": "feat-003.1",
+          "name": "Renomear paginas/rotas/i18n de portugues pra ingles (divida de feat-001/002)",
+          "status": "done",
+          "jira": "SV-234",
+          "detail": "Achado real levantado pelo usuario durante esta subtask (nao pelo Plan Reviewer): docs/CONVENTIONS.md secao Git ja dizia 'nomes de rota, evento e codigo, todos ja em ingles', mas pages/historico, pages/registro-de-aposta, pages/usuarios e a propria pages/casas-de-apostas em andamento estavam em portugues desde feat-001.1 - nenhuma sessao anterior tinha cruzado a convencao contra o nome real dos arquivos. Usuario decidiu renomear tudo agora (nao so daqui pra frente) para nao deixar 3 features ja mergeadas como divida crescente.",
+          "checklist": [
+            "git mv pages/historico -> pages/history (Historico -> History, selector app-historico -> app-history).",
+            "git mv pages/registro-de-aposta -> pages/register-bet (RegistroDeAposta -> RegisterBet, selector app-registro-de-aposta -> app-register-bet).",
+            "git mv pages/usuarios -> pages/users (Usuarios -> Users, selector app-usuarios -> app-users, classes CSS .usuarios__* -> .users__*, i18n key 'usuarios.*' -> 'users.*' nos 3 locales).",
+            "pages/casas-de-apostas (ainda nao commitada) recriada direto como pages/betting-houses (sem passar por casas-de-apostas) - ver feat-003.2.",
+            "app.routes.ts: paths 'historico'->'history', 'registro-de-aposta'->'register-bet', 'usuarios'->'users', 'casas-de-apostas'->'betting-houses'.",
+            "core/app-nav/app-nav.html: routerLink dos 4 links atualizados.",
+            "e2e/auth.spec.ts: URLs e testids /usuarios->/users, usuarios-row->users-row.",
+            "validate-i18n-keys.py rodado apos a renomeacao - chaves continuam em sincronia nos 3 locales."
+          ],
+          "validation": "grep por 'usuarios|historico|registro-de-aposta|casas-de-apostas' em src/ e e2e/ sem resultado. ./init.sh e Playwright verdes apos a renomeacao.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-003.2",
+          "name": "BettingHousesApi + tela real (lista + criar)",
+          "status": "done",
+          "jira": "SV-236",
+          "detail": "Mesmo padrao de UsersApi/Users (feat-002.3) - PagedResponse generico novo (reaproveitavel por feat-004/005/006), BettingHousesApi.list()/create(), pagina BettingHouses com app-panel-layout (formulario + lista). Ja nasce com nomenclatura em ingles (feat-003.1 fechou a divida das paginas anteriores primeiro).",
+          "checklist": [
+            "core/paged-response.ts: interface generica PagedResponse<T> (content/page/size/totalElements/totalPages) - reaproveitavel pelas proximas features paginadas.",
+            "core/betting-houses-api.ts: list(size=100)/create({name,initialBalance}) via GET/POST /api/v1/betting-houses.",
+            "core/currency.ts: helper formatBrl(value) via Intl.NumberFormat('pt-BR', {style:'currency',currency:'BRL'}).",
+            "BettingHouses (pages/betting-houses) real: lista (nome/saldo inicial/saldo atual) + formulario de criacao (nome, saldo inicial), erro exibe detail do RFC 7807 (toProblemDetail reaproveitado), sucesso recarrega a lista e limpa o formulario.",
+            "Rota 'betting-houses' ja e guardada por authGuard desde feat-002.2 - sem mudanca de roteamento."
+          ],
+          "validation": "Unit tests (HttpTestingController) cobrindo list/create sucesso e erro (409/400). Testado nos dois temas e mobile/desktop.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-003.3",
+          "name": "i18n, Playwright, CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-235",
+          "detail": "Fecha a feature - mesmo padrao de feat-002.4.",
+          "checklist": [
+            "Todas as strings novas traduzidas nos 3 locales (pt-BR/en-US/es), validador de chaves rodado localmente.",
+            "Fluxo Playwright novo (mock via page.route): criar casa de apostas com sucesso (lista atualiza), erro de nome duplicado exibido.",
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh (ng build + ng test com cobertura 80% + Playwright) verde.",
+            "QA visual (Impeccable) rodado contra a tela nova.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done.",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas.",
+            "Vault (docs/) revisado: alguma descoberta desta feature sem nota correspondente? Se sim, atualizar a nota do assunto no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence; ../../feature_list.json (raiz) nao precisa mudar (epic-006 continua in-progress, restam feat-004..006).",
+          "owner": "agente"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-09 - 3 subtasks (feat-003.1..3), cada uma via PR real no GitHub (subtask/SV-234, SV-236, SV-235 -> feature/SV-233) com CI verde antes do merge. Achado real levantado pelo usuario durante feat-003.1 (nao pelo Plan Reviewer original): docs/CONVENTIONS.md ja normatizava 'nomes de rota, evento e codigo, todos ja em ingles', mas pages/historico, pages/registro-de-aposta e pages/usuarios (feat-001/002, ja mergeadas) e a propria pages/casas-de-apostas desta feature estavam em portugues - usuario decidiu renomear tudo agora (historico->history, registro-de-aposta->register-bet, usuarios->users, casas-de-apostas->betting-houses direto, sem passar pelo nome antigo) em vez de deixar a divida crescer, ver apps/web/progress.md pra o detalhe completo. Achado real corrigido durante a propria correcao: app.routes.ts esperava m.BettingHouses mas o stub renomeado ainda exportava CasasDeApostas - quebrou o build no PR real (unit tests locais nao pegaram, so o build do CI), corrigido num commit de fix separado antes do merge. BettingHousesApi/BettingHouses (feat-003.2) implementado ponta a ponta: PagedResponse<T> generico novo (reaproveitavel por feat-004/005/006), lista+criacao via GET/POST /api/v1/betting-houses (contrato confirmado no codigo real de bets-service, nao so no vault), formatBrl fixo em pt-BR/BRL independente do idioma da UI (decisao documentada no plan_review). Achado de teste real (feat-003.2): Intl.NumberFormat('pt-BR') separa simbolo e valor com espaco nao-quebravel (U+00A0), nao espaco comum - asserção inicial falhava silenciosamente, corrigida com comentario explicando o motivo. feat-003.3 fechou com e2e/betting-houses.spec.ts (2 fluxos novos) + auditoria de i18n (42 chaves em sincronia). 58 testes unitarios (26 arquivos) + 12 Playwright, cobertura 94.14%/87.67%/92.5%/95.08%. Delivery Reviewer e Test Suite Auditor (passe proprio, sem subagentes, mesmo padrao do projeto): PASS em todas as passadas, sem achado bloqueante. ./init.sh verde, Playwright (12 testes) verde. Vault atualizado no mesmo commit logico onde aplicavel (contrato ja documentado em auth-service feat-010 na sessao anterior; nenhuma nota nova necessaria por esta feature especificamente). Achado real do gate de SonarCloud no PR feature->develop (nao pego antes - so verificado localmente com Delivery/Test Suite Auditor, sem SonarCloud rodando em PR de subtask): 'BettingHouses'/'Users' duplicavam ~16 linhas cada (padrao reload()/submit() com toProblemDetail ja sinalizado como aceitavel em feat-002.4, mas a terceira ocorrencia empurrou new_duplicated_lines_density de <3% pra 3.9%, estourando o gate de 3%). Corrigido extraindo core/api-request.ts (loadInto/submitForm, generico sobre Observable/WritableSignal) e reaproveitado tambem em Login (nao so nos 2 arquivos flagados) - elimina a duplicacao na raiz em vez de so nos 2 arquivos que o Sonar apontou, evita a mesma categoria de achado reaparecer quando feat-004/005/006 adicionarem mais telas de lista+criar. Confirmado no PR real: gate de duplicacao volta a UI apos o commit de fix. epic-006 (raiz) permanece in-progress - restam feat-004 (RF04 UI), feat-005 (RF08 UI) e feat-006 (RF10/RF11 UI)."
+    },
+    {
+      "id": "feat-008",
+      "name": "Cadastro dos catalogos base (esportes, ligas, mercados, tipsters)",
+      "description": "Gap real encontrado ao planejar feat-004 (2026-09-09, decisao do usuario via AskUserQuestion): o formulario de registro de aposta (feat-004) precisa de dropdowns de sport/league/market/tipster, e o bot Telegram (telegram-integration feat-004, ver docs/DECISIONS-LOG.md 2026-09-08) explicitamente orienta o usuario a 'cadastrar em apps/web' quando o catalogo do tenant esta vazio - mas nenhuma feature deste app cobria essa tela, so betting-houses (feat-003, RF03). Sem ela, a orientacao do bot e um beco sem saida e feat-004 nao tem como popular os dropdowns. Nao e um RF numerado do TCC1 original (RF03 e so casas de apostas, RF04 e so registro de aposta) - e uma lacuna de implementacao, mesmo precedente de auth-service feat-009/010 e api-gateway feat-007 nesta mesma sessao. Decisao do usuario: tela dedicada (nao cadastro inline no formulario de aposta) - 4 catalogos (sports/leagues/markets/tipsters), mesmo formato {id,name}, consumindo bets-service via api-gateway (rotas ja existentes desde bets-service feat-002, roteadas pelo gateway desde api-gateway feat-007).",
+      "dependencies": [
+        "feat-003"
+      ],
+      "status": "done",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (risco baixo, precedente direto de feat-002.3/feat-003.2, mesmo padrao lista+criar). Veredito: READY. Verificado no codigo real de bets-service (nao so a nota do vault): SportsController/LeaguesController/MarketsController/TipstersController sao estruturalmente identicos (so o nome do recurso muda) - mesmo CatalogResponse{id,name}, CreateCatalogRequest{name}, PagedResponse, erro 409 <slug>-already-registered (CatalogAlreadyRegisteredException, mensagem generica por slug, mesmo toProblemDetail de sempre). Decisao de design pra evitar reincidir no achado de duplicacao do SonarCloud de feat-003 (4 telas identicas exceto o nome do recurso estourariam o gate de novo): 1 componente reaproveitavel core/shared/catalog-manager (input resourcePath + i18nPrefix, usa core/api-request.ts loadInto/submitForm ja existente) instanciado 4x numa unica pagina Catalogs com mat-tab-group, em vez de 4 paginas quase identicas. Sem restricao de role (mesmo padrao de betting-houses - qualquer usuario autenticado do tenant cadastra catalogo), so authGuard. Nova rota 'catalogs' + link 'Catalogos' na nav. i18n: chaves compartilhadas catalogs.nameLabel/create/genericError (identicos nos 4 catalogos) + catalogs.<recurso>.title especifico por aba (rotulo traduzido: Esportes/Ligas/Mercados/Tipsters). 2 subtasks (implementacao + fechamento), mesmo padrao de feat-003.",
+      "jira": "SV-237",
+      "subtasks": [
+        {
+          "id": "feat-008.1",
+          "name": "catalogApi + CatalogManager reaproveitavel + pagina Catalogs (4 abas)",
+          "status": "done",
+          "jira": "SV-238",
+          "detail": "core/catalog-api.ts: factory catalogApi(resourcePath) (nao Injectable singleton - parametrizado por recurso, inject(HttpClient) dentro da factory chamada em contexto de injecao). shared/catalog-manager: componente reaproveitavel (lista+criar, usa loadInto/submitForm de feat-003), instanciado 4x (sports/leagues/markets/tipsters) dentro de pages/catalogs com mat-tab-group.",
+          "checklist": [
+            "core/catalog-api.ts: interface CatalogEntry{id,name}, catalogApi(resourcePath): {list(),create(name)} via GET/POST /api/v1/<resourcePath>.",
+            "shared/catalog-manager/catalog-manager.ts: input.required resourcePath + i18nPrefix, lista+formulario de criacao (nome), erro exibe detail RFC 7807, reaproveita loadInto/submitForm de core/api-request.ts (nao reintroduzir a duplicacao que gerou o achado do SonarCloud em feat-003).",
+            "pages/catalogs/catalogs.ts real: mat-tab-group com 4 app-catalog-manager (sports/leagues/markets/tipsters), cada aba com o titulo traduzido.",
+            "Rota 'catalogs' nova em app.routes.ts (authGuard, sem adminGuard) + link 'Catalogos' em core/app-nav/app-nav.html.",
+            "i18n: catalogs.nameLabel/create/genericError compartilhados + catalogs.sports/leagues/markets/tipsters.title especificos, nos 3 locales."
+          ],
+          "validation": "Unit tests (HttpTestingController) cobrindo list/create sucesso e erro (409) do CatalogManager, parametrizado pelos 4 resourcePath ou testado uma vez e confiado por reuso do componente. Testado nos dois temas e mobile/desktop.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-008.2",
+          "name": "i18n, Playwright, CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-239",
+          "detail": "Fecha a feature - mesmo padrao de feat-003.3.",
+          "checklist": [
+            "Todas as strings novas traduzidas nos 3 locales, validador de chaves rodado localmente.",
+            "Fluxo Playwright novo (mock via page.route): criar entrada de catalogo com sucesso numa aba, trocar de aba e ver outro catalogo carregado.",
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh (ng build + ng test com cobertura 80% + Playwright) verde.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done - conferir explicitamente que new_duplicated_lines_density do SonarCloud nao volta a estourar (achado real de feat-003).",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas.",
+            "Vault (docs/) revisado: alguma descoberta desta feature sem nota correspondente? Se sim, atualizar a nota do assunto no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence; ../../feature_list.json (raiz) nao precisa mudar (epic-006 continua in-progress).",
+          "owner": "agente"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-09 - 2 subtasks (feat-008.1..2), cada uma via PR real no GitHub (subtask/SV-238, SV-239 -> feature/SV-237) com CI verde antes do merge. Gap real levantado pelo usuario ao planejar feat-004 (formulario de aposta precisa de dropdowns de sport/league/market/tipster, bot Telegram ja orienta cadastro em apps/web quando o catalogo esta vazio, mas nenhuma feature cobria essa tela) - decisao do usuario via AskUserQuestion: tela dedicada, inserida como feat-008 antes de feat-004 (que passou a depender dela em vez de feat-003 diretamente). core/catalog-api.ts (factory parametrizada por resourcePath, confirmada contra o codigo real de bets-service - SportsController/LeaguesController/MarketsController/TipstersController estruturalmente identicos) + shared/catalog-manager (1 componente reaproveitavel, usa loadInto/submitForm de feat-003) instanciado 4x numa pagina Catalogs com mat-tab-group - decisao de design explicita para nao reincidir no achado de duplicacao do SonarCloud de feat-003 (4 telas quase identicas estourariam o gate de novo). Achado real de timing do Angular: signal input required nao esta garantidamente disponivel no constructor - catalogApi() recebe HttpClient como parametro (nao chama inject() internamente) e e construido em ngOnInit, nao no constructor. Achado real de ambiente no e2e (feat-008.2): locale padrao do Chromium neste conjunto de testes e en-US (ja documentado em docs/TESTING.md), rotulos das abas do Material renderizam em ingles sem trocar idioma primeiro. 69 testes unitarios (30 arquivos) + 13 Playwright, cobertura 93.17%/89.24%/87.75%/94.57%. Delivery Reviewer e Test Suite Auditor (passe proprio, sem subagentes): PASS em todas as passadas - confirmado explicitamente que new_duplicated_lines_density do SonarCloud nao repetiu o achado de feat-003. ./init.sh verde, Playwright (13 testes) verde. epic-006 (raiz) permanece in-progress - restam feat-004 (RF04 UI, agora com os catalogos disponiveis pros dropdowns), feat-005 (RF08 UI) e feat-006 (RF10/RF11 UI)."
     },
     {
       "id": "feat-004",
       "name": "RF04 (UI) - Registro manual de apostas",
-      "description": "Formulario de registro de aposta seguindo as oito regras de ouro de Shneiderman (ver docs/services/web.md).",
+      "description": "Formulario de registro de aposta seguindo as oito regras de ouro de Shneiderman (ver docs/services/web.md). Depende de feat-008 (nao so feat-003) porque os dropdowns de sport/league/market/tipster do formulario consomem os catalogos que aquela feature passa a permitir cadastrar - sem ela nao ha como popular esses campos pela UI.",
       "dependencies": [
-        "feat-003"
+        "feat-008"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
-      "evidence": ""
+      "status": "done",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (risco medio - primeiro formulario com regras de UX explicitas do TCC1, mitigado por precedente direto de feat-003/008 pro resto). Veredito: READY WITH CONCERNS, decisoes de escopo documentadas (nenhuma pendente de usuario). Contrato confirmado no codigo real de bets-service (BetsController/CreateBetRequest/BetResponse), nao so no vault: POST /api/v1/bets - bettingHouseId/sportId/leagueId/marketId (UUID, obrigatorios), tipsterId (UUID, opcional), ticketNumber/team1/team2/description/betType/playType (String, opcionais, sem enum - texto livre), stake (BigDecimal > 0, 422 invalid-stake), odd (BigDecimal > 1.00 estrito, 422 invalid-odd), betDate (Instant, obrigatorio). Header Idempotency-Key opcional (reenvio da mesma chave retorna a aposta ja criada, 200 em vez de 201) - gerado client-side (crypto.randomUUID()) por 'sessao de formulario', regenerado a cada reset/sucesso, protege contra duplo-submit em retry de rede ou duplo-clique (regra 5 de Shneiderman). 404 <recurso>-not-found se qualquer FK nao existir - mitigado por usar dropdowns (nao texto livre) alimentados por feat-003 (betting-houses) e feat-008 (sports/leagues/markets/tipsters), reduzindo a chance de FK invalida a quase zero. Mapeamento das 8 regras de ouro de Shneiderman (docs/services/web.md) pras decisoes de UI: (1) consistencia - reaproveita padrao de formulario/erro RFC 7807 ja estabelecido (loadInto/submitForm de feat-003); (2) atalhos - betDate default 'agora' (nao precisa digitar data em quase todo lancamento), formulario nao navega apos sucesso, so limpa e fica pronto pro proximo lancamento (fluxo de multiplos registros seguidos); (3) feedback informativo - banner de sucesso apos criar; (4) fechamento - banner de sucesso e o sinal explicito de que a transacao terminou (nao so o formulario limpar silenciosamente); (5) prevencao/tratamento de erro simples - dropdowns em vez de IDs digitados, validacao inline (stake>0, odd>1), Idempotency-Key contra duplo-submit; (6) reversao facil - botao 'Limpar' reseta o formulario inteiro antes de enviar (a acao so e irreversivel depois do submit, que e explicito); (7) locus de controle do usuario - nenhum auto-submit, botao explicito; (8) reducao de carga de memoria - dropdowns mostram nome (nao UUID), formulario agrupado em paineis por assunto (evento/detalhes/valores). 2 subtasks (implementacao + fechamento), mesmo padrao de feat-003/008.",
+      "jira": "SV-240",
+      "subtasks": [
+        {
+          "id": "feat-004.1",
+          "name": "BetsApi + formulario real (Idempotency-Key, dropdowns, regras de Shneiderman)",
+          "status": "done",
+          "jira": "SV-241",
+          "detail": "core/bets-api.ts (create() com header Idempotency-Key). pages/register-bet real: carrega betting-houses (feat-003) + 4 catalogos (feat-008) via forkJoin, formulario com dropdowns, validacao inline, banner de sucesso, botao Limpar.",
+          "checklist": [
+            "core/bets-api.ts: interface CreateBetInput/Bet, create(input, idempotencyKey) via POST /api/v1/bets com header Idempotency-Key.",
+            "RegisterBet real: forkJoin carrega BettingHousesApi.list() + catalogApi('sports'|'leagues'|'markets'|'tipsters').list() num unico loadInto, erro de carga bloqueia o formulario (sem catalogo, sem como escolher FK valida).",
+            "Formulario (Reactive Forms): bettingHouseId/sportId/leagueId/marketId (select, obrigatorios), tipsterId (select, opcional, opcao vazia), ticketNumber/team1/team2/description/betType/playType (text, opcionais), stake (number, min>0), odd (number, min>1), betDate (datetime-local, default agora).",
+            "Idempotency-Key: crypto.randomUUID() gerado no ngOnInit e apos cada reset/sucesso, enviado no header a cada submit.",
+            "Banner de sucesso apos criar (regra 3/4 de Shneiderman) - formulario limpa e gera nova Idempotency-Key, sem navegar pra outra rota (permite registrar varias apostas seguidas).",
+            "Botao 'Limpar' reseta o formulario inteiro sem submeter (regra 6 - reversao facil antes do submit).",
+            "Erro de submit exibe detail do RFC 7807 (toProblemDetail/submitForm reaproveitados)."
+          ],
+          "validation": "Unit tests (HttpTestingController) cobrindo carga dos dropdowns, submit com sucesso (Idempotency-Key no header, banner de sucesso, formulario limpo), submit com erro (404/422). Testado nos dois temas e mobile/desktop.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-004.2",
+          "name": "i18n, Playwright, CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-242",
+          "detail": "Fecha a feature - mesmo padrao de feat-003.3/008.2.",
+          "checklist": [
+            "Todas as strings novas traduzidas nos 3 locales, validador de chaves rodado localmente.",
+            "Fluxo Playwright novo (mock via page.route): registrar aposta com sucesso (banner aparece, formulario limpa), erro de validacao (422 invalid-odd, por exemplo) exibido.",
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh (ng build + ng test com cobertura 80% + Playwright) verde.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done - conferir explicitamente que new_duplicated_lines_density do SonarCloud nao estoura (achado real de feat-003).",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas.",
+            "Vault (docs/) revisado: alguma descoberta desta feature sem nota correspondente? Se sim, atualizar a nota do assunto no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence; ../../feature_list.json (raiz) nao precisa mudar (epic-006 continua in-progress).",
+          "owner": "agente"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-09 - 2 subtasks (feat-004.1..2), cada uma via PR real no GitHub (subtask/SV-241, SV-242 -> feature/SV-240) com CI verde antes do merge. Primeiro formulario do app com regras de UX explicitas do TCC1 (8 regras de ouro de Shneiderman) - mapeamento regra-a-regra registrado no plan_review desta feature. core/bets-api.ts (POST /api/v1/bets com header Idempotency-Key client-side, protege contra duplo-submit) + formulario real com dropdowns alimentados por betting-houses (feat-003) e os 4 catalogos (feat-008) via forkJoin, em vez de UUIDs digitados. Achado real pego pelo proprio teste unitario antes do commit: banner de sucesso aparecia e sumia na mesma tick (reset() chamado depois de successMessage.set() zerava a mensagem que acabara de ser setada) - corrigido invertendo a ordem. 73 testes unitarios (31 arquivos) + 15 Playwright, cobertura 90.56%/89.04%/85.45%/93.86%. Delivery Reviewer e Test Suite Auditor (passe proprio, sem subagentes): PASS em todas as passadas - confirmado explicitamente que new_duplicated_lines_density do SonarCloud nao estourou (achado real de feat-003). ./init.sh verde, Playwright (15 testes) verde. epic-006 (raiz) permanece in-progress - restam feat-005 (RF08 UI) e feat-006 (RF10/RF11 UI)."
     },
     {
       "id": "feat-005",
       "name": "RF08 (UI) - Historico de operacoes",
-      "description": "Tela de historico/auditoria de apostas e movimentacoes financeiras.",
+      "description": "Tela de historico/auditoria de apostas e movimentacoes financeiras - somente leitura (listagem + filtros paginados), consumindo GET /api/v1/bets e GET /api/v1/transactions. Decisao do usuario (2026-09-09, AskUserQuestion): RF12 (atualizar status da aposta) e RF13 (depositos/saques) NAO entram aqui - viram feat-009 e feat-010, features dedicadas, mesmo precedente do gap de catalogos (feat-008). Ate feat-010 existir, a aba de movimentacoes financeiras desta tela fica sem forma de popular dados pela UI (so leitura de transacoes que ja existirem via API direta) - aceito pelo usuario, nao e um bloqueio pra feat-005.",
       "dependencies": [
         "feat-004"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
-      "evidence": ""
+      "status": "done",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (risco baixo, precedente direto de feat-003/004/008). Veredito: READY. Contrato confirmado no codigo real de bets-service: GET /api/v1/bets (filtros opcionais bettingHouseId/sportId/leagueId/marketId/tipsterId/from/to, BetResponse so tem IDs, nao nomes - resolvidos client-side contra os catalogos ja carregados, mesmo padrao de forkJoin de feat-004) e GET /api/v1/transactions (filtros bettingHouseId/from/to, TransactionResponse{id,bettingHouseId,type,amount,createdAt}). BetStatus (pending/won/lost/void) e TransactionType (deposit/withdrawal) confirmados como @JsonProperty minusculo no codigo real. Decisao de escopo (RF12/RF13 fora, ver description) ja tomada com o usuario antes desta entrada. Diferente de feat-003/004/008 (listas pequenas, sem paginacao real): historico cresce ao longo do tempo, entao esta e a primeira tela com controles de paginacao de verdade (Anterior/Proximo + indicador de pagina, usando page/totalPages do PagedResponse) em vez de buscar 1 pagina grande. 2 abas (mat-tab-group, mesmo padrao de feat-008): Apostas e Movimentacoes, cada uma com formulario de filtro + tabela paginada. Aplicando de saida o padrao de id+aria-label em inputs e <output> pra banner (docs/CONVENTIONS.md, achado de feat-002/004) - evita repetir o ciclo de achado tardio do SonarCloud pela 3a vez. 2 subtasks (implementacao + fechamento), mesmo padrao das features anteriores.",
+      "jira": "SV-243",
+      "subtasks": [
+        {
+          "id": "feat-005.1",
+          "name": "BetsApi.list()/TransactionsApi + tela real (2 abas, filtros, paginacao)",
+          "status": "done",
+          "jira": "SV-244",
+          "detail": "Estende core/bets-api.ts com list(filter,page,size). Novo core/transactions-api.ts. pages/history real: mat-tab-group (Apostas/Movimentacoes), cada aba com filtro (selects de betting-houses/catalogos + intervalo de data) + tabela paginada, nomes resolvidos client-side contra os catalogos (BetResponse so tem IDs).",
+          "checklist": [
+            "core/bets-api.ts: BetFilter + Bet (shape completo de BetResponse) + list(filter,page,size) via GET /api/v1/bets.",
+            "core/transactions-api.ts: TransactionFilter + Transaction + list(filter,page,size) via GET /api/v1/transactions.",
+            "History real: forkJoin carrega betting-houses+4 catalogos (mesmo padrao de feat-004) pra montar mapas id->nome usados nas duas tabelas.",
+            "Aba Apostas: filtro (bettingHouse/sport/league/market/tipster selects + from/to date) + tabela (casa/esporte/liga/mercado/tipster resolvidos por nome, stake, odd, status como badge localizado, data) + paginacao (Anterior/Proximo, 'Pagina X de Y').",
+            "Aba Movimentacoes: filtro (bettingHouse select + from/to date) + tabela (casa resolvida por nome, tipo como badge localizado, valor em R$, data) + paginacao.",
+            "Rota 'history' ja e guardada por authGuard desde feat-002.2 - sem mudanca de roteamento.",
+            "Inputs com id+aria-label, banner (se houver) com <output> - aplicado de saida (docs/CONVENTIONS.md)."
+          ],
+          "validation": "Unit tests (HttpTestingController) cobrindo list de apostas/movimentacoes com filtro e paginacao, resolucao de nome por ID. Testado nos dois temas e mobile/desktop.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-005.2",
+          "name": "i18n, Playwright, CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-245",
+          "detail": "Fecha a feature - mesmo padrao das features anteriores.",
+          "checklist": [
+            "Todas as strings novas traduzidas nos 3 locales, validador de chaves rodado localmente.",
+            "Fluxo Playwright novo (mock via page.route): listar apostas com filtro aplicado, trocar de pagina, trocar pra aba de movimentacoes.",
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh (ng build + ng test com cobertura 80% + Playwright) verde.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done - conferir explicitamente new_duplicated_lines_density do SonarCloud e os achados de acessibilidade ja recorrentes (Web:InputWithoutLabelCheck/S6819) antes do push, nao so depois do PR final.",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas.",
+            "Vault (docs/) revisado: alguma descoberta desta feature sem nota correspondente? Se sim, atualizar a nota do assunto no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence; ../../feature_list.json (raiz) nao precisa mudar (epic-006 continua in-progress).",
+          "owner": "agente"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-09 - 2 subtasks (feat-005.1..2), cada uma via PR real no GitHub (subtask/SV-244, SV-245 -> feature/SV-243) com CI verde antes do merge. Tela de historico somente leitura (2 abas: Apostas/Movimentacoes) - RF12/RF13 excluidos por decisao do usuario, viram feat-009/feat-010. BetResponse/TransactionResponse so trazem IDs, nomes resolvidos client-side contra betting-houses+catalogos (mesmo forkJoin de feat-004). Primeira tela com paginacao de verdade (Anterior/Proxima + indicador de pagina) - as anteriores buscavam 1 pagina grande por serem listas pequenas por natureza. core/date-format.ts novo: datas respeitam o idioma ativo de verdade (diferente de formatBrl, sempre BRL). Padrao de id+aria-label/<output> (docs/CONVENTIONS.md, achado de feat-002/004) aplicado de saida - sem retrofit de SonarCloud necessario desta vez. Achado real de QA visual (nao SonarCloud): tabelas sem overflow-x:auto cortavam colunas em mobile - corrigido com wrapper de scroll horizontal. 83 testes unitarios (33 arquivos) + 17 Playwright, cobertura 86.89%/89.08%/81.75%/92.08%. Delivery Reviewer e Test Suite Auditor (passe proprio, sem subagentes): PASS em todas as passadas, sem achado bloqueante. ./init.sh verde, Playwright (17 testes) verde. epic-006 (raiz) permanece in-progress - resta so feat-006 (RF10/RF11 UI). feat-009 (RF12) e feat-010 (RF13) registradas no backlog, not-started."
+    },
+    {
+      "id": "feat-009",
+      "name": "RF12 (UI) - Atualizar status da aposta (ganha/perdida/devolvida)",
+      "description": "Gap real encontrado ao planejar feat-005 (2026-09-09, decisao do usuario via AskUserQuestion): RF12 (docs/REQUIREMENTS.md) nao tinha nenhuma feature de UI - sem ela, nenhuma aposta jamais sai de status pendente pela interface web, e stats-service nunca recebe BetSettled (RN06 - aposta so entra em metricas quando status vira won/lost/void). PATCH /api/v1/bets/{id}/status ja existe em bets-service (UpdateBetStatusRequest{status}, transicao atomica pending->won|lost|void, 422 invalid-status-transition pra qualquer outro caso). Decisao do usuario: feature dedicada, separada de feat-005 (historico) - acao de marcar resultado provavelmente vive na propria tela de historico (cada linha de aposta pendente ganha um controle de status), mas o escopo/design fica pra quando esta feature for planejada.",
+      "dependencies": [
+        "feat-005"
+      ],
+      "status": "done",
+      "evidence": "feat-009.1 (SV-250) e feat-009.2 (SV-251) done em 2026-09-09, ambas com PR mergeado (subtask->story, CI verde). feat-009.1: BetsApi.updateStatus + 3 botoes (won/lost/void) em linhas pendentes da aba Apostas do historico, atualizacao local da linha (sem reload), erro RFC 7807 exibido via toProblemDetail, i18n dos 3 rotulos nos 3 locales, unit tests (HttpTestingController) cobrindo sucesso e erro 422. feat-009.2: fluxo Playwright novo (e2e/history.spec.ts, describe 'RF12 - update bet status') provando as 3 pontas do RN06 na UI - marcar aposta pendente como ganha atualiza a linha sem reload; uma aposta ja liquidada (status!=pending) nunca renderiza os botoes de acao (linha adicionada ao mock so pra essa asserção); erro 422 exibe o detail do backend sem quebrar a tabela. Self-review no padrao Delivery Reviewer + Test Suite Auditor (review-suite:ln-12/codebase-audit-suite:ln-23, sem subagentes - diff pequeno e escopado, 1 arquivo de teste) achou 1 problema real: branch morto no mock (route.fallback() condicionado a metodo != GET que nunca disparava, porque o glob de um so '*' do Playwright nao cruza '/' - '**/api/v1/bets*' nunca chega a casar '/api/v1/bets/1/status') - removido, e o teste fortalecido com a asercao da linha ja liquidada em vez de so a que muda (achado documentado em docs/TESTING.md, nao so corrigido em silencio). ./init.sh verde (35 arquivos, 95 testes, 85.36% stmts). Playwright completo verde (22/22, incluindo os 2 fluxos novos de RF12). Testado nos dois temas/mobile+desktop na propria feat-009.1 (UI introduzida ali, feat-009.2 nao adicionou UI nova, so cobertura de teste). Vault revisado: gotcha real de glob do Playwright documentado em docs/TESTING.md secao 'Frontend (apps/web)' no mesmo commit da correcao (nao ha divergencia do TCC 1, sem entrada em docs/DECISIONS-LOG.md). RN06 (aposta so sai de pending via won/lost/void, metricas so contam apos liquidacao) e responsabilidade do backend (bets-service) - confirmado no plan_review, sem impacto de frontend.",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (risco baixo/medio - primeira acao destrutiva/irreversivel do app, mitigado por precedente direto do padrao loadInto/submitForm ja usado em toda tela deste app). Veredito: READY. Contrato confirmado no codigo real de bets-service (nao so no vault): PATCH /api/v1/bets/{id}/status (BetsController.updateStatus) aceita UpdateBetStatusRequest{status: 'won'|'lost'|'void'} - 'pending' e rejeitado pelo proprio backend (BetService.updateStatus so aceita transicao PENDING->WON|LOST|VOID via betRepository.transitionStatus, qualquer outra combinacao, incluindo uma aposta ja liquidada de novo, lanca InvalidStatusTransitionException, RFC 7807 422 'invalid-status-transition', mensagem ja localizada nos 3 locales de bets-service - RN06). Transicao e definitiva (sem endpoint de 'desfazer' no backlog) - por isso a UI so oferece a acao em linhas com status='pending', nunca em linhas ja liquidadas (nao ha ambiguidade de estado a esconder, o proprio filtro de status na tabela ja deixa claro). Decisao de escopo (documentada aqui, nao pendente de usuario - a description da feature ja aponta a direcao, mesmo racional de feat-008/009 desta sessao: seguir a pista do vault em vez de perguntar quando so ha uma leitura razoavel): a acao vive na propria aba 'Apostas' de history.html (feat-005), nao numa tela nova - cada linha com status pendente ganha 3 botoes (Ganha/Perdida/Devolvida) que disparam o PATCH direto e recarregam a pagina atual da lista (mesmo padrao de reload apos mutacao ja usado em bettingHouses/users/catalogs); sem dialogo de confirmacao (nenhuma tela deste app usa modal ate agora, e o botao ja e uma acao explicita e nomeada - regra 7 de Shneiderman, locus de controle do usuario - e nao um auto-submit); erro (422 se a aposta ja foi liquidada por outra aba/sessao entre o carregamento da lista e o clique) exibe o detail RFC 7807 ja localizado do backend, reaproveitando toProblemDetail. BetsApi (feat-004/005) ganha updateStatus(id,status) via PATCH, retornando o Bet atualizado - a linha na tabela e atualizada localmente com a resposta (sem precisar recarregar a pagina inteira, evita perder a posicao de scroll/pagina). Sem impacto em stats-service nesta feature (BetSettled ja e publicado pelo backend na propria chamada, consumido de forma assincrona - RN06 ja diz respeito ao backend, fora do escopo do frontend). 2 subtasks (implementacao + fechamento), mesmo padrao das features anteriores.",
+      "jira": "SV-249",
+      "subtasks": [
+        {
+          "id": "feat-009.1",
+          "name": "BetsApi.updateStatus + controles de status na aba Apostas do historico",
+          "status": "done",
+          "jira": "SV-250",
+          "detail": "Estende core/bets-api.ts com updateStatus(id,status). pages/history/history.ts/html: linhas com status='pending' ganham 3 botoes (Ganha/Perdida/Devolvida), sucesso atualiza a linha localmente, erro exibe detail RFC 7807.",
+          "checklist": [
+            "core/bets-api.ts: updateStatus(id: string, status: BetStatus): Observable<Bet> via PATCH /api/v1/bets/{id}/status, body {status}.",
+            "History (pages/history): 3 botoes (won/lost/void) visiveis so em linhas com bet.status==='pending' na tabela da aba Apostas, cada um com id+aria-label (padrao de docs/CONVENTIONS.md).",
+            "Sucesso: substitui o Bet daquela linha no array atual (sem recarregar a pagina/lista inteira) - reaproveita a mesma tecnica de atualizacao local ja usada onde aplicavel neste app, ou um loadBets(pagina atual) simples se nao houver precedente direto.",
+            "Erro (422 aposta ja liquidada por outra sessao, ou qualquer outro RFC 7807): exibe detail via toProblemDetail, sem quebrar a tabela.",
+            "i18n: 3 rotulos de acao (history.markWon/markLost/markVoid) nos 3 locales."
+          ],
+          "validation": "Unit tests (HttpTestingController) cobrindo: botoes aparecem so em linhas pendentes, sucesso atualiza a linha, erro exibe detail. Testado nos dois temas e mobile/desktop.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-009.2",
+          "name": "i18n, Playwright, CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-251",
+          "detail": "Fecha a feature - mesmo padrao das features anteriores.",
+          "checklist": [
+            "Todas as strings novas traduzidas nos 3 locales, validador de chaves rodado localmente.",
+            "Fluxo Playwright novo (mock via page.route): marcar aposta pendente como ganha, ver o status da linha atualizar sem reload de pagina; erro 422 exibido quando o backend rejeita a transicao.",
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh (ng build + ng test com cobertura 80% + Playwright) verde.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done.",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence.",
+          "owner": "agente"
+        }
+      ]
+    },
+    {
+      "id": "feat-010",
+      "name": "RF13 (UI) - Movimentacoes financeiras (depositos e saques)",
+      "description": "Gap real encontrado ao planejar feat-005 (2026-09-09, decisao do usuario via AskUserQuestion): RF13 (docs/REQUIREMENTS.md) nao tinha nenhuma feature de UI - sem ela, a aba de movimentacoes financeiras de feat-005 (historico) nunca tem dados pra mostrar (nenhum outro caminho cria TRANSACTION pela UI). POST/GET /api/v1/transactions ja existem em bets-service desde feat-003 daquele servico (CreateTransactionRequest{bettingHouseId,type,amount}, tipo deposit/withdrawal). Decisao do usuario: feature dedicada, separada de feat-005 - formulario de deposito/saque provavelmente vive na tela de casas de apostas (feat-003, RF03) ou na propria tela de historico, mas o escopo/design fica pra quando esta feature for planejada.",
+      "dependencies": [
+        "feat-005"
+      ],
+      "status": "done",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (risco baixo - CRUD simples, dois precedentes diretos ja no codigo real: painel form+lista de betting-houses.html, feat-003, e submit/reset/successMessage de register-bet.ts, feat-004). Veredito: READY, sem achado. Contrato confirmado no codigo real de bets-service (nao so no vault): POST /api/v1/transactions (TransactionsController.create) aceita CreateTransactionRequest{bettingHouseId: UUID, type: deposit|withdrawal, amount: BigDecimal @Positive} e retorna 201 com o Transaction criado - sem Idempotency-Key (diferente de POST /bets), sem regra de negocio adicional alem da validacao de campo (bean validation, 400 se invalido). Decisao de escopo (documentada aqui, nao pendente de usuario - description da feature ja deixava as duas opcoes, mesmo racional de feat-008/009 de seguir a pista do vault): formulario vive na propria tela de historico (History, feat-005), aba Movimentacoes - nao em casas de apostas (feat-003) - porque e la que o usuario ja esta olhando o efeito (lista de transacoes) e filtrando por casa de apostas, mesma tela onde a lista fica sem dados hoje. Layout: aba Movimentacoes ganha app-panel-layout (columns='360px 1fr', mesmo breakpoint de betting-houses.html) com um app-panel novo 'Nova movimentacao' (form: bettingHouseId select, type select deposit/withdrawal, amount number min=0.01/step=0.01 - espelha @Positive do backend) a esquerda do panel de filtro+lista existente (sem app-panel ainda - aba Apostas fica fora de escopo, so a de Movimentacoes ganha os panels). Submit chama TransactionsApi.create (novo metodo), sucesso reseta o formulario + mostra successMessage (mesmo padrao de register-bet.ts) + recarrega a pagina atual da lista de transacoes (loadTransactions(pagina atual), respeitando os filtros ja aplicados - nao insercao local, porque a lista e paginada/filtrada e a nova transacao pode nao caber na pagina/filtro atual). Erro (400 bean validation, ou qualquer outro RFC 7807) exibe o detail via toProblemDetail, mesmo padrao de markStatus (feat-009). Sem dialogo de confirmacao - mesmo padrao ja usado em betting-houses.create (acao real de bankroll sem confirmacao extra, botao ja e explicito - regra 7 de Shneiderman). i18n: reaproveita history.bettingHouseLabel/typeLabel/amountLabel/type.deposit/type.withdrawal ja existentes, so 3 chaves novas (newTransactionTitle/create/transactionSuccess) nos 3 locales. 2 subtasks (implementacao + fechamento), mesmo padrao das features anteriores. Persistence Auditor nao se aplica (frontend sem persistencia propria).",
+      "jira": "SV-252",
+      "subtasks": [
+        {
+          "id": "feat-010.1",
+          "name": "TransactionsApi.create + formulario de nova movimentacao na aba Movimentacoes do historico",
+          "status": "done",
+          "jira": "SV-253",
+          "detail": "Estende core/transactions-api.ts com create(bettingHouseId,type,amount). pages/history: aba Movimentacoes ganha app-panel-layout (panel de formulario + panel existente de filtro/lista), submit reseta form + recarrega a pagina atual da lista, erro exibe detail RFC 7807.",
+          "checklist": [
+            "core/transactions-api.ts: create(bettingHouseId: string, type: TransactionType, amount: number): Observable<Transaction> via POST /api/v1/transactions, body {bettingHouseId,type,amount}.",
+            "History (pages/history): aba Movimentacoes envolvida em app-panel-layout (columns='360px 1fr') com app-panel novo 'Nova movimentacao' (select casa de apostas, select tipo deposit/withdrawal, input number valor) a esquerda do panel existente de filtro+lista (aba Apostas nao muda).",
+            "Sucesso: form.reset() (idempotencyKey nao se aplica aqui, sem token pra renovar) + successMessage (mesmo padrao de register-bet.ts) + loadTransactions(pagina atual) pra puxar a nova transacao respeitando filtro ativo.",
+            "Erro (400 bean validation ou qualquer outro RFC 7807): exibe detail via toProblemDetail, sem quebrar a tabela.",
+            "i18n: history.newTransactionTitle/create/transactionSuccess nos 3 locales (bettingHouseLabel/typeLabel/amountLabel/type.deposit/type.withdrawal ja existem)."
+          ],
+          "validation": "Unit tests (HttpTestingController) cobrindo: submit valido cria a transacao e recarrega a lista, erro exibe detail. Testado nos dois temas e mobile/desktop (RNF01, colapso do app-panel-layout).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-010.2",
+          "name": "i18n, Playwright, CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-254",
+          "detail": "Fecha a feature - mesmo padrao das features anteriores.",
+          "checklist": [
+            "Todas as strings novas traduzidas nos 3 locales, validador de chaves rodado localmente.",
+            "Fluxo Playwright novo (mock via page.route): criar uma movimentacao (deposito ou saque) na aba Movimentacoes, ver a lista recarregar e a nova linha aparecer; erro exibido quando o backend rejeita.",
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh (ng build + ng test com cobertura 80% + Playwright) verde.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done.",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence.",
+          "owner": "agente"
+        }
+      ],
+      "evidence": "feat-010.1 (SV-253) e feat-010.2 (SV-254) done em 2026-09-09, ambas com PR mergeado (subtask->story, CI verde). feat-010.1: TransactionsApi.create (POST /api/v1/transactions, sem Idempotency-Key) + form 'Nova movimentacao' na aba Movimentacoes do historico, mesmo precedente de app-panel-layout (form+lista) ja usado em betting-houses.html e mesmo padrao de submit/reset/successMessage de register-bet.ts. Sucesso reseta o form e recarrega a pagina atual da lista (respeita filtro ativo); erro exibe o detail RFC 7807. Unit tests (HttpTestingController) cobrindo sucesso (reload disparado com o page certo) e erro sem detail (fallback pro genericError traduzido). feat-010.2: fluxo Playwright novo (e2e/history.spec.ts, describe 'RF13 - register a transaction'): criar um deposito reseta o form, mostra o success banner e a lista recarrega com a nova linha; erro 400 exibe o detail do backend. ./init.sh verde (35 arquivos, 97 testes, 85.13% stmts/80.24% funcs - cobertura de funcoes caiu pra 79.62% no meio do caminho por causa de um genericError() novo nao exercitado, corrigido acrescentando um teste que forca esse fallback via .error() sem body RFC 7807 em vez de abaixar o gate). Playwright completo verde (24/24). Verificacao visual real (nao so leitura de codigo) via 3 screenshots (desktop claro/escuro + mobile claro na aba Movimentacoes, script descartavel em e2e/, apagado antes do commit) confirmando o layout em 2 paineis (form + lista) nos dois temas e o colapso mobile (paineis empilham, mesmo padrao ja usado em betting-houses/register-bet). Self-review no padrao Delivery Reviewer/Test Suite Auditor (sem subagentes, diff pequeno e com 2 precedentes diretos no codigo) sem achado bloqueante. Vault revisado: nenhuma nota nova necessaria (reaproveita app-panel-layout e o padrao submit/reset ja documentados, sem gotcha novo)."
     },
     {
       "id": "feat-006",
       "name": "RF10/RF11 (UI) - Dashboards e filtros dinamicos",
-      "description": "Paineis visuais consumindo GET /api/v1/statistics do stats-service, com filtros por periodo, esporte, liga, mercado e tipster (query params em ingles: sport, league, market, tipster, from, to) recalculando as metricas dinamicamente (RN08). Rotulos de filtro na UI localizados.",
+      "description": "Paineis visuais consumindo GET /api/v1/statistics do stats-service, com filtros por casa de apostas/esporte/liga/mercado/tipster e periodo (query params reais confirmados no codigo: bettingHouseId/sportId/leagueId/marketId/tipsterId, UUID, mais from/to, LocalDate - nao sport/league/market como a description original dizia, ja corrigido em docs/services/web.md) recalculando as metricas dinamicamente via nova consulta ao backend a cada filtro aplicado (RN08). Rotulos de filtro na UI localizados.",
       "dependencies": [
         "feat-005"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
-      "evidence": ""
+      "status": "done",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (risco baixo/medio - primeira tela deste app consumindo stats-service, mas mesmo padrao lista+filtro+forkJoin ja usado e testado em feat-004/005/008, e o app-panel-layout/mat-tab-group ja provados). Veredito: READY. Contrato confirmado no codigo real de stats-service (nao so no vault): GET /api/v1/statistics (StatisticsController) aceita bettingHouseId/sportId/leagueId/marketId/tipsterId (UUID, opcionais) + from/to (LocalDate, opcionais), devolve StatisticsDashboard{overall, bySport, byMarket, byBettingHouse, monthly} num unico bundle (RF11 - sem endpoint por segmento). BetMetrics{totalStaked, netProfit, roi, winRate, settledCount} - roi e winRate sao FRACOES (netProfit/totalStaked e wonCount/settledCount, escala 0..1, ver CalculateMetricsService.toMetrics), nao percentuais prontos - UI formata como percentual (novo core/percent.ts, Intl.NumberFormat style:'percent', locale-aware como core/date-format.ts, nao fixo como core/currency.ts - percentual nao e dinheiro). RN04 ja garante zero (nao excecao/null) quando o denominador e zero, sem tratamento especial no frontend. api-gateway ja roteia /api/v1/statistics/** pro stats-service (RouteConfig.java, confirmado no codigo-fonte, statsServiceRoute ja existe desde a topologia inicial do gateway - sem gap). Nenhum endpoint separado por byLeague/byTipster - leagueId/tipsterId so estreitam todos os segmentos como filtro, mesmo racional ja documentado em docs/services/stats-service.md. Decisao de layout (app-panel-layout columns=\"320px 1fr\", mesmo mecanismo de feat-001.4/dashboard placeholder atual): painel 1 = filtros (selects de betting-houses/4 catalogos + from/to, mesmo padrao de forkJoin+loadInto de history/feat-005, submit explicito 'Aplicar' - RN08 e satisfeita por uma nova consulta real ao clicar aplicar, nao filtragem client-side sobre dado ja carregado, nem re-fetch a cada keystroke); painel 2 = metricas (cards de overall formatados com formatBrl/novo formatPercent, grafico de linha real de lucro liquido mensal usando StatisticsDashboard.monthly via ngx-echarts, e mat-tab-group com 3 abas - Esporte/Mercado/Casa de Apostas - cada uma uma tabela de SegmentedBetMetrics, mesmo padrao de tabela de history) - 2 paineis, dentro da faixa 2-3 recomendada em docs/DESIGN-SYSTEM.md secao 'Layout em paineis' pro dashboard. shared/line-chart-sample (feat-001.6, mock, comentario no proprio arquivo ja dizia 'real dashboard charts are feat-006') e removido nesta feature - superseded pelo grafico real com StatisticsDashboard.monthly, evita componente morto e ajuda o risco ja sinalizado em session-handoff.md (bundle 601KB vs budget 500KB); novo shared/monthly-profit-chart reaproveita o mesmo padrao de leitura de tema via CSS custom properties (Theme signal) que line-chart-sample ja provou, so trocando dado mock por MonthlyBetMetrics[] real. Sem restricao de role (mesmo padrao de betting-houses/history - qualquer usuario autenticado do tenant ve o dashboard), so authGuard (rota 'dashboard' ja guardada desde feat-001.1). 2 subtasks (implementacao + fechamento), mesmo padrao das features anteriores.",
+      "jira": "SV-246",
+      "subtasks": [
+        {
+          "id": "feat-006.1",
+          "name": "StatisticsApi + core/percent.ts + monthly-profit-chart + Dashboard real (filtros, cards, grafico, breakdown por aba)",
+          "status": "done",
+          "jira": "SV-247",
+          "detail": "core/statistics-api.ts novo (get(filter) via GET /api/v1/statistics). core/percent.ts novo (formatPercent locale-aware). shared/monthly-profit-chart novo (substitui shared/line-chart-sample, removido). Dashboard real substitui o placeholder de feat-001.4.",
+          "checklist": [
+            "core/statistics-api.ts: StatisticsFilter (bettingHouseId/sportId/leagueId/marketId/tipsterId/from/to, todos opcionais) + BetMetrics/SegmentedBetMetrics/MonthlyBetMetrics/StatisticsDashboard (shape completo confirmado no codigo real) + StatisticsApi.get(filter) via GET /api/v1/statistics, mesmo padrao de filterParams de core/bets-api.ts.",
+            "core/percent.ts: formatPercent(value, locale) via Intl.NumberFormat(locale, {style:'percent', maximumFractionDigits:1}) - roi/winRate sao fracoes 0..1, nao percentual pronto.",
+            "shared/monthly-profit-chart: componente novo (input data: MonthlyBetMetrics[]), le tema via CSS custom properties (mesmo padrao de shared/line-chart-sample), echarts.use() escopado no componente (nao em app.config.ts). shared/line-chart-sample (componente+html+scss+spec) removido - superseded, sem outro consumidor.",
+            "Dashboard (pages/dashboard) real: forkJoin carrega betting-houses+4 catalogos (mesmo padrao de history) pro formulario de filtro; ngOnInit chama StatisticsApi.get({}) sem filtro pra carga inicial.",
+            "Painel de filtros: form (Reactive Forms) com selects bettingHouseId/sportId/leagueId/marketId/tipsterId (mesmo padrao mat-select de history, opcao 'Todos') + from/to (date, id+aria-label) + botao 'Aplicar' (submit explicito, nao client-side).",
+            "Painel de metricas: cards de overall (totalStaked/netProfit em formatBrl, roi/winRate em formatPercent, settledCount), app-monthly-profit-chart alimentado por dashboard().monthly, mat-tab-group (Esporte/Mercado/Casa de Apostas) cada aba com tabela de SegmentedBetMetrics (dimensionName + as 5 metricas).",
+            "Erro de carga (options ou statistics) exibe detail do RFC 7807 (toProblemDetail/loadInto reaproveitados)."
+          ],
+          "validation": "Unit tests (HttpTestingController) cobrindo StatisticsApi.get com/sem filtro, formatPercent, carga inicial do Dashboard e reaplicar filtro disparando nova consulta. Testado nos dois temas e mobile/desktop.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-006.2",
+          "name": "i18n, Playwright, CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-248",
+          "detail": "Fecha a feature e o epic-006 inteiro (raiz) - mesmo padrao das features anteriores.",
+          "checklist": [
+            "Todas as strings novas (filtros, cards, abas de breakdown) traduzidas nos 3 locales, validador de chaves rodado localmente.",
+            "Fluxo Playwright novo (mock via page.route): carregar dashboard com metricas iniciais, aplicar filtro (ex.: casa de apostas) e ver nova consulta disparada, trocar de aba de breakdown.",
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh (ng build + ng test com cobertura 80% + Playwright) verde.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done - conferir explicitamente new_duplicated_lines_density do SonarCloud e os achados de acessibilidade ja recorrentes (Web:InputWithoutLabelCheck/S6819) antes do push.",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence; ../../feature_list.json (raiz) marca epic-006 done (esta e a ultima feature do epic).",
+          "owner": "agente"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-09 - 2 subtasks (feat-006.1..2), cada uma via PR real no GitHub (subtask/SV-247, SV-248 x2 -> feature/SV-246, todos com CI verde antes do merge) com CI verde antes do merge. Ultima feature de epic-006 (raiz), que fecha com esta. core/statistics-api.ts (novo, GET /api/v1/statistics, contrato confirmado no codigo real de stats-service - StatisticsController/StatisticsDashboard/BetMetrics/SegmentedBetMetrics/MonthlyBetMetrics) + core/percent.ts (novo, roi/winRate sao fracoes 0..1 no contrato real, nao percentual pronto - confirmado em CalculateMetricsService.toMetrics). Dashboard real substitui o placeholder de feat-001.4/1.6: painel de filtros (casa de apostas/esporte/liga/mercado/tipster/periodo, submit explicito 'Aplicar' - RN08 satisfeita por uma nova consulta real a cada aplicacao, nao filtragem client-side) + painel de metricas (cards de overall, shared/monthly-profit-chart novo com dado real de StatisticsDashboard.monthly - substitui shared/line-chart-sample, removido por nao ter mais consumidor -, mat-tab-group com breakdown por esporte/mercado/casa de apostas). 3 achados reais: (1) teste unitario - jsdom nao implementa HTMLCanvasElement.getContext('2d') sem o pacote nativo canvas (nao instalado), zrender desreferencia esse contexto null tanto no init quanto no dispose, corrigido com um Proxy permissivo por arquivo de teste (documentado em docs/CONVENTIONS.md); (2) achado de Playwright cuja causa raiz nao era do dashboard - e2e/panel-layout.spec.ts ja falhava em develop antes desta feature (confirmado rodando a suite contra o HEAD anterior num worktree separado) porque toda pagina fixava height:calc(100vh - 64px) chutando a altura da nav, mas app-language-selector/app-theme-toggle nunca tiveram CSS de posicionamento e a nav quebra linha conforme mais links sao adicionados - corrigido na casca compartilhada (app.html/app.scss, layout flex column real), as 6 paginas trocaram calc(100vh - 64px) por height:100% (detalhe em docs/DESIGN-SYSTEM.md); (3) achado de QA visual manual (screenshots desktop/mobile x claro/escuro) - pontos do grafico renderizavam azul padrao do ECharts em vez do verde da marca porque so lineStyle.color estava setado, faltava itemStyle.color, corrigido. 93 testes unitarios (37 arquivos) + 20 Playwright (3 novos em e2e/dashboard.spec.ts, mais o e2e/panel-layout.spec.ts corrigido), cobertura 86.62%/89.49%/81.2%/91.71% (acima do gate 80% nos 4 criterios). Delivery Reviewer e Test Suite Auditor (passe proprio, sem subagentes, mesmo padrao do projeto): PASS em todas as passadas, sem achado bloqueante pendente - os 3 achados acima foram corrigidos antes do fechamento, nao deixados como divida. ./init.sh verde. Vault atualizado no mesmo commit logico (repositorio raiz): docs/DESIGN-SYSTEM.md (secao 'Layout em paineis', achado do layout flex) e docs/CONVENTIONS.md (achado do stub de canvas 2D em teste). apps/web/progress.md e apps/web/session-handoff.md atualizados, incluindo o achado de que apps/web/progress.md nao tinha entradas de fechamento de feat-002..005/008 (gap de sessao anterior, fora do escopo desta feature corrigir retroativamente - sinalizado para consulta via progress.md/session-handoff.md da raiz). epic-006 (raiz) fecha com esta feature - marcado done separadamente apos este commit, ja que o --sync-status desta edicao move a story pra Review, nao Done."
     },
     {
       "id": "feat-007",
-      "name": "Pipeline de CI (GitHub Actions + SonarCloud)",
-      "description": "Workflow ja versionado em .github/workflows/ci.yml (dentro deste repositorio - este app e seu proprio repositorio Git, nao um monorepo, ver docs/CI-CD.md) com 5 passos: validacao de CHANGELOG.md atualizado, validacao de chaves de traducao (src/assets/i18n/pt-BR.json, en-US.json, es.json), build (npm ci && npm run build), testes unitarios + cobertura (ng test --code-coverage), qualidade/cobertura no SonarCloud (sonar-project.properties, projectKey sv-frontend). Scripts de validacao em .github/scripts/ (duplicados neste repositorio, nao compartilhados). Repositorio GitHub: https://github.com/eimmig/sv-frontend.git. So funciona de fato apos este repositorio existir no GitHub e o setup do SonarCloud (org, projeto, SONAR_TOKEN, SONAR_ORGANIZATION) estar feito - ver docs/CI-CD.md secao 'Setup pendente'.",
+      "name": "Retrofit do gate de qualidade do SonarCloud",
+      "description": "Achado real (feat-001, PR story->develop, 2026-09-09): o pipeline de CI (.github/workflows/ci.yml, 5 passos - changelog, i18n, build, testes+cobertura, SonarCloud) ja existe e roda de verdade desde feat-001.1, mas o passo 5 (SonarCloud) nunca recebeu o retrofit que os outros 4 repositorios de aplicacao (auth-service, bets-service, stats-service, telegram-integration) ja tem: -Dsonar.qualitygate.wait=true (faz o job de CI falhar de verdade quando o quality gate reprova, hoje so envia a analise sem esperar) e um passo de validacao de zero issues/hotspots (.github/scripts/validate-sonar-issues.py, mais rigoroso que o quality gate padrao). Sem isso, um PR podia mergear com issue/hotspot aberto no SonarCloud sem bloquear - foi assim que o achado de lcov.info ausente (corrigido em feat-001) quase passou despercebido: o check 'SonarCloud Code Analysis' aparecia no PR mas nao vinha do job de CI esperando de verdade. Confirmado via API publica do SonarCloud que eimmig_sv-frontend tem 0 issues/0 hotspots abertos agora - seguro habilitar o gate rigido sem lidar com backlog retroativo. Porta o padrao exato de services/telegram-integration (mesmo mecanismo, SonarSource/sonarqube-scan-action@v4 - nao o plugin Maven usado pelos 3 servicos Java) para apps/web/.github/workflows/ci.yml e apps/web/.github/scripts/validate-sonar-issues.py, so trocando o projectKey.",
       "dependencies": [
         "feat-001"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "done",
+      "evidence": "feat-007.1 (unica subtask) done em 2026-09-09, Delivery Reviewer PASS no merge subtask->story (PR #11). Verificacao real (nao so leitura estatica de YAML) no PR #12 (feature/SV-220 -> develop, o PR que de fato exercita os passos - guardados pra pular em PR de subtask): log do job confirma '-Dsonar.qualitygate.wait=true' presente nos args do scanner, e o passo novo 'Validar zero issues no SonarCloud' rodou com '--pull-request 12' e retornou 'OK SonarCloud sem issues nem security hotspots abertos.' contra a API real. Checks do PR (pipeline + SonarCloud Code Analysis) verdes. apps/web agora tem o mesmo nivel de rigor de CI que os outros 4 repositorios de aplicacao (auth-service, bets-service, stats-service, telegram-integration).",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (baixo risco, mudanca de config bem entendida, porte verbatim de padrao ja provado em 4 repositorios). Veredito: READY, 1 achado MINOR sem correcao necessaria (auth-service usa um step 'story-gate' compartilhado em vez da condicao inline repetida que telegram-integration/apps/web ja usam - manter o estilo inline ja estabelecido neste repositorio, nao portar o padrao Maven). Confirmado via API publica do SonarCloud (curl direto, sem token) que eimmig_sv-frontend tem 0 issues/0 hotspots abertos - seguro habilitar o gate agora.",
+      "jira": "SV-220",
+      "subtasks": [
+        {
+          "id": "feat-007.1",
+          "name": "sonar.qualitygate.wait + validate-sonar-issues.py",
+          "status": "done",
+          "jira": "SV-221",
+          "detail": "Porta o padrao exato de services/telegram-integration/.github/workflows/ci.yml (mesmo mecanismo, sonarqube-scan-action) e .github/scripts/validate-sonar-issues.py, so trocando o projectKey pra eimmig_sv-frontend.",
+          "checklist": [
+            "Passo 'SonarCloud' do ci.yml deste repositorio ganha -Dsonar.qualitygate.wait=true, pulado so em push direto pra develop (API do plano gratuito recusa computar gate pra branch != main, mesma causa raiz do proximo passo).",
+            "Novo passo 'Validar zero issues no SonarCloud' rodando .github/scripts/validate-sonar-issues.py --project-key eimmig_sv-frontend (copiado verbatim de telegram-integration, sem logica especifica de linguagem), pulado em push pra develop.",
+            "Verificado via PR real (nao so leitura do YAML) que os dois passos rodam e o gate reprova/aprova de verdade."
+          ],
+          "validation": "PR de teste real mostra o passo 'Validar zero issues no SonarCloud' executando (nao guarda pulada) e retornando OK com o projeto limpo atual.",
+          "owner": "agente"
+        }
+      ]
+    },
+    {
+      "id": "feat-011",
+      "name": "Polish visual moderno - sistema todo (design refresh cross-screen)",
+      "description": "Feedback real do usuario (2026-09-09), escopo ampliado no mesmo dia de 'so a tela de login' pra 'sistema todo': visual atual das telas ja implementadas (login/feat-002, gestao de usuarios/feat-002, casas de apostas/feat-003, catalogos/feat-008, registro de aposta/feat-004, historico + atualizacao de status/feat-005+feat-009, dashboard/feat-006) e simples/pouco elaborado demais - usuario quer algo moderno, bonito e usavel em todo o app, nao so numa tela isolada. Dentro da paleta StakeVault ja normativa (docs/DESIGN-SYSTEM.md), nao uma paleta nova por conta propria; se a elevacao pedida exigir um padrao visual novo e consistente (ex.: tratamento de elevacao/sombra/gradiente/glass em cards e paineis, ritmo de espacamento, hierarquia tipografica, estado hover/focus mais elaborado), registrar esse padrao no inventario de docs/DESIGN-SYSTEM.md no mesmo commit em vez de inventar por componente/tela isolada - o objetivo e um sistema coerente, nao retoques desencontrados tela a tela. Dois bugs reais de feat-002/feat-001 entram no mesmo esforco (nao subtasks isoladas, fazem parte do mesmo refresh): (1) seletor de idioma com contraste ruim no tema escuro - fundo fica branco com fonte branca (texto ilegivel), provavel <select> nativo nao herdando os tokens de tema M3/CSS custom properties do resto do app; (2) botao de toggle claro/escuro visualmente pobre, sem alinhamento com a identidade StakeVault (ver docs/DESIGN-SYSTEM.md 'Identidade visual'/paleta). **Skills de design devem liderar o refresh, nao so validar no fim** (pedido explicito do usuario): huashu-design pra prototipar as direcoes visuais novas (paineis/cards/formularios/nav) antes de tocar codigo real, Impeccable + taste-skill pra auditar cada tela revisada contra docs/DESIGN-SYSTEM.md e apontar inconsistencia entre telas - ver docs/DESIGN-SYSTEM.md secao 'QA visual e prototipagem'. feat-010 (movimentacoes financeiras, ainda not-started) nao e dependencia desta feature mas deve nascer ja no padrao visual novo se for implementada depois desta - evita retrabalho. Escopo de implementacao (quebra por tela/componente reaproveitavel como app-panel/app-panel-layout, mat-select vs select nativo, redesign do toggle, quais tokens/paineis ganham elevacao nova) fica pro Plan Reviewer decidir quando rodar sobre esta feature, com as subtasks derivadas do veredito dele (mesmo padrao ja usado em feat-001).",
+      "dependencies": [
+        "feat-001",
+        "feat-002",
+        "feat-003",
+        "feat-004",
+        "feat-005",
+        "feat-006",
+        "feat-008",
+        "feat-009",
+        "feat-010"
+      ],
+      "status": "done",
+      "plan_review": "2026-09-09, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de codificar - passe proprio, sem subagentes (escopo grande mas cada subtask e um passo isolado/testavel, mesmo padrao de risco baixo-medio de feat-001). Veredito: READY com 1 ressalva registrada (nao MAJOR, decisao de sequenciamento): 'moderno e bonito' e subjetivo e esta feature nao tem mockup de referencia como as anteriores (StakeVault/Uphold) - decisao tomada aqui (nao pendente do usuario, mas o primeiro incremento fica deliberadamente pequeno e concreto pra nao gastar esforco grande numa direcao nao validada): comecar pelos 2 bugs reais reportados (contraste do seletor de idioma, visual do toggle de tema) + tela de login (a unica explicitamente citada pelo usuario), entregar como feat-011.1 sozinha, e so entao estender o mesmo tratamento pras demais telas nas subtasks seguintes - cada subtask sobe uma PR real (visivel, revisavel), entao a direcao fica exposta cedo em vez de so no fechamento da feature inteira. Achado real de codigo (nao so leitura do vault): a causa raiz do bug de contraste e concreta - app/core/language-selector/language-selector.scss e app/core/theme-toggle/theme-toggle.scss estao vazios (0 bytes) desde sempre, os dois componentes nunca ganharam estilo proprio, so o mat-select/mat-stroked-button padrao do Angular Material sem nenhum token de tema StakeVault aplicado - nao e um bug de override quebrado, e ausencia total de CSS. app-panel (shared/panel/panel.scss) ja tem --panel-shadow + border-radius:16px aplicados (base solida pra elevacao), mas login.html usa um unico app-panel centralizado num fundo liso, sem nenhum acento visual (sem logo, sem gradiente, sem uso da marca) - e exatamente a leitura 'simples' do usuario. Escopo por subtask: 011.1 painel/topbar globais (language-selector + theme-toggle com estilo real usando os tokens de tema, incluindo dark mode) + tela de login elevada (logo StakeVault, fundo com acento de marca, polish tipografico) - sem novo padrao de token, so aplicar o que ja existe em docs/DESIGN-SYSTEM.md com mais consistencia; se precisar de um padrao novo (gradiente/glass), registrar em docs/DESIGN-SYSTEM.md no mesmo commit. 011.2 dashboard + casas de apostas. 011.3 registro de aposta + historico (apostas/movimentacoes). 011.4 usuarios + catalogos. 011.5 CHANGELOG, auditoria visual final (Impeccable/taste-skill contra as 4 rodadas anteriores, procurando inconsistencia entre telas) e verificacao/fechamento. Impeccable/taste-skill/huashu-design (ja instalados desde feat-001.8) entram em cada subtask de tela (huashu-design pra prototipar a direcao antes de codar aquela tela especifica, Impeccable/taste-skill pra auditar depois) - nao so no fechamento. Persistence Auditor nao se aplica.",
+      "jira": "SV-255",
+      "subtasks": [
+        {
+          "id": "feat-011.1",
+          "name": "Language selector + theme toggle com estilo real (fix de contraste) + tela de login elevada",
+          "status": "done",
+          "jira": "SV-256",
+          "detail": "Corrige a causa raiz do bug de contraste (scss vazio dos dois componentes de topbar) com estilo real usando os tokens de tema StakeVault, e eleva o visual da tela de login (logo, acento de marca, tipografia) - os 3 itens que o usuario reportou concretamente.",
+          "checklist": [
+            "language-selector.scss: estilo real do mat-select (largura, padding, borda sutil, cor de texto/fundo via --color-* tokens) que funciona nos dois temas - testar especificamente o tema escuro (bug original: fundo branco + fonte branca).",
+            "theme-toggle.scss + possivel troca de mat-stroked-button texto por um icon-button (sol/lua) mais compacto e alinhado a identidade StakeVault - decidir forma final via huashu-design antes de codar.",
+            "app-shell__toolbar (app.scss) ganha tratamento visual (fundo/borda sutil) pra se distinguir da pagina, nao só os dois controles soltos no canto.",
+            "login.html/scss: logo StakeVault (logo-mark-{dark,light}.svg conforme tema) acima do card, fundo com leve acento de marca (gradiente sutil ou textura, dentro da paleta ja normativa), polish de espacamento/tipografia do formulario.",
+            "huashu-design pra prototipar a direcao antes de codar; Impeccable/taste-skill (npx impeccable detect + audit) rodado contra /login real depois de implementado.",
+            "Testes: unit tests existentes de login/language-selector/theme-toggle continuam passando (nenhum comportamento muda, so visual) - Playwright de login (feat-002) continua verde."
+          ],
+          "validation": "init.sh verde, Playwright de auth verde, screenshot manual confirmando contraste correto do seletor de idioma no tema escuro.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-011.2",
+          "name": "Polish visual - dashboard + casas de apostas",
+          "status": "done",
+          "jira": "SV-257",
+          "detail": "Estende o tratamento visual de 011.1 (elevacao/acento de marca/tipografia) pras telas de dashboard (RF10/RF11) e casas de apostas (RF03), mantendo os tokens ja normativos.",
+          "checklist": [
+            "huashu-design prototipa a direcao pra cada tela antes de codar.",
+            "Dashboard: polish dos cards de KPI, grafico e paineis de breakdown.",
+            "Casas de apostas: polish do painel de formulario + lista.",
+            "Impeccable/taste-skill audit contra as duas telas depois de implementado, comparando com 011.1 pra consistencia."
+          ],
+          "validation": "init.sh verde, Playwright de dashboard/betting-houses verde, sem regressao visual nos dois temas.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-011.3",
+          "name": "Polish visual - registro de aposta + historico (apostas/movimentacoes)",
+          "status": "done",
+          "jira": "SV-258",
+          "detail": "Estende o tratamento visual de 011.1 pra tela de registro de aposta (RF04) e historico (RF08/RF12/RF13, as duas abas).",
+          "checklist": [
+            "huashu-design prototipa a direcao antes de codar.",
+            "Registro de aposta: polish dos 3 paineis (evento/detalhes/valores).",
+            "Historico: polish das duas abas (apostas com acoes de status, movimentacoes com o form novo de feat-010).",
+            "Impeccable/taste-skill audit depois de implementado."
+          ],
+          "validation": "init.sh verde, Playwright de register-bet/history verde.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-011.4",
+          "name": "Polish visual - usuarios + catalogos",
+          "status": "done",
+          "jira": "SV-259",
+          "detail": "Estende o tratamento visual de 011.1 pra gestao de usuarios do tenant (RF02) e catalogos (esportes/ligas/mercados/tipsters).",
+          "checklist": [
+            "huashu-design prototipa a direcao antes de codar.",
+            "Usuarios: polish do painel de lista + criacao.",
+            "Catalogos: polish do CatalogManager reaproveitavel (4 abas).",
+            "Impeccable/taste-skill audit depois de implementado."
+          ],
+          "validation": "init.sh verde, Playwright de users/catalogs verde.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-011.5",
+          "name": "Auditoria visual final, CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-260",
+          "detail": "Fecha a feature - auditoria de consistencia entre as 4 rodadas anteriores, nao so validacao isolada por tela.",
+          "checklist": [
+            "Impeccable/taste-skill audit final percorrendo todas as telas tocadas, procurando inconsistencia entre 011.1..011.4 (nao so cada tela isolada).",
+            "Todas as strings novas (se houver) traduzidas nos 3 locales.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh e Playwright completo verdes.",
+            "Delivery Reviewer e Test Suite Auditor rodados sobre a feature inteira.",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas, em todas as telas tocadas.",
+            "Vault (docs/) revisado: algum padrao visual novo desta feature (elevacao/gradiente/glass/hover) sem nota correspondente em docs/DESIGN-SYSTEM.md? Se sim, atualizar/criar a nota do assunto no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence.",
+          "owner": "agente"
+        }
+      ],
+      "evidence": "5 subtasks done em 2026-09-09 (feat-011.1..5, SV-256..260), todas com PR mergeado (subtask->story, CI verde). Escopo entregue incrementalmente, um subset de telas por PR, exatamente como planejado no plan_review (evitar gastar esforco grande numa direcao nao validada de uma vez). feat-011.1: causa raiz real do bug de contraste do usuario era mat.theme() so rodar em modo claro (tokens.scss so cobre 4 alias --mat-sys-*, nao os tokens especificos que o Material usa) - corrigido com uma segunda chamada mat.theme() em modo escuro sob os mesmos seletores de tokens.dark-tokens (padrao oficial do Angular Material), conserta todo overlay do Material no app inteiro; toggle de tema virou icon-button sol/lua; login ganhou logo/wordmark/tagline/gradiente de marca; achado extra: os 4 SVGs do logo tinham comentario antes do elemento <svg> raiz, quebrando naturalWidth em qualquer <img> (Chromium) - corrigido nos 4 arquivos. feat-011.2: cards de KPI do dashboard e badge de delta de saldo das casas de apostas usando --color-positive/--color-negative (antes prejuizo aparecia em texto preto puro) - .badge utility global criada em styles.scss. feat-011.3: badge de status de aposta e tipo de movimentacao no historico (item 16 do inventario, documentado mas nunca aplicado), preview de retorno potencial (stake x odd) no registro de aposta; achado de teste documentado (conteudo de aba inativa de mat-tab-group nao confiavel em unit test sob jsdom). feat-011.4: avatar de iniciais na tela de usuarios (item 14 do inventario, documentado desde a primeira sessao de design, nunca implementado em lugar nenhum) + badge de papel; CatalogManager (a unica tela do app ainda sem app-panel-layout, so um <ul> cru) ganhou o mesmo padrao form-panel+list-panel de todas as outras telas. feat-011.5: auditoria final via 'npx impeccable detect' contra servidor real - achou de novo o contraste de --color-text-secondary no modo escuro (4.47:1, jah sinalizado sem correcao desde feat-002) - perguntado ao usuario dado que feat-011 tocou o token amplamente, decisao: corrigir (#8B99A2, ~5:1 nos dois fundos escuros); 1 achado (bounce-easing do splash) revisado e rejeitado - escolha de design explicita e documentada, nao bug. ./init.sh e Playwright completo (24/24) verdes em cada subtask e na feature inteira. Verificacao visual real via screenshots (nao so leitura de codigo) nas 7 telas tocadas (login, dashboard, casas de apostas, historico x2 abas, registro de aposta, usuarios, catalogos), claro/escuro, desktop/mobile. Self-review no padrao Delivery Reviewer/Test Suite Auditor a cada subtask, sem achado bloqueante nao resolvido. Vault: docs/DESIGN-SYSTEM.md (correcao da secao Angular Material + nota de contraste + item 14 implementado), docs/TESTING.md (gotcha de mat-tab-group em jsdom) atualizados nos mesmos commits das descobertas. PRs #42-46 (subtask->story) + PR pendente story->develop."
+    },
+    {
+      "id": "feat-012",
+      "name": "Tela \"Buscar Estatisticas\"",
+      "description": "epic-012 da raiz - escopo novo, fora do backlog original do TCC1 (pedido do usuario, 2026-09-10). Tela nova, distinta do dashboard consolidado (feat-006): formulario de busca com esporte e liga obrigatorios (validacao client-side, reforcada pelo backend), time/casa de apostas/mercado/tipster/periodo opcionais. Consome GET /api/v1/statistics/search (services/stats-service feat-012). Resultado em cards (ROI, taxa de acerto, odd media, volume/lucro liquido, drawdown maximo, Indice de Sharpe simplificado) mais grafico de linha da serie de lucro acumulado (timeline da resposta, equity curve). Estado vazio (nenhuma busca feita, ou combinacao sem apostas liquidadas) precisa de tratamento explicito. Fonte de verdade para decisao pre-aposta - formulas em docs/STATISTICS.md.",
+      "dependencies": [
+        "feat-006"
+      ],
+      "status": "done",
+      "plan_review": "2026-09-10, Plan Reviewer (review-suite:ln-11-plan-reviewer, 1 revisor independente em contexto isolado) - veredito READY WITH CONCERNS, sem BLOCKER. 3 achados MAJOR incorporados ao plano antes de codificar: (1) card de betCount ausente do plano original - adicionado como card novo (tambem serve de gatilho pro estado vazio de zero resultados); (2) atribuicao errada no rascunho (filterParams vive em statistics-api.ts, nao em catalog-api.ts) - corrigido, extraido pra util compartilhada; (3) corrida de troca rapida de esporte no autocomplete de time (2 chamadas listTeams(sportId) em voo, a mais lenta podia sobrescrever a lista certa) - resolvido com switchMap nas valueChanges do controle sportId (cancela a chamada anterior automaticamente), sem guard manual de requestId. 5 achados MINOR aceitos/incorporados: extracao de shared/kpi-card (ja sinalizada como justificada no plan_review conjunto de stats-service feat-013) com refactor do dashboard.html existente pra reusa-lo (nao so a tela nova); extracao de util de tema de grafico (readCssColor/withAlpha) reusado por shared/equity-curve-chart e shared/monthly-profit-chart; assimetria liga (global) vs time (escopado por esporte) confirmada intencional (DIM_LEAGUE sem FK de esporte, ver DATA-MODEL) - documentada, nao um gap a corrigir; sinal explicito hasSearched (sem precedente no dashboard, que auto-carrega no ngOnInit) pra distinguir 'nunca buscou' de 'buscou e zerou'; erro de listTeams tratado como sinal proprio (nao conflado com optionsError do resto dos catalogos). docs/TESTING.md ganha este fluxo na lista de flows Playwright obrigatorios no mesmo commit do spec novo.",
+      "jira": "SV-303",
+      "subtasks": [
+        {
+          "id": "feat-012.1",
+          "name": "Camada core: statistics-search-api + utils compartilhados",
+          "detail": "src/app/core/statistics-search-api.ts novo: StatisticsSearchFilter (sportId/leagueId obrigatorios no tipo, resto opcional), StatisticsSearchResult (filters/summary/timeline, sharpeRatio nullable), StatisticsSearchApi injectable com search(filter) e listTeams(sportId) (GET /api/v1/statistics/search e /api/v1/statistics/teams). Extrai o helper de query params hoje privado em core/statistics-api.ts (filterParams) pra um lugar compartilhado (core/http-params.ts) e refatora statistics-api.ts pra reusar - mesmo comportamento, sem duplicar a logica de montar HttpParams. Adiciona core/date-format.ts#formatDay(value, locale) pra datas yyyy-MM-dd (timeline nao serve nem formatDateTime nem formatMonth). Adiciona core/number-format.ts#formatOdd(value, locale) (Intl.NumberFormat 2 casas fixas) pra oddMedia.",
+          "checklist": [
+            "statistics-search-api.ts com os 2 metodos, tipos batendo com o contrato de docs/API-CONTRACTS.md",
+            "http-params.ts extraido e reusado por statistics-api.ts (teste existente de statistics-api continua verde sem mudanca de assercao)",
+            "formatDay/formatOdd com teste unitario cobrindo pt-BR e en-US (separador decimal/formato de data diferentes)"
+          ],
+          "validation": "npm test verde, cobertura mantida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-304"
+        },
+        {
+          "id": "feat-012.2",
+          "name": "shared/kpi-card + refactor do dashboard pra reusa-lo",
+          "detail": "Componente novo shared/kpi-card (title/value/icon inputs, sign opcional pra classe de cor positive/negative/neutral, mesmo racional hoje inline em dashboard.html). Refatora dashboard.html pra usar o componente nos 5 cards existentes (sem mudar data-testid nem comportamento - e2e de dashboard.spec.ts continua passando sem alteracao). Decisao ja aceita no plan_review conjunto com stats-service feat-013 (residual sinalizado, nao inventado agora).",
+          "checklist": [
+            "shared/kpi-card criado com spec proprio",
+            "dashboard.html usa app-kpi-card nos 5 cards, mesmos data-testid preservados",
+            "e2e/dashboard.spec.ts passa sem alteracao"
+          ],
+          "validation": "npm test + Playwright (dashboard.spec.ts) verdes sem alteracao nos specs existentes.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-305"
+        },
+        {
+          "id": "feat-012.3",
+          "name": "shared/equity-curve-chart",
+          "detail": "Componente novo espelhando shared/monthly-profit-chart (mesmo setup ngx-echarts tree-shaken), eixo X = timeline[].date (formatDay) em vez de mes, serie unica = cumulativeProfit. Extrai core/chart-theme.ts (readCssColor/withAlpha, hoje duplicado dentro de monthly-profit-chart.ts) e refatora monthly-profit-chart.ts pra reusar - sem mudar o grafico existente visualmente.",
+          "checklist": [
+            "chart-theme.ts extraido, monthly-profit-chart.ts refatorado pra reusar (spec existente continua verde)",
+            "equity-curve-chart novo com spec proprio (stub de canvas 2D, mesmo padrao de monthly-profit-chart.spec.ts)"
+          ],
+          "validation": "npm test verde (specs novo e existente).",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-306"
+        },
+        {
+          "id": "feat-012.4",
+          "name": "Pagina search-statistics: formulario, cascata sport->time, cards, estados vazios",
+          "detail": "src/app/pages/search-statistics/ novo (component+html+scss+spec), app-panel-layout/app-panel mesmo padrao do dashboard. Reactive form: sportId/leagueId (Validators.required, submit desabilitado ate ambos preenchidos), teamId/bettingHouseId/marketId/tipsterId/from/to opcionais. Catalogos (sport/league/market/tipster/betting-house) via catalogApi/BettingHousesApi identico ao dashboard.ts. teamId: opcoes carregadas via listTeams(sportId) nas valueChanges do controle sportId com switchMap (cancela chamada anterior automaticamente na troca rapida de esporte) - controle teamId resetado a cada troca de sportId; erro de listTeams em sinal proprio (teamsError), nao conflado com optionsError. Sinal hasSearched distingue 'nunca buscou' (nenhum card/grafico) de 'buscou, summary.betCount=0' (mensagem explicita de sem apostas liquidadas pra combinacao). Cards via app-kpi-card (feat-012.2): betCount, totalStaked, netProfit, roi, winRate, avgOdd (formatOdd), maxDrawdown, sharpeRatio (formatado, texto localizado 'indeterminado' quando null). Grafico via app-equity-curve-chart (feat-012.3) alimentado por result().timeline.",
+          "checklist": [
+            "Form com validacao client-side sportId/leagueId obrigatorios, submit desabilitado sem os dois",
+            "Troca de sportId reseta teamId e recarrega opcoes via switchMap (teste unitario prova cancelamento da chamada anterior)",
+            "Estado 'nunca buscou' distinto de 'buscou e zerou' (2 testes unitarios separados)",
+            "8 cards renderizando summary (incluindo betCount), sharpeRatio null renderiza texto localizado, nao 'null'/NaN",
+            "Grafico renderiza a partir de result().timeline"
+          ],
+          "validation": "npm test verde, componente testado em mobile/desktop e claro/escuro (QA visual Impeccable/taste-skill antes de done). NOTA: QA visual adiada para feat-012.7 - o componente nao tem rota registrada ainda (feat-012.5), impossivel carregar num browser real antes disso; npm test/build cobrem correcao funcional aqui.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-307"
+        },
+        {
+          "id": "feat-012.5",
+          "name": "Rota, nav e i18n (3 locales)",
+          "detail": "app.routes.ts: /search-statistics lazy-loaded com authGuard, mesmo padrao das demais rotas. app-nav.html/app-nav.ts: link novo (nav.searchStatistics) - sem guard de admin, visivel pra qualquer role autenticado. i18n: chave nav.searchStatistics + secao searchStatistics completa (labels de campo, cards, estados vazio/erro, texto de sharpe indeterminado) em public/i18n/{pt-BR,en-US,es}.json, as 3 sempre em sincronia (CI valida chaves faltando).",
+          "checklist": [
+            "Rota registrada, navegavel via link da nav",
+            "3 locales com as mesmas chaves (validate-i18n-keys.py local antes do commit)"
+          ],
+          "validation": "npm run build + validate-i18n-keys.py verdes; navegacao manual confirma rota acessivel.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-308"
+        },
+        {
+          "id": "feat-012.6",
+          "name": "Testes: unitarios restantes + Playwright E2E + docs/TESTING.md",
+          "detail": "Completa cobertura unitaria de search-statistics.spec.ts (casos do checklist de feat-012.4). Playwright novo e2e/search-statistics.spec.ts: fluxo de ouro (escolher esporte+liga, submeter, ver cards+grafico), validacao de submit bloqueado sem esporte/liga, e ao menos 1 fluxo com idioma trocado (reusa o padrao ja estabelecido, nao precisa duplicar todos os fluxos). docs/TESTING.md ganha este fluxo na lista de flows Playwright obrigatorios (secao Frontend) no mesmo commit.",
+          "checklist": [
+            "search-statistics.spec.ts cobrindo os cenarios de feat-012.4",
+            "e2e/search-statistics.spec.ts com o fluxo de ouro + submit bloqueado + 1 fluxo em idioma trocado",
+            "docs/TESTING.md atualizado no mesmo commit"
+          ],
+          "validation": "npm test + Playwright completo verdes.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-309"
+        },
+        {
+          "id": "feat-012.7",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento formal: CHANGELOG.md, ./init.sh, QA visual (Impeccable/taste-skill) nas telas tocadas (search-statistics nova + dashboard refatorado), Delivery Reviewer + Test Suite Auditor, e o item fixo de vault desta feature.",
+          "checklist": [
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes",
+            "QA visual (claro/escuro, mobile/desktop) nas telas tocadas",
+            "Delivery Reviewer + Test Suite Auditor rodados sem achado bloqueante nao resolvido",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC1) no mesmo commit"
+          ],
+          "validation": "./init.sh raiz e do app saem 0; evidence da feature preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-310"
+        }
+      ],
+      "evidence": "Fechado em 2026-09-10 (feat-012.1..012.7, story SV-303, PRs #48-54 subtask->feature + merge final feature->develop). Tela search-statistics nova: form reativo com sportId/leagueId obrigatorios (submit desabilitado ate ambos preenchidos), autocomplete de time escopado por esporte via switchMap (cancela chamada obsoleta na troca rapida de esporte, testado unit+e2e), sinal hasSearched distinguindo 'nunca buscou' de 'buscou e zerou' (achado corrigido: card de betCount que faltava no plano original virou o gatilho do segundo estado), 8 cards de resumo (incluindo sharpeRatio null renderizado como texto localizado, nunca 'null'/NaN) + equity-curve-chart novo. Reuso: shared/kpi-card extraido (dashboard refatorado pra usa-lo tambem, data-testid preservados, so a classe CSS interna mudou de dashboard__card--* pra kpi-card--*, 1 teste existente atualizado) e core/chart-theme.ts extraido de monthly-profit-chart.ts (reusado pelo grafico novo). Rota /search-statistics + nav + i18n nos 3 locales (150 chaves em sincronia). Achado real corrigido durante feat-012.6: mock do e2e pro endpoint GET /api/v1/statistics/teams usava por engano o envelope paginado dos outros catalogos em vez do array puro do contrato real - causava TypeError 'newCollection[Symbol.iterator] is not a function' dentro do @for, so reproduzivel em browser real (Chromium via Playwright), nunca nos testes unitarios (fixtures do HttpTestingController ja tinham a forma certa) - documentado em docs/TESTING.md. Delivery Reviewer (1 revisor independente em contexto isolado): PASS, 2 achados P3 (fluxo de idioma trocado ausente no e2e - corrigido na mesma sessao; locator por classe CSS em kpi-card.spec.ts - aceito, e o proprio spec do componente asserindo sua saida encapsulada). Test Suite Auditor: PASS. npm test 41/41 (127/127 testes) + Playwright 28/28 verdes. ./init.sh do app e da raiz verdes. QA visual real via Playwright (screenshots claro/escuro, desktop/mobile) nas 2 telas tocadas, sem achado. Fecha epic-012 (raiz)."
+    },
+    {
+      "id": "feat-013",
+      "name": "Dockerfile de producao + build e push da imagem no CI",
+      "goal": "Publicar a imagem deste app em ghcr.io/eimmig/sv-frontend a cada push estavel em main, viabilizando deploy real - unico dos 6 repositorios de aplicacao que ainda nao tinha Dockerfile (os outros 5 ganharam em epic-010 da raiz).",
+      "scope": [
+        "Dockerfile multi-stage: node:24-alpine builda (npm ci && npm run build), runtime nginxinc/nginx-unprivileged:alpine serve dist/web/browser na porta 8080",
+        "nginx.conf com fallback de SPA (try_files -> index.html) e .dockerignore",
+        "Job build-and-push-image no ci.yml, mesmo padrao ja usado nos outros 5 repositorios (actions pinadas por SHA completo, guard de qualitygate.wait ja corrigido proativamente)",
+        "Nao inclui resolver o apiGatewayUrl hardcoded de producao (environment.ts aponta pra dominio placeholder) - depende da decisao de dominio/tunnel ainda em aberto, fora do escopo deste repositorio"
+      ],
+      "description": "Ate agora este app nunca tinha sido containerizado - infra/k8s/ nao tem manifest pra ele, diferente dos outros 5 servicos (epic-010). Verificado nesta sessao: docker build real passou, docker run real respondeu 200 em / e /dashboard (prova o fallback de SPA), output de build confirmado em dist/web/browser (projeto 'web' no angular.json, sem outputPath customizado).",
+      "dependencies": [],
+      "status": "in-progress",
+      "plan_review": "2026-09-10, Plan Reviewer (review-suite:ln-11-plan-reviewer) - READY WITH CONCERNS. Evidencia real ja coletada antes da revisao: docker build + docker run reais, curl 200 em / e /dashboard (SPA fallback provado, nao suposto), nginxinc/nginx-unprivileged:alpine confirmado escutando 8080 sem root no mesmo teste. Sem achado bloqueante. Risco residual aceito, fora de escopo: apiGatewayUrl de producao hardcoded pra dominio placeholder (https://api.stakevault.example.com) - imagem builda e funciona, mas apontaria pro lugar errado em runtime real ate a resolucao de dominio ficar decidida (fora deste repositorio).",
+      "jira": "SV-339",
+      "subtasks": [
+        {
+          "id": "feat-013.1",
+          "name": "Dockerfile + nginx.conf + .dockerignore + job build-and-push-image",
+          "detail": "Primeira containerizacao deste app. Build e run reais ja confirmados antes de abrir PR - nginx-unprivileged (nao root) serve o output estatico do Angular, sem toolchain de Node na imagem final.",
+          "checklist": [
+            "Dockerfile multi-stage (build node:24-alpine, runtime nginxinc/nginx-unprivileged:alpine)",
+            "nginx.conf com try_files SPA fallback",
+            ".dockerignore (node_modules, dist, e2e, coverage)",
+            "Job build-and-push-image (actions pinadas por SHA, needs: pipeline, if restrito a push em main)",
+            "Guard de sonar.qualitygate.wait corrigido proativamente pra qualquer push direto (nao so develop)"
+          ],
+          "validation": "docker build + docker run reais (ja feito); push em main dispara o job, imagem aparece em ghcr.io/eimmig/sv-frontend.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-340"
+        },
+        {
+          "id": "feat-013.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento formal: CHANGELOG.md, init.sh, confirmar Workflow permissions = Read and write, e o item fixo de vault desta feature.",
+          "checklist": [
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes",
+            "Settings > Actions > General > Workflow permissions = Read and write confirmado neste repositorio",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC1) no mesmo commit"
+          ],
+          "validation": "Push real em main confirmado no GitHub Actions (job verde) e imagem visivel no pacote do repositorio.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-341"
+        },
+        {
+          "id": "feat-013.3",
+          "name": "Achados reais no primeiro develop->main de verdade deste repositorio",
+          "detail": "Primeiro develop->main de verdade de sv-frontend expos 2 achados pre-existentes na janela de 'new code' do SonarCloud, nao previstos no Plan Review original: typescript:S7761 (setAttribute('data-theme', ...) em vez de .dataset.theme) em core/theme.ts; css:S4666 (selector :root[data-theme='dark'] duplicado em styles.scss - 2 blocos separados pro mesmo selector, um do mat.theme() e outro do tokens.dark-tokens).",
+          "checklist": [
+            "theme.ts: setAttribute trocado por dataset['theme']",
+            "styles.scss: os 2 blocos :root[data-theme='dark'] mesclados em um so, ordem de cascata preservada",
+            "npm run build e npm test (127 testes) verdes depois da mudanca"
+          ],
+          "validation": "SonarCloud Code Analysis verde no PR develop->main.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-342"
+        }
+      ],
       "evidence": ""
     }
   ]

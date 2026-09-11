@@ -1,0 +1,219 @@
+<app-panel-layout columns="320px 1fr">
+  <app-panel [title]="'dashboard.filtersTitle' | transloco">
+    @if (optionsError(); as message) {
+      <p class="dashboard__error" role="alert" data-testid="dashboard-options-error">{{ message }}</p>
+    } @else {
+      <form [formGroup]="filterForm" (ngSubmit)="applyFilter()" class="dashboard__filters">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'dashboard.bettingHouseLabel' | transloco }}</mat-label>
+          <mat-select formControlName="bettingHouseId" data-testid="dashboard-filter-betting-house">
+            <mat-option value="">{{ 'dashboard.filterAll' | transloco }}</mat-option>
+            @for (house of options().bettingHouses; track house.id) {
+              <mat-option [value]="house.id">{{ house.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'dashboard.sportLabel' | transloco }}</mat-label>
+          <mat-select formControlName="sportId" data-testid="dashboard-filter-sport">
+            <mat-option value="">{{ 'dashboard.filterAll' | transloco }}</mat-option>
+            @for (sport of options().sports; track sport.id) {
+              <mat-option [value]="sport.id">{{ sport.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'dashboard.leagueLabel' | transloco }}</mat-label>
+          <mat-select formControlName="leagueId" data-testid="dashboard-filter-league">
+            <mat-option value="">{{ 'dashboard.filterAll' | transloco }}</mat-option>
+            @for (league of options().leagues; track league.id) {
+              <mat-option [value]="league.id">{{ league.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'dashboard.marketLabel' | transloco }}</mat-label>
+          <mat-select formControlName="marketId" data-testid="dashboard-filter-market">
+            <mat-option value="">{{ 'dashboard.filterAll' | transloco }}</mat-option>
+            @for (market of options().markets; track market.id) {
+              <mat-option [value]="market.id">{{ market.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'dashboard.tipsterLabel' | transloco }}</mat-label>
+          <mat-select formControlName="tipsterId" data-testid="dashboard-filter-tipster">
+            <mat-option value="">{{ 'dashboard.filterAll' | transloco }}</mat-option>
+            @for (tipster of options().tipsters; track tipster.id) {
+              <mat-option [value]="tipster.id">{{ tipster.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'dashboard.fromLabel' | transloco }}</mat-label>
+          <input
+            matInput
+            id="dashboard-from-input"
+            type="date"
+            formControlName="from"
+            data-testid="dashboard-filter-from"
+            [attr.aria-label]="'dashboard.fromLabel' | transloco"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'dashboard.toLabel' | transloco }}</mat-label>
+          <input
+            matInput
+            id="dashboard-to-input"
+            type="date"
+            formControlName="to"
+            data-testid="dashboard-filter-to"
+            [attr.aria-label]="'dashboard.toLabel' | transloco"
+          />
+        </mat-form-field>
+
+        <button mat-flat-button type="submit" data-testid="dashboard-filter-apply">
+          {{ 'dashboard.applyFilter' | transloco }}
+        </button>
+      </form>
+    }
+  </app-panel>
+
+  <app-panel [title]="'dashboard.metricsTitle' | transloco">
+    @if (dashboardError(); as message) {
+      <p class="dashboard__error" role="alert" data-testid="dashboard-metrics-error">{{ message }}</p>
+    } @else {
+      <div class="dashboard__cards" data-testid="dashboard-overall-cards">
+        <app-kpi-card
+          icon="account_balance_wallet"
+          [label]="'dashboard.totalStakedLabel' | transloco"
+          [value]="formatBrl(dashboard().overall.totalStaked)"
+          testId="dashboard-total-staked"
+        />
+        <app-kpi-card
+          [icon]="dashboard().overall.netProfit >= 0 ? 'trending_up' : 'trending_down'"
+          [label]="'dashboard.netProfitLabel' | transloco"
+          [value]="formatBrl(dashboard().overall.netProfit)"
+          [sign]="sign(dashboard().overall.netProfit)"
+          testId="dashboard-net-profit"
+        />
+        <app-kpi-card
+          icon="percent"
+          [label]="'dashboard.roiLabel' | transloco"
+          [value]="formatPercent(dashboard().overall.roi)"
+          [sign]="sign(dashboard().overall.roi)"
+          testId="dashboard-roi"
+        />
+        <app-kpi-card
+          icon="emoji_events"
+          [label]="'dashboard.winRateLabel' | transloco"
+          [value]="formatPercent(dashboard().overall.winRate)"
+          testId="dashboard-win-rate"
+        />
+        <app-kpi-card
+          icon="receipt_long"
+          [label]="'dashboard.settledCountLabel' | transloco"
+          [value]="dashboard().overall.settledCount.toString()"
+          testId="dashboard-settled-count"
+        />
+      </div>
+
+      <app-monthly-profit-chart [data]="dashboard().monthly" />
+
+      <mat-tab-group class="dashboard__breakdown" data-testid="dashboard-breakdown-tabs">
+        <mat-tab [label]="'dashboard.bySportTitle' | transloco">
+          <div class="dashboard__table-wrap">
+            <table class="dashboard__table" data-testid="dashboard-by-sport">
+              <thead>
+                <tr>
+                  <th>{{ 'dashboard.nameLabel' | transloco }}</th>
+                  <th>{{ 'dashboard.totalStakedLabel' | transloco }}</th>
+                  <th>{{ 'dashboard.netProfitLabel' | transloco }}</th>
+                  <th>{{ 'dashboard.roiLabel' | transloco }}</th>
+                  <th>{{ 'dashboard.winRateLabel' | transloco }}</th>
+                  <th>{{ 'dashboard.settledCountLabel' | transloco }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (segment of dashboard().bySport; track trackSegment($index, segment)) {
+                  <tr data-testid="dashboard-by-sport-row">
+                    <td>{{ segment.dimensionName }}</td>
+                    <td>{{ formatBrl(segment.metrics.totalStaked) }}</td>
+                    <td [class]="'dashboard__value--' + sign(segment.metrics.netProfit)">{{ formatBrl(segment.metrics.netProfit) }}</td>
+                    <td [class]="'dashboard__value--' + sign(segment.metrics.roi)">{{ formatPercent(segment.metrics.roi) }}</td>
+                    <td>{{ formatPercent(segment.metrics.winRate) }}</td>
+                    <td>{{ segment.metrics.settledCount }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </mat-tab>
+
+        <mat-tab [label]="'dashboard.byMarketTitle' | transloco">
+          <div class="dashboard__table-wrap">
+            <table class="dashboard__table" data-testid="dashboard-by-market">
+              <thead>
+                <tr>
+                  <th>{{ 'dashboard.nameLabel' | transloco }}</th>
+                  <th>{{ 'dashboard.totalStakedLabel' | transloco }}</th>
+                  <th>{{ 'dashboard.netProfitLabel' | transloco }}</th>
+                  <th>{{ 'dashboard.roiLabel' | transloco }}</th>
+                  <th>{{ 'dashboard.winRateLabel' | transloco }}</th>
+                  <th>{{ 'dashboard.settledCountLabel' | transloco }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (segment of dashboard().byMarket; track trackSegment($index, segment)) {
+                  <tr data-testid="dashboard-by-market-row">
+                    <td>{{ segment.dimensionName }}</td>
+                    <td>{{ formatBrl(segment.metrics.totalStaked) }}</td>
+                    <td [class]="'dashboard__value--' + sign(segment.metrics.netProfit)">{{ formatBrl(segment.metrics.netProfit) }}</td>
+                    <td [class]="'dashboard__value--' + sign(segment.metrics.roi)">{{ formatPercent(segment.metrics.roi) }}</td>
+                    <td>{{ formatPercent(segment.metrics.winRate) }}</td>
+                    <td>{{ segment.metrics.settledCount }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </mat-tab>
+
+        <mat-tab [label]="'dashboard.byBettingHouseTitle' | transloco">
+          <div class="dashboard__table-wrap">
+            <table class="dashboard__table" data-testid="dashboard-by-betting-house">
+              <thead>
+                <tr>
+                  <th>{{ 'dashboard.nameLabel' | transloco }}</th>
+                  <th>{{ 'dashboard.totalStakedLabel' | transloco }}</th>
+                  <th>{{ 'dashboard.netProfitLabel' | transloco }}</th>
+                  <th>{{ 'dashboard.roiLabel' | transloco }}</th>
+                  <th>{{ 'dashboard.winRateLabel' | transloco }}</th>
+                  <th>{{ 'dashboard.settledCountLabel' | transloco }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (segment of dashboard().byBettingHouse; track trackSegment($index, segment)) {
+                  <tr data-testid="dashboard-by-betting-house-row">
+                    <td>{{ segment.dimensionName }}</td>
+                    <td>{{ formatBrl(segment.metrics.totalStaked) }}</td>
+                    <td [class]="'dashboard__value--' + sign(segment.metrics.netProfit)">{{ formatBrl(segment.metrics.netProfit) }}</td>
+                    <td [class]="'dashboard__value--' + sign(segment.metrics.roi)">{{ formatPercent(segment.metrics.roi) }}</td>
+                    <td>{{ formatPercent(segment.metrics.winRate) }}</td>
+                    <td>{{ segment.metrics.settledCount }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    }
+  </app-panel>
+</app-panel-layout>
