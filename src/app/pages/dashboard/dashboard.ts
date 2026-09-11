@@ -41,6 +41,8 @@ const EMPTY_DASHBOARD: StatisticsDashboard = {
   bySport: [],
   byMarket: [],
   byBettingHouse: [],
+  byLeague: [],
+  byTipster: [],
   monthly: [],
 };
 

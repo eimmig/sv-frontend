@@ -1111,7 +1111,7 @@
         {
           "id": "feat-016.1",
           "name": "StatisticsDashboard ganha byLeague/byTipster",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-374",
           "detail": "Gap real: stats-service epic-018 ja expunha os 2 segmentos, nunca consumidos pelo frontend - mesmo padrao de feat-014.1/015.1.",
           "checklist": [
