@@ -1226,7 +1226,7 @@
           ],
           "validation": "Fluxo de login real funcionando via Ingress, sem erro de CORS no console.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-381"
         }
       ],
