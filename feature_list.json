@@ -1068,7 +1068,7 @@
         {
           "id": "feat-015.4",
           "name": "Playwright, QA visual final, CHANGELOG e verificacao final",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-372",
           "detail": "Fecha a feature - fluxo critico novo (pagina inteira) precisa de prova E2E real.",
           "checklist": [
@@ -1084,7 +1084,7 @@
           "owner": "agente"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-11 (story SV-368, 4 subtasks SV-369..372, PRs #65-68 subtask->feature). Pagina nova 'Relatorio do periodo' (/period-report): StatisticsApi.getDaily() novo (gap real fechado, endpoint do backend desde stats-service epic-016 nunca consumido); period-report-metrics.ts (modulo puro) com roiBankroll/roiMedioDiario/profitUnidades-Reais/stakeMedio/diasVerdes-Vermelhos/+EV, testado contra os valores do print de referencia do usuario (22.11% ROI Bankroll, 37.00% taxa de acerto das entradas) como oraculo independente; achado real: docs/STATISTICS.md tinha um erro de aritmetica no proprio exemplo de +EV (37.00%-31.06% escrito como 5.98%, correto e 5.94%), corrigido no mesmo commit de fechamento. forkJoin com 4 chamadas (overall, /daily, bankroll x2 at=from/at=to, settings) disparado pelo period-preset-filter (sempre tem valor, satisfaz 'filtro obrigatorio' sem mudanca no componente compartilhado). Decisao do plan review: 'saldoAtual' das formulas desta pagina usa saldoFinal (saldoEm(to)) - so 2 chamadas de bankroll, nao uma 3a 'agora' como o dashboard. EMPTY_BET_METRICS extraido pra core/statistics-api.ts (elimina duplicacao com dashboard.ts). Delivery Reviewer (passe proprio, sem subagentes - independencia reduzida, declarada): PASS - achado MAJOR do plan review (conflito saldoAtual vs escopo de 2 chamadas) resolvido corretamente, sem regressao no dashboard (163 testes unitarios + suite Playwright completa verdes apos o refactor de EMPTY_BET_METRICS). Test Suite Auditor: PASS - oraculo independente do print de referencia prova as formulas corretas (nao so ausencia de excecao), buildDailyTable testado com preenchimento de gap no meio do intervalo, casos de denominador zero cobertos. QA visual real (screenshots via Chromium, 2 temas x desktop/mobile, pagina inteira) contra o dev server rodando de verdade - sem achados (renderizou correto de primeira). Achado de tooling durante a escrita do Playwright: glob '**/api/v1/statistics*' (1 asterisco) nao casa '/api/v1/statistics/daily' (Playwright '*' nao cruza '/') - ja documentado em docs/TESTING.md desde feat-009.2, nao precisou nota nova. ./init.sh do app e da raiz verdes, 163 testes unitarios + 35 Playwright verdes. docs/services/web.md (repositorio raiz) atualizado confirmando aderencia ao planejado, secao marcada done. Fecha epic-017 da raiz."
     }
   ]
 }
