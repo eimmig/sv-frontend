@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { Dashboard } from './dashboard';
+import { Auth } from '../../core/auth';
 import { environment } from '../../../environments/environment';
 
 class ResizeObserverStub {
@@ -79,6 +80,9 @@ describe('Dashboard', () => {
         tipsterLabel: 'Tipster',
         filterAll: 'Todas',
         applyFilter: 'Aplicar',
+        unitPercentLabel: 'Unidade (% da banca)',
+        unitPercentSave: 'Salvar',
+        unitPercentSuccess: 'Percentual de unidade atualizado.',
         nameLabel: 'Nome',
         totalStakedLabel: 'Total apostado',
         netProfitLabel: 'Lucro líquido',
@@ -159,6 +163,18 @@ describe('Dashboard', () => {
     fixture = TestBed.createComponent(Dashboard);
     httpMock = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
+  }
+
+  /** Must run before createComponent() - Dashboard reads Auth.isAdmin() in its own constructor-time
+   *  effect for the unit-config field's default reseed logic (see dashboard.ts). */
+  function setAdminSession() {
+    TestBed.inject(Auth).session.set({
+      token: 't',
+      userId: 'u1',
+      role: 'ADMIN',
+      tenantSlug: 'tenant',
+      mustChangePassword: false,
+    });
   }
 
   beforeEach(async () => {
@@ -312,5 +328,66 @@ describe('Dashboard', () => {
     fixture.detectChanges();
 
     expect(fixture.componentInstance['dashboardError']()).toBe('Filtro inválido.');
+  });
+
+  it('does not render the unit config field for a non-admin session', () => {
+    createComponent();
+    flushOptions();
+    flushDashboardData();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('[data-testid="dashboard-unit-percent-form"]')).toBeNull();
+  });
+
+  it('renders the unit config field pre-filled with the loaded unitPercent, as a percent, for an admin session', () => {
+    setAdminSession();
+    createComponent();
+    flushOptions();
+    flushDashboardData(); // settings.get() responds { unitPercent: 0.01 } -> field shows 1 (%)
+    fixture.detectChanges();
+
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('[data-testid="dashboard-unit-percent-input"]');
+    expect(input).not.toBeNull();
+    expect(input.value).toBe('1');
+  });
+
+  it('saves the unit config field and shows a success message', () => {
+    setAdminSession();
+    createComponent();
+    flushOptions();
+    flushDashboardData();
+    fixture.detectChanges();
+
+    fixture.componentInstance['unitPercentForm'].setValue({ unitPercent: 2 });
+    fixture.componentInstance['unitPercentForm'].markAsDirty();
+    fixture.componentInstance['submitUnitPercent']();
+
+    const request = httpMock.expectOne((req) => req.url === SETTINGS_URL && req.method === 'PATCH');
+    expect(request.request.body).toEqual({ unitPercent: 0.02 });
+    request.flush({ unitPercent: 0.02 });
+    fixture.detectChanges();
+
+    // Active lang in this test environment resolves from navigator.language (see cardValue's
+    // comment above) - asserting presence, not the exact localized string.
+    expect(fixture.nativeElement.querySelector('[data-testid="dashboard-unit-percent-success"]')).not.toBeNull();
+  });
+
+  it('shows the RFC 7807 detail when saving the unit config field fails', () => {
+    setAdminSession();
+    createComponent();
+    flushOptions();
+    flushDashboardData();
+    fixture.detectChanges();
+
+    fixture.componentInstance['unitPercentForm'].setValue({ unitPercent: 2 });
+    fixture.componentInstance['unitPercentForm'].markAsDirty();
+    fixture.componentInstance['submitUnitPercent']();
+
+    httpMock
+      .expectOne((req) => req.url === SETTINGS_URL && req.method === 'PATCH')
+      .flush({ detail: 'Acesso restrito a administradores.' }, { status: 403, statusText: 'Forbidden' });
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance['unitPercentError']()).toBe('Acesso restrito a administradores.');
   });
 });
