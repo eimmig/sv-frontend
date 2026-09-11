@@ -1085,6 +1085,105 @@
         }
       ],
       "evidence": "Fechada em 2026-09-11 (story SV-368, 4 subtasks SV-369..372, PRs #65-68 subtask->feature). Pagina nova 'Relatorio do periodo' (/period-report): StatisticsApi.getDaily() novo (gap real fechado, endpoint do backend desde stats-service epic-016 nunca consumido); period-report-metrics.ts (modulo puro) com roiBankroll/roiMedioDiario/profitUnidades-Reais/stakeMedio/diasVerdes-Vermelhos/+EV, testado contra os valores do print de referencia do usuario (22.11% ROI Bankroll, 37.00% taxa de acerto das entradas) como oraculo independente; achado real: docs/STATISTICS.md tinha um erro de aritmetica no proprio exemplo de +EV (37.00%-31.06% escrito como 5.98%, correto e 5.94%), corrigido no mesmo commit de fechamento. forkJoin com 4 chamadas (overall, /daily, bankroll x2 at=from/at=to, settings) disparado pelo period-preset-filter (sempre tem valor, satisfaz 'filtro obrigatorio' sem mudanca no componente compartilhado). Decisao do plan review: 'saldoAtual' das formulas desta pagina usa saldoFinal (saldoEm(to)) - so 2 chamadas de bankroll, nao uma 3a 'agora' como o dashboard. EMPTY_BET_METRICS extraido pra core/statistics-api.ts (elimina duplicacao com dashboard.ts). Delivery Reviewer (passe proprio, sem subagentes - independencia reduzida, declarada): PASS - achado MAJOR do plan review (conflito saldoAtual vs escopo de 2 chamadas) resolvido corretamente, sem regressao no dashboard (163 testes unitarios + suite Playwright completa verdes apos o refactor de EMPTY_BET_METRICS). Test Suite Auditor: PASS - oraculo independente do print de referencia prova as formulas corretas (nao so ausencia de excecao), buildDailyTable testado com preenchimento de gap no meio do intervalo, casos de denominador zero cobertos. QA visual real (screenshots via Chromium, 2 temas x desktop/mobile, pagina inteira) contra o dev server rodando de verdade - sem achados (renderizou correto de primeira). Achado de tooling durante a escrita do Playwright: glob '**/api/v1/statistics*' (1 asterisco) nao casa '/api/v1/statistics/daily' (Playwright '*' nao cruza '/') - ja documentado em docs/TESTING.md desde feat-009.2, nao precisou nota nova. ./init.sh do app e da raiz verdes, 163 testes unitarios + 35 Playwright verdes. docs/services/web.md (repositorio raiz) atualizado confirmando aderencia ao planejado, secao marcada done. Fecha epic-017 da raiz."
+    },
+    {
+      "id": "feat-016",
+      "name": "Menu por cadastro (Cadastrar + Dashboard) para esporte/liga/mercado/tipster/casa de apostas",
+      "goal": "Reestrutura a nav: cada um dos 5 cadastros ganha menu proprio com 2 destinos (Cadastrar - reusa as telas ja existentes - e Dashboard - ranking novo do recorte filtrado por periodo, ordenado por ROI). Fecha a nav 'Catalogos' (abas) + 'Casas de apostas' (link solto) que existem hoje.",
+      "scope": [
+        "StatisticsDashboard (frontend) ganha byLeague/byTipster - gap real (stats-service epic-018 ja expunha os 2 segmentos, nunca consumidos aqui, mesmo padrao de feat-014.1/015.1)",
+        "shared/catalog-dashboard novo (parametrizado por segment: bySport/byLeague/byMarket/byTipster/byBettingHouse + labelKey de i18n) - lista ranqueada por ROI desc (netProfit/settledCount tambem visiveis), period-preset-filter obrigatorio (mesmo padrao de period-report), forkJoin com GET /api/v1/statistics (bundle inteiro, so le a chave do segmento pedido)",
+        "provideRouter(routes, withComponentInputBinding()) habilitado - rota liga 'resourcePath'/'segment' (route data) direto aos inputs de catalog-manager/catalog-dashboard, evitando 9 paginas-wrapper quase identicas (4 Cadastrar + 5 Dashboard) que reintroduziriam a mesma duplicacao que catalog-manager foi criado pra evitar (achado do SonarCloud em feat-003)",
+        "pages/catalogs/ (tabs) aposentada - rotas novas /sports, /leagues, /markets, /tipsters (Cadastrar, catalog-manager direto) - mesmo nome kebab-case ja usado por /betting-houses/register-bet/search-statistics/period-report",
+        "Rotas novas /sports-dashboard, /leagues-dashboard, /markets-dashboard, /tipsters-dashboard, /betting-houses-dashboard (Dashboard, catalog-dashboard direto) - /betting-houses (Cadastrar) continua como esta, sem mudanca de rota",
+        "app-nav.html: 5 mat-menu (1o uso deste componente no app - ja coberto pelo fix de tema M3 desde feat-011.1) substituindo os links 'Catalogos'/'Casas de apostas' - cada um com 2 itens (Cadastrar/Dashboard), reaproveitando os i18n keys catalogs.sports/leagues/markets/tipsters.title e nav.bettingHouses ja existentes como rotulo do botao",
+        "e2e/catalogs.spec.ts reescrito (a pagina com abas que ele testava deixa de existir) + Playwright novo pro catalog-dashboard",
+        "i18n 3 locales para os labels novos do catalog-dashboard (coluna de tabela, titulo)"
+      ],
+      "description": "Escopo novo, fora do backlog original do TCC1 (epic-019 da raiz, pedido do usuario 2026-09-10). Depende de epic-018 (stats-service, done - byLeague/byTipster no backend), epic-015 (web, done - period-preset-filter e o padrao de forkJoin ja estabelecidos) e epic-006 (raiz, done). Decisao de design a reaproveitar do precedente de feat-008 (evitar duplicacao SonarCloud de feat-003): 1 componente parametrizado pros 5 dashboards, nao 5 telas quase identicas.",
+      "dependencies": [
+        "feat-015"
+      ],
+      "status": "in-progress",
+      "plan_review": "2026-09-11, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado contra o plano antes de qualquer codigo (passe proprio, sem subagentes - independencia reduzida, declarada, mesmo padrao ja usado nas demais features deste app). Veredito: READY WITH CONCERNS, nenhum achado BLOCKER, 1 achado MAJOR resolvido no plano, decisoes de design resolvidas por precedente/mecanismo ja existente no codebase (sem necessidade de AskUserQuestion - nenhuma e decisao de negocio, todas sao escolhas tecnicas de como satisfazer o pedido ja especificado pelo usuario). (MAJOR - subtracao esquecida no plano original) Aposentar pages/catalogs/ (tabs) e reaproveitar as 4 rotas novas (/sports, /leagues, /markets, /tipsters) direto em catalog-manager quebra e2e/catalogs.spec.ts por completo (o teste navega pra /catalogs e clica em abas Material que deixam de existir) - nao e so extensao, precisa reescrita total do arquivo pras 4 rotas novas + navegacao real entre paginas em vez de troca de aba. Corrigido no plano: feat-016.4 assume reescrita completa, nao edicao incremental. Decisoes tecnicas resolvidas no plano: (1) 'segment'/'resourcePath' chegam via route 'data' + 'withComponentInputBinding()' (novo em app.config.ts, aditivo - nenhuma rota existente depende da ausencia dessa opcao) em vez de 9 paginas-wrapper quase identicas (4 Cadastrar + 5 Dashboard) que reintroduziriam a mesma duplicacao que catalog-manager foi criado pra evitar (achado do SonarCloud em feat-003, ver docs/CONVENTIONS.md). (2) app-nav ganha 5 'mat-menu' (primeiro uso deste componente no app) substituindo os links 'Catalogos'/'Casas de apostas' - risco baixo: o tema M3 do app ja cobre 'mat-menu' proativamente desde feat-011.1 (docs/DESIGN-SYSTEM.md), antes mesmo do primeiro uso real. (3) Estado 'ativo' do botao de menu (equivalente ao 'routerLinkActive' que os links simples ja tem) calculado via 'Router.url' comparado contra as 2 rotas daquele recurso (o botao-gatilho do 'mat-menu' nao e ele mesmo um 'routerLink', 'routerLinkActive' sozinho nao o alcanca) - pequeno helper, nao infra nova. (4) Titulo dos paineis de 'catalog-manager' continua generico ('Nova entrada'/'Cadastradas', chaves 'catalogs.createTitle/listTitle' ja existentes) mesmo sem a aba visual de contexto - aceito porque o item do menu ja clicado ('Cadastrar Esportes') e o destaque 'routerLinkActive' do proprio botao ja dao o contexto, mesmo padrao (sem indicador 'voce esta aqui' extra) de /betting-houses e as demais paginas de recurso unico do app. (5) 'byLeague'/'byTipster' novos em 'StatisticsDashboard' (frontend) preenchem so a lacuna necessaria pra esta feature - 'byBetType' (usado por 'epic-021') continua fora, nao e consumido por nenhum dashboard desta feature. Escopo confirmado: ranking do 'catalog-dashboard' ordenado por ROI desc ('SegmentedBetMetrics.metrics.roi' e sempre 'number', nunca 'null' - sem caso de borda de ordenacao); nomes de rota kebab-case (padrao ja usado por '/betting-houses'/'/register-bet'/'/search-statistics'/'/period-report').",
+      "jira": "SV-373",
+      "subtasks": [
+        {
+          "id": "feat-016.1",
+          "name": "StatisticsDashboard ganha byLeague/byTipster",
+          "status": "done",
+          "jira": "SV-374",
+          "detail": "Gap real: stats-service epic-018 ja expunha os 2 segmentos, nunca consumidos pelo frontend - mesmo padrao de feat-014.1/015.1.",
+          "checklist": [
+            "core/statistics-api.ts - StatisticsDashboard ganha byLeague/byTipster: SegmentedBetMetrics[] (mesmo formato de bySport/byMarket/byBettingHouse ja existentes).",
+            "Teste unitario (statistics-api.spec.ts): os 2 campos novos passam pelo cliente sem transformacao (mesmo padrao ja usado pros campos de BetMetrics em feat-014.1)."
+          ],
+          "validation": "./init.sh verde.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-016.2",
+          "name": "shared/catalog-dashboard novo (ranking parametrizado por segmento)",
+          "status": "not-started",
+          "jira": "SV-375",
+          "detail": "Mesmo precedente de catalog-manager (feat-008) - 1 componente parametrizado pros 5 dashboards, nao 5 telas quase identicas.",
+          "checklist": [
+            "shared/catalog-dashboard/catalog-dashboard.ts - inputs segment (union dos 5 nomes de chave de StatisticsDashboard) e labelKey (chave i18n do titulo da coluna 'Nome'); period-preset-filter obrigatorio (mesmo padrao de period-report) disparando forkJoin com StatisticsApi.get(filter); lista ordenada por metrics.roi desc, colunas Nome/Lucro liquido/ROI/Apostas liquidadas.",
+            "i18n 3 locales: titulo generico do catalog-dashboard + labels de coluna (reaproveita netProfitLabel/roiLabel/settledCountLabel se ja existirem em outro namespace, senao cria em catalogDashboard).",
+            "Teste unitario: ordenacao por ROI desc provada com fixture fora de ordem; segment errado/vazio renderiza lista vazia sem erro."
+          ],
+          "validation": "./init.sh verde - teste prova ordenacao real, nao so ausencia de excecao.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-016.3",
+          "name": "Rotas novas (Cadastrar + Dashboard) via withComponentInputBinding, app-nav com 5 mat-menu",
+          "status": "not-started",
+          "jira": "SV-376",
+          "detail": "Achado tecnico do Plan Reviewer: route data + withComponentInputBinding evita 9 paginas-wrapper quase identicas.",
+          "checklist": [
+            "app.config.ts: provideRouter(routes, withComponentInputBinding()).",
+            "app.routes.ts: rotas /sports, /leagues, /markets, /tipsters (catalog-manager direto, data: {resourcePath}) + /sports-dashboard, /leagues-dashboard, /markets-dashboard, /tipsters-dashboard, /betting-houses-dashboard (catalog-dashboard direto, data: {segment, labelKey}) - todas authGuard, sem adminGuard.",
+            "pages/catalogs/ removido (catalogs.ts/.html/.scss/.spec.ts) - rota /catalogs removida de app.routes.ts.",
+            "app-nav.html: MatMenuModule + 5 mat-menu (Esportes/Ligas/Mercados/Tipsters/Casas de apostas) substituindo os links antigos - 2 mat-menu-item cada (Cadastrar/Dashboard), rotulo do botao reaproveita catalogs.sports/leagues/markets/tipsters.title e nav.bettingHouses ja existentes.",
+            "app-nav.ts: helper isResourceActive(routes: string[]) comparando Router.url, aplicado como classe no botao-gatilho de cada mat-menu (equivalente ao routerLinkActive que os links simples ja tem)."
+          ],
+          "validation": "./init.sh verde - QA visual (Impeccable) nos 2 temas/mobile+desktop antes de fechar a subtask (nav mudou pra todo o app).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-016.4",
+          "name": "e2e/catalogs.spec.ts reescrito, Playwright novo pro catalog-dashboard",
+          "status": "not-started",
+          "jira": "SV-377",
+          "detail": "Achado MAJOR do Plan Reviewer: reescrita completa, nao incremental - a pagina com abas que o teste original exercitava deixa de existir.",
+          "checklist": [
+            "e2e/catalogs.spec.ts reescrito: cria um esporte em /sports, navega pro menu Ligas -> Cadastrar (real navegacao de pagina, nao troca de aba) e confirma a lista de /leagues.",
+            "e2e/catalog-dashboard.spec.ts novo: abre um dashboard (ex. /sports-dashboard), confirma ranking ordenado por ROI, trocar o periodo recarrega os dados.",
+            "Teste de nav (app-nav.spec.ts ou novo): mat-menu abre e mostra os 2 itens esperados pro recurso."
+          ],
+          "validation": "./init.sh verde - Playwright completo verde (suite inteira, nao so os arquivos tocados).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-016.5",
+          "name": "QA visual final, CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-378",
+          "detail": "Fecha a feature - nav mudou pra todo o app, precisa de verificacao visual ampla, nao so das paginas novas.",
+          "checklist": [
+            "QA visual (Impeccable) final: nav com os 5 mat-menu abertos/fechados, pelo menos 1 tela Cadastrar e 1 Dashboard, 2 temas, mobile+desktop - screenshots reais contra o dev server.",
+            "Entrada em CHANGELOG.md (Unreleased).",
+            "./init.sh do app e da raiz verdes.",
+            "Delivery Reviewer + Test Suite Auditor rodados sobre o diff completo da feature.",
+            "docs/services/web.md: secao correspondente marcada done, com nota de implementacao.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC1) no mesmo commit."
+          ],
+          "validation": "./init.sh raiz e do app saem 0; Playwright completo verde; evidence da feature preenchida.",
+          "owner": "agente"
+        }
+      ],
+      "evidence": ""
     }
   ]
 }
