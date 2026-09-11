@@ -48,12 +48,27 @@ function stubCanvasContext(): void {
   } as unknown as typeof HTMLCanvasElement.prototype.getContext;
 }
 
+const BANKROLL_URL = `${environment.apiGatewayUrl}/api/v1/bankroll/balance`;
+const SETTINGS_URL = `${environment.apiGatewayUrl}/api/v1/settings`;
+const STATISTICS_URL = `${environment.apiGatewayUrl}/api/v1/statistics`;
+
 describe('Dashboard', () => {
   let fixture: ComponentFixture<Dashboard>;
   let httpMock: HttpTestingController;
 
   const langs = {
     'pt-BR': {
+      periodPresetFilter: {
+        label: 'Período',
+        presetToday: 'Hoje',
+        presetLastWeek: 'Última semana',
+        presetLast15Days: 'Últimos 15 dias',
+        presetLastMonth: 'Último mês',
+        presetThisMonth: 'Este mês',
+        presetCustom: 'Personalizado',
+        fromLabel: 'De',
+        toLabel: 'Até',
+      },
       dashboard: {
         filtersTitle: 'Filtros',
         metricsTitle: 'Métricas',
@@ -62,8 +77,6 @@ describe('Dashboard', () => {
         leagueLabel: 'Liga',
         marketLabel: 'Mercado',
         tipsterLabel: 'Tipster',
-        fromLabel: 'De',
-        toLabel: 'Até',
         filterAll: 'Todas',
         applyFilter: 'Aplicar',
         nameLabel: 'Nome',
@@ -72,6 +85,13 @@ describe('Dashboard', () => {
         roiLabel: 'ROI',
         winRateLabel: 'Taxa de acerto',
         settledCountLabel: 'Apostas liquidadas',
+        wonLostLabel: 'Vitórias / derrotas',
+        preLiveLabel: 'Pré / live',
+        avgOddLabel: 'Odd média',
+        balanceFromLabel: 'Saldo inicial',
+        balanceToLabel: 'Saldo final',
+        unitsStakedLabel: 'Unidades apostadas',
+        indeterminate: 'Indeterminado',
         bySportTitle: 'Por esporte',
         byMarketTitle: 'Por mercado',
         byBettingHouseTitle: 'Por casa de apostas',
@@ -97,15 +117,40 @@ describe('Dashboard', () => {
     }
   }
 
-  function flushStatistics(overrides: Record<string, unknown> = {}) {
-    httpMock.expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/statistics`).flush({
-      overall: { totalStaked: 1000, netProfit: 150, roi: 0.15, winRate: 0.6, settledCount: 10 },
+  /**
+   * The period-preset-filter defaults to "Hoje" (from === to), so the bankrollFrom/bankrollTo
+   * requests share the same 'at' param and can't be told apart by expectOne - match() returns
+   * both and each is flushed the same way. bankrollNow (no 'at') and settings are distinct URLs/params.
+   */
+  function flushDashboardData(overrides: Record<string, unknown> = {}) {
+    httpMock.expectOne((req) => req.url === STATISTICS_URL).flush({
+      overall: {
+        totalStaked: 1000,
+        netProfit: 150,
+        roi: 0.15,
+        winRate: 0.6,
+        settledCount: 10,
+        wonCount: 6,
+        lostCount: 4,
+        voidCount: 0,
+        preCount: 8,
+        liveCount: 2,
+        avgOdd: 1.9,
+      },
       bySport: [{ dimensionId: 'sports-1', dimensionName: 'sports', metrics: { totalStaked: 1000, netProfit: 150, roi: 0.15, winRate: 0.6, settledCount: 10 } }],
       byMarket: [],
       byBettingHouse: [],
       monthly: [{ year: 2026, month: 1, metrics: { totalStaked: 1000, netProfit: 150, roi: 0.15, winRate: 0.6, settledCount: 10 } }],
       ...overrides,
     });
+
+    for (const request of httpMock.match((req) => req.url === BANKROLL_URL && req.params.has('at'))) {
+      request.flush({ at: request.request.params.get('at')!, balance: 1000 });
+    }
+    httpMock
+      .expectOne((req) => req.url === BANKROLL_URL && !req.params.has('at'))
+      .flush({ at: 'now', balance: 2000 });
+    httpMock.expectOne((req) => req.url === SETTINGS_URL).flush({ unitPercent: 0.01 });
   }
 
   function createComponent() {
@@ -133,10 +178,10 @@ describe('Dashboard', () => {
     httpMock.verify();
   });
 
-  it('loads options and overall metrics on creation', () => {
+  it('loads options and overall metrics on creation, defaulting to the "Hoje" period', () => {
     createComponent();
     flushOptions();
-    flushStatistics();
+    flushDashboardData();
     fixture.detectChanges();
 
     const total = fixture.nativeElement.querySelector('[data-testid="dashboard-total-staked"]');
@@ -148,7 +193,7 @@ describe('Dashboard', () => {
   it('colors net profit/ROI negative when overall metrics show a loss', () => {
     createComponent();
     flushOptions();
-    flushStatistics({ overall: { totalStaked: 1000, netProfit: -150, roi: -0.15, winRate: 0.4, settledCount: 10 } });
+    flushDashboardData({ overall: { totalStaked: 1000, netProfit: -150, roi: -0.15, winRate: 0.4, settledCount: 10, wonCount: 4, lostCount: 6, voidCount: 0, preCount: 5, liveCount: 5, avgOdd: 1.8 } });
     fixture.detectChanges();
 
     const netProfitCard = fixture.nativeElement.querySelector('[data-testid="dashboard-net-profit"]');
@@ -160,7 +205,7 @@ describe('Dashboard', () => {
   it('renders segmented breakdown rows', () => {
     createComponent();
     flushOptions();
-    flushStatistics();
+    flushDashboardData();
     fixture.detectChanges();
 
     const rows = fixture.nativeElement.querySelectorAll('[data-testid="dashboard-by-sport-row"]');
@@ -168,34 +213,102 @@ describe('Dashboard', () => {
     expect(rows[0].textContent).toContain('sports');
   });
 
-  it('applying the filter issues a new statistics request with the chosen betting house', () => {
+  /**
+   * kpi-card concatenates icon + translated label + value in the same element; the active
+   * language in this test environment resolves from navigator.language (jsdom defaults to
+   * en-US), which this suite's `langs` fixture never defines - asserting on the whole card's
+   * textContent would couple the test to that unrelated translation-fallback behavior. Reading
+   * only .kpi-card__value sidesteps it and is the more precise check anyway.
+   */
+  function cardValue(testId: string): string {
+    return fixture.nativeElement.querySelector(`[data-testid="${testId}"] .kpi-card__value`).textContent;
+  }
+
+  it('renders the new won/lost, PRE/LIVE, avg odd, and balance cards', () => {
     createComponent();
     flushOptions();
-    flushStatistics();
+    flushDashboardData();
     fixture.detectChanges();
 
-    fixture.componentInstance['filterForm'].patchValue({ bettingHouseId: 'bh-1' });
-    fixture.componentInstance['applyFilter']();
+    expect(cardValue('dashboard-won-lost')).toContain('6 / 4');
+    expect(cardValue('dashboard-pre-live')).toContain('8 / 2');
+    expect(cardValue('dashboard-avg-odd')).toContain('1.90');
+    expect(cardValue('dashboard-balance-from')).toContain('R$');
+    expect(cardValue('dashboard-balance-to')).toContain('R$');
+  });
 
-    const request = httpMock.expectOne(
-      (req) => req.url === `${environment.apiGatewayUrl}/api/v1/statistics`,
-    );
-    expect(request.request.params.get('bettingHouseId')).toBe('bh-1');
-    request.flush({
-      overall: { totalStaked: 0, netProfit: 0, roi: 0, winRate: 0, settledCount: 0 },
+  it('computes unidades apostadas from totalStaked, current balance, and unitPercent', () => {
+    createComponent();
+    flushOptions();
+    // totalStaked=1000, bankrollNow=2000, unitPercent=0.01 -> 1000 / (2000 * 0.01) = 50
+    flushDashboardData();
+    fixture.detectChanges();
+
+    expect(cardValue('dashboard-units-staked')).toContain('50.00');
+  });
+
+  it('renders the indeterminate placeholder for unidades apostadas when the current balance is zero', () => {
+    createComponent();
+    flushOptions();
+    httpMock.expectOne((req) => req.url === STATISTICS_URL).flush({
+      overall: { totalStaked: 1000, netProfit: 150, roi: 0.15, winRate: 0.6, settledCount: 10, wonCount: 6, lostCount: 4, voidCount: 0, preCount: 8, liveCount: 2, avgOdd: 1.9 },
       bySport: [],
       byMarket: [],
       byBettingHouse: [],
       monthly: [],
     });
+    for (const request of httpMock.match((req) => req.url === BANKROLL_URL && req.params.has('at'))) {
+      request.flush({ at: request.request.params.get('at')!, balance: 1000 });
+    }
+    httpMock.expectOne((req) => req.url === BANKROLL_URL && !req.params.has('at')).flush({ at: 'now', balance: 0 });
+    httpMock.expectOne((req) => req.url === SETTINGS_URL).flush({ unitPercent: 0.01 });
+    fixture.detectChanges();
+
+    // Missing-translation fallback text for the active lang (see cardValue's comment) - not
+    // asserting the exact localized word, just that it's not a stale/leftover numeric value.
+    expect(cardValue('dashboard-units-staked')).not.toMatch(/\d/);
+  });
+
+  it('applying the filter issues a new statistics request with the chosen betting house', () => {
+    createComponent();
+    flushOptions();
+    flushDashboardData();
+    fixture.detectChanges();
+
+    fixture.componentInstance['filterForm'].patchValue({ bettingHouseId: 'bh-1' });
+    fixture.componentInstance['applyFilter']();
+
+    const request = httpMock.expectOne((req) => req.url === STATISTICS_URL);
+    expect(request.request.params.get('bettingHouseId')).toBe('bh-1');
+    request.flush({
+      overall: { totalStaked: 0, netProfit: 0, roi: 0, winRate: 0, settledCount: 0, wonCount: 0, lostCount: 0, voidCount: 0, preCount: 0, liveCount: 0, avgOdd: null },
+      bySport: [],
+      byMarket: [],
+      byBettingHouse: [],
+      monthly: [],
+    });
+    for (const bankrollRequest of httpMock.match((req) => req.url === BANKROLL_URL)) {
+      bankrollRequest.flush({ at: bankrollRequest.request.params.get('at') ?? 'now', balance: 0 });
+    }
+    httpMock.expectOne((req) => req.url === SETTINGS_URL).flush({ unitPercent: 0.01 });
   });
 
   it('shows the RFC 7807 detail when the statistics request fails', () => {
     createComponent();
     flushOptions();
+    // forkJoin initiates all 5 HTTP requests eagerly on subscribe (HttpClient sends immediately
+    // regardless of the combinator); once statistics errors, forkJoin unsubscribes the other 4,
+    // which cancels some (not deterministically all - depends on where each sibling request was
+    // in its lifecycle) of the underlying TestRequests. Resolve whatever is still open rather
+    // than assuming a fixed cancelled/open split.
     httpMock
-      .expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/statistics`)
+      .expectOne((req) => req.url === STATISTICS_URL)
       .flush({ detail: 'Filtro inválido.' }, { status: 400, statusText: 'Bad Request' });
+    for (const request of httpMock.match(() => true)) {
+      if (!request.cancelled) {
+        request.flush({});
+      }
+    }
     fixture.detectChanges();
 
     expect(fixture.componentInstance['dashboardError']()).toBe('Filtro inválido.');

@@ -951,7 +951,7 @@
         {
           "id": "feat-014.3",
           "name": "Dashboard: period-preset-filter substitui inputs crus, forkJoin com bankroll/settings, cards novos",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-365",
           "detail": "Achado MAJOR do Plan Reviewer ja escopado: so os 6 campos de BetMetrics que os cards consomem entram aqui - sem byBetType/byLeague/byTipster (fora de escopo). Mudanca de comportamento intencional: ngOnInit aplica preset Hoje por padrao (antes carregava sem filtro).",
           "checklist": [

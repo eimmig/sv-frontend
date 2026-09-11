@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,16 +10,20 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { forkJoin, map } from 'rxjs';
 
 import { loadInto } from '../../core/api-request';
+import { BankrollApi } from '../../core/bankroll-api';
 import { BettingHouse, BettingHousesApi } from '../../core/betting-houses-api';
 import { CatalogEntry, catalogApi } from '../../core/catalog-api';
 import { formatBrl } from '../../core/currency';
 import { Language } from '../../core/language';
+import { formatOdd } from '../../core/number-format';
 import { formatPercent } from '../../core/percent';
+import { SettingsApi } from '../../core/settings-api';
 import { BetMetrics, SegmentedBetMetrics, StatisticsApi, StatisticsDashboard } from '../../core/statistics-api';
 import { KpiCard, KpiCardSign, kpiSign } from '../../shared/kpi-card/kpi-card';
 import { MonthlyProfitChart } from '../../shared/monthly-profit-chart/monthly-profit-chart';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
+import { PeriodPresetFilter, PeriodRange } from '../../shared/period-preset-filter/period-preset-filter';
 
 interface Options {
   readonly bettingHouses: BettingHouse[];
@@ -53,6 +57,27 @@ const EMPTY_DASHBOARD: StatisticsDashboard = {
   monthly: [],
 };
 
+interface DashboardData {
+  readonly dashboard: StatisticsDashboard;
+  /** GET /api/v1/bankroll/balance?at=<from|to> (bets-service epic-013) - saldoInicial/saldoFinal
+   *  do periodo filtrado, corte por settledAt (nao betDate), soma todas as casas do tenant. */
+  readonly bankrollFrom: number;
+  readonly bankrollTo: number;
+  /** GET /api/v1/bankroll/balance sem 'at' ("agora") - usado so pra unidadesApostadas
+   *  (totalStaked/(saldoAtual x unitPercent)), formula em docs/STATISTICS.md - deliberadamente
+   *  nao versionado, usa o saldo/unitPercent vigentes aplicados retroativamente ao periodo. */
+  readonly bankrollNow: number;
+  readonly unitPercent: number;
+}
+
+const EMPTY_DASHBOARD_DATA: DashboardData = {
+  dashboard: EMPTY_DASHBOARD,
+  bankrollFrom: 0,
+  bankrollTo: 0,
+  bankrollNow: 0,
+  unitPercent: 0,
+};
+
 @Component({
   imports: [
     ReactiveFormsModule,
@@ -65,6 +90,7 @@ const EMPTY_DASHBOARD: StatisticsDashboard = {
     MonthlyProfitChart,
     Panel,
     PanelLayout,
+    PeriodPresetFilter,
     TranslocoPipe,
   ],
   selector: 'app-dashboard',
@@ -73,6 +99,8 @@ const EMPTY_DASHBOARD: StatisticsDashboard = {
 })
 export class Dashboard implements OnInit {
   private readonly statisticsApi = inject(StatisticsApi);
+  private readonly bankrollApi = inject(BankrollApi);
+  private readonly settingsApi = inject(SettingsApi);
   private readonly bettingHousesApi = inject(BettingHousesApi);
   private readonly http = inject(HttpClient);
   private readonly formBuilder = inject(FormBuilder);
@@ -84,8 +112,20 @@ export class Dashboard implements OnInit {
   protected readonly options = signal<Options>(EMPTY_OPTIONS);
   protected readonly optionsError = signal<string | null>(null);
 
-  protected readonly dashboard = signal<StatisticsDashboard>(EMPTY_DASHBOARD);
+  /** Resolved by <app-period-preset-filter> - defaults to "Hoje" (its own default preset) and
+   *  applies on every change, unlike the 5 catalog selects below (batched behind "Aplicar"). */
+  protected readonly period = signal<PeriodRange>({ from: '', to: '' });
+
+  protected readonly dashboardData = signal<DashboardData>(EMPTY_DASHBOARD_DATA);
   protected readonly dashboardError = signal<string | null>(null);
+
+  /** null (rendered as "Indeterminado") when saldoAtual or unitPercent is 0 - not defined by
+   *  docs/STATISTICS.md, decision from feat-014's plan review (no exception thrown/divide-by-zero). */
+  protected readonly unidadesApostadas = computed(() => {
+    const data = this.dashboardData();
+    const denominator = data.bankrollNow * data.unitPercent;
+    return denominator === 0 ? null : data.dashboard.overall.totalStaked / denominator;
+  });
 
   protected readonly filterForm = this.formBuilder.nonNullable.group({
     bettingHouseId: [''],
@@ -93,8 +133,6 @@ export class Dashboard implements OnInit {
     leagueId: [''],
     marketId: [''],
     tipsterId: [''],
-    from: [''],
-    to: [''],
   });
 
   ngOnInit(): void {
@@ -110,30 +148,47 @@ export class Dashboard implements OnInit {
       this.optionsError,
       () => this.transloco.translate('dashboard.genericError'),
     );
-    this.applyFilter();
+    // No explicit applyFilter() call here - <app-period-preset-filter> emits its default range
+    // ("Hoje") once on construction, which drives the initial load via onPeriodChange().
   }
 
   protected formatPercent(value: number): string {
     return formatPercent(value, this.language.current());
   }
 
+  protected formatOdd(value: number): string {
+    return formatOdd(value, this.language.current());
+  }
+
   protected sign(value: number): KpiCardSign {
     return kpiSign(value);
   }
 
+  protected onPeriodChange(range: PeriodRange): void {
+    this.period.set(range);
+    this.applyFilter();
+  }
+
   protected applyFilter(): void {
     const raw = this.filterForm.getRawValue();
+    const period = this.period();
     loadInto(
-      this.statisticsApi.get({
-        bettingHouseId: raw.bettingHouseId || undefined,
-        sportId: raw.sportId || undefined,
-        leagueId: raw.leagueId || undefined,
-        marketId: raw.marketId || undefined,
-        tipsterId: raw.tipsterId || undefined,
-        from: raw.from || undefined,
-        to: raw.to || undefined,
+      forkJoin({
+        dashboard: this.statisticsApi.get({
+          bettingHouseId: raw.bettingHouseId || undefined,
+          sportId: raw.sportId || undefined,
+          leagueId: raw.leagueId || undefined,
+          marketId: raw.marketId || undefined,
+          tipsterId: raw.tipsterId || undefined,
+          from: period.from || undefined,
+          to: period.to || undefined,
+        }),
+        bankrollFrom: this.bankrollApi.getBalance(period.from).pipe(map((b) => b.balance)),
+        bankrollTo: this.bankrollApi.getBalance(period.to).pipe(map((b) => b.balance)),
+        bankrollNow: this.bankrollApi.getBalance().pipe(map((b) => b.balance)),
+        unitPercent: this.settingsApi.get().pipe(map((s) => s.unitPercent)),
       }),
-      this.dashboard,
+      this.dashboardData,
       this.dashboardError,
       () => this.transloco.translate('dashboard.genericError'),
     );
