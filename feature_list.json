@@ -968,7 +968,7 @@
         {
           "id": "feat-014.4",
           "name": "Campo admin-only de configuracao de unidade (PATCH /api/v1/settings)",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-366",
           "detail": "Decisao do plan review: inline no painel de filtros, gated por Auth.isAdmin() (mesmo mecanismo de adminGuard, aqui como secao condicional de UI em vez de guard de rota).",
           "checklist": [

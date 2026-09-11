@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -9,7 +9,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { forkJoin, map } from 'rxjs';
 
-import { loadInto } from '../../core/api-request';
+import { loadInto, submitForm } from '../../core/api-request';
+import { Auth } from '../../core/auth';
 import { BankrollApi } from '../../core/bankroll-api';
 import { BettingHouse, BettingHousesApi } from '../../core/betting-houses-api';
 import { CatalogEntry, catalogApi } from '../../core/catalog-api';
@@ -106,6 +107,7 @@ export class Dashboard implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly transloco = inject(TranslocoService);
   protected readonly language = inject(Language);
+  protected readonly auth = inject(Auth);
 
   protected readonly formatBrl = formatBrl;
 
@@ -134,6 +136,27 @@ export class Dashboard implements OnInit {
     marketId: [''],
     tipsterId: [''],
   });
+
+  /** Admin-only (Auth.isAdmin()) - GET /api/v1/settings isn't role-restricted (every user needs
+   *  unitPercent for unidadesApostadas), only PATCH is. Value shown/edited as a percent (1 for
+   *  1%), converted to the API's decimal fraction (0.01) on submit. */
+  protected readonly unitPercentForm = this.formBuilder.nonNullable.group({
+    unitPercent: [1, [Validators.required, Validators.min(0.0001), Validators.max(100)]],
+  });
+  protected readonly unitPercentSubmitting = signal(false);
+  protected readonly unitPercentError = signal<string | null>(null);
+  protected readonly unitPercentSuccess = signal<string | null>(null);
+
+  constructor() {
+    // Seeds the field with the loaded unitPercent, but only while the admin hasn't started
+    // editing it (pristine) - avoids clobbering an in-progress edit on every applyFilter() reload.
+    effect(() => {
+      const percent = this.dashboardData().unitPercent * 100;
+      if (this.unitPercentForm.pristine) {
+        this.unitPercentForm.setValue({ unitPercent: percent });
+      }
+    });
+  }
 
   ngOnInit(): void {
     loadInto(
@@ -191,6 +214,25 @@ export class Dashboard implements OnInit {
       this.dashboardData,
       this.dashboardError,
       () => this.transloco.translate('dashboard.genericError'),
+    );
+  }
+
+  protected submitUnitPercent(): void {
+    if (this.unitPercentForm.invalid || this.unitPercentSubmitting()) {
+      return;
+    }
+    const percent = this.unitPercentForm.getRawValue().unitPercent;
+    this.unitPercentSuccess.set(null);
+    submitForm(
+      this.settingsApi.update(percent / 100),
+      this.unitPercentSubmitting,
+      this.unitPercentError,
+      () => this.transloco.translate('dashboard.genericError'),
+      (result) => {
+        this.dashboardData.update((data) => ({ ...data, unitPercent: result.unitPercent }));
+        this.unitPercentForm.markAsPristine();
+        this.unitPercentSuccess.set(this.transloco.translate('dashboard.unitPercentSuccess'));
+      },
     );
   }
 
