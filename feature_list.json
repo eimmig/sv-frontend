@@ -878,6 +878,20 @@
           "owner": "agente",
           "status": "done",
           "jira": "SV-341"
+        },
+        {
+          "id": "feat-013.3",
+          "name": "Achados reais no primeiro develop->main de verdade deste repositorio",
+          "detail": "Primeiro develop->main de verdade de sv-frontend expos 2 achados pre-existentes na janela de 'new code' do SonarCloud, nao previstos no Plan Review original: typescript:S7761 (setAttribute('data-theme', ...) em vez de .dataset.theme) em core/theme.ts; css:S4666 (selector :root[data-theme='dark'] duplicado em styles.scss - 2 blocos separados pro mesmo selector, um do mat.theme() e outro do tokens.dark-tokens).",
+          "checklist": [
+            "theme.ts: setAttribute trocado por dataset['theme']",
+            "styles.scss: os 2 blocos :root[data-theme='dark'] mesclados em um so, ordem de cascata preservada",
+            "npm run build e npm test (127 testes) verdes depois da mudanca"
+          ],
+          "validation": "SonarCloud Code Analysis verde no PR develop->main.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-342"
         }
       ],
       "evidence": ""

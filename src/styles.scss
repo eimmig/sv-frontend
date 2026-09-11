@@ -53,6 +53,7 @@ html {
       density: 0,
     )
   );
+  @include tokens.dark-tokens;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -73,10 +74,6 @@ html {
 
 :root {
   @include tokens.light-tokens;
-}
-
-:root[data-theme='dark'] {
-  @include tokens.dark-tokens;
 }
 
 @media (prefers-color-scheme: dark) {

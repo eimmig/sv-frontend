@@ -68,3 +68,4 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-339](https://stakevault.atlassian.net/browse/SV-339) - Dockerfile de producao + build e push da imagem no CI
 - [SV-340](https://stakevault.atlassian.net/browse/SV-340) - Dockerfile + nginx.conf + .dockerignore + job build-and-push-image
 - [SV-341](https://stakevault.atlassian.net/browse/SV-341) - CHANGELOG e verificacao final
+- [SV-342](https://stakevault.atlassian.net/browse/SV-342) - Achados reais no primeiro develop->main de verdade deste repositorio

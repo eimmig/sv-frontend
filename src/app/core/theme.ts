@@ -24,7 +24,7 @@ function applyExplicitTheme(mode: ThemeMode | null): void {
   if (mode === null || typeof document === 'undefined') {
     return;
   }
-  document.documentElement.setAttribute('data-theme', mode);
+  document.documentElement.dataset['theme'] = mode;
 }
 
 /**
