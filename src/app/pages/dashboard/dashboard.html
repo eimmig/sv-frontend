@@ -3,6 +3,8 @@
     @if (optionsError(); as message) {
       <p class="dashboard__error" role="alert" data-testid="dashboard-options-error">{{ message }}</p>
     } @else {
+      <app-period-preset-filter (rangeChange)="onPeriodChange($event)" />
+
       <form [formGroup]="filterForm" (ngSubmit)="applyFilter()" class="dashboard__filters">
         <mat-form-field appearance="outline">
           <mat-label>{{ 'dashboard.bettingHouseLabel' | transloco }}</mat-label>
@@ -54,30 +56,6 @@
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'dashboard.fromLabel' | transloco }}</mat-label>
-          <input
-            matInput
-            id="dashboard-from-input"
-            type="date"
-            formControlName="from"
-            data-testid="dashboard-filter-from"
-            [attr.aria-label]="'dashboard.fromLabel' | transloco"
-          />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'dashboard.toLabel' | transloco }}</mat-label>
-          <input
-            matInput
-            id="dashboard-to-input"
-            type="date"
-            formControlName="to"
-            data-testid="dashboard-filter-to"
-            [attr.aria-label]="'dashboard.toLabel' | transloco"
-          />
-        </mat-form-field>
-
         <button mat-flat-button type="submit" data-testid="dashboard-filter-apply">
           {{ 'dashboard.applyFilter' | transloco }}
         </button>
@@ -89,42 +67,80 @@
     @if (dashboardError(); as message) {
       <p class="dashboard__error" role="alert" data-testid="dashboard-metrics-error">{{ message }}</p>
     } @else {
+      @let overall = dashboardData().dashboard.overall;
+      @let unidades = unidadesApostadas();
       <div class="dashboard__cards" data-testid="dashboard-overall-cards">
         <app-kpi-card
           icon="account_balance_wallet"
           [label]="'dashboard.totalStakedLabel' | transloco"
-          [value]="formatBrl(dashboard().overall.totalStaked)"
+          [value]="formatBrl(overall.totalStaked)"
           testId="dashboard-total-staked"
         />
         <app-kpi-card
-          [icon]="dashboard().overall.netProfit >= 0 ? 'trending_up' : 'trending_down'"
+          [icon]="overall.netProfit >= 0 ? 'trending_up' : 'trending_down'"
           [label]="'dashboard.netProfitLabel' | transloco"
-          [value]="formatBrl(dashboard().overall.netProfit)"
-          [sign]="sign(dashboard().overall.netProfit)"
+          [value]="formatBrl(overall.netProfit)"
+          [sign]="sign(overall.netProfit)"
           testId="dashboard-net-profit"
         />
         <app-kpi-card
           icon="percent"
           [label]="'dashboard.roiLabel' | transloco"
-          [value]="formatPercent(dashboard().overall.roi)"
-          [sign]="sign(dashboard().overall.roi)"
+          [value]="formatPercent(overall.roi)"
+          [sign]="sign(overall.roi)"
           testId="dashboard-roi"
         />
         <app-kpi-card
           icon="emoji_events"
           [label]="'dashboard.winRateLabel' | transloco"
-          [value]="formatPercent(dashboard().overall.winRate)"
+          [value]="formatPercent(overall.winRate)"
           testId="dashboard-win-rate"
         />
         <app-kpi-card
           icon="receipt_long"
           [label]="'dashboard.settledCountLabel' | transloco"
-          [value]="dashboard().overall.settledCount.toString()"
+          [value]="overall.settledCount.toString()"
           testId="dashboard-settled-count"
+        />
+        <app-kpi-card
+          icon="check_circle"
+          [label]="'dashboard.wonLostLabel' | transloco"
+          [value]="overall.wonCount + ' / ' + overall.lostCount"
+          testId="dashboard-won-lost"
+        />
+        <app-kpi-card
+          icon="bolt"
+          [label]="'dashboard.preLiveLabel' | transloco"
+          [value]="overall.preCount + ' / ' + overall.liveCount"
+          testId="dashboard-pre-live"
+        />
+        <app-kpi-card
+          icon="target"
+          [label]="'dashboard.avgOddLabel' | transloco"
+          [value]="overall.avgOdd === null ? ('dashboard.indeterminate' | transloco) : formatOdd(overall.avgOdd)"
+          testId="dashboard-avg-odd"
+        />
+        <app-kpi-card
+          icon="account_balance"
+          [label]="'dashboard.balanceFromLabel' | transloco"
+          [value]="formatBrl(dashboardData().bankrollFrom)"
+          testId="dashboard-balance-from"
+        />
+        <app-kpi-card
+          icon="account_balance"
+          [label]="'dashboard.balanceToLabel' | transloco"
+          [value]="formatBrl(dashboardData().bankrollTo)"
+          testId="dashboard-balance-to"
+        />
+        <app-kpi-card
+          icon="straighten"
+          [label]="'dashboard.unitsStakedLabel' | transloco"
+          [value]="unidades === null ? ('dashboard.indeterminate' | transloco) : formatOdd(unidades)"
+          testId="dashboard-units-staked"
         />
       </div>
 
-      <app-monthly-profit-chart [data]="dashboard().monthly" />
+      <app-monthly-profit-chart [data]="dashboardData().dashboard.monthly" />
 
       <mat-tab-group class="dashboard__breakdown" data-testid="dashboard-breakdown-tabs">
         <mat-tab [label]="'dashboard.bySportTitle' | transloco">
@@ -141,7 +157,7 @@
                 </tr>
               </thead>
               <tbody>
-                @for (segment of dashboard().bySport; track trackSegment($index, segment)) {
+                @for (segment of dashboardData().dashboard.bySport; track trackSegment($index, segment)) {
                   <tr data-testid="dashboard-by-sport-row">
                     <td>{{ segment.dimensionName }}</td>
                     <td>{{ formatBrl(segment.metrics.totalStaked) }}</td>
@@ -170,7 +186,7 @@
                 </tr>
               </thead>
               <tbody>
-                @for (segment of dashboard().byMarket; track trackSegment($index, segment)) {
+                @for (segment of dashboardData().dashboard.byMarket; track trackSegment($index, segment)) {
                   <tr data-testid="dashboard-by-market-row">
                     <td>{{ segment.dimensionName }}</td>
                     <td>{{ formatBrl(segment.metrics.totalStaked) }}</td>
@@ -199,7 +215,7 @@
                 </tr>
               </thead>
               <tbody>
-                @for (segment of dashboard().byBettingHouse; track trackSegment($index, segment)) {
+                @for (segment of dashboardData().dashboard.byBettingHouse; track trackSegment($index, segment)) {
                   <tr data-testid="dashboard-by-betting-house-row">
                     <td>{{ segment.dimensionName }}</td>
                     <td>{{ formatBrl(segment.metrics.totalStaked) }}</td>
