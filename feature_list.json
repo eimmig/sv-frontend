@@ -922,7 +922,7 @@
         {
           "id": "feat-014.1",
           "name": "BankrollApi + SettingsApi novos, StatisticsApi.BetMetrics estendido",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-363",
           "detail": "3 clientes HTTP novos/estendidos, mesmo padrao ja usado por betting-houses-api.ts (Injectable providedIn root, environment.apiGatewayUrl, sem tratamento de erro proprio - loadInto ja trata no chamador).",
           "checklist": [
