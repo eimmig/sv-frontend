@@ -1168,7 +1168,7 @@
         {
           "id": "feat-016.5",
           "name": "QA visual final, CHANGELOG e verificacao final",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-378",
           "detail": "Fecha a feature - nav mudou pra todo o app, precisa de verificacao visual ampla, nao so das paginas novas.",
           "checklist": [

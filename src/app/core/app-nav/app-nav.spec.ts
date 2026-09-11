@@ -1,3 +1,4 @@
+import { OverlayContainer } from '@angular/cdk/overlay';
 import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
@@ -8,6 +9,13 @@ import { AppNav } from './app-nav';
 import { Auth } from '../auth';
 
 describe('AppNav', () => {
+  // mat-menu (first CDK overlay used in this app, see feat-016) renders into a pane appended to
+  // document.body, outside the fixture - TestBed teardown doesn't remove it, so a leftover pane
+  // from one test could leak into the next test's DOM queries without this cleanup.
+  afterEach(() => {
+    TestBed.inject(OverlayContainer).ngOnDestroy();
+  });
+
   beforeEach(() => {
     localStorage.removeItem('stakevault.auth');
     TestBed.configureTestingModule({

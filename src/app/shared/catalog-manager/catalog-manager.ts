@@ -14,9 +14,9 @@ import { PanelLayout } from '../panel-layout/panel-layout';
 /**
  * Reusable list+create screen for a single catalog resource (sports,
  * leagues, markets, tipsters - all structurally identical in bets-service).
- * Instantiated once per tab in pages/catalogs instead of 4 near-identical
- * pages - keeps the SonarCloud duplication finding from feat-003 from
- * reappearing with a 4th near-copy.
+ * Instantiated once per catalog route (see app.routes.ts) instead of 4
+ * near-identical pages - keeps the SonarCloud duplication finding from
+ * feat-003 from reappearing with a 4th near-copy.
  */
 @Component({
   imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, TranslocoPipe, Panel, PanelLayout],
