@@ -1038,7 +1038,7 @@
         {
           "id": "feat-015.2",
           "name": "Modulo de calculo puro (period-report-metrics.ts) com oraculo do print de referencia",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-370",
           "detail": "Achado MAJOR do Plan Reviewer ja resolvido no plano: saldoAtual desta pagina = saldoFinal (saldoEm(to)), nao uma 3a chamada de bankroll. Funcoes puras, sem Angular/HttpClient - testaveis diretamente.",
           "checklist": [
