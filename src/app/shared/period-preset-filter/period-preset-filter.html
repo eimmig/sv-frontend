@@ -1,0 +1,43 @@
+<div class="period-preset-filter">
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'periodPresetFilter.label' | transloco }}</mat-label>
+    <mat-select
+      [ngModel]="preset()"
+      (ngModelChange)="setPreset($event)"
+      data-testid="period-preset-select"
+    >
+      <mat-option value="today">{{ 'periodPresetFilter.presetToday' | transloco }}</mat-option>
+      <mat-option value="lastWeek">{{ 'periodPresetFilter.presetLastWeek' | transloco }}</mat-option>
+      <mat-option value="last15Days">{{ 'periodPresetFilter.presetLast15Days' | transloco }}</mat-option>
+      <mat-option value="lastMonth">{{ 'periodPresetFilter.presetLastMonth' | transloco }}</mat-option>
+      <mat-option value="thisMonth">{{ 'periodPresetFilter.presetThisMonth' | transloco }}</mat-option>
+      <mat-option value="custom">{{ 'periodPresetFilter.presetCustom' | transloco }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  @if (preset() === 'custom') {
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'periodPresetFilter.fromLabel' | transloco }}</mat-label>
+      <input
+        matInput
+        type="date"
+        [ngModel]="customFrom()"
+        (ngModelChange)="setCustomFrom($event)"
+        data-testid="period-preset-custom-from"
+        [attr.aria-label]="'periodPresetFilter.fromLabel' | transloco"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'periodPresetFilter.toLabel' | transloco }}</mat-label>
+      <input
+        matInput
+        type="date"
+        [ngModel]="customTo()"
+        (ngModelChange)="setCustomTo($event)"
+        data-testid="period-preset-custom-to"
+        [attr.aria-label]="'periodPresetFilter.toLabel' | transloco"
+      />
+    </mat-form-field>
+  }
+</div>

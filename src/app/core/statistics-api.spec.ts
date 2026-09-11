@@ -36,4 +36,47 @@ describe('StatisticsApi', () => {
     expect(request.request.params.has('sportId')).toBe(false);
     request.flush({ overall: { totalStaked: 0, netProfit: 0, roi: 0, winRate: 0, settledCount: 0 }, bySport: [], byMarket: [], byBettingHouse: [], monthly: [] });
   });
+
+  // feat-014: wonCount/lostCount/voidCount/preCount/liveCount/avgOdd (stats-service epic-014)
+  // flow through the response unchanged - the extended BetMetrics fields are consumed by the
+  // dashboard's new cards (feat-014.3), not transformed here.
+  it('passes through the extended BetMetrics fields (wonCount/lostCount/voidCount/preCount/liveCount/avgOdd)', () => {
+    let result: unknown;
+    api.get({}).subscribe((dashboard) => (result = dashboard.overall));
+
+    const request = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/statistics`);
+    request.flush({
+      overall: {
+        totalStaked: 100,
+        netProfit: 50,
+        roi: 0.5,
+        winRate: 1,
+        settledCount: 1,
+        wonCount: 1,
+        lostCount: 0,
+        voidCount: 0,
+        preCount: 1,
+        liveCount: 0,
+        avgOdd: 1.9,
+      },
+      bySport: [],
+      byMarket: [],
+      byBettingHouse: [],
+      monthly: [],
+    });
+
+    expect(result).toEqual({
+      totalStaked: 100,
+      netProfit: 50,
+      roi: 0.5,
+      winRate: 1,
+      settledCount: 1,
+      wonCount: 1,
+      lostCount: 0,
+      voidCount: 0,
+      preCount: 1,
+      liveCount: 0,
+      avgOdd: 1.9,
+    });
+  });
 });

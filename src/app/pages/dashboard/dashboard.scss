@@ -28,6 +28,24 @@
   }
 }
 
+.dashboard__unit-percent {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 0 0 16px;
+
+  mat-form-field {
+    min-width: 180px;
+  }
+}
+
+.dashboard__success {
+  margin: 0;
+  color: var(--color-positive);
+  font-size: 14px;
+}
+
 .dashboard__cards {
   display: flex;
   flex-wrap: wrap;
