@@ -134,7 +134,9 @@
     "searchStatistics": "Buscar estadísticas",
     "periodReport": "Informe del período",
     "users": "Usuarios",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "collapse": "Contraer menú",
+    "expand": "Expandir menú"
   },
   "mustChangePassword": {
     "message": "Estás usando una contraseña temporal. Cámbiala lo antes posible.",

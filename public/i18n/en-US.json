@@ -134,7 +134,9 @@
     "searchStatistics": "Search statistics",
     "periodReport": "Period report",
     "users": "Users",
-    "logout": "Log out"
+    "logout": "Log out",
+    "collapse": "Collapse menu",
+    "expand": "Expand menu"
   },
   "mustChangePassword": {
     "message": "You are using a temporary password. Change it as soon as possible.",
