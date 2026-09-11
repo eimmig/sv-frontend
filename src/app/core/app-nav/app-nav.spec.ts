@@ -59,6 +59,19 @@ describe('AppNav', () => {
     expect(fixture.nativeElement.querySelector('[data-testid="nav-users"]')).toBeNull();
   });
 
+  it('opens the sports mat-menu and shows the Cadastrar/Dashboard items', async () => {
+    session('MEMBER');
+    const fixture = TestBed.createComponent(AppNav);
+    fixture.detectChanges();
+
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('[data-testid="nav-sports-menu"]')?.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(document.querySelector('[data-testid="nav-sports-register"]')).toBeTruthy();
+    expect(document.querySelector('[data-testid="nav-sports-dashboard"]')).toBeTruthy();
+  });
+
   it('logout() clears the session and navigates to /login', () => {
     session('MEMBER');
     const fixture = TestBed.createComponent(AppNav);
