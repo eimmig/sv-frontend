@@ -1125,3 +1125,17 @@ tocadas, claro/escuro, desktop/mobile. Vault atualizado nos mesmos commits das d
 `docs/DESIGN-SYSTEM.md` (correção da seção Angular Material, nota de contraste fechada, item 14
 implementado), `docs/TESTING.md` (gotcha de `mat-tab-group`/jsdom). Branches apagadas após merge
 (feature + 5 subtasks). Backlog de `apps/web` inteiro concluído com esta feature.
+
+## `feat-017` fechada — apiGatewayUrl relativo, corrige CORS em produção (2026-09-11)
+
+Achado real ao testar o deploy em k3s (`infra/feat-005`): bundle de produção chamava um domínio
+placeholder que nunca existiu em vez do host que serviu a página, bloqueando o login por CORS.
+Correção de 1 linha (`environment.ts`, `apiGatewayUrl: ''` — caminho relativo, mesma origem, já
+que o Ingress roteia `/api` pro `api-gateway` no mesmo host do `web`). `environment.development.ts`
+intocado. `npm test` 167/167 e `./init.sh` verdes; nenhum spec hardcoda o domínio antigo (grep
+confirmou os 14 call sites usando `${environment.apiGatewayUrl}/...` via template string).
+`Delivery Reviewer`/`Test Suite Auditor` (passe direto, mudança trivial já evidenciada no
+`plan_review`): PASS, sem achados. PRs `subtask/SV-380`→`feature/SV-379` (#76) e
+`feature/SV-379`→`develop` (#77) mergeados; `develop`→`main` (#78) também, CI de `main` verde
+(imagem publicada no GHCR). Confirmação de login real sem CORS via Ingress registrada no
+checklist de `feat-017.2` pela sessão que implementou a correção.

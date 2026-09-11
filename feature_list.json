@@ -1197,7 +1197,7 @@
       "dependencies": [
         "feat-013"
       ],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "2026-09-11 - mudanca de 1 linha, ja verificada com evidencia real antes do plan review: npm run build (bundle gerado sem erro) e npm run test (167/167 verdes, specs referenciam environment.apiGatewayUrl dinamicamente, nao string hardcoded, entao nao quebram com o valor mudando). Risco zero de regressao - so environment.development.ts (usado localmente) fica intocado.",
       "jira": "SV-379",
       "subtasks": [
@@ -1230,7 +1230,7 @@
           "jira": "SV-381"
         }
       ],
-      "evidence": ""
+      "evidence": "2 subtasks done. O que foi feito: environment.ts (producao) - apiGatewayUrl de 'https://api.stakevault.example.com' (dominio placeholder, nunca existiu) para '' (caminho relativo, mesma origem do host que serve o app). environment.development.ts (localhost:8080) intocado, conforme escopo. Como foi verificado: erro de CORS reproduzido de verdade no browser contra o deploy real em k3s (infra/feat-005) antes da correcao - achado real de producao, nao teorico. Apos a mudanca: npm run build limpo, npm test 167/167 verdes (nenhum spec hardcoda o dominio antigo - todos os 14 call sites usam '${environment.apiGatewayUrl}/api/v1/...' via template string, verificado por grep em todo src/, seguro com string vazia = caminho relativo). ./init.sh do app verde. PR feature->develop (SV-379, #77) e o fix isolado (#76) mergeados; develop mergeado em main (#78), CI de main verde (publica imagem no GHCR). Revisao Delivery Reviewer feita nesta sessao (passe direto, mudanca trivial de 1 linha de config - dispensou subagentes por evidencia already-verified no plan_review, mesmo criterio de 'no subagent for trivial or fully evidenced work' da skill): PASS, nenhum achado - todos os consumidores de apiGatewayUrl usam concatenacao de template string, nenhum assume URL absoluta/faz parsing de protocolo. Test Suite Auditor: PASS, nenhum teste novo necessario - a suite ja era resiliente a essa troca de valor por construcao (specs referenciam environment.apiGatewayUrl dinamicamente). Confirmacao de login real sem CORS via Ingress em producao: feita pela sessao que implementou feat-017.1/.2 (nao reproduzida nesta sessao, sem acesso ao cluster k3s a partir daqui) - aceita como evidencia da subtask ja registrada no checklist dela. O que divergiu do plano: nada."
     }
   ]
 }
