@@ -1184,6 +1184,53 @@
         }
       ],
       "evidence": "5 subtasks done (feat-016.1-.5). O que foi feito: StatisticsDashboard (frontend) ganhou byLeague/byTipster (feat-016.1, consumindo stats-service epic-018); shared/catalog-dashboard novo, ranking parametrizado por segmento ordenado por ROI desc, reusado pelos 5 dashboards (feat-016.2); pages/catalogs/ (grupo de abas) removida por completo, substituida por 9 rotas diretas (4 Cadastrar via catalog-manager + 5 Dashboard via catalog-dashboard) ligadas via route data + withComponentInputBinding() novo em app.config.ts - evita 9 paginas-wrapper quase identicas (feat-016.3); app-nav ganhou 5 mat-menu (primeiro uso de overlay do CDK no app) com helper isResourceActive() pro destaque de estado ativo do botao-gatilho. Como foi verificado: e2e/catalogs.spec.ts reescrito por completo pra navegacao real de pagina (a versao antiga trocava aba Material numa pagina que deixou de existir); e2e/catalog-dashboard.spec.ts novo (ranking ROI desc, troca de periodo, erro RFC 7807); teste unitario novo em app-nav.spec.ts provando que o mat-menu abre e mostra os 2 itens esperados. Suite completa: 167 unitarios + 39 e2e, todos verdes; ./init.sh do app verde (cobertura 89.97% statements, acima do gate de 80%). Delivery Reviewer (PASS) e Test Suite Auditor (CONCERNS, so achados P3) rodados contra o diff completo da feature (feature/SV-373 vs develop) antes de fechar - 3 achados corrigidos no mesmo commit de fechamento: comentario desatualizado em catalog-manager.ts (ainda citava a arquitetura de abas retirada), teste trivial em statistics-api.spec.ts removido (so reprovava passthrough do HttpClient, sem logica propria do repositorio - o mesmo comportamento ja e provado por catalog-dashboard.spec.ts de forma mais especifica), e limpeza de OverlayContainer adicionada em app-nav.spec.ts (gotcha documentado em docs/TESTING.md - primeiro teste unitario da suite a abrir um overlay do CDK, sem isso um painel orfao podia vazar pro DOM de um teste seguinte). QA visual final: nav com os 5 mat-menu abertos/fechados, 1 tela Cadastrar e 1 Dashboard, 2 temas (claro/escuro) x mobile/desktop, screenshots reais contra ng serve - sem overflow real de pagina (o scroll horizontal interno da tabela de ranking em mobile e comportamento intencional, mesmo padrao de scroll por painel independente ja usado no resto do app, RNF01). O que divergiu do plano: nada - plan_review ja cobria as 5 decisoes tecnicas (route data + withComponentInputBinding, mat-menu, isResourceActive, titulo generico dos paineis de catalog-manager, escopo de byLeague/byTipster) e todas foram implementadas como descrito. docs/services/web.md secao \"Menu por cadastro\" marcada done com nota de implementacao; docs/TESTING.md ganhou nota sobre o gotcha de OverlayContainer em teste de overlay do CDK."
+    },
+    {
+      "id": "feat-017",
+      "name": "Corrigir apiGatewayUrl hardcoded (residual da feat-013) - CORS bloqueando login real",
+      "goal": "Trocar o dominio placeholder embutido no build de producao por caminho relativo, ja que o Ingress serve web e api-gateway do mesmo host/dominio (infra/feat-005) - fecha o residual ja documentado desde feat-013.",
+      "scope": [
+        "src/environments/environment.ts: apiGatewayUrl de 'https://api.stakevault.example.com' pra '' (string vazia = caminho relativo, mesma origem)",
+        "Nao mexe em environment.development.ts (localhost:8080, continua certo pro dev local)"
+      ],
+      "description": "Achado real ao testar o deploy de verdade no k3s (infra/feat-005): o browser bloqueou o login por CORS, porque o bundle de producao chamava um dominio inventado (nunca existiu de verdade) em vez do proprio host que serviu a pagina. Como o Ingress ja roteia /api pro api-gateway no MESMO host que serve o web (ver infra/k8s/ingress.yaml), caminho relativo elimina CORS de vez (mesma origem) e funciona independente de qual IP/dominio acessa a aplicacao (LAN hoje, stakevault.eu.org quando aprovado).",
+      "dependencies": [
+        "feat-013"
+      ],
+      "status": "in-progress",
+      "plan_review": "2026-09-11 - mudanca de 1 linha, ja verificada com evidencia real antes do plan review: npm run build (bundle gerado sem erro) e npm run test (167/167 verdes, specs referenciam environment.apiGatewayUrl dinamicamente, nao string hardcoded, entao nao quebram com o valor mudando). Risco zero de regressao - so environment.development.ts (usado localmente) fica intocado.",
+      "jira": "SV-379",
+      "subtasks": [
+        {
+          "id": "feat-017.1",
+          "name": "apiGatewayUrl vazio (caminho relativo) em environment.ts",
+          "detail": "Erro de CORS reproduzido de verdade no browser contra o k3s de producao antes da correcao - nao e achado teorico.",
+          "checklist": [
+            "environment.ts: apiGatewayUrl: ''",
+            "npm run build + npm test verdes"
+          ],
+          "validation": "Login real via Ingress (http://<ip-do-server>/) sem erro de CORS no console do navegador.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-380"
+        },
+        {
+          "id": "feat-017.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento formal: CHANGELOG.md, init.sh, imagem republicada no GHCR e redeploy real confirmado sem CORS.",
+          "checklist": [
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes",
+            "Imagem nova publicada (push em main) e pod web reiniciado no k3s com a imagem nova",
+            "Login real confirmado sem erro de CORS"
+          ],
+          "validation": "Fluxo de login real funcionando via Ingress, sem erro de CORS no console.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-381"
+        }
+      ],
+      "evidence": ""
     }
   ]
 }

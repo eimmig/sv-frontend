@@ -86,3 +86,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-376](https://stakevault.atlassian.net/browse/SV-376) - Rotas novas (Cadastrar + Dashboard) via withComponentInputBinding, app-nav com 5 mat-menu
 - [SV-377](https://stakevault.atlassian.net/browse/SV-377) - e2e/catalogs.spec.ts reescrito, Playwright novo pro catalog-dashboard
 - [SV-378](https://stakevault.atlassian.net/browse/SV-378) - QA visual final, CHANGELOG e verificacao final
+- [SV-379](https://stakevault.atlassian.net/browse/SV-379) - Corrigir apiGatewayUrl hardcoded (residual da feat-013) - CORS bloqueando login real
+- [SV-380](https://stakevault.atlassian.net/browse/SV-380) - apiGatewayUrl vazio (caminho relativo) em environment.ts
+- [SV-381](https://stakevault.atlassian.net/browse/SV-381) - CHANGELOG e verificacao final
