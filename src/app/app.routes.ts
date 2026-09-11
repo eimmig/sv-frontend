@@ -31,9 +31,63 @@ export const routes: Routes = [
       import('./pages/register-bet/register-bet').then((m) => m.RegisterBet),
     canActivate: [authGuard],
   },
+  // feat-016 ("menu por cadastro"): pages/catalogs/ (tab group) retired - each resource is now
+  // its own route, reached via app-nav's per-resource mat-menu instead of an in-page tab switch.
+  // "Cadastrar X" routes bind straight to shared/catalog-manager via route `data`
+  // (withComponentInputBinding, app.config.ts) - no per-resource wrapper page.
   {
-    path: 'catalogs',
-    loadComponent: () => import('./pages/catalogs/catalogs').then((m) => m.Catalogs),
+    path: 'sports',
+    loadComponent: () => import('./shared/catalog-manager/catalog-manager').then((m) => m.CatalogManager),
+    data: { resourcePath: 'sports' },
+    canActivate: [authGuard],
+  },
+  {
+    path: 'leagues',
+    loadComponent: () => import('./shared/catalog-manager/catalog-manager').then((m) => m.CatalogManager),
+    data: { resourcePath: 'leagues' },
+    canActivate: [authGuard],
+  },
+  {
+    path: 'markets',
+    loadComponent: () => import('./shared/catalog-manager/catalog-manager').then((m) => m.CatalogManager),
+    data: { resourcePath: 'markets' },
+    canActivate: [authGuard],
+  },
+  {
+    path: 'tipsters',
+    loadComponent: () => import('./shared/catalog-manager/catalog-manager').then((m) => m.CatalogManager),
+    data: { resourcePath: 'tipsters' },
+    canActivate: [authGuard],
+  },
+  // "Dashboard X" routes bind straight to shared/catalog-dashboard the same way.
+  {
+    path: 'sports-dashboard',
+    loadComponent: () => import('./shared/catalog-dashboard/catalog-dashboard').then((m) => m.CatalogDashboard),
+    data: { segment: 'bySport', labelKey: 'catalogDashboard.sportNameLabel' },
+    canActivate: [authGuard],
+  },
+  {
+    path: 'leagues-dashboard',
+    loadComponent: () => import('./shared/catalog-dashboard/catalog-dashboard').then((m) => m.CatalogDashboard),
+    data: { segment: 'byLeague', labelKey: 'catalogDashboard.leagueNameLabel' },
+    canActivate: [authGuard],
+  },
+  {
+    path: 'markets-dashboard',
+    loadComponent: () => import('./shared/catalog-dashboard/catalog-dashboard').then((m) => m.CatalogDashboard),
+    data: { segment: 'byMarket', labelKey: 'catalogDashboard.marketNameLabel' },
+    canActivate: [authGuard],
+  },
+  {
+    path: 'tipsters-dashboard',
+    loadComponent: () => import('./shared/catalog-dashboard/catalog-dashboard').then((m) => m.CatalogDashboard),
+    data: { segment: 'byTipster', labelKey: 'catalogDashboard.tipsterNameLabel' },
+    canActivate: [authGuard],
+  },
+  {
+    path: 'betting-houses-dashboard',
+    loadComponent: () => import('./shared/catalog-dashboard/catalog-dashboard').then((m) => m.CatalogDashboard),
+    data: { segment: 'byBettingHouse', labelKey: 'catalogDashboard.bettingHouseNameLabel' },
     canActivate: [authGuard],
   },
   {
