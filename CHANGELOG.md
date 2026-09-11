@@ -69,3 +69,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-340](https://stakevault.atlassian.net/browse/SV-340) - Dockerfile + nginx.conf + .dockerignore + job build-and-push-image
 - [SV-341](https://stakevault.atlassian.net/browse/SV-341) - CHANGELOG e verificacao final
 - [SV-342](https://stakevault.atlassian.net/browse/SV-342) - Achados reais no primeiro develop->main de verdade deste repositorio
+- [SV-362](https://stakevault.atlassian.net/browse/SV-362) - Dashboard consolidado - filtro de periodo com presets e novos cards de KPI
+- [SV-363](https://stakevault.atlassian.net/browse/SV-363) - BankrollApi + SettingsApi novos, StatisticsApi.BetMetrics estendido
+- [SV-364](https://stakevault.atlassian.net/browse/SV-364) - shared/period-preset-filter (presets + date range picker)
+- [SV-365](https://stakevault.atlassian.net/browse/SV-365) - Dashboard: period-preset-filter substitui inputs crus, forkJoin com bankroll/settings, cards novos
+- [SV-366](https://stakevault.atlassian.net/browse/SV-366) - Campo admin-only de configuracao de unidade (PATCH /api/v1/settings)
+- [SV-367](https://stakevault.atlassian.net/browse/SV-367) - Playwright, QA visual final, CHANGELOG e verificacao final

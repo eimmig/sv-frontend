@@ -31,7 +31,19 @@ interface Options {
 
 const EMPTY_OPTIONS: Options = { bettingHouses: [], sports: [], leagues: [], markets: [], tipsters: [] };
 
-const EMPTY_METRICS: BetMetrics = { totalStaked: 0, netProfit: 0, roi: 0, winRate: 0, settledCount: 0 };
+const EMPTY_METRICS: BetMetrics = {
+  totalStaked: 0,
+  netProfit: 0,
+  roi: 0,
+  winRate: 0,
+  settledCount: 0,
+  wonCount: 0,
+  lostCount: 0,
+  voidCount: 0,
+  preCount: 0,
+  liveCount: 0,
+  avgOdd: null,
+};
 
 const EMPTY_DASHBOARD: StatisticsDashboard = {
   overall: EMPTY_METRICS,
