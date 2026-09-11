@@ -831,6 +831,56 @@
         }
       ],
       "evidence": "Fechado em 2026-09-10 (feat-012.1..012.7, story SV-303, PRs #48-54 subtask->feature + merge final feature->develop). Tela search-statistics nova: form reativo com sportId/leagueId obrigatorios (submit desabilitado ate ambos preenchidos), autocomplete de time escopado por esporte via switchMap (cancela chamada obsoleta na troca rapida de esporte, testado unit+e2e), sinal hasSearched distinguindo 'nunca buscou' de 'buscou e zerou' (achado corrigido: card de betCount que faltava no plano original virou o gatilho do segundo estado), 8 cards de resumo (incluindo sharpeRatio null renderizado como texto localizado, nunca 'null'/NaN) + equity-curve-chart novo. Reuso: shared/kpi-card extraido (dashboard refatorado pra usa-lo tambem, data-testid preservados, so a classe CSS interna mudou de dashboard__card--* pra kpi-card--*, 1 teste existente atualizado) e core/chart-theme.ts extraido de monthly-profit-chart.ts (reusado pelo grafico novo). Rota /search-statistics + nav + i18n nos 3 locales (150 chaves em sincronia). Achado real corrigido durante feat-012.6: mock do e2e pro endpoint GET /api/v1/statistics/teams usava por engano o envelope paginado dos outros catalogos em vez do array puro do contrato real - causava TypeError 'newCollection[Symbol.iterator] is not a function' dentro do @for, so reproduzivel em browser real (Chromium via Playwright), nunca nos testes unitarios (fixtures do HttpTestingController ja tinham a forma certa) - documentado em docs/TESTING.md. Delivery Reviewer (1 revisor independente em contexto isolado): PASS, 2 achados P3 (fluxo de idioma trocado ausente no e2e - corrigido na mesma sessao; locator por classe CSS em kpi-card.spec.ts - aceito, e o proprio spec do componente asserindo sua saida encapsulada). Test Suite Auditor: PASS. npm test 41/41 (127/127 testes) + Playwright 28/28 verdes. ./init.sh do app e da raiz verdes. QA visual real via Playwright (screenshots claro/escuro, desktop/mobile) nas 2 telas tocadas, sem achado. Fecha epic-012 (raiz)."
+    },
+    {
+      "id": "feat-013",
+      "name": "Dockerfile de producao + build e push da imagem no CI",
+      "goal": "Publicar a imagem deste app em ghcr.io/eimmig/sv-frontend a cada push estavel em main, viabilizando deploy real - unico dos 6 repositorios de aplicacao que ainda nao tinha Dockerfile (os outros 5 ganharam em epic-010 da raiz).",
+      "scope": [
+        "Dockerfile multi-stage: node:24-alpine builda (npm ci && npm run build), runtime nginxinc/nginx-unprivileged:alpine serve dist/web/browser na porta 8080",
+        "nginx.conf com fallback de SPA (try_files -> index.html) e .dockerignore",
+        "Job build-and-push-image no ci.yml, mesmo padrao ja usado nos outros 5 repositorios (actions pinadas por SHA completo, guard de qualitygate.wait ja corrigido proativamente)",
+        "Nao inclui resolver o apiGatewayUrl hardcoded de producao (environment.ts aponta pra dominio placeholder) - depende da decisao de dominio/tunnel ainda em aberto, fora do escopo deste repositorio"
+      ],
+      "description": "Ate agora este app nunca tinha sido containerizado - infra/k8s/ nao tem manifest pra ele, diferente dos outros 5 servicos (epic-010). Verificado nesta sessao: docker build real passou, docker run real respondeu 200 em / e /dashboard (prova o fallback de SPA), output de build confirmado em dist/web/browser (projeto 'web' no angular.json, sem outputPath customizado).",
+      "dependencies": [],
+      "status": "in-progress",
+      "plan_review": "2026-09-10, Plan Reviewer (review-suite:ln-11-plan-reviewer) - READY WITH CONCERNS. Evidencia real ja coletada antes da revisao: docker build + docker run reais, curl 200 em / e /dashboard (SPA fallback provado, nao suposto), nginxinc/nginx-unprivileged:alpine confirmado escutando 8080 sem root no mesmo teste. Sem achado bloqueante. Risco residual aceito, fora de escopo: apiGatewayUrl de producao hardcoded pra dominio placeholder (https://api.stakevault.example.com) - imagem builda e funciona, mas apontaria pro lugar errado em runtime real ate a resolucao de dominio ficar decidida (fora deste repositorio).",
+      "jira": "SV-339",
+      "subtasks": [
+        {
+          "id": "feat-013.1",
+          "name": "Dockerfile + nginx.conf + .dockerignore + job build-and-push-image",
+          "detail": "Primeira containerizacao deste app. Build e run reais ja confirmados antes de abrir PR - nginx-unprivileged (nao root) serve o output estatico do Angular, sem toolchain de Node na imagem final.",
+          "checklist": [
+            "Dockerfile multi-stage (build node:24-alpine, runtime nginxinc/nginx-unprivileged:alpine)",
+            "nginx.conf com try_files SPA fallback",
+            ".dockerignore (node_modules, dist, e2e, coverage)",
+            "Job build-and-push-image (actions pinadas por SHA, needs: pipeline, if restrito a push em main)",
+            "Guard de sonar.qualitygate.wait corrigido proativamente pra qualquer push direto (nao so develop)"
+          ],
+          "validation": "docker build + docker run reais (ja feito); push em main dispara o job, imagem aparece em ghcr.io/eimmig/sv-frontend.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-340"
+        },
+        {
+          "id": "feat-013.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento formal: CHANGELOG.md, init.sh, confirmar Workflow permissions = Read and write, e o item fixo de vault desta feature.",
+          "checklist": [
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes",
+            "Settings > Actions > General > Workflow permissions = Read and write confirmado neste repositorio",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC1) no mesmo commit"
+          ],
+          "validation": "Push real em main confirmado no GitHub Actions (job verde) e imagem visivel no pacote do repositorio.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-341"
+        }
+      ],
+      "evidence": ""
     }
   ]
 }
