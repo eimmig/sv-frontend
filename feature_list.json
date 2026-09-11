@@ -982,7 +982,7 @@
         {
           "id": "feat-014.5",
           "name": "Playwright, QA visual final, CHANGELOG e verificacao final",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-367",
           "detail": "Fecha a feature - fluxo critico novo (troca de preset de periodo) precisa de prova E2E real, nao so unitaria.",
           "checklist": [
