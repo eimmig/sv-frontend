@@ -12,14 +12,15 @@ export interface PeriodRange {
   readonly to: string;
 }
 
-function toDateOnly(date: Date): string {
+/** Exported for reuse by pages/period-report/period-report-metrics.ts (iterating a date range). */
+export function toDateOnly(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
 
-function addDays(date: Date, days: number): Date {
+export function addDays(date: Date, days: number): Date {
   const result = new Date(date);
   result.setDate(result.getDate() + days);
   return result;
