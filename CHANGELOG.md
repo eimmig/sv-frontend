@@ -80,3 +80,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-370](https://stakevault.atlassian.net/browse/SV-370) - Modulo de calculo puro (period-report-metrics.ts) com oraculo do print de referencia
 - [SV-371](https://stakevault.atlassian.net/browse/SV-371) - Pagina period-report: forkJoin, tabela dia a dia, cards de resumo, rota + nav + i18n
 - [SV-372](https://stakevault.atlassian.net/browse/SV-372) - Playwright, QA visual final, CHANGELOG e verificacao final
+- [SV-373](https://stakevault.atlassian.net/browse/SV-373) - Menu por cadastro (Cadastrar + Dashboard) para esporte/liga/mercado/tipster/casa de apostas
+- [SV-374](https://stakevault.atlassian.net/browse/SV-374) - StatisticsDashboard ganha byLeague/byTipster
+- [SV-375](https://stakevault.atlassian.net/browse/SV-375) - shared/catalog-dashboard novo (ranking parametrizado por segmento)
+- [SV-376](https://stakevault.atlassian.net/browse/SV-376) - Rotas novas (Cadastrar + Dashboard) via withComponentInputBinding, app-nav com 5 mat-menu
+- [SV-377](https://stakevault.atlassian.net/browse/SV-377) - e2e/catalogs.spec.ts reescrito, Playwright novo pro catalog-dashboard
+- [SV-378](https://stakevault.atlassian.net/browse/SV-378) - QA visual final, CHANGELOG e verificacao final

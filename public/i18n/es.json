@@ -54,6 +54,20 @@
     "byBettingHouseTitle": "Por casa de apuestas",
     "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
   },
+  "catalogDashboard": {
+    "filtersTitle": "Filtros",
+    "rankingTitle": "Ranking",
+    "netProfitLabel": "Beneficio neto",
+    "roiLabel": "ROI",
+    "settledCountLabel": "Apuestas liquidadas",
+    "emptyResult": "No se encontraron apuestas liquidadas en ese período.",
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo.",
+    "sportNameLabel": "Deporte",
+    "leagueNameLabel": "Liga",
+    "marketNameLabel": "Mercado",
+    "tipsterNameLabel": "Tipster",
+    "bettingHouseNameLabel": "Casa de apuestas"
+  },
   "searchStatistics": {
     "filtersTitle": "Filtros",
     "resultsTitle": "Resultados",
@@ -115,7 +129,8 @@
     "bettingHouses": "Casas de apuestas",
     "newBet": "Registrar apuesta",
     "history": "Historial",
-    "catalogs": "Catálogos",
+    "registerMenuItem": "Registrar",
+    "dashboardMenuItem": "Dashboard",
     "searchStatistics": "Buscar estadísticas",
     "periodReport": "Informe del período",
     "users": "Usuarios",
