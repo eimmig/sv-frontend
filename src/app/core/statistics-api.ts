@@ -22,6 +22,23 @@ export interface BetMetrics {
   readonly avgOdd: number | null;
 }
 
+/** Shared zero-value default, used by any page/signal whose data hasn't loaded yet
+ *  (dashboard.ts, pages/period-report) - kept in one place so a future BetMetrics field
+ *  addition doesn't need updating in more than one component. */
+export const EMPTY_BET_METRICS: BetMetrics = {
+  totalStaked: 0,
+  netProfit: 0,
+  roi: 0,
+  winRate: 0,
+  settledCount: 0,
+  wonCount: 0,
+  lostCount: 0,
+  voidCount: 0,
+  preCount: 0,
+  liveCount: 0,
+  avgOdd: null,
+};
+
 export interface SegmentedBetMetrics {
   readonly dimensionId: string;
   readonly dimensionName: string;

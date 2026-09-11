@@ -1052,7 +1052,7 @@
         {
           "id": "feat-015.3",
           "name": "Pagina period-report: forkJoin, tabela dia a dia, cards de resumo, rota + nav + i18n",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-371",
           "detail": "period-preset-filter (feat-014.2) sempre tem valor (default Hoje) - satisfaz 'filtro de data obrigatorio' sem mudanca no componente compartilhado.",
           "checklist": [
