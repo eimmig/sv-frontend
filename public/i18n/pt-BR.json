@@ -12,6 +12,17 @@
     "desc": "Um ponto de luz percorre e desenha o anel do cofre, os raios giram até encaixar, as barras sobem em cascata, um pulso se expande e o nome é revelado por uma varredura.",
     "tagline": "GESTÃO DE BANCA"
   },
+  "periodPresetFilter": {
+    "label": "Período",
+    "presetToday": "Hoje",
+    "presetLastWeek": "Última semana",
+    "presetLast15Days": "Últimos 15 dias",
+    "presetLastMonth": "Último mês",
+    "presetThisMonth": "Este mês",
+    "presetCustom": "Personalizado",
+    "fromLabel": "De",
+    "toLabel": "Até"
+  },
   "dashboard": {
     "filtersTitle": "Filtros",
     "metricsTitle": "Métricas",
