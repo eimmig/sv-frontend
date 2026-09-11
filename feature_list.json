@@ -1283,7 +1283,7 @@
         {
           "id": "feat-018.3",
           "name": "Motion pass: view transitions, collapse do sidebar, animacao autoral do login",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-388",
           "detail": "Pedido explicito do usuario ('bastante animacoes, bem fluido') + animacao autoral especifica no form de login - orientado por .claude/skills/impeccable/reference/animate.md (ja lido no plan review).",
           "checklist": [

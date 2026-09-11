@@ -25,6 +25,12 @@ $width-collapsed: 72px;
   width: $width-collapsed;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .side-nav {
+    transition: none;
+  }
+}
+
 .side-nav__brand {
   display: flex;
   align-items: center;
