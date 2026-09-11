@@ -3,10 +3,49 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-11
-**Estado:** `feat-001` a `feat-014` `done` (`feat-013`, Dockerfile/CI push, fechada em sessão
-anterior). `feat-014` (dashboard — filtro de período com presets, integração bankroll/settings,
-novos cards de KPI, `epic-015` da raiz) fechada nesta sessão. Libera `epic-017`/`epic-019` (ambos
-dependiam de `epic-015`) — `epic-020`/`epic-021` já estavam liberados por outras dependências.
+**Estado:** `feat-001` a `feat-015` `done`. `feat-015` (página "Relatório do período", `epic-017`
+da raiz) fechada nesta sessão, logo após `feat-014` (`epic-015`). Libera `epic-019` (dependia de
+`epic-015`, já liberado) — `epic-020`/`epic-021` já estavam liberados por outras dependências.
+
+## `feat-015` fechada — página "Relatório do período" (2026-09-11)
+
+Fecha `epic-017` da raiz (escopo novo, fora do backlog original do TCC1, pedido do usuário
+2026-09-10, print de planilha pessoal anexado). Página nova (`/period-report`), distinta do
+dashboard consolidado (`epic-006`/`epic-015`) e da tela "Buscar Estatísticas" (`epic-012`) —
+visão fechada de desempenho num período, sempre com filtro de data obrigatório (reusa
+`shared/period-preset-filter` de `feat-014.2`, que sempre tem valor — sem mudança no componente
+compartilhado).
+
+4 subtasks (story SV-368): `feat-015.1` (SV-369, `StatisticsApi.getDaily()` — gap real fechado,
+endpoint do backend desde `stats-service epic-016` nunca consumido pelo frontend, mesmo padrão de
+`feat-014.1`), `feat-015.2` (SV-370, `period-report-metrics.ts` — módulo de cálculo puro, sem
+Angular/HttpClient, testável isoladamente), `feat-015.3` (SV-371, página + `forkJoin` de 4
+chamadas + rota + nav + i18n), `feat-015.4` (SV-372, Playwright + QA visual + fechamento).
+
+**Achado MAJOR do Plan Reviewer, resolvido no plano**: `docs/STATISTICS.md` define
+`profitUnidades` reaproveitando o termo "saldoAtual" (saldo *agora*) da seção do dashboard, mas o
+escopo do `epic-017` é explícito — só 2 chamadas de bankroll (`at=from`/`at=to`), sem uma 3ª
+"agora" separada. Resolvido: "saldoAtual" nas fórmulas desta página usa `saldoFinal`
+(`saldoEm(to)`) como proxy — a fonte mais específica (escopo do epic) prevalece sobre a seção
+genérica de fórmulas.
+
+**Achado real durante os testes do oráculo de referência**: `docs/STATISTICS.md` tinha um erro de
+aritmética no próprio exemplo de `+EV` — `37,00% − 31,06%` estava escrito como `5,98%`, mas o
+resultado correto é `5,94%` (a fórmula em si já estava confirmada pelo usuário; só o resultado
+escrito na nota estava errado). Corrigido no mesmo commit de fechamento.
+
+`period-report-metrics.ts` testado diretamente contra os valores do print de referência do
+usuário (22,11% ROI Bankroll, 37,00% taxa de acerto das entradas) como oráculo independente da
+própria implementação — não só ausência de exceção. `EMPTY_BET_METRICS` extraído para
+`core/statistics-api.ts` (eliminando duplicação com `dashboard.ts`).
+
+`Delivery Reviewer`/`Test Suite Auditor` (passe próprio, sem subagentes — independência reduzida,
+declarada) rodados contra o diff completo (16 arquivos): ambos `PASS`. `./init.sh` verde — 163
+testes unitários + 35 Playwright. QA visual real (screenshots via Chromium, 2 temas ×
+desktop/mobile) contra o dev server rodando de verdade — sem achados (renderizou correto de
+primeira). CI+SonarCloud verdes nas 4 PRs de subtask (#65-68) e na PR `feature/SV-368 -> develop`
+(#69). `docs/services/web.md`/`docs/STATISTICS.md` (repositório raiz) atualizados no mesmo
+commit.
 
 ## `feat-014` fechada — dashboard consolidado: filtro de período, bankroll/settings, novos cards (2026-09-11)
 
