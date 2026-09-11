@@ -1,12 +1,13 @@
 // Real bug found via feat-006's own Playwright run (docs/CONVENTIONS.md, session-handoff.md
 // risk table already flagged this as fragile since feat-002.2): every page hardcoded
 // `height: calc(100vh - 64px)` assuming the app-nav row was the only chrome above the routed
-// page, at a fixed 64px. app-language-selector/app-theme-toggle were never positioned (no CSS
-// at all) and sat in normal document flow above the nav, and the nav itself wraps to more than
-// one line once enough links accumulate - both silently grew the real offset well past 64px,
-// which the fixed calc() never adjusted for. A flex column shell fixes this at the source: the
-// header block (toolbar + nav + banner) sizes itself naturally, and `.app-shell__content` gets
-// whatever space is left - routed pages set `height: 100%` (not a hardcoded calc) to fill it.
+// page, at a fixed 64px - the header wrapping to more than one line silently grew the real
+// offset. Sizing the header block naturally and letting `.app-shell__content` take the rest
+// (`height: 100%`, not a hardcoded calc) fixed it at the source.
+//
+// feat-018 ("menu lateral"): the shell is a flex ROW now (sidebar + main column) instead of a
+// flex column with a horizontal nav - app-side-nav sizes its own width (see its :host), this
+// component only needs to give it the full height and let the main column take the rest.
 :host {
   display: block;
   height: 100%;
@@ -14,18 +15,27 @@
 
 .app-shell {
   display: flex;
+  height: 100%;
+}
+
+.app-shell__main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-.app-shell__toolbar {
+// Unauthenticated only (login) - authenticated users get language/theme in app-side-nav's
+// footer instead, so there is only ever one navigation surface on screen, never two.
+.app-shell__floating-controls {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
   display: flex;
-  justify-content: flex-end;
   align-items: center;
-  gap: 12px;
-  padding: 12px 24px;
-  background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
+  gap: 8px;
+  z-index: 10;
 }
 
 .app-shell__content {

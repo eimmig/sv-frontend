@@ -1252,7 +1252,7 @@
         {
           "id": "feat-018.1",
           "name": "app-side-nav (sidebar colapsavel) substitui app-nav",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-386",
           "detail": "Fecha a divergencia do item 1 de docs/DESIGN-SYSTEM.md - nav lateral sempre foi a especificacao, nunca implementada.",
           "checklist": [

@@ -134,7 +134,9 @@
     "searchStatistics": "Buscar estatísticas",
     "periodReport": "Relatório do período",
     "users": "Usuários",
-    "logout": "Sair"
+    "logout": "Sair",
+    "collapse": "Retrair menu",
+    "expand": "Expandir menu"
   },
   "mustChangePassword": {
     "message": "Você está usando uma senha temporária. Troque-a assim que possível.",
