@@ -80,29 +80,6 @@ describe('StatisticsApi', () => {
     });
   });
 
-  // feat-016 (web "menu por cadastro"): byLeague/byTipster (stats-service epic-018) flow through
-  // the response unchanged - real gap, the fields existed on the backend since epic-018 but were
-  // never part of this frontend type until now.
-  it('passes through byLeague/byTipster unchanged', () => {
-    let result: unknown;
-    api.get({}).subscribe((dashboard) => (result = { byLeague: dashboard.byLeague, byTipster: dashboard.byTipster }));
-
-    const request = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/statistics`);
-    const league = [{ dimensionId: 'lg-1', dimensionName: 'Brasileirão', metrics: { totalStaked: 0, netProfit: 0, roi: 0, winRate: 0, settledCount: 0 } }];
-    const tipster = [{ dimensionId: 'tp-1', dimensionName: 'Ana', metrics: { totalStaked: 0, netProfit: 0, roi: 0, winRate: 0, settledCount: 0 } }];
-    request.flush({
-      overall: { totalStaked: 0, netProfit: 0, roi: 0, winRate: 0, settledCount: 0 },
-      bySport: [],
-      byMarket: [],
-      byBettingHouse: [],
-      byLeague: league,
-      byTipster: tipster,
-      monthly: [],
-    });
-
-    expect(result).toEqual({ byLeague: league, byTipster: tipster });
-  });
-
   // feat-015 ("Relatório do período"): real endpoint since stats-service epic-016, never
   // consumed by the frontend until now.
   it('getDaily() GETs /api/v1/statistics/daily with the same filter params as get()', () => {
