@@ -79,4 +79,21 @@ describe('StatisticsApi', () => {
       avgOdd: 1.9,
     });
   });
+
+  // feat-015 ("Relatório do período"): real endpoint since stats-service epic-016, never
+  // consumed by the frontend until now.
+  it('getDaily() GETs /api/v1/statistics/daily with the same filter params as get()', () => {
+    let result: unknown;
+    api.getDaily({ from: '2026-01-01', to: '2026-01-31' }).subscribe((daily) => (result = daily));
+
+    const request = httpMock.expectOne(
+      (req) => req.url === `${environment.apiGatewayUrl}/api/v1/statistics/daily`,
+    );
+    expect(request.request.params.get('from')).toBe('2026-01-01');
+    expect(request.request.params.get('to')).toBe('2026-01-31');
+    const sparseDays = [{ date: '2026-01-03', totalStaked: 100, netProfit: 50, roi: 0.5, betCount: 2 }];
+    request.flush(sparseDays);
+
+    expect(result).toEqual(sparseDays);
+  });
 });
