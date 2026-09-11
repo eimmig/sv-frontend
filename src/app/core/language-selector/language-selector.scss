@@ -28,6 +28,12 @@
     color: var(--color-text-primary);
     font-size: 14px;
     font-weight: 500;
+    // Real bug (feat-018.2): MatSelect's overlay panel defaults to matching the TRIGGER's
+    // width, which shrinks to fit whichever locale is currently selected - once a short locale
+    // ("English") is active, the panel reopens too narrow and clips a longer one ("Português").
+    // A min-width sized to the longest of the 3 labels keeps the trigger (and therefore the
+    // panel) wide enough regardless of which locale is currently selected.
+    min-width: 120px;
   }
 }
 

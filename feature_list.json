@@ -1269,7 +1269,7 @@
         {
           "id": "feat-018.2",
           "name": "language-selector: fix de min-width (causa raiz do corte) + controles flutuantes no login",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-387",
           "detail": "Achado do Plan Reviewer: manter mat-select/mat-option (nao reconstruir como mat-menu) evita quebrar 3 e2e specs de idioma sem necessidade - o bug real e o painel herdar a largura do trigger atual.",
           "checklist": [
