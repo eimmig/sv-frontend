@@ -1,0 +1,38 @@
+<app-panel-layout columns="320px 1fr">
+  <app-panel [title]="'catalogDashboard.filtersTitle' | transloco">
+    <app-period-preset-filter (rangeChange)="onPeriodChange($event)" />
+  </app-panel>
+
+  <app-panel [title]="'catalogDashboard.rankingTitle' | transloco">
+    @if (error(); as message) {
+      <p class="catalog-dashboard__error" role="alert" data-testid="catalog-dashboard-error">{{ message }}</p>
+    } @else {
+      <div class="catalog-dashboard__table-wrap">
+        <table class="catalog-dashboard__table" data-testid="catalog-dashboard-table">
+          <thead>
+            <tr>
+              <th>{{ labelKey() | transloco }}</th>
+              <th>{{ 'catalogDashboard.netProfitLabel' | transloco }}</th>
+              <th>{{ 'catalogDashboard.roiLabel' | transloco }}</th>
+              <th>{{ 'catalogDashboard.settledCountLabel' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of rows(); track trackRow($index, row)) {
+              <tr data-testid="catalog-dashboard-row">
+                <td>{{ row.dimensionName }}</td>
+                <td [class]="'catalog-dashboard__value--' + sign(row.metrics.netProfit)">{{ formatBrl(row.metrics.netProfit) }}</td>
+                <td [class]="'catalog-dashboard__value--' + sign(row.metrics.roi)">{{ formatPercent(row.metrics.roi) }}</td>
+                <td>{{ row.metrics.settledCount }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" data-testid="catalog-dashboard-empty">{{ 'catalogDashboard.emptyResult' | transloco }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </app-panel>
+</app-panel-layout>

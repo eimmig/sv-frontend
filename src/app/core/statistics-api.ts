@@ -63,6 +63,18 @@ export interface StatisticsDashboard {
   readonly monthly: MonthlyBetMetrics[];
 }
 
+/** Shared zero-value default (see EMPTY_BET_METRICS) - dashboard.ts and shared/catalog-dashboard
+ *  both need an initial value before the first GET /api/v1/statistics response arrives. */
+export const EMPTY_STATISTICS_DASHBOARD: StatisticsDashboard = {
+  overall: EMPTY_BET_METRICS,
+  bySport: [],
+  byMarket: [],
+  byBettingHouse: [],
+  byLeague: [],
+  byTipster: [],
+  monthly: [],
+};
+
 export interface StatisticsFilter {
   readonly bettingHouseId?: string;
   readonly sportId?: string;

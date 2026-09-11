@@ -1,0 +1,45 @@
+:host {
+  display: block;
+  height: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.catalog-dashboard__error {
+  margin: 0;
+  color: var(--color-negative);
+  font-size: 14px;
+}
+
+.catalog-dashboard__value--positive {
+  color: var(--color-positive);
+}
+
+.catalog-dashboard__value--negative {
+  color: var(--color-negative);
+}
+
+.catalog-dashboard__table-wrap {
+  overflow-x: auto;
+}
+
+.catalog-dashboard__table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+
+  th {
+    text-align: left;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    padding: 8px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  td {
+    padding: 8px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 14px;
+  }
+}

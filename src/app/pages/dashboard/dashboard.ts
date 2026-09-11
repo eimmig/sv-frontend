@@ -19,7 +19,7 @@ import { Language } from '../../core/language';
 import { formatOdd } from '../../core/number-format';
 import { formatPercent } from '../../core/percent';
 import { SettingsApi } from '../../core/settings-api';
-import { EMPTY_BET_METRICS, SegmentedBetMetrics, StatisticsApi, StatisticsDashboard } from '../../core/statistics-api';
+import { EMPTY_STATISTICS_DASHBOARD, SegmentedBetMetrics, StatisticsApi, StatisticsDashboard } from '../../core/statistics-api';
 import { KpiCard, KpiCardSign, kpiSign } from '../../shared/kpi-card/kpi-card';
 import { MonthlyProfitChart } from '../../shared/monthly-profit-chart/monthly-profit-chart';
 import { Panel } from '../../shared/panel/panel';
@@ -36,16 +36,6 @@ interface Options {
 
 const EMPTY_OPTIONS: Options = { bettingHouses: [], sports: [], leagues: [], markets: [], tipsters: [] };
 
-const EMPTY_DASHBOARD: StatisticsDashboard = {
-  overall: EMPTY_BET_METRICS,
-  bySport: [],
-  byMarket: [],
-  byBettingHouse: [],
-  byLeague: [],
-  byTipster: [],
-  monthly: [],
-};
-
 interface DashboardData {
   readonly dashboard: StatisticsDashboard;
   /** GET /api/v1/bankroll/balance?at=<from|to> (bets-service epic-013) - saldoInicial/saldoFinal
@@ -60,7 +50,7 @@ interface DashboardData {
 }
 
 const EMPTY_DASHBOARD_DATA: DashboardData = {
-  dashboard: EMPTY_DASHBOARD,
+  dashboard: EMPTY_STATISTICS_DASHBOARD,
   bankrollFrom: 0,
   bankrollTo: 0,
   bankrollNow: 0,

@@ -54,6 +54,20 @@
     "byBettingHouseTitle": "By betting house",
     "genericError": "Could not complete the operation. Please try again."
   },
+  "catalogDashboard": {
+    "filtersTitle": "Filters",
+    "rankingTitle": "Ranking",
+    "netProfitLabel": "Net profit",
+    "roiLabel": "ROI",
+    "settledCountLabel": "Settled bets",
+    "emptyResult": "No settled bets found in this period.",
+    "genericError": "Could not complete the operation. Please try again.",
+    "sportNameLabel": "Sport",
+    "leagueNameLabel": "League",
+    "marketNameLabel": "Market",
+    "tipsterNameLabel": "Tipster",
+    "bettingHouseNameLabel": "Betting house"
+  },
   "searchStatistics": {
     "filtersTitle": "Filters",
     "resultsTitle": "Results",

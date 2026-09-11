@@ -1124,7 +1124,7 @@
         {
           "id": "feat-016.2",
           "name": "shared/catalog-dashboard novo (ranking parametrizado por segmento)",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-375",
           "detail": "Mesmo precedente de catalog-manager (feat-008) - 1 componente parametrizado pros 5 dashboards, nao 5 telas quase identicas.",
           "checklist": [
