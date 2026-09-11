@@ -81,11 +81,12 @@ jobs:
         # Guarda por arquivo-marcador: enquanto o projeto nao existe (repositorio so com
         # harness), este passo e pulado em vez de falhar. Liga sozinho no feat-001 deste
         # servico, quando o marcador passa a existir. Ver docs/CI-CD.md.
-        # sonar.qualitygate.wait pulado so em push direto p/ develop - mesma causa raiz do
-        # passo 6 (API do plano gratuito recusa computar gate pra branch != main). Achado
-        # real (feat-007, retrofit portado dos outros 4 repositorios de aplicacao): sem isso
-        # o passo sempre passa mesmo com o gate reprovado, porque o scanner so envia os dados
-        # e nao espera o processamento assincrono do lado do SonarCloud. Ver docs/CI-CD.md.
+        # sonar.qualitygate.wait pulado em qualquer push direto (nao so develop - achado real
+        # feat-013/CI, 2026-09-11: a expressao "cond && '' || flag" nunca funciona, string vazia
+        # do ramo verdadeiro e falsy pro GitHub Actions, o "||" sempre cai no flag; e mesmo
+        # corrigida, a causa raiz - primeira analise de uma branch longa sem leak period, API
+        # devolve status NONE tratado como reprovado - vale pra qualquer push, main incluso, nao
+        # so develop. Ver docs/CI-CD.md "Sexta"/"Setima armadilha".
         if: hashFiles('package-lock.json') != '' && (github.event_name != 'pull_request' || github.base_ref == 'develop' || github.base_ref == 'main')
         uses: SonarSource/sonarqube-scan-action@v4
         env:
@@ -95,14 +96,43 @@ jobs:
           args: >
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
             -Dsonar.host.url=https://sonarcloud.io
-            ${{ (github.event_name == 'push' && github.ref_name == 'develop') && '' || '-Dsonar.qualitygate.wait=true' }}
+            ${{ github.event_name != 'push' && '-Dsonar.qualitygate.wait=true' || '' }}
 
-      # 6. Gate de issue/hotspot do SonarCloud - pulado em push p/ develop (API bloqueia branch != main)
+      # 6. Gate de issue/hotspot do SonarCloud - pulado em qualquer push direto (mesmo racional do passo 5)
       - name: Validar zero issues no SonarCloud
-        if: hashFiles('package-lock.json') != '' && (github.event_name != 'pull_request' || github.base_ref == 'develop' || github.base_ref == 'main') && !(github.event_name == 'push' && github.ref_name == 'develop')
+        if: hashFiles('package-lock.json') != '' && (github.event_name != 'pull_request' || github.base_ref == 'develop' || github.base_ref == 'main') && github.event_name != 'push'
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: >
           python3 .github/scripts/validate-sonar-issues.py
           --project-key eimmig_sv-frontend
           ${{ github.event_name == 'pull_request' && format('--pull-request {0}', github.event.pull_request.number) || format('--branch {0}', github.ref_name) }}
+
+  build-and-push-image:
+    needs: pipeline
+    if: github.event_name == 'push' && github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+
+      - name: Login no GHCR
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build e push da imagem
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/eimmig/sv-frontend:${{ github.sha }}
+            ghcr.io/eimmig/sv-frontend:latest
