@@ -1154,7 +1154,7 @@
         {
           "id": "feat-016.4",
           "name": "e2e/catalogs.spec.ts reescrito, Playwright novo pro catalog-dashboard",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-377",
           "detail": "Achado MAJOR do Plan Reviewer: reescrita completa, nao incremental - a pagina com abas que o teste original exercitava deixa de existir.",
           "checklist": [
