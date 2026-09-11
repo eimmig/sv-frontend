@@ -3,24 +3,117 @@
   <a routerLink="/dashboard" routerLinkActive="app-nav__link--active" class="app-nav__link">{{
     'nav.dashboard' | transloco
   }}</a>
-  <a routerLink="/betting-houses" routerLinkActive="app-nav__link--active" class="app-nav__link">{{
-    'nav.bettingHouses' | transloco
-  }}</a>
   <a routerLink="/register-bet" routerLinkActive="app-nav__link--active" class="app-nav__link">{{
     'nav.newBet' | transloco
   }}</a>
   <a routerLink="/history" routerLinkActive="app-nav__link--active" class="app-nav__link">{{
     'nav.history' | transloco
   }}</a>
-  <a routerLink="/catalogs" routerLinkActive="app-nav__link--active" class="app-nav__link" data-testid="nav-catalogs">{{
-    'nav.catalogs' | transloco
-  }}</a>
+
+  <!-- feat-016 ("menu por cadastro"): pages/catalogs/ (tab group) + the flat "Casas de apostas"
+       link retired - each of the 5 catalog resources gets its own menu (Cadastrar/Dashboard). -->
+  <button
+    mat-button
+    type="button"
+    [matMenuTriggerFor]="sportsMenu"
+    class="app-nav__link"
+    [class.app-nav__link--active]="isResourceActive(['sports', 'sports-dashboard'])"
+    data-testid="nav-sports-menu"
+  >
+    {{ 'catalogs.sports.title' | transloco }}
+  </button>
+  <mat-menu #sportsMenu="matMenu">
+    <a mat-menu-item routerLink="/sports" data-testid="nav-sports-register">{{ 'nav.registerMenuItem' | transloco }}</a>
+    <a mat-menu-item routerLink="/sports-dashboard" data-testid="nav-sports-dashboard">{{
+      'nav.dashboardMenuItem' | transloco
+    }}</a>
+  </mat-menu>
+
+  <button
+    mat-button
+    type="button"
+    [matMenuTriggerFor]="leaguesMenu"
+    class="app-nav__link"
+    [class.app-nav__link--active]="isResourceActive(['leagues', 'leagues-dashboard'])"
+    data-testid="nav-leagues-menu"
+  >
+    {{ 'catalogs.leagues.title' | transloco }}
+  </button>
+  <mat-menu #leaguesMenu="matMenu">
+    <a mat-menu-item routerLink="/leagues" data-testid="nav-leagues-register">{{ 'nav.registerMenuItem' | transloco }}</a>
+    <a mat-menu-item routerLink="/leagues-dashboard" data-testid="nav-leagues-dashboard">{{
+      'nav.dashboardMenuItem' | transloco
+    }}</a>
+  </mat-menu>
+
+  <button
+    mat-button
+    type="button"
+    [matMenuTriggerFor]="marketsMenu"
+    class="app-nav__link"
+    [class.app-nav__link--active]="isResourceActive(['markets', 'markets-dashboard'])"
+    data-testid="nav-markets-menu"
+  >
+    {{ 'catalogs.markets.title' | transloco }}
+  </button>
+  <mat-menu #marketsMenu="matMenu">
+    <a mat-menu-item routerLink="/markets" data-testid="nav-markets-register">{{ 'nav.registerMenuItem' | transloco }}</a>
+    <a mat-menu-item routerLink="/markets-dashboard" data-testid="nav-markets-dashboard">{{
+      'nav.dashboardMenuItem' | transloco
+    }}</a>
+  </mat-menu>
+
+  <button
+    mat-button
+    type="button"
+    [matMenuTriggerFor]="tipstersMenu"
+    class="app-nav__link"
+    [class.app-nav__link--active]="isResourceActive(['tipsters', 'tipsters-dashboard'])"
+    data-testid="nav-tipsters-menu"
+  >
+    {{ 'catalogs.tipsters.title' | transloco }}
+  </button>
+  <mat-menu #tipstersMenu="matMenu">
+    <a mat-menu-item routerLink="/tipsters" data-testid="nav-tipsters-register">{{
+      'nav.registerMenuItem' | transloco
+    }}</a>
+    <a mat-menu-item routerLink="/tipsters-dashboard" data-testid="nav-tipsters-dashboard">{{
+      'nav.dashboardMenuItem' | transloco
+    }}</a>
+  </mat-menu>
+
+  <button
+    mat-button
+    type="button"
+    [matMenuTriggerFor]="bettingHousesMenu"
+    class="app-nav__link"
+    [class.app-nav__link--active]="isResourceActive(['betting-houses', 'betting-houses-dashboard'])"
+    data-testid="nav-betting-houses-menu"
+  >
+    {{ 'nav.bettingHouses' | transloco }}
+  </button>
+  <mat-menu #bettingHousesMenu="matMenu">
+    <a mat-menu-item routerLink="/betting-houses" data-testid="nav-betting-houses-register">{{
+      'nav.registerMenuItem' | transloco
+    }}</a>
+    <a mat-menu-item routerLink="/betting-houses-dashboard" data-testid="nav-betting-houses-dashboard">{{
+      'nav.dashboardMenuItem' | transloco
+    }}</a>
+  </mat-menu>
+
   <a
     routerLink="/search-statistics"
     routerLinkActive="app-nav__link--active"
     class="app-nav__link"
     data-testid="nav-search-statistics"
     >{{ 'nav.searchStatistics' | transloco }}</a
+  >
+  <a
+    routerLink="/period-report"
+    routerLinkActive="app-nav__link--active"
+    class="app-nav__link"
+    data-testid="nav-period-report"
+    >{{ 'nav.periodReport' | transloco }}</a
   >
   @if (auth.isAdmin()) {
     <a routerLink="/users" routerLinkActive="app-nav__link--active" class="app-nav__link" data-testid="nav-users">{{

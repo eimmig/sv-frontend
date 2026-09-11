@@ -2,12 +2,88 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-09-10
-**Estado:** `feat-001` a `feat-012` `done`. `feat-012` (tela "Buscar Estatísticas", `epic-012` da
-raiz, escopo novo fora do TCC1) fechada nesta sessão. Próxima sessão: `epic-013` (`bets-service`)
-e `epic-016`/`epic-018` (`stats-service`) liberam `epic-015`/`epic-017`/`epic-019`/`epic-020`/
-`epic-021` deste harness mais adiante — nenhuma feature nova elegível aqui até esses backends
-existirem.
+**Última atualização:** 2026-09-11
+**Estado:** `feat-001` a `feat-015` `done`. `feat-015` (página "Relatório do período", `epic-017`
+da raiz) fechada nesta sessão, logo após `feat-014` (`epic-015`). Libera `epic-019` (dependia de
+`epic-015`, já liberado) — `epic-020`/`epic-021` já estavam liberados por outras dependências.
+
+## `feat-015` fechada — página "Relatório do período" (2026-09-11)
+
+Fecha `epic-017` da raiz (escopo novo, fora do backlog original do TCC1, pedido do usuário
+2026-09-10, print de planilha pessoal anexado). Página nova (`/period-report`), distinta do
+dashboard consolidado (`epic-006`/`epic-015`) e da tela "Buscar Estatísticas" (`epic-012`) —
+visão fechada de desempenho num período, sempre com filtro de data obrigatório (reusa
+`shared/period-preset-filter` de `feat-014.2`, que sempre tem valor — sem mudança no componente
+compartilhado).
+
+4 subtasks (story SV-368): `feat-015.1` (SV-369, `StatisticsApi.getDaily()` — gap real fechado,
+endpoint do backend desde `stats-service epic-016` nunca consumido pelo frontend, mesmo padrão de
+`feat-014.1`), `feat-015.2` (SV-370, `period-report-metrics.ts` — módulo de cálculo puro, sem
+Angular/HttpClient, testável isoladamente), `feat-015.3` (SV-371, página + `forkJoin` de 4
+chamadas + rota + nav + i18n), `feat-015.4` (SV-372, Playwright + QA visual + fechamento).
+
+**Achado MAJOR do Plan Reviewer, resolvido no plano**: `docs/STATISTICS.md` define
+`profitUnidades` reaproveitando o termo "saldoAtual" (saldo *agora*) da seção do dashboard, mas o
+escopo do `epic-017` é explícito — só 2 chamadas de bankroll (`at=from`/`at=to`), sem uma 3ª
+"agora" separada. Resolvido: "saldoAtual" nas fórmulas desta página usa `saldoFinal`
+(`saldoEm(to)`) como proxy — a fonte mais específica (escopo do epic) prevalece sobre a seção
+genérica de fórmulas.
+
+**Achado real durante os testes do oráculo de referência**: `docs/STATISTICS.md` tinha um erro de
+aritmética no próprio exemplo de `+EV` — `37,00% − 31,06%` estava escrito como `5,98%`, mas o
+resultado correto é `5,94%` (a fórmula em si já estava confirmada pelo usuário; só o resultado
+escrito na nota estava errado). Corrigido no mesmo commit de fechamento.
+
+`period-report-metrics.ts` testado diretamente contra os valores do print de referência do
+usuário (22,11% ROI Bankroll, 37,00% taxa de acerto das entradas) como oráculo independente da
+própria implementação — não só ausência de exceção. `EMPTY_BET_METRICS` extraído para
+`core/statistics-api.ts` (eliminando duplicação com `dashboard.ts`).
+
+`Delivery Reviewer`/`Test Suite Auditor` (passe próprio, sem subagentes — independência reduzida,
+declarada) rodados contra o diff completo (16 arquivos): ambos `PASS`. `./init.sh` verde — 163
+testes unitários + 35 Playwright. QA visual real (screenshots via Chromium, 2 temas ×
+desktop/mobile) contra o dev server rodando de verdade — sem achados (renderizou correto de
+primeira). CI+SonarCloud verdes nas 4 PRs de subtask (#65-68) e na PR `feature/SV-368 -> develop`
+(#69). `docs/services/web.md`/`docs/STATISTICS.md` (repositório raiz) atualizados no mesmo
+commit.
+
+## `feat-014` fechada — dashboard consolidado: filtro de período, bankroll/settings, novos cards (2026-09-11)
+
+Fecha `epic-015` da raiz (escopo novo, fora do backlog original do TCC1, pedido do usuário
+2026-09-10). Reespecificação do dashboard já entregue em `feat-006` (`done`) — não cria tela
+nova. 5 subtasks (story SV-362): `feat-014.1` (SV-363, `BankrollApi`/`SettingsApi` novos +
+`StatisticsApi.BetMetrics` estendido com os 6 campos que `stats-service` já expunha desde
+`epic-014` e nunca tinham sido consumidos aqui), `feat-014.2` (SV-364,
+`shared/period-preset-filter` — presets + range customizado, vive em `shared/` porque `epic-017`
+reusa o mesmo componente), `feat-014.3` (SV-365, wiring completo do dashboard — `forkJoin` com
+bankroll ×3/settings, novos cards, preset "Hoje" aplicado por padrão no load — mudança de
+comportamento intencional, antes carregava sem filtro nenhum), `feat-014.4` (SV-366, campo
+admin-only inline para editar `unitPercent`), `feat-014.5` (SV-367, Playwright + QA visual +
+fechamento).
+
+**Achado MAJOR do Plan Reviewer, corrigido no plano**: `BetMetrics`/`StatisticsDashboard`
+(frontend) nunca acompanharam as 2 evoluções do backend (`epic-014`/`epic-018` de
+`stats-service`) — escopo desta feature ampliou só os 6 campos que os cards novos consomem
+(`wonCount`/`lostCount`/`voidCount`/`preCount`/`liveCount`/`avgOdd`), deixando
+`byBetType`/`byLeague`/`byTipster` de fora de propósito (pertencem a `epic-019`/`epic-021`).
+
+**QA visual real** (screenshots via Chromium contra o dev server rodando de verdade, 2 temas ×
+desktop/mobile × admin/member — não só leitura de código): achado real corrigido — label
+"Unidade (% da banca)" truncado por `max-width:140px` no campo admin-only, corrigido para
+`min-width:180px`. Um falso-positivo investigado a fundo e descartado: suspeita inicial de
+overflow horizontal no mobile (candidata: `min-width:auto` padrão de `app-panel` em
+`panel.scss`) não se confirmou num teste controlado (servidor limpo, sem hot-reload) — o sintoma
+original era artefato do ciclo iterativo de edição+screenshot contra o dev server em watch mode,
+não um defeito de código real. Nenhuma mudança em `panel.scss` (componente compartilhado, fora
+do escopo desta feature) foi mantida — evitado scope creep sobre uma hipótese não confirmada.
+Teste Playwright novo (`e2e/panel-layout.spec.ts`) mantido mesmo assim como cobertura RNF01
+proativa (não como regressão de bug confirmado) para a densidade de conteúdo nova do dashboard.
+
+`Delivery Reviewer`/`Test Suite Auditor` (passe próprio, sem subagentes — independência
+reduzida, declarada) rodados contra o diff completo (19 arquivos): ambos `PASS`. `./init.sh`
+verde — 148 testes unitários + 32 Playwright. CI+SonarCloud verdes nas 5 PRs de subtask
+(#59-63) e na PR `feature/SV-362 -> develop` (#64). `docs/services/web.md` (repositório raiz)
+atualizado confirmando aderência ao planejado, seção marcada `done`.
 
 ## `feat-012` fechada — tela "Buscar Estatísticas" (2026-09-10)
 

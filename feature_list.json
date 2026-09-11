@@ -844,7 +844,7 @@
       ],
       "description": "Ate agora este app nunca tinha sido containerizado - infra/k8s/ nao tem manifest pra ele, diferente dos outros 5 servicos (epic-010). Verificado nesta sessao: docker build real passou, docker run real respondeu 200 em / e /dashboard (prova o fallback de SPA), output de build confirmado em dist/web/browser (projeto 'web' no angular.json, sem outputPath customizado).",
       "dependencies": [],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "2026-09-10, Plan Reviewer (review-suite:ln-11-plan-reviewer) - READY WITH CONCERNS. Evidencia real ja coletada antes da revisao: docker build + docker run reais, curl 200 em / e /dashboard (SPA fallback provado, nao suposto), nginxinc/nginx-unprivileged:alpine confirmado escutando 8080 sem root no mesmo teste. Sem achado bloqueante. Risco residual aceito, fora de escopo: apiGatewayUrl de producao hardcoded pra dominio placeholder (https://api.stakevault.example.com) - imagem builda e funciona, mas apontaria pro lugar errado em runtime real ate a resolucao de dominio ficar decidida (fora deste repositorio).",
       "jira": "SV-339",
       "subtasks": [
@@ -892,6 +892,342 @@
           "owner": "agente",
           "status": "done",
           "jira": "SV-342"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-10. Primeiro Dockerfile deste app (dos 6 repositorios de aplicacao, era o unico sem - os outros 5 ganharam em epic-010). Multi-stage node:24-alpine + nginxinc/nginx-unprivileged:alpine, build e run verificados de verdade localmente (docker build, docker run, curl 200 em / e /dashboard provando o fallback de SPA) antes de abrir PR. Job build-and-push-image publicando de verdade em ghcr.io/eimmig/sv-frontend - confirmado via log real (containerimage.digest: sha256:a9b9ff3...). Actions ja pinadas por SHA completo e guard de sonar.qualitygate.wait ja corrigido proativamente desde o primeiro commit (licoes dos outros 4 repositorios aplicadas sem repetir o ciclo de descoberta) - SonarCloud passou de primeira no PR feature->develop. Mesmo assim, o primeiro develop->main de verdade deste repositorio expos 2 achados pre-existentes na janela de new code (feat-013.3): typescript:S7761 (setAttribute -> dataset) e css:S4666 (selector :root[data-theme='dark'] duplicado, mesclado em um bloco so). npm run build + npm test (127 testes) verdes depois da correcao. Delivery Reviewer: PASS (nenhum achado bloqueante alem dos 2 ja corrigidos). Workflow permissions do repositorio confirmado 'Read and write'. ./init.sh do app e da raiz verdes. Risco residual aceito, fora de escopo: apiGatewayUrl de producao ainda aponta pra dominio placeholder."
+    },
+    {
+      "id": "feat-014",
+      "name": "Dashboard consolidado - filtro de periodo com presets e novos cards de KPI",
+      "goal": "Reespecificar o dashboard ja entregue em feat-006 (nao substituir a tela): filtro de periodo com presets (default Hoje, muda o comportamento atual de carregar sem filtro), combinar GET /api/v1/statistics com GET /api/v1/bankroll/balance (saldo inicial/final/atual) e GET /api/v1/settings (unitPercent), novos cards de KPI (PRE/LIVE, vitorias/derrotas, odd media, saldo inicial/final, unidades apostadas calculado no cliente), campo admin-only para editar unitPercent.",
+      "scope": [
+        "BankrollApi (GET /api/v1/bankroll/balance?at=) + SettingsApi (GET/PATCH /api/v1/settings) novos em core/ - nenhum dos dois existe ainda no frontend, apesar do backend (bets-service epic-013) estar done ha varias sessoes",
+        "StatisticsApi.BetMetrics estendido com wonCount/lostCount/voidCount/preCount/liveCount/avgOdd - campos ja existem no backend desde stats-service epic-014, nunca consumidos aqui (gap real, nao regressao desta feature)",
+        "shared/period-preset-filter novo (presets Hoje/Ultima semana/Ultimos 15 dias/Ultimo mes/Este mes + Material date range picker para periodo customizado, resolve pra from/to yyyy-MM-dd client-side) - reusavel por epic-017/epic-020 mais adiante, por isso vive em shared/ e nao dentro de dashboard/",
+        "Dashboard: period-preset-filter substitui os 2 inputs de data crus; ngOnInit passa a aplicar o preset Hoje por padrao (MUDA o comportamento atual, que carrega sem filtro nenhum - mudanca intencional, documentada em docs/services/web.md)",
+        "forkJoin do dashboard ganha 3 chamadas a bankroll balance (at=from, at=to, sem at/agora) + 1 a settings (unitPercent), ao lado da chamada existente a GET /api/v1/statistics",
+        "Cards novos: apostas PRE/LIVE (preCount/liveCount), vitorias/derrotas (wonCount/lostCount, ao lado do winRate ja existente), odd media (avgOdd), saldo inicial (saldoEm(from)), saldo final (saldoEm(to)), unidades apostadas (totalStaked/(saldoAtual x unitPercent), formula em docs/STATISTICS.md)",
+        "Campo admin-only (Auth.isAdmin(), mesmo mecanismo ja usado por adminGuard) para editar unitPercent via PATCH /api/v1/settings - GET nao e restrito (todo usuario precisa do valor pra unidades apostadas), so o PATCH exige role admin",
+        "i18n 3 locales (pt-BR/en-US/es) para toda label nova",
+        "Testes unitarios (API clients novos, period-preset-filter, wiring do dashboard) + Playwright (troca de preset recarrega os cards, campo de unidade so aparece/edita para admin)"
+      ],
+      "description": "Escopo novo, fora do backlog original do TCC1 (epic-015 da raiz, pedido do usuario 2026-09-10) - reespecificacao do dashboard ja entregue em feat-006 (done), nao cria tela nova. Depende de epic-014 (stats-service, done - campos novos em BetMetrics), epic-013 (bets-service, done - bankroll/settings) e epic-006 (raiz, done - dashboard existente). Formulas completas em docs/STATISTICS.md secao 'Metricas novas do dashboard consolidado'.",
+      "dependencies": [
+        "feat-006"
+      ],
+      "status": "done",
+      "plan_review": "2026-09-11, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado contra o plano antes de qualquer codigo (passe proprio, sem subagentes - independencia reduzida, declarada, mesmo padrao ja usado nas demais features deste app). Veredito: READY WITH CONCERNS, nenhum achado BLOCKER, 2 decisoes de UI resolvidas no plano (explicitamente delegadas ao plan review pela propria descricao do epic - nao exigem AskUserQuestion, ambas reversiveis/baixo risco). (DECISAO #1 - local do campo de unidade) docs/services/web.md deixava em aberto 'aba nova vs. tela de casas de apostas vs. area de usuario'. Resolvido: campo inline dentro do painel de filtros do proprio dashboard (nao rota nova, nao aba nova) - e onde o valor e consumido (unidades apostadas), meno atrito que navegar pra outra tela pra mudar um unico percentual, mesmo precedente de campo condicional a role ja usado em outras telas (adminGuard). Reavaliar se uma feature futura (epic-019, tela de configuracao geral) quiser centralizar isso. (DECISAO #2 - divisao por zero em unidadesApostadas) Nem docs/STATISTICS.md nem RN definem o caso saldoAtual=0 ou unitPercent=0 (tenant recem-criado, banca zerada). Resolvido: renderiza '-' (mesmo padrao ja usado por sharpeRatio null em feat-012.4), sem lancar excecao nem dividir por zero no template. (ACHADO MAJOR, corrigido no plano) BetMetrics/StatisticsDashboard (core/statistics-api.ts) nunca foram atualizados desde feat-006 - o backend evoluiu 2 vezes (epic-014: wonCount/lostCount/voidCount/preCount/liveCount/avgOdd/byBetType; epic-018: byLeague/byTipster) sem o frontend acompanhar. Escopo desta feature amplia SO os 6 campos de BetMetrics que os cards novos realmente consomem (wonCount/lostCount/voidCount/preCount/liveCount/avgOdd) - byBetType/byLeague/byTipster ficam fora (pertencem a epic-019/epic-021, adicionar agora seria escopo nao pedido por esta feature, stay in scope). (MINOR) saldoEm(data) e chamado 3x por filtro (from/to/agora) - sem cache client-side entre elas (from pode ser igual a 'hoje' em alguns presets, ex. preset 'Hoje'), aceito pela mesma razao que o backend nao cacheia (RN08, filtro sempre recalcula) - nenhuma race/inconsistencia, so uma chamada HTTP a mais em alguns casos, sem instrumentacao de performance destE app que justifique otimizar preventivamente. Escopo confirmado (sem decisao do usuario necessaria): period-preset-filter feito com Signals/output() (nao ControlValueAccessor) - mais simples dado que o consumidor (dashboard) so precisa ler from/to resolvidos, sem two-way binding de formulario; presets calculados com Date nativo (sem biblioteca de data nova - CLAUDE.md deste app nao lista nenhuma, evitar dependencia nao decidida).",
+      "jira": "SV-362",
+      "subtasks": [
+        {
+          "id": "feat-014.1",
+          "name": "BankrollApi + SettingsApi novos, StatisticsApi.BetMetrics estendido",
+          "status": "done",
+          "jira": "SV-363",
+          "detail": "3 clientes HTTP novos/estendidos, mesmo padrao ja usado por betting-houses-api.ts (Injectable providedIn root, environment.apiGatewayUrl, sem tratamento de erro proprio - loadInto ja trata no chamador).",
+          "checklist": [
+            "core/bankroll-api.ts - BankrollApi.getBalance(at?: string): Observable<{at: string, balance: number}>, GET /api/v1/bankroll/balance com HttpParams opcional 'at'.",
+            "core/settings-api.ts - SettingsApi.get(): Observable<{unitPercent: number}> (GET /api/v1/settings) e SettingsApi.update(unitPercent: number): Observable<{unitPercent: number}> (PATCH /api/v1/settings).",
+            "core/statistics-api.ts - BetMetrics ganha wonCount/lostCount/voidCount/preCount/liveCount/avgOdd (avgOdd: number | null, mesmo padrao nullable ja usado em statistics-search-api.ts pra sharpeRatio).",
+            "Testes unitarios (HttpTestingController, mesmo padrao de betting-houses-api.spec.ts): getBalance com/sem 'at', get/update de settings, BetMetrics aceita os campos novos."
+          ],
+          "validation": "./init.sh verde - testes provam os 2 clientes novos e a extensao de BetMetrics contra HttpTestingController.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-014.2",
+          "name": "shared/period-preset-filter (presets + date range picker)",
+          "status": "done",
+          "jira": "SV-364",
+          "detail": "Componente novo em shared/ (nao dentro de pages/dashboard/) porque epic-017/epic-020 vao reusa-lo - mesmo precedente de kpi-card/equity-curve-chart, extraidos quando uma segunda tela precisou da mesma peca.",
+          "checklist": [
+            "shared/period-preset-filter/period-preset-filter.ts - Signals + output() emitindo {from: string, to: string} (yyyy-MM-dd) a cada mudanca de preset ou de data customizada; presets Hoje/Ultima semana/Ultimos 15 dias/Ultimo mes (mes calendario anterior completo)/Este mes, calculados com Date nativo (sem lib de data nova).",
+            "Template: mat-button-toggle-group (ou select) pros 5 presets + Material date range picker (MatDatepickerModule) pro periodo customizado - segue app-panel-layout/tema deste app, testado nos 2 temas.",
+            "Testes unitarios: cada preset resolve pro intervalo correto (datas fixas via jasmine.clock() ou injeção de 'hoje', nao Date.now() direto no teste), mudanca pro range customizado emite o output correto."
+          ],
+          "validation": "./init.sh verde - teste prova os 5 presets com data de referencia fixa (sem depender do dia real da execucao) e o range customizado.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-014.3",
+          "name": "Dashboard: period-preset-filter substitui inputs crus, forkJoin com bankroll/settings, cards novos",
+          "status": "done",
+          "jira": "SV-365",
+          "detail": "Achado MAJOR do Plan Reviewer ja escopado: so os 6 campos de BetMetrics que os cards consomem entram aqui - sem byBetType/byLeague/byTipster (fora de escopo). Mudanca de comportamento intencional: ngOnInit aplica preset Hoje por padrao (antes carregava sem filtro).",
+          "checklist": [
+            "dashboard.ts: filterForm perde os FormControls from/to brutos, ganha o novo <app-period-preset-filter> (output atualiza from/to internos); ngOnInit aplica preset Hoje antes da primeira chamada.",
+            "forkJoin do applyFilter() adiciona bankrollFrom/bankrollTo/bankrollNow (BankrollApi.getBalance com at=from/at=to/sem at) e settings (SettingsApi.get()), ao lado da chamada existente a StatisticsApi.",
+            "unidadesApostadas calculado no template/getter: totalStaked/(saldoAtual x unitPercent), renderiza '-' quando saldoAtual=0 ou unitPercent=0 (decisao do plan review).",
+            "Cards novos no dashboard__cards: apostas PRE/LIVE, vitorias/derrotas (par com winRate ja existente), odd media, saldo inicial, saldo final, unidades apostadas.",
+            "i18n: novas chaves em pt-BR/en-US/es (dashboard.*) para todos os labels novos.",
+            "Testes unitarios: preset Hoje aplicado no ngOnInit (nao mais 'sem filtro'), cards novos renderizam os valores certos, unidadesApostadas '-' quando saldoAtual/unitPercent=0."
+          ],
+          "validation": "./init.sh verde - QA visual (Impeccable) nos 2 temas/mobile+desktop antes de fechar a subtask (UI nova).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-014.4",
+          "name": "Campo admin-only de configuracao de unidade (PATCH /api/v1/settings)",
+          "status": "done",
+          "jira": "SV-366",
+          "detail": "Decisao do plan review: inline no painel de filtros, gated por Auth.isAdmin() (mesmo mecanismo de adminGuard, aqui como secao condicional de UI em vez de guard de rota).",
+          "checklist": [
+            "dashboard.ts: injeta Auth, campo/form pequeno (percentual) visivel so quando auth.isAdmin() - salvar chama SettingsApi.update, sucesso atualiza o signal de settings local (sem reload da pagina) + feedback visual (mesmo padrao de banner de sucesso ja usado em outras telas).",
+            "i18n 3 locales para label/botao/feedback do campo novo.",
+            "Testes unitarios: campo ausente para role member, presente e funcional para role admin, erro do backend (403/400) exibido via detail RFC 7807."
+          ],
+          "validation": "./init.sh verde - teste unitario prova a visibilidade condicional por role, nao so o caminho admin.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-014.5",
+          "name": "Playwright, QA visual final, CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-367",
+          "detail": "Fecha a feature - fluxo critico novo (troca de preset de periodo) precisa de prova E2E real, nao so unitaria.",
+          "checklist": [
+            "e2e/dashboard.spec.ts (ou arquivo novo): trocar preset de periodo recarrega os cards com dados diferentes; campo de unidade visivel/editavel logado como admin, ausente como member.",
+            "QA visual (Impeccable) final nas 2 telas tocadas (dashboard, painel de filtros), 2 temas, mobile+desktop.",
+            "Entrada em CHANGELOG.md (Unreleased).",
+            "./init.sh do app e da raiz verdes.",
+            "Delivery Reviewer + Test Suite Auditor rodados sobre o diff completo da feature.",
+            "docs/services/web.md: secao 'Dashboard consolidado' marcada done, com nota de implementacao.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC1) no mesmo commit."
+          ],
+          "validation": "./init.sh raiz e do app saem 0; Playwright completo verde; evidence da feature preenchida.",
+          "owner": "agente"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-11 (story SV-362, 5 subtasks SV-363..367, PRs #59-63 subtask->feature). Dashboard reespecificado (feat-006, done): shared/period-preset-filter novo (presets Hoje/Ultima semana/Ultimos 15 dias/Ultimo mes/Este mes + range customizado com input nativo de data), aplicado por padrao no load (mudanca de comportamento intencional, antes sem filtro nenhum). forkJoin do dashboard combina GET /api/v1/statistics + GET /api/v1/bankroll/balance (3x: at=from/at=to/sem at) + GET /api/v1/settings. Cards novos: PRE/LIVE, vitorias/derrotas, odd media, saldo inicial/final, unidades apostadas (calculado no cliente, indeterminado quando saldoAtual/unitPercent=0). Campo admin-only inline no painel de filtros pra editar unitPercent (PATCH /api/v1/settings, gate client-side via Auth.isAdmin() - enforcement real e no backend). StatisticsApi.BetMetrics (frontend) atualizado com os 6 campos que o stats-service ja expunha desde epic-014 e nunca tinham sido consumidos aqui (wonCount/lostCount/voidCount/preCount/liveCount/avgOdd) - byBetType/byLeague/byTipster ficaram fora de proposito (fora do escopo desta feature). Delivery Reviewer (passe proprio, sem subagentes - independencia reduzida, declarada): PASS - achado MAJOR do plan review (BetMetrics desatualizado) corrigido no escopo certo (so os 6 campos usados), sem regressao nos 3 testes Playwright/4 testes unitarios pre-existentes do dashboard (atualizados pra cobrir o forkJoin novo). Test Suite Auditor: PASS - period-preset-filter testado com data de referencia fixa (sem depender do relogio real), cache-aside e wiring de HTTP provados via HttpTestingController, visibilidade condicional do campo admin provada nos dois papeis (ADMIN/MEMBER) em unitario e Playwright. QA visual real (screenshots via Chromium, 2 temas x desktop/mobile x ambos os papeis) contra o dev server rodando de verdade - achado real corrigido: label 'Unidade (% da banca)' truncado por max-width:140px no campo admin-only, corrigido pra min-width:180px. Um falso-positivo investigado a fundo e descartado: suspeita inicial de overflow horizontal no mobile (min-width:auto de app-panel) nao se confirmou num teste controlado (servidor limpo, sem hot-reload) - o sintoma original era artefato do ciclo iterativo de edicao+screenshot contra o dev server em watch mode, nao um defeito de codigo; nenhuma mudanca em panel.scss (componente compartilhado, fora do escopo desta feature) foi mantida. Teste Playwright novo adicionado mesmo assim como cobertura RNF01 proativa (nao como regressao de bug confirmado) pra densidade de conteudo nova do dashboard (6 campos de filtro + 9 cards) num viewport mobile real. ./init.sh do app e da raiz verdes, 148 testes unitarios + 32 Playwright verdes. docs/services/web.md (repositorio raiz) atualizado confirmando aderencia ao planejado, secao marcada done. Fecha epic-015 da raiz. Libera epic-017/epic-019 (dependiam deste)."
+    },
+    {
+      "id": "feat-015",
+      "name": "Pagina \"Relatorio do periodo\"",
+      "goal": "Pagina nova (distinta do dashboard consolidado e da tela Buscar Estatisticas), visao fechada de desempenho num periodo sempre com filtro de data obrigatorio: tabela dia a dia (preenchendo com zero os dias sem aposta) e cards de resumo (ROI Bankroll, ROI Average Profit, Profit em unidades/R$, Stake medio, Dias/Entradas Green-Red, +EV).",
+      "scope": [
+        "StatisticsApi.getDaily(filter) novo (GET /api/v1/statistics/daily) + DailyBetMetrics - endpoint existe no backend desde stats-service epic-016, nunca consumido no frontend (mesmo padrao de gap ja fechado em feat-014 pro BetMetrics)",
+        "Modulo de calculo puro (period-report-metrics.ts, testavel sem TestBed/Angular): tabela densa por dia (preenche zero pros dias sem aposta que o array esparso de /daily nao traz) e as formulas de resumo - ROI Bankroll=netProfit/saldoEm(from), ROI Average Profit=media simples do roi dos dias COM aposta (array esparso original, nao a tabela densa), Profit em unidades/R$, %Units Total=unitPercent, Stake medio=totalStaked/settledCount, Dias Green/Red (netProfit do dia >0/<0, so dias com aposta), +EV=taxaAcertoEntradas-(1/avgOdd) com taxaAcertoEntradas=wonCount/(wonCount+lostCount) - void excluido, diferente do winRate ja existente",
+        "Pagina nova (pages/period-report/): filtro de periodo obrigatorio (reusa shared/period-preset-filter de feat-014.2, sem opcao 'sem filtro'), forkJoin com 4 chamadas (GET /api/v1/statistics overall, GET /api/v1/statistics/daily, GET /api/v1/bankroll/balance x2 - at=from/at=to, GET /api/v1/settings) - MESMAS 2 chamadas de bankroll ja usadas pelo dashboard (epic-015), reaproveitadas aqui sem nenhuma terceira (dashboard usa 3, aqui sao so 2 - nao precisa de saldoAtual separado, so saldoInicial/saldoFinal)",
+        "Tabela dia a dia: 1 linha por dia do intervalo [from,to], ROI% (roi do dia via API, 0 se sem aposta), ROI em unidades (netProfit dia/(saldoAtual x unitPercent)), ROI em R$ (netProfit do dia), total de apostas do dia (betCount)",
+        "Cashout Favor/Contra do print de referencia do usuario NAO entra (decisao ja tomada em epic-016/epic-017, fora de escopo)",
+        "Rota nova (/period-report) + link na nav + i18n 3 locales",
+        "Testes: modulo de calculo puro com os valores do print de referencia conferidos pelo usuario (22.11% ROI Bankroll, 37.00% taxa entradas, 5.98% +EV) como oraculo independente, nao so 'nao lanca excecao'"
+      ],
+      "description": "Escopo novo, fora do backlog original do TCC1 (epic-017 da raiz, pedido do usuario 2026-09-10, print de planilha pessoal anexado - layout livre, conteudo e o que importa). Depende de epic-016 (stats-service, done - GET /api/v1/statistics/daily), epic-013 (bets-service, done - bankroll/settings) e epic-015 (web, done - shared/period-preset-filter e o padrao de forkJoin com bankroll/settings ja estabelecidos). Formulas completas com fundamentacao/valores de referencia em docs/STATISTICS.md secao 'Metricas da pagina Relatorio do periodo'.",
+      "dependencies": [
+        "feat-014"
+      ],
+      "status": "done",
+      "plan_review": "2026-09-11, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado contra o plano antes de qualquer codigo (passe proprio, sem subagentes - independencia reduzida, declarada, mesmo padrao ja usado nas demais features deste app). Veredito: READY WITH CONCERNS, nenhum achado BLOCKER, 1 achado MAJOR resolvido no plano (decisao ja implicita no proprio epic, nao exige AskUserQuestion), demais decisoes de implementacao resolvidas por precedente direto do codebase. (MAJOR - conflito entre 2 fontes) docs/STATISTICS.md define profitUnidades='netProfit(periodo)/(saldoAtual x unitPercent)' reaproveitando o termo 'saldoAtual' (saldo AGORA, sem 'at') da secao do dashboard - mas a descricao do epic-017 na raiz e explicita: forkJoin desta pagina usa SO 2 chamadas de bankroll (at=from/at=to), 'MESMAS 2 chamadas ja usadas pelo dashboard... sem nenhuma terceira'. Resolvido: 'saldoAtual' nas formulas desta pagina (profitUnidades e a conversao de unidades por dia da tabela) usa saldoFinal (saldoEm(to)) como proxy - nao uma 3a chamada 'agora' separada. Interpretacao aceitavel porque a fonte mais especifica (escopo do epic, que ja fecha o numero de chamadas de proposito) prevalece sobre a secao generica de formulas (que reaproveita o termo do dashboard sem reconciliar com a superficie de API reduzida desta pagina); residual: se to=hoje (caso comum, presets Hoje/Este mes) saldoFinal==saldoAtual de fato, so diverge em ranges customizados terminando no passado - aceitavel, mesma classe de simplificacao ja documentada pra unidadesApostadas no dashboard (usa valores vigentes, nao versiona). Escopo confirmado (sem decisao do usuario necessaria, precedente direto do codebase): 'ROI em R$' por dia da tabela = netProfit(dia) (mesmo par conceitual de 'ROI em unidades', so trocando a unidade de conversao); 'Profit R$' do resumo = overall.netProfit (ja disponivel, sem calculo novo); roiMedioDiario calculado sobre o array ESPARSO original (so dias com aposta), nao sobre a tabela densa preenchida com zero (media incluiria dias sem aposta como 0, mudando o resultado - contraria docs/STATISTICS.md 'para cada dia com pelo menos 1 aposta liquidada'); +EV/taxaAcertoEntradas usa wonCount/lostCount/avgOdd de GET /api/v1/statistics (overall, ja teria vindo no fetch, sem endpoint novo); casos de denominador zero (saldoInicial=0, saldoFinal x unitPercent=0, wonCount+lostCount=0, settledCount=0, array de dias vazio) retornam null (renderiza 'Indeterminado', mesmo padrao ja usado em feat-014), nao excecao. Modulo de calculo (period-report-metrics.ts) extraido como funcoes puras (mesmo precedente de resolvePreset em period-preset-filter.ts, feat-014.2) - testavel com os 3 valores do print de referencia do usuario ja confirmados em docs/STATISTICS.md (22.11% ROI Bankroll, 37.00% taxa de acerto das entradas, 5.98% +EV) como oraculo independente da propria implementacao.",
+      "jira": "SV-368",
+      "subtasks": [
+        {
+          "id": "feat-015.1",
+          "name": "StatisticsApi.getDaily() novo (GET /api/v1/statistics/daily)",
+          "status": "done",
+          "jira": "SV-369",
+          "detail": "Gap real: endpoint existe no backend desde stats-service epic-016, nunca consumido no frontend - mesmo padrao de feat-014.1 (BetMetrics desatualizado).",
+          "checklist": [
+            "core/statistics-api.ts - interface DailyBetMetrics (date: string, totalStaked: number, netProfit: number, roi: number, betCount: number).",
+            "StatisticsApi.getDaily(filter: StatisticsFilter): Observable<DailyBetMetrics[]> - GET /api/v1/statistics/daily, mesmos params opcionais de get() (toHttpParams reaproveitado).",
+            "Teste unitario (HttpTestingController, mesmo padrao de statistics-api.spec.ts): params corretos, array esparso passa direto sem transformacao."
+          ],
+          "validation": "./init.sh verde - teste prova o cliente novo contra HttpTestingController.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-015.2",
+          "name": "Modulo de calculo puro (period-report-metrics.ts) com oraculo do print de referencia",
+          "status": "done",
+          "jira": "SV-370",
+          "detail": "Achado MAJOR do Plan Reviewer ja resolvido no plano: saldoAtual desta pagina = saldoFinal (saldoEm(to)), nao uma 3a chamada de bankroll. Funcoes puras, sem Angular/HttpClient - testaveis diretamente.",
+          "checklist": [
+            "pages/period-report/period-report-metrics.ts: buildDailyTable(daily: DailyBetMetrics[], from: string, to: string, saldoFinal: number, unitPercent: number) -> linha por dia do intervalo, dias sem aposta preenchidos com {roiPercent:0, roiUnidades:0, roiReais:0, apostas:0}; roiUnidades/roiReais usam netProfit do dia (0 se sem aposta).",
+            "computeSummary(overall: BetMetrics, daily: DailyBetMetrics[], saldoInicial: number, saldoFinal: number, unitPercent: number): resumo com roiBankroll (null se saldoInicial=0), roiMedioDiario (media do array ESPARSO original, null se vazio), profitUnidades/profitReais (profitUnidades null se saldoFinal x unitPercent=0), stakeMedio (null se settledCount=0), diasVerdes/diasVermelhos (netProfit do dia >0/<0, so array esparso), evPercent (null se wonCount+lostCount=0 ou avgOdd null/0).",
+            "Testes unitarios: os 3 valores do print de referencia (docs/STATISTICS.md) como oraculo independente - roiBankroll=264.20/1195.05=0.2211, taxaAcertoEntradas=74/(74+126)=0.37, evPercent=0.37-(1/3.22)=0.0598; mais casos de borda (todos os denominadores zerados retornam null); buildDailyTable preenche corretamente um intervalo com dias faltando no meio."
+          ],
+          "validation": "./init.sh verde - testes provam os 3 numeros do print de referencia batendo exatamente, nao so ausencia de excecao.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-015.3",
+          "name": "Pagina period-report: forkJoin, tabela dia a dia, cards de resumo, rota + nav + i18n",
+          "status": "done",
+          "jira": "SV-371",
+          "detail": "period-preset-filter (feat-014.2) sempre tem valor (default Hoje) - satisfaz 'filtro de data obrigatorio' sem mudanca no componente compartilhado.",
+          "checklist": [
+            "pages/period-report/period-report.ts: forkJoin com 4 chamadas (statisticsApi.get overall, statisticsApi.getDaily, bankrollApi.getBalance(from)/getBalance(to), settingsApi.get) disparado pelo (rangeChange) do period-preset-filter (mesmo padrao auto-apply de feat-014.3, sem selects adicionais de catalogo nesta pagina).",
+            "Tabela dia a dia (mesmo padrao visual de dashboard__table) usando buildDailyTable(); cards de resumo (app-kpi-card) usando computeSummary() - valores null renderizam 'Indeterminado' (i18n, mesma chave dashboard.indeterminate ou uma nova period-report.indeterminate).",
+            "app.routes.ts: rota /period-report (lazy, authGuard, sem adminGuard - pagina visivel a qualquer usuario autenticado).",
+            "app-nav.html: link novo (nav.periodReport) + i18n 3 locales.",
+            "i18n 3 locales: todas as labels novas da pagina (title, roiBankrollLabel, averageProfitLabel, etc.)."
+          ],
+          "validation": "./init.sh verde - QA visual (Impeccable) nos 2 temas/mobile+desktop antes de fechar a subtask (pagina nova).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-015.4",
+          "name": "Playwright, QA visual final, CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-372",
+          "detail": "Fecha a feature - fluxo critico novo (pagina inteira) precisa de prova E2E real.",
+          "checklist": [
+            "e2e/period-report.spec.ts novo: carrega com preset Hoje default, troca de preset recarrega a tabela/cards, tabela mostra dias preenchidos com zero corretamente.",
+            "QA visual (Impeccable) final na pagina nova, 2 temas, mobile+desktop - screenshots reais contra o dev server, nao so leitura de codigo (mesmo rigor de feat-014.5).",
+            "Entrada em CHANGELOG.md (Unreleased).",
+            "./init.sh do app e da raiz verdes.",
+            "Delivery Reviewer + Test Suite Auditor rodados sobre o diff completo da feature.",
+            "docs/services/web.md: secao correspondente marcada done, com nota de implementacao (decisao do saldoAtual->saldoFinal documentada).",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC1) no mesmo commit."
+          ],
+          "validation": "./init.sh raiz e do app saem 0; Playwright completo verde; evidence da feature preenchida.",
+          "owner": "agente"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-11 (story SV-368, 4 subtasks SV-369..372, PRs #65-68 subtask->feature). Pagina nova 'Relatorio do periodo' (/period-report): StatisticsApi.getDaily() novo (gap real fechado, endpoint do backend desde stats-service epic-016 nunca consumido); period-report-metrics.ts (modulo puro) com roiBankroll/roiMedioDiario/profitUnidades-Reais/stakeMedio/diasVerdes-Vermelhos/+EV, testado contra os valores do print de referencia do usuario (22.11% ROI Bankroll, 37.00% taxa de acerto das entradas) como oraculo independente; achado real: docs/STATISTICS.md tinha um erro de aritmetica no proprio exemplo de +EV (37.00%-31.06% escrito como 5.98%, correto e 5.94%), corrigido no mesmo commit de fechamento. forkJoin com 4 chamadas (overall, /daily, bankroll x2 at=from/at=to, settings) disparado pelo period-preset-filter (sempre tem valor, satisfaz 'filtro obrigatorio' sem mudanca no componente compartilhado). Decisao do plan review: 'saldoAtual' das formulas desta pagina usa saldoFinal (saldoEm(to)) - so 2 chamadas de bankroll, nao uma 3a 'agora' como o dashboard. EMPTY_BET_METRICS extraido pra core/statistics-api.ts (elimina duplicacao com dashboard.ts). Delivery Reviewer (passe proprio, sem subagentes - independencia reduzida, declarada): PASS - achado MAJOR do plan review (conflito saldoAtual vs escopo de 2 chamadas) resolvido corretamente, sem regressao no dashboard (163 testes unitarios + suite Playwright completa verdes apos o refactor de EMPTY_BET_METRICS). Test Suite Auditor: PASS - oraculo independente do print de referencia prova as formulas corretas (nao so ausencia de excecao), buildDailyTable testado com preenchimento de gap no meio do intervalo, casos de denominador zero cobertos. QA visual real (screenshots via Chromium, 2 temas x desktop/mobile, pagina inteira) contra o dev server rodando de verdade - sem achados (renderizou correto de primeira). Achado de tooling durante a escrita do Playwright: glob '**/api/v1/statistics*' (1 asterisco) nao casa '/api/v1/statistics/daily' (Playwright '*' nao cruza '/') - ja documentado em docs/TESTING.md desde feat-009.2, nao precisou nota nova. ./init.sh do app e da raiz verdes, 163 testes unitarios + 35 Playwright verdes. docs/services/web.md (repositorio raiz) atualizado confirmando aderencia ao planejado, secao marcada done. Fecha epic-017 da raiz."
+    },
+    {
+      "id": "feat-016",
+      "name": "Menu por cadastro (Cadastrar + Dashboard) para esporte/liga/mercado/tipster/casa de apostas",
+      "goal": "Reestrutura a nav: cada um dos 5 cadastros ganha menu proprio com 2 destinos (Cadastrar - reusa as telas ja existentes - e Dashboard - ranking novo do recorte filtrado por periodo, ordenado por ROI). Fecha a nav 'Catalogos' (abas) + 'Casas de apostas' (link solto) que existem hoje.",
+      "scope": [
+        "StatisticsDashboard (frontend) ganha byLeague/byTipster - gap real (stats-service epic-018 ja expunha os 2 segmentos, nunca consumidos aqui, mesmo padrao de feat-014.1/015.1)",
+        "shared/catalog-dashboard novo (parametrizado por segment: bySport/byLeague/byMarket/byTipster/byBettingHouse + labelKey de i18n) - lista ranqueada por ROI desc (netProfit/settledCount tambem visiveis), period-preset-filter obrigatorio (mesmo padrao de period-report), forkJoin com GET /api/v1/statistics (bundle inteiro, so le a chave do segmento pedido)",
+        "provideRouter(routes, withComponentInputBinding()) habilitado - rota liga 'resourcePath'/'segment' (route data) direto aos inputs de catalog-manager/catalog-dashboard, evitando 9 paginas-wrapper quase identicas (4 Cadastrar + 5 Dashboard) que reintroduziriam a mesma duplicacao que catalog-manager foi criado pra evitar (achado do SonarCloud em feat-003)",
+        "pages/catalogs/ (tabs) aposentada - rotas novas /sports, /leagues, /markets, /tipsters (Cadastrar, catalog-manager direto) - mesmo nome kebab-case ja usado por /betting-houses/register-bet/search-statistics/period-report",
+        "Rotas novas /sports-dashboard, /leagues-dashboard, /markets-dashboard, /tipsters-dashboard, /betting-houses-dashboard (Dashboard, catalog-dashboard direto) - /betting-houses (Cadastrar) continua como esta, sem mudanca de rota",
+        "app-nav.html: 5 mat-menu (1o uso deste componente no app - ja coberto pelo fix de tema M3 desde feat-011.1) substituindo os links 'Catalogos'/'Casas de apostas' - cada um com 2 itens (Cadastrar/Dashboard), reaproveitando os i18n keys catalogs.sports/leagues/markets/tipsters.title e nav.bettingHouses ja existentes como rotulo do botao",
+        "e2e/catalogs.spec.ts reescrito (a pagina com abas que ele testava deixa de existir) + Playwright novo pro catalog-dashboard",
+        "i18n 3 locales para os labels novos do catalog-dashboard (coluna de tabela, titulo)"
+      ],
+      "description": "Escopo novo, fora do backlog original do TCC1 (epic-019 da raiz, pedido do usuario 2026-09-10). Depende de epic-018 (stats-service, done - byLeague/byTipster no backend), epic-015 (web, done - period-preset-filter e o padrao de forkJoin ja estabelecidos) e epic-006 (raiz, done). Decisao de design a reaproveitar do precedente de feat-008 (evitar duplicacao SonarCloud de feat-003): 1 componente parametrizado pros 5 dashboards, nao 5 telas quase identicas.",
+      "dependencies": [
+        "feat-015"
+      ],
+      "status": "done",
+      "plan_review": "2026-09-11, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado contra o plano antes de qualquer codigo (passe proprio, sem subagentes - independencia reduzida, declarada, mesmo padrao ja usado nas demais features deste app). Veredito: READY WITH CONCERNS, nenhum achado BLOCKER, 1 achado MAJOR resolvido no plano, decisoes de design resolvidas por precedente/mecanismo ja existente no codebase (sem necessidade de AskUserQuestion - nenhuma e decisao de negocio, todas sao escolhas tecnicas de como satisfazer o pedido ja especificado pelo usuario). (MAJOR - subtracao esquecida no plano original) Aposentar pages/catalogs/ (tabs) e reaproveitar as 4 rotas novas (/sports, /leagues, /markets, /tipsters) direto em catalog-manager quebra e2e/catalogs.spec.ts por completo (o teste navega pra /catalogs e clica em abas Material que deixam de existir) - nao e so extensao, precisa reescrita total do arquivo pras 4 rotas novas + navegacao real entre paginas em vez de troca de aba. Corrigido no plano: feat-016.4 assume reescrita completa, nao edicao incremental. Decisoes tecnicas resolvidas no plano: (1) 'segment'/'resourcePath' chegam via route 'data' + 'withComponentInputBinding()' (novo em app.config.ts, aditivo - nenhuma rota existente depende da ausencia dessa opcao) em vez de 9 paginas-wrapper quase identicas (4 Cadastrar + 5 Dashboard) que reintroduziriam a mesma duplicacao que catalog-manager foi criado pra evitar (achado do SonarCloud em feat-003, ver docs/CONVENTIONS.md). (2) app-nav ganha 5 'mat-menu' (primeiro uso deste componente no app) substituindo os links 'Catalogos'/'Casas de apostas' - risco baixo: o tema M3 do app ja cobre 'mat-menu' proativamente desde feat-011.1 (docs/DESIGN-SYSTEM.md), antes mesmo do primeiro uso real. (3) Estado 'ativo' do botao de menu (equivalente ao 'routerLinkActive' que os links simples ja tem) calculado via 'Router.url' comparado contra as 2 rotas daquele recurso (o botao-gatilho do 'mat-menu' nao e ele mesmo um 'routerLink', 'routerLinkActive' sozinho nao o alcanca) - pequeno helper, nao infra nova. (4) Titulo dos paineis de 'catalog-manager' continua generico ('Nova entrada'/'Cadastradas', chaves 'catalogs.createTitle/listTitle' ja existentes) mesmo sem a aba visual de contexto - aceito porque o item do menu ja clicado ('Cadastrar Esportes') e o destaque 'routerLinkActive' do proprio botao ja dao o contexto, mesmo padrao (sem indicador 'voce esta aqui' extra) de /betting-houses e as demais paginas de recurso unico do app. (5) 'byLeague'/'byTipster' novos em 'StatisticsDashboard' (frontend) preenchem so a lacuna necessaria pra esta feature - 'byBetType' (usado por 'epic-021') continua fora, nao e consumido por nenhum dashboard desta feature. Escopo confirmado: ranking do 'catalog-dashboard' ordenado por ROI desc ('SegmentedBetMetrics.metrics.roi' e sempre 'number', nunca 'null' - sem caso de borda de ordenacao); nomes de rota kebab-case (padrao ja usado por '/betting-houses'/'/register-bet'/'/search-statistics'/'/period-report').",
+      "jira": "SV-373",
+      "subtasks": [
+        {
+          "id": "feat-016.1",
+          "name": "StatisticsDashboard ganha byLeague/byTipster",
+          "status": "done",
+          "jira": "SV-374",
+          "detail": "Gap real: stats-service epic-018 ja expunha os 2 segmentos, nunca consumidos pelo frontend - mesmo padrao de feat-014.1/015.1.",
+          "checklist": [
+            "core/statistics-api.ts - StatisticsDashboard ganha byLeague/byTipster: SegmentedBetMetrics[] (mesmo formato de bySport/byMarket/byBettingHouse ja existentes).",
+            "Teste unitario (statistics-api.spec.ts): os 2 campos novos passam pelo cliente sem transformacao (mesmo padrao ja usado pros campos de BetMetrics em feat-014.1)."
+          ],
+          "validation": "./init.sh verde.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-016.2",
+          "name": "shared/catalog-dashboard novo (ranking parametrizado por segmento)",
+          "status": "done",
+          "jira": "SV-375",
+          "detail": "Mesmo precedente de catalog-manager (feat-008) - 1 componente parametrizado pros 5 dashboards, nao 5 telas quase identicas.",
+          "checklist": [
+            "shared/catalog-dashboard/catalog-dashboard.ts - inputs segment (union dos 5 nomes de chave de StatisticsDashboard) e labelKey (chave i18n do titulo da coluna 'Nome'); period-preset-filter obrigatorio (mesmo padrao de period-report) disparando forkJoin com StatisticsApi.get(filter); lista ordenada por metrics.roi desc, colunas Nome/Lucro liquido/ROI/Apostas liquidadas.",
+            "i18n 3 locales: titulo generico do catalog-dashboard + labels de coluna (reaproveita netProfitLabel/roiLabel/settledCountLabel se ja existirem em outro namespace, senao cria em catalogDashboard).",
+            "Teste unitario: ordenacao por ROI desc provada com fixture fora de ordem; segment errado/vazio renderiza lista vazia sem erro."
+          ],
+          "validation": "./init.sh verde - teste prova ordenacao real, nao so ausencia de excecao.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-016.3",
+          "name": "Rotas novas (Cadastrar + Dashboard) via withComponentInputBinding, app-nav com 5 mat-menu",
+          "status": "done",
+          "jira": "SV-376",
+          "detail": "Achado tecnico do Plan Reviewer: route data + withComponentInputBinding evita 9 paginas-wrapper quase identicas.",
+          "checklist": [
+            "app.config.ts: provideRouter(routes, withComponentInputBinding()).",
+            "app.routes.ts: rotas /sports, /leagues, /markets, /tipsters (catalog-manager direto, data: {resourcePath}) + /sports-dashboard, /leagues-dashboard, /markets-dashboard, /tipsters-dashboard, /betting-houses-dashboard (catalog-dashboard direto, data: {segment, labelKey}) - todas authGuard, sem adminGuard.",
+            "pages/catalogs/ removido (catalogs.ts/.html/.scss/.spec.ts) - rota /catalogs removida de app.routes.ts.",
+            "app-nav.html: MatMenuModule + 5 mat-menu (Esportes/Ligas/Mercados/Tipsters/Casas de apostas) substituindo os links antigos - 2 mat-menu-item cada (Cadastrar/Dashboard), rotulo do botao reaproveita catalogs.sports/leagues/markets/tipsters.title e nav.bettingHouses ja existentes.",
+            "app-nav.ts: helper isResourceActive(routes: string[]) comparando Router.url, aplicado como classe no botao-gatilho de cada mat-menu (equivalente ao routerLinkActive que os links simples ja tem)."
+          ],
+          "validation": "./init.sh verde - QA visual (Impeccable) nos 2 temas/mobile+desktop antes de fechar a subtask (nav mudou pra todo o app).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-016.4",
+          "name": "e2e/catalogs.spec.ts reescrito, Playwright novo pro catalog-dashboard",
+          "status": "done",
+          "jira": "SV-377",
+          "detail": "Achado MAJOR do Plan Reviewer: reescrita completa, nao incremental - a pagina com abas que o teste original exercitava deixa de existir.",
+          "checklist": [
+            "e2e/catalogs.spec.ts reescrito: cria um esporte em /sports, navega pro menu Ligas -> Cadastrar (real navegacao de pagina, nao troca de aba) e confirma a lista de /leagues.",
+            "e2e/catalog-dashboard.spec.ts novo: abre um dashboard (ex. /sports-dashboard), confirma ranking ordenado por ROI, trocar o periodo recarrega os dados.",
+            "Teste de nav (app-nav.spec.ts ou novo): mat-menu abre e mostra os 2 itens esperados pro recurso."
+          ],
+          "validation": "./init.sh verde - Playwright completo verde (suite inteira, nao so os arquivos tocados).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-016.5",
+          "name": "QA visual final, CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-378",
+          "detail": "Fecha a feature - nav mudou pra todo o app, precisa de verificacao visual ampla, nao so das paginas novas.",
+          "checklist": [
+            "QA visual (Impeccable) final: nav com os 5 mat-menu abertos/fechados, pelo menos 1 tela Cadastrar e 1 Dashboard, 2 temas, mobile+desktop - screenshots reais contra o dev server.",
+            "Entrada em CHANGELOG.md (Unreleased).",
+            "./init.sh do app e da raiz verdes.",
+            "Delivery Reviewer + Test Suite Auditor rodados sobre o diff completo da feature.",
+            "docs/services/web.md: secao correspondente marcada done, com nota de implementacao.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC1) no mesmo commit."
+          ],
+          "validation": "./init.sh raiz e do app saem 0; Playwright completo verde; evidence da feature preenchida.",
+          "owner": "agente"
+        }
+      ],
+      "evidence": "5 subtasks done (feat-016.1-.5). O que foi feito: StatisticsDashboard (frontend) ganhou byLeague/byTipster (feat-016.1, consumindo stats-service epic-018); shared/catalog-dashboard novo, ranking parametrizado por segmento ordenado por ROI desc, reusado pelos 5 dashboards (feat-016.2); pages/catalogs/ (grupo de abas) removida por completo, substituida por 9 rotas diretas (4 Cadastrar via catalog-manager + 5 Dashboard via catalog-dashboard) ligadas via route data + withComponentInputBinding() novo em app.config.ts - evita 9 paginas-wrapper quase identicas (feat-016.3); app-nav ganhou 5 mat-menu (primeiro uso de overlay do CDK no app) com helper isResourceActive() pro destaque de estado ativo do botao-gatilho. Como foi verificado: e2e/catalogs.spec.ts reescrito por completo pra navegacao real de pagina (a versao antiga trocava aba Material numa pagina que deixou de existir); e2e/catalog-dashboard.spec.ts novo (ranking ROI desc, troca de periodo, erro RFC 7807); teste unitario novo em app-nav.spec.ts provando que o mat-menu abre e mostra os 2 itens esperados. Suite completa: 167 unitarios + 39 e2e, todos verdes; ./init.sh do app verde (cobertura 89.97% statements, acima do gate de 80%). Delivery Reviewer (PASS) e Test Suite Auditor (CONCERNS, so achados P3) rodados contra o diff completo da feature (feature/SV-373 vs develop) antes de fechar - 3 achados corrigidos no mesmo commit de fechamento: comentario desatualizado em catalog-manager.ts (ainda citava a arquitetura de abas retirada), teste trivial em statistics-api.spec.ts removido (so reprovava passthrough do HttpClient, sem logica propria do repositorio - o mesmo comportamento ja e provado por catalog-dashboard.spec.ts de forma mais especifica), e limpeza de OverlayContainer adicionada em app-nav.spec.ts (gotcha documentado em docs/TESTING.md - primeiro teste unitario da suite a abrir um overlay do CDK, sem isso um painel orfao podia vazar pro DOM de um teste seguinte). QA visual final: nav com os 5 mat-menu abertos/fechados, 1 tela Cadastrar e 1 Dashboard, 2 temas (claro/escuro) x mobile/desktop, screenshots reais contra ng serve - sem overflow real de pagina (o scroll horizontal interno da tabela de ranking em mobile e comportamento intencional, mesmo padrao de scroll por painel independente ja usado no resto do app, RNF01). O que divergiu do plano: nada - plan_review ja cobria as 5 decisoes tecnicas (route data + withComponentInputBinding, mat-menu, isResourceActive, titulo generico dos paineis de catalog-manager, escopo de byLeague/byTipster) e todas foram implementadas como descrito. docs/services/web.md secao \"Menu por cadastro\" marcada done com nota de implementacao; docs/TESTING.md ganhou nota sobre o gotcha de OverlayContainer em teste de overlay do CDK."
+    },
+    {
+      "id": "feat-017",
+      "name": "Corrigir apiGatewayUrl hardcoded (residual da feat-013) - CORS bloqueando login real",
+      "goal": "Trocar o dominio placeholder embutido no build de producao por caminho relativo, ja que o Ingress serve web e api-gateway do mesmo host/dominio (infra/feat-005) - fecha o residual ja documentado desde feat-013.",
+      "scope": [
+        "src/environments/environment.ts: apiGatewayUrl de 'https://api.stakevault.example.com' pra '' (string vazia = caminho relativo, mesma origem)",
+        "Nao mexe em environment.development.ts (localhost:8080, continua certo pro dev local)"
+      ],
+      "description": "Achado real ao testar o deploy de verdade no k3s (infra/feat-005): o browser bloqueou o login por CORS, porque o bundle de producao chamava um dominio inventado (nunca existiu de verdade) em vez do proprio host que serviu a pagina. Como o Ingress ja roteia /api pro api-gateway no MESMO host que serve o web (ver infra/k8s/ingress.yaml), caminho relativo elimina CORS de vez (mesma origem) e funciona independente de qual IP/dominio acessa a aplicacao (LAN hoje, stakevault.eu.org quando aprovado).",
+      "dependencies": [
+        "feat-013"
+      ],
+      "status": "in-progress",
+      "plan_review": "2026-09-11 - mudanca de 1 linha, ja verificada com evidencia real antes do plan review: npm run build (bundle gerado sem erro) e npm run test (167/167 verdes, specs referenciam environment.apiGatewayUrl dinamicamente, nao string hardcoded, entao nao quebram com o valor mudando). Risco zero de regressao - so environment.development.ts (usado localmente) fica intocado.",
+      "jira": "SV-379",
+      "subtasks": [
+        {
+          "id": "feat-017.1",
+          "name": "apiGatewayUrl vazio (caminho relativo) em environment.ts",
+          "detail": "Erro de CORS reproduzido de verdade no browser contra o k3s de producao antes da correcao - nao e achado teorico.",
+          "checklist": [
+            "environment.ts: apiGatewayUrl: ''",
+            "npm run build + npm test verdes"
+          ],
+          "validation": "Login real via Ingress (http://<ip-do-server>/) sem erro de CORS no console do navegador.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-380"
+        },
+        {
+          "id": "feat-017.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento formal: CHANGELOG.md, init.sh, imagem republicada no GHCR e redeploy real confirmado sem CORS.",
+          "checklist": [
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes",
+            "Imagem nova publicada (push em main) e pod web reiniciado no k3s com a imagem nova",
+            "Login real confirmado sem erro de CORS"
+          ],
+          "validation": "Fluxo de login real funcionando via Ingress, sem erro de CORS no console.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-381"
         }
       ],
       "evidence": ""

@@ -69,3 +69,23 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-340](https://stakevault.atlassian.net/browse/SV-340) - Dockerfile + nginx.conf + .dockerignore + job build-and-push-image
 - [SV-341](https://stakevault.atlassian.net/browse/SV-341) - CHANGELOG e verificacao final
 - [SV-342](https://stakevault.atlassian.net/browse/SV-342) - Achados reais no primeiro develop->main de verdade deste repositorio
+- [SV-362](https://stakevault.atlassian.net/browse/SV-362) - Dashboard consolidado - filtro de periodo com presets e novos cards de KPI
+- [SV-363](https://stakevault.atlassian.net/browse/SV-363) - BankrollApi + SettingsApi novos, StatisticsApi.BetMetrics estendido
+- [SV-364](https://stakevault.atlassian.net/browse/SV-364) - shared/period-preset-filter (presets + date range picker)
+- [SV-365](https://stakevault.atlassian.net/browse/SV-365) - Dashboard: period-preset-filter substitui inputs crus, forkJoin com bankroll/settings, cards novos
+- [SV-366](https://stakevault.atlassian.net/browse/SV-366) - Campo admin-only de configuracao de unidade (PATCH /api/v1/settings)
+- [SV-367](https://stakevault.atlassian.net/browse/SV-367) - Playwright, QA visual final, CHANGELOG e verificacao final
+- [SV-368](https://stakevault.atlassian.net/browse/SV-368) - Pagina "Relatorio do periodo"
+- [SV-369](https://stakevault.atlassian.net/browse/SV-369) - StatisticsApi.getDaily() novo (GET /api/v1/statistics/daily)
+- [SV-370](https://stakevault.atlassian.net/browse/SV-370) - Modulo de calculo puro (period-report-metrics.ts) com oraculo do print de referencia
+- [SV-371](https://stakevault.atlassian.net/browse/SV-371) - Pagina period-report: forkJoin, tabela dia a dia, cards de resumo, rota + nav + i18n
+- [SV-372](https://stakevault.atlassian.net/browse/SV-372) - Playwright, QA visual final, CHANGELOG e verificacao final
+- [SV-373](https://stakevault.atlassian.net/browse/SV-373) - Menu por cadastro (Cadastrar + Dashboard) para esporte/liga/mercado/tipster/casa de apostas
+- [SV-374](https://stakevault.atlassian.net/browse/SV-374) - StatisticsDashboard ganha byLeague/byTipster
+- [SV-375](https://stakevault.atlassian.net/browse/SV-375) - shared/catalog-dashboard novo (ranking parametrizado por segmento)
+- [SV-376](https://stakevault.atlassian.net/browse/SV-376) - Rotas novas (Cadastrar + Dashboard) via withComponentInputBinding, app-nav com 5 mat-menu
+- [SV-377](https://stakevault.atlassian.net/browse/SV-377) - e2e/catalogs.spec.ts reescrito, Playwright novo pro catalog-dashboard
+- [SV-378](https://stakevault.atlassian.net/browse/SV-378) - QA visual final, CHANGELOG e verificacao final
+- [SV-379](https://stakevault.atlassian.net/browse/SV-379) - Corrigir apiGatewayUrl hardcoded (residual da feat-013) - CORS bloqueando login real
+- [SV-380](https://stakevault.atlassian.net/browse/SV-380) - apiGatewayUrl vazio (caminho relativo) em environment.ts
+- [SV-381](https://stakevault.atlassian.net/browse/SV-381) - CHANGELOG e verificacao final

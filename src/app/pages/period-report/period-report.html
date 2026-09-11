@@ -1,0 +1,102 @@
+<app-panel-layout columns="320px 1fr">
+  <app-panel [title]="'periodReport.filtersTitle' | transloco">
+    <app-period-preset-filter (rangeChange)="onPeriodChange($event)" />
+  </app-panel>
+
+  <app-panel [title]="'periodReport.summaryTitle' | transloco">
+    @if (error(); as message) {
+      <p class="period-report__error" role="alert" data-testid="period-report-error">{{ message }}</p>
+    } @else {
+      @let s = summary();
+      @let overall = data().overall;
+      <div class="period-report__cards" data-testid="period-report-summary-cards">
+        <app-kpi-card
+          icon="account_balance"
+          [label]="'periodReport.roiBankrollLabel' | transloco"
+          [value]="s.roiBankroll === null ? ('periodReport.indeterminate' | transloco) : formatPercent(s.roiBankroll)"
+          [sign]="s.roiBankroll === null ? undefined : sign(s.roiBankroll)"
+          testId="period-report-roi-bankroll"
+        />
+        <app-kpi-card
+          icon="show_chart"
+          [label]="'periodReport.averageProfitLabel' | transloco"
+          [value]="s.roiMedioDiario === null ? ('periodReport.indeterminate' | transloco) : formatPercent(s.roiMedioDiario)"
+          [sign]="s.roiMedioDiario === null ? undefined : sign(s.roiMedioDiario)"
+          testId="period-report-average-profit"
+        />
+        <app-kpi-card
+          icon="straighten"
+          [label]="'periodReport.profitUnitsLabel' | transloco"
+          [value]="s.profitUnidades === null ? ('periodReport.indeterminate' | transloco) : formatOdd(s.profitUnidades)"
+          [sign]="s.profitUnidades === null ? undefined : sign(s.profitUnidades)"
+          testId="period-report-profit-units"
+        />
+        <app-kpi-card
+          [icon]="s.profitReais >= 0 ? 'trending_up' : 'trending_down'"
+          [label]="'periodReport.profitReaisLabel' | transloco"
+          [value]="formatBrl(s.profitReais)"
+          [sign]="sign(s.profitReais)"
+          testId="period-report-profit-reais"
+        />
+        <app-kpi-card
+          icon="percent"
+          [label]="'periodReport.unitPercentLabel' | transloco"
+          [value]="formatPercent(s.unitPercentTotal)"
+          testId="period-report-unit-percent"
+        />
+        <app-kpi-card
+          icon="payments"
+          [label]="'periodReport.averageStakeLabel' | transloco"
+          [value]="s.stakeMedio === null ? ('periodReport.indeterminate' | transloco) : formatBrl(s.stakeMedio)"
+          testId="period-report-average-stake"
+        />
+        <app-kpi-card
+          icon="calendar_month"
+          [label]="'periodReport.greenRedDaysLabel' | transloco"
+          [value]="s.diasVerdes + ' / ' + s.diasVermelhos"
+          testId="period-report-green-red-days"
+        />
+        <app-kpi-card
+          icon="check_circle"
+          [label]="'periodReport.greenRedEntriesLabel' | transloco"
+          [value]="overall.wonCount + ' / ' + overall.lostCount"
+          testId="period-report-green-red-entries"
+        />
+        <app-kpi-card
+          icon="insights"
+          [label]="'periodReport.evLabel' | transloco"
+          [value]="s.evPercent === null ? ('periodReport.indeterminate' | transloco) : formatPercent(s.evPercent)"
+          [sign]="s.evPercent === null ? undefined : sign(s.evPercent)"
+          testId="period-report-ev"
+        />
+      </div>
+
+      <div class="period-report__table-wrap">
+        <table class="period-report__table" data-testid="period-report-daily-table">
+          <thead>
+            <tr>
+              <th>{{ 'periodReport.dateLabel' | transloco }}</th>
+              <th>{{ 'periodReport.roiPercentLabel' | transloco }}</th>
+              <th>{{ 'periodReport.roiUnitsLabel' | transloco }}</th>
+              <th>{{ 'periodReport.roiReaisLabel' | transloco }}</th>
+              <th>{{ 'periodReport.betsLabel' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of dailyTable(); track trackDay($index, row)) {
+              <tr data-testid="period-report-daily-row">
+                <td>{{ row.date }}</td>
+                <td [class]="'period-report__value--' + sign(row.roiPercent)">{{ formatPercent(row.roiPercent) }}</td>
+                <td [class]="row.roiUnidades === null ? '' : 'period-report__value--' + sign(row.roiUnidades)">
+                  {{ row.roiUnidades === null ? ('periodReport.indeterminate' | transloco) : formatOdd(row.roiUnidades) }}
+                </td>
+                <td [class]="'period-report__value--' + sign(row.roiReais)">{{ formatBrl(row.roiReais) }}</td>
+                <td>{{ row.apostas }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </app-panel>
+</app-panel-layout>
