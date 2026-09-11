@@ -122,4 +122,49 @@ describe('AppSideNav', () => {
     expect(el.querySelector('.side-nav--collapsed')).toBeTruthy();
     expect(localStorage.getItem('stakevault.navCollapsed')).toBe('true');
   });
+
+  // Real bug (feat-018.4 QA): an always-expanded 232px sidebar ate almost the entire mobile
+  // viewport, breaking the "coluna única" responsive rule (RNF01, docs/DESIGN-SYSTEM.md) every
+  // other page already follows below ~600px.
+  // CDK's BreakpointObserver (used internally by mat-menu/mat-tooltip positioning) also calls
+  // matchMedia and expects a real MediaQueryList shape - a bare {matches} stub makes it throw
+  // "mql.addListener is not a function" everywhere else in the component tree.
+  function stubMatchMedia(matches: boolean) {
+    const mql = {
+      matches,
+      media: '',
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    };
+    return vi.fn().mockReturnValue(mql);
+  }
+
+  it('defaults to collapsed on a narrow viewport when the user has not chosen explicitly', () => {
+    const matchMedia = stubMatchMedia(true);
+    vi.stubGlobal('matchMedia', matchMedia);
+    session('MEMBER');
+
+    const fixture = TestBed.createComponent(AppSideNav);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.side-nav--collapsed')).toBeTruthy();
+    expect(matchMedia).toHaveBeenCalledWith('(max-width: 599px)');
+    vi.unstubAllGlobals();
+  });
+
+  it('an explicit stored choice overrides the narrow-viewport default', () => {
+    vi.stubGlobal('matchMedia', stubMatchMedia(true));
+    localStorage.setItem('stakevault.navCollapsed', 'false');
+    session('MEMBER');
+
+    const fixture = TestBed.createComponent(AppSideNav);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.side-nav--collapsed')).toBeNull();
+    vi.unstubAllGlobals();
+  });
 });

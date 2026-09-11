@@ -65,7 +65,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   // feat-016 ("menu por cadastro"): pages/catalogs/ (tab group) retired - each resource is now
-  // its own route, reached via app-nav's per-resource mat-menu instead of an in-page tab switch.
+  // its own route, reached via app-side-nav's per-resource mat-menu instead of an in-page tab switch.
   // "Cadastrar X" routes bind straight to shared/catalog-manager, "Dashboard X" to
   // shared/catalog-dashboard, both via route `data` (withComponentInputBinding, app.config.ts) -
   // no per-resource wrapper page. Generated above from CATALOG_MANAGER_RESOURCES/
