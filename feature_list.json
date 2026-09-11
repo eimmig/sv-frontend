@@ -1024,7 +1024,7 @@
         {
           "id": "feat-015.1",
           "name": "StatisticsApi.getDaily() novo (GET /api/v1/statistics/daily)",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-369",
           "detail": "Gap real: endpoint existe no backend desde stats-service epic-016, nunca consumido no frontend - mesmo padrao de feat-014.1 (BetMetrics desatualizado).",
           "checklist": [
