@@ -10,6 +10,7 @@ import { submitForm } from '../../core/api-request';
 import { Auth } from '../../core/auth';
 import { Theme } from '../../core/theme';
 import { Panel } from '../../shared/panel/panel';
+import { LoginBorderTrace } from './login-border-trace/login-border-trace';
 
 @Component({
   imports: [
@@ -19,6 +20,7 @@ import { Panel } from '../../shared/panel/panel';
     MatInputModule,
     TranslocoPipe,
     Panel,
+    LoginBorderTrace,
   ],
   selector: 'app-login',
   styleUrl: './login.scss',

@@ -1,0 +1,19 @@
+<svg
+  class="login-border-trace"
+  [attr.viewBox]="'0 0 ' + width() + ' ' + height()"
+  preserveAspectRatio="none"
+  aria-hidden="true"
+>
+  <path
+    class="login-border-trace__segment"
+    [attr.d]="pathRight()"
+    [attr.stroke-dasharray]="length()"
+    [style.--trace-length]="length()"
+  />
+  <path
+    class="login-border-trace__segment"
+    [attr.d]="pathLeft()"
+    [attr.stroke-dasharray]="length()"
+    [style.--trace-length]="length()"
+  />
+</svg>

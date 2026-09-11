@@ -12,54 +12,57 @@
     <span class="login__tagline">{{ 'login.tagline' | transloco }}</span>
   </div>
 
-  <app-panel [title]="'login.title' | transloco">
-    <form [formGroup]="form" (ngSubmit)="submit()" class="login__form">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'login.slugLabel' | transloco }}</mat-label>
-        <input
-          matInput
-          id="login-slug-input"
-          type="text"
-          formControlName="slug"
-          data-testid="login-slug"
-          autocomplete="organization"
-          [attr.aria-label]="'login.slugLabel' | transloco"
-        />
-      </mat-form-field>
+  <div class="login__card-wrap">
+    <app-login-border-trace />
+    <app-panel [title]="'login.title' | transloco">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="login__form">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'login.slugLabel' | transloco }}</mat-label>
+          <input
+            matInput
+            id="login-slug-input"
+            type="text"
+            formControlName="slug"
+            data-testid="login-slug"
+            autocomplete="organization"
+            [attr.aria-label]="'login.slugLabel' | transloco"
+          />
+        </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'login.emailLabel' | transloco }}</mat-label>
-        <input
-          matInput
-          id="login-email-input"
-          type="email"
-          formControlName="email"
-          data-testid="login-email"
-          autocomplete="email"
-          [attr.aria-label]="'login.emailLabel' | transloco"
-        />
-      </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'login.emailLabel' | transloco }}</mat-label>
+          <input
+            matInput
+            id="login-email-input"
+            type="email"
+            formControlName="email"
+            data-testid="login-email"
+            autocomplete="email"
+            [attr.aria-label]="'login.emailLabel' | transloco"
+          />
+        </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'login.passwordLabel' | transloco }}</mat-label>
-        <input
-          matInput
-          id="login-password-input"
-          type="password"
-          formControlName="password"
-          data-testid="login-password"
-          autocomplete="current-password"
-          [attr.aria-label]="'login.passwordLabel' | transloco"
-        />
-      </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'login.passwordLabel' | transloco }}</mat-label>
+          <input
+            matInput
+            id="login-password-input"
+            type="password"
+            formControlName="password"
+            data-testid="login-password"
+            autocomplete="current-password"
+            [attr.aria-label]="'login.passwordLabel' | transloco"
+          />
+        </mat-form-field>
 
-      @if (errorMessage(); as message) {
-        <p class="login__error" role="alert" data-testid="login-error">{{ message }}</p>
-      }
+        @if (errorMessage(); as message) {
+          <p class="login__error" role="alert" data-testid="login-error">{{ message }}</p>
+        }
 
-      <button mat-flat-button type="submit" data-testid="login-submit" [disabled]="form.invalid || submitting()">
-        {{ 'login.submit' | transloco }}
-      </button>
-    </form>
-  </app-panel>
+        <button mat-flat-button type="submit" data-testid="login-submit" [disabled]="form.invalid || submitting()">
+          {{ 'login.submit' | transloco }}
+        </button>
+      </form>
+    </app-panel>
+  </div>
 </div>

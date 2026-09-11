@@ -123,6 +123,18 @@ body {
   color: var(--color-text-secondary);
 }
 
+// withViewTransitions() (feat-018.3, app.config.ts) drives a native browser View Transition on
+// every route change. prefers-reduced-motion zeroes it here instead of disabling the router
+// feature - same convention as the splash and the sidebar collapse transition (both jump to the
+// final frame directly rather than pausing an animation mid-flight).
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0s !important;
+  }
+}
+
 // Real bug found in feat-018 (sidebar nav narrowed the 3-column grid on register-bet, which
 // moved a mat-select's horizontal center under decorative label content Material keeps in the
 // DOM at that position): the actual visually-floated label (`label.mdc-floating-label`, moved
