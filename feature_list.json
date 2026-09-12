@@ -1316,6 +1316,564 @@
         }
       ],
       "evidence": "4 subtasks done (feat-018.1-.4). O que foi feito: app-side-nav substitui app-nav - sidebar lateral colapsavel (icone+texto expandido / so icone retraido, alternado manualmente, estado persistido como Theme/Language, default retraido abaixo de ~600px quando o usuario nao escolheu explicitamente - achado real de QA, o expandido comia quase a tela mobile inteira, RNF01), fecha a divergencia de docs/DESIGN-SYSTEM.md item 1 nunca corrigida desde feat-002. app.html/app.scss viram flex-row; a barra de idioma/tema some do shell autenticado, so aparece flutuante (canto inferior esquerdo, sem barra) na tela de login nao autenticada. language-selector: fix de min-width no trigger do mat-select (causa raiz do painel de opcoes cortado - herdava a largura do idioma atualmente selecionado), mat-select/mat-option mantidos intactos (nao migrado pra mat-menu) pra nao quebrar 3 e2e existentes que localizam opcoes por role=option; some do rodape quando a coluna esta retraida (nao cabe nos 72px). Motion pass: withViewTransitions() no router, transicao de collapse/expand do sidebar, e app-login-border-trace novo - animacao autoral no card de login (traco verde sai do ponto central superior em 2 direcoes, percorre cada lado, se encontra no ponto central inferior, retrai, loop) via 2 paths SVG espelho-simetricos dimensionados por ResizeObserver; toda animacao nova respeita prefers-reduced-motion (view-transitions inclusive). Achado real durante a implementacao (nao pedido, causa raiz investigada com A/B via git stash): mat-label/.mdc-floating-label/.mdc-notched-outline de mat-select/mat-form-field mantinham pointer-events habilitado nesta versao do Material, interceptando cliques quando um campo ficava estreito o bastante (a sidebar reduziu a grade de 3 colunas de register-bet o suficiente pra expor um bug latente, ja presente no develop sem a sidebar) - corrigido globalmente em styles.scss. Como foi verificado: 170 unitarios + 40 e2e verdes (rodado repetidas vezes, incluindo A/B com git stash pra confirmar cada achado real antes de corrigir), ./init.sh do app verde, npx ng build limpo. QA visual real (screenshots contra dev server, nao so leitura de codigo): 2 temas x desktop/mobile, sidebar expandido/retraido, login com controles flutuantes, ciclo completo da animacao do card de login capturado em frames. Delivery Reviewer (passe proprio, sem subagentes - risco baixo/medio, frontend puro sem dado/dinheiro/auth): PASS, 1 achado P3 corrigido (comentario desatualizado citando app-nav). Test Suite Auditor: CONCERNS nao-bloqueante - achado P2 aceito (fix de pointer-events do Material so tem protecao e2e indireta hoje, via register-bet.spec.ts ficar estreito o bastante por coincidencia de layout; registrado pra sessao futura adicionar teste deterministico dedicado) e achado P3 aceito (sem spec pro app-login-border-trace, decorativo puro, mesmo precedente de splash.spec.ts que so testa timing funcional). O que divergiu do plano: nada de fundo - o Plan Reviewer ja corrigiu a decisao tecnica (manter mat-select em vez de mat-menu) antes do codigo. docs/DESIGN-SYSTEM.md item 1 marcado implementado (nota de confirmacao com o achado do default mobile), docs/services/web.md ganhou secao nova, docs/CONVENTIONS.md documentou o gotcha do Material."
+    },
+    {
+      "id": "feat-019",
+      "name": "Corrigir alinhamento, tema e acesso ao idioma na sidebar",
+      "description": "Corrigir tres problemas de UX na barra lateral introduzida em feat-018: centralizar os icones nas tres secoes da barra, fazer o botao de expandir/colapsar respeitar o tema claro e manter o botao de alterar idioma acessivel quando a barra estiver colapsada.",
+      "dependencies": [
+        "feat-018"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [
+        {
+          "id": "feat-019.1",
+          "name": "Centralizar icones nas tres secoes da sidebar",
+          "detail": "Ajustar o layout dos grupos da sidebar para que todos os icones usem o mesmo alinhamento central da secao do meio, nos estados expandido e colapsado.",
+          "checklist": [
+            "Icones das tres secoes ficam centralizados horizontalmente quando a sidebar esta colapsada.",
+            "Alinhamento permanece consistente quando a sidebar esta expandida.",
+            "Nenhum label ou estado ativo desloca o centro visual do icone."
+          ],
+          "validation": "QA visual confirma alinhamento nas tres secoes em desktop e mobile, com sidebar expandida e colapsada.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-019.2",
+          "name": "Aplicar tema claro ao botao de colapsar",
+          "detail": "Corrigir as cores do botao de expandir/colapsar para usar os tokens do tema ativo, eliminando o estado escuro fixo no tema claro.",
+          "checklist": [
+            "Botao usa tokens semanticos do tema em vez de cor escura fixa.",
+            "Estados normal, hover, foco e ativo funcionam no tema claro.",
+            "Tema escuro preserva contraste e aparencia atuais sem regressao."
+          ],
+          "validation": "QA visual e teste de acessibilidade confirmam contraste e estados do botao nos dois temas.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-019.3",
+          "name": "Manter seletor de idioma acessivel no modo colapsado",
+          "detail": "Corrigir a disposicao do seletor de idioma para que ele nao desapareca quando a sidebar estiver retraida, mantendo a troca de idioma utilizavel sem expandir a barra.",
+          "checklist": [
+            "Botao de idioma permanece visivel ou acessivel no modo colapsado.",
+            "Seletor continua abrindo e permitindo trocar entre pt-BR, en-US e es.",
+            "A solucao nao cria sobreposicao com o botao de tema, logout ou conteudo principal."
+          ],
+          "validation": "Playwright confirma a troca de idioma com sidebar expandida e colapsada nos tres locales.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-019.4",
+          "name": "Testes, QA visual e verificacao final",
+          "detail": "Fechar a correcao com cobertura dos estados da sidebar e verificacao visual dos dois temas.",
+          "checklist": [
+            "Testes unitarios e Playwright cobrem alinhamento, tema claro e idioma no modo colapsado.",
+            "QA visual em desktop/mobile, temas claro/escuro e sidebar expandida/colapsada.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "./init.sh verde, testes unitarios e Playwright verdes, evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        }
+      ],
+      "evidence": ""
+    },
+    {
+      "id": "feat-020",
+      "name": "Renomear data da aposta para data do evento",
+      "description": "Na tela de criar aposta, substituir o rotulo visivel 'Data da aposta' por 'Data do evento', mantendo inicialmente o contrato tecnico e o campo de data existentes. Avaliar no planejamento se tooltips, historico, filtros, traducoes e demais telas devem usar a mesma nomenclatura para evitar ambiguidade entre data do evento, registro e liquidacao.",
+      "dependencies": [
+        "feat-004"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [
+        {
+          "id": "feat-020.1",
+          "name": "Atualizar rotulos e traducoes da data do evento",
+          "detail": "Localizar a label da tela de registro e verificar a paridade pt-BR/en-US/es sem alterar o significado do campo no backend.",
+          "checklist": [
+            "Tela de criar aposta exibe 'Data do evento' em pt-BR.",
+            "Strings equivalentes em en-US e es permanecem sincronizadas.",
+            "Historico, filtros e acessibilidade nao ficam com nomenclatura conflitante."
+          ],
+          "validation": "Teste de componente e Playwright confirmam o rotulo nos tres locales.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-020.2",
+          "name": "Verificacao final de nomenclatura",
+          "detail": "Confirmar se a mudanca de linguagem exige ajuste documental ou de contrato, sem renomear campos tecnicos sem decisao cross-service.",
+          "checklist": [
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Rotulo validado visualmente e suite do frontend verde.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        }
+      ],
+      "evidence": ""
+    },
+    {
+      "id": "feat-021",
+      "name": "Ajustar cadastro de time para vinculo com esporte",
+      "description": "Atualizar a tela de cadastro de time para suportar o vinculo com esporte exigido pelo novo modelo de dominio. O formulario deve permitir selecionar o esporte relacionado ao time, exibir validacoes e enviar o identificador correto ao catalogo de times quando o backend estiver definido.",
+      "dependencies": [
+        "feat-020"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [
+        {
+          "id": "feat-021.1",
+          "name": "Definir contrato do formulario de time",
+          "detail": "Alinhar os campos da tela com o contrato futuro de TEAM e SPORT, sem fixar nomes ou ids antes da decisao do epic-024.",
+          "checklist": [
+            "Campo de esporte obrigatorio quando exigido pelo modelo aprovado.",
+            "Selecao de esporte usa catalogo real, sem lista hardcoded.",
+            "Edicao e cadastro preservam o vinculo time-esporte."
+          ],
+          "validation": "Contrato do formulario documentado e validado contra o endpoint de catalogo definido no backend.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-021.2",
+          "name": "Implementar tela e traducoes",
+          "detail": "Adicionar o controle de esporte ao cadastro de time e manter a experiencia consistente nos tres locales.",
+          "checklist": [
+            "Formulario envia o sportId ou campo equivalente definido pelo contrato.",
+            "Mensagens de label, validacao e erro existem em pt-BR, en-US e es.",
+            "Fluxos de cadastro e edicao continuam responsivos."
+          ],
+          "validation": "Testes de componente e Playwright cobrem cadastro e edicao com esporte selecionado.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-021.3",
+          "name": "Testes, QA visual e verificacao final",
+          "detail": "Fechar a alteracao da tela com testes, QA visual e verificacao do vault.",
+          "checklist": [
+            "Testes unitarios e Playwright verdes.",
+            "QA visual em desktop e mobile, temas claro e escuro.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Suite do frontend verde e evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        }
+      ],
+      "evidence": ""
+    },
+    {
+      "id": "feat-022",
+      "name": "Date picker e formato localizado para campos de data",
+      "description": "Atualizar o frontend para que todos os campos de data utilizem date picker em vez de inputs de texto ou datetime-local sem suporte visual, e deixem de exibir o formato americano por padrao. A exibicao deve respeitar o locale ativo (pt-BR/en-US/es), enquanto a conversao para os formatos tecnicos das APIs permanece centralizada e compativel com os contratos existentes.",
+      "dependencies": [
+        "feat-004",
+        "feat-014",
+        "feat-015"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [
+        {
+          "id": "feat-022.1",
+          "name": "Inventariar campos de data do frontend",
+          "detail": "Mapear todos os campos de data e data/hora nas telas e componentes compartilhados antes de escolher a implementacao comum.",
+          "checklist": [
+            "Criar aposta usa date picker e data/hora do evento conforme o dominio.",
+            "Filtros de periodo, historico, relatorio e dashboards sao incluidos no inventario.",
+            "Separar formato de exibicao localizado dos formatos tecnicos enviados pela API."
+          ],
+          "validation": "Inventario revisado sem campos de data fora do escopo ou conversoes duplicadas.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-022.2",
+          "name": "Adicionar date picker e formatacao por locale",
+          "detail": "Aplicar o componente de selecao de data do design system e configurar exibicao pt-BR/en-US/es sem quebrar datas de filtros ou formularios.",
+          "checklist": [
+            "Campos de data exibem date picker com teclado e acessibilidade.",
+            "Formato visivel acompanha o idioma ativo e nao fica preso ao formato americano.",
+            "Campos de data/hora preservam hora e timezone definidos pelo dominio.",
+            "Conversao para yyyy-MM-dd ou ISO ocorre no limite com a API, nao no template."
+          ],
+          "validation": "Testes de componente cobrem os tres locales, abertura do date picker e conversao enviada ao backend.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-022.3",
+          "name": "Atualizar testes, QA visual e documentacao",
+          "detail": "Validar a experiencia nos fluxos que usam periodo e registrar qualquer convencao nova de locale ou timezone.",
+          "checklist": [
+            "Playwright cobre criar aposta, filtros de periodo e relatorio com date picker.",
+            "QA visual em desktop/mobile e nos tres locales.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Suite do frontend verde e contratos tecnicos de data preservados.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        }
+      ],
+      "evidence": ""
+    },
+    {
+      "id": "feat-023",
+      "name": "Corrigir sobreposicao do seletor de idioma no login",
+      "description": "Corrigir o seletor de idioma da tela de login, que atualmente fica sobreposto e corta parte do icone. O controle deve manter o icone inteiro visivel, area de clique adequada e posicionamento consistente nos tres locales, temas e tamanhos de tela.",
+      "dependencies": [
+        "feat-018"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [
+        {
+          "id": "feat-023.1",
+          "name": "Corrigir layout e area de clique do idioma",
+          "detail": "Investigar a causa do corte ou sobreposicao entre icone, controle e elementos flutuantes do login, ajustando dimensoes e posicionamento sem esconder parte do icone.",
+          "checklist": [
+            "Icone do seletor fica completamente visivel.",
+            "Area de clique nao fica sobreposta por outro controle ou container.",
+            "Posicionamento funciona com textos dos tres locales e sem overflow."
+          ],
+          "validation": "QA visual confirma o seletor inteiro e clicavel em desktop e mobile.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-023.2",
+          "name": "Validar temas, locales e acessibilidade",
+          "detail": "Garantir que a correcao nao dependa do tema ou do idioma selecionado e preserve foco e navegacao por teclado.",
+          "checklist": [
+            "Temas claro e escuro nao cortam nem deslocam o icone.",
+            "pt-BR, en-US e es cabem sem sobreposicao.",
+            "Foco visivel e navegacao por teclado permanecem utilizaveis."
+          ],
+          "validation": "Playwright cobre os tres locales e os dois temas na tela de login.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-023.3",
+          "name": "Testes, QA visual e verificacao final",
+          "detail": "Fechar a correcao com testes de regressao, QA visual e revisao da documentacao do shell de autenticacao.",
+          "checklist": [
+            "Teste de regressao cobre o seletor sem corte ou sobreposicao.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Suite do frontend verde, QA visual aprovado e evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        }
+      ],
+      "evidence": ""
+    },
+    {
+      "id": "feat-024",
+      "name": "Ajustar espacamento e formulario das telas de cadastro",
+      "description": "Melhorar o layout das telas de cadastro: criar espacamento visual entre o menu lateral e o card 'Nova entrada', e reposicionar o botao 'Adicionar' para uma linha propria ou outra composicao responsiva mais equilibrada, evitando que fique apertado ao lado do campo de nome.",
+      "dependencies": [
+        "feat-016",
+        "feat-019"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [
+        {
+          "id": "feat-024.1",
+          "name": "Criar espacamento entre sidebar e cadastro",
+          "detail": "Ajustar o shell ou layout da pagina para que o card de nova entrada nao fique colado no menu lateral, preservando o alinhamento com a area de cadastradas.",
+          "checklist": [
+            "Existe espacamento visual consistente entre sidebar e card de cadastro.",
+            "Card de nova entrada e painel de cadastradas mantem alinhamento e largura equilibrados.",
+            "Espacamento funciona com sidebar expandida e colapsada."
+          ],
+          "validation": "QA visual confirma o respiro entre menu e cards em desktop e mobile.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-024.2",
+          "name": "Reposicionar botao Adicionar",
+          "detail": "Reorganizar o formulario de nova entrada para que o botao Adicionar fique em uma linha propria ou em uma composicao responsiva equivalente, sem competir visualmente com o campo Nome.",
+          "checklist": [
+            "Botao Adicionar nao fica apertado ou desalinhado ao lado do campo Nome.",
+            "Campo e botao mantem hierarquia visual clara nos temas claro e escuro.",
+            "Layout responsivo nao cria overflow nem desloca o painel de cadastradas."
+          ],
+          "validation": "Testes de componente e QA visual confirmam a composicao em desktop, tablet e mobile.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-024.3",
+          "name": "Aplicar em todas as telas de cadastro",
+          "detail": "Garantir que o ajuste seja compartilhado por esporte, liga, mercado, tipster e casa de apostas, sem duplicar estilos ou criar excecoes por recurso.",
+          "checklist": [
+            "Todas as telas de cadastro usam o layout compartilhado corrigido.",
+            "Estados vazio, carregando, erro e lista cadastrada permanecem legiveis.",
+            "Nenhum dashboard ou tela de consulta sofre regressao visual."
+          ],
+          "validation": "Playwright ou testes de rota cobrem os cinco cadastros e confirmam o layout comum.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-024.4",
+          "name": "Testes, QA visual e verificacao final",
+          "detail": "Fechar o ajuste com validacao visual, testes e revisao da documentacao de layout.",
+          "checklist": [
+            "QA visual em desktop/mobile, temas claro/escuro e sidebar expandida/colapsada.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Suite do frontend verde e evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        }
+      ],
+      "evidence": ""
+    },
+    {
+      "id": "feat-025",
+      "name": "Implementar gestao de saldo e movimentacoes no frontend",
+      "description": "Fechar o gap de integracao financeira identificado na auditoria: o frontend ja possui TransactionsApi, BankrollApi e um formulario de movimentacoes na tela de historico, mas a gestao ainda nao esta integrada ao contexto da tela de casas nem validada ponta a ponta pelo Gateway. Consolidar a experiencia de depositos/retiradas, atualizar o saldo por casa apos cada movimentacao e exibir o saldo consolidado quando aplicavel.",
+      "dependencies": [
+        "feat-003",
+        "feat-010",
+        "feat-014"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [
+        {
+          "id": "feat-025.1",
+          "name": "Adicionar fluxo visual de deposito e retirada",
+          "detail": "Usar TransactionsApi na tela de casas de apostas para permitir selecionar a casa, escolher deposito ou retirada e informar um valor positivo.",
+          "checklist": [
+            "Formulario de movimentacao usa deposit e withdrawal do contrato existente.",
+            "Valor deve ser positivo e a casa deve ser obrigatoria.",
+            "Erros RFC 7807 e validacoes sao exibidos de forma localizada.",
+            "A retirada nao pode ser confundida com criacao de uma nova casa."
+          ],
+          "validation": "Teste de componente e Playwright registram deposito e retirada por uma casa real usando o endpoint existente.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-025.2",
+          "name": "Atualizar saldos por casa e saldo consolidado",
+          "detail": "Apos uma movimentacao, recarregar os dados da casa e usar BankrollApi para apresentar o saldo consolidado sem duplicar a regra de calculo do backend.",
+          "checklist": [
+            "Saldo por casa reflete initialBalance + depositos - retiradas + resultados liquidados.",
+            "Saldo consolidado usa BankrollApi e nao soma valores divergentes no cliente.",
+            "Estado de carregamento, sucesso e erro nao deixa valores antigos aparentando ser atuais.",
+            "Isolamento por tenant continua sendo responsabilidade do Gateway/backend."
+          ],
+          "validation": "Testes confirmam que deposito e retirada atualizam a casa correta e o saldo consolidado exibido.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-025.3",
+          "name": "Integrar historico de movimentacoes",
+          "detail": "Exibir ou conectar o fluxo de movimentacoes ao historico financeiro ja previsto, permitindo conferir tipo, valor, casa e data sem criar uma segunda fonte de dados.",
+          "checklist": [
+            "Lista de movimentacoes usa GET /api/v1/transactions com filtros e paginacao existentes.",
+            "Depositos e retiradas ficam visualmente distinguiveis.",
+            "Datas, valores e labels respeitam os locales do frontend.",
+            "Tela nao duplica a regra nem os dados do historico existente."
+          ],
+          "validation": "Playwright confirma que a movimentacao criada aparece no historico financeiro.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-025.4",
+          "name": "Testes, QA visual e verificacao final",
+          "detail": "Fechar a entrega da gestao financeira com cobertura dos fluxos de saldo e revisao das discrepancias entre backlog e codigo.",
+          "checklist": [
+            "Testes unitarios e Playwright cobrem deposito, retirada, erro e atualizacao de saldo.",
+            "QA visual em desktop/mobile e temas claro/escuro.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Suite do frontend verde, fluxo financeiro demonstrado e evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        }
+      ],
+      "evidence": ""
+    },
+    {
+      "id": "feat-026",
+      "name": "Alinhar betType e exibir agrupamento PRE/LIVE",
+      "description": "Alinhar o formulario de registro de aposta ao contrato do backend, substituindo o texto livre de betType por selecao limitada a pre/live, e consumir o agrupamento byBetType ja retornado pelo stats-service em uma visao apropriada do frontend.",
+      "dependencies": [
+        "feat-004",
+        "feat-014",
+        "feat-015"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [
+        {
+          "id": "feat-026.1",
+          "name": "Trocar betType por selecao PRE/LIVE",
+          "detail": "Usar controle de selecao com os valores tecnicos pre e live e labels localizadas, evitando requests rejeitados por enum invalido.",
+          "checklist": [
+            "Formulario envia somente pre ou live.",
+            "Interface TypeScript deixa de usar string livre para betType.",
+            "pt-BR, en-US e es possuem labels e validacoes sincronizadas."
+          ],
+          "validation": "Teste de componente e Playwright cobrem cadastro PRE e LIVE.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-026.2",
+          "name": "Consumir byBetType no frontend",
+          "detail": "Adicionar byBetType ao contrato de estatisticas e apresenta-lo na visao apropriada sem duplicar componentes de segmentos existentes.",
+          "checklist": [
+            "StatisticsApi tipa byBetType com os buckets PRE e LIVE.",
+            "Visao exibe metricas por tipo conforme o contrato do backend.",
+            "Apostas sem betType continuam fora dos buckets, sem contagem artificial."
+          ],
+          "validation": "Teste de contrato e QA visual confirmam os dois buckets e suas metricas.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-026.3",
+          "name": "Testes, QA visual e verificacao final",
+          "detail": "Fechar a paridade com o backend e registrar qualquer ajuste de documentacao necessario.",
+          "checklist": [
+            "Testes unitarios e Playwright verdes.",
+            "QA visual em desktop/mobile e temas claro/escuro.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Contrato frontend/backend alinhado e evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        }
+      ],
+      "evidence": ""
+    },
+    {
+      "id": "feat-027",
+      "name": "Tela web para vinculo da conta Telegram",
+      "description": "Criar o fluxo web para gerar e acompanhar o codigo de vinculo da conta Telegram, consumindo POST /api/v1/telegram-links do auth-service atraves do Gateway. O bot ja confirma o codigo no backend, mas hoje nao existe cliente, rota ou tela Angular para o usuario iniciar o processo.",
+      "dependencies": [
+        "feat-003",
+        "feat-010"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [
+        {
+          "id": "feat-027.1",
+          "name": "Criar cliente e fluxo de codigo Telegram",
+          "detail": "Implementar cliente HTTP, estado de carregamento/erro/sucesso e exibicao do codigo de curta duracao.",
+          "checklist": [
+            "POST /api/v1/telegram-links usa autenticacao do usuario logado.",
+            "Codigo, expiracao e instrucoes de uso sao exibidos com clareza.",
+            "Erros RFC 7807 sao localizados e nao expõem credenciais."
+          ],
+          "validation": "Teste de servico e componente cobrem geracao, expiracao e erro.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-027.2",
+          "name": "Adicionar rota e entrada de navegacao",
+          "detail": "Disponibilizar a tela em uma rota autenticada coerente com o shell atual e os tres locales.",
+          "checklist": [
+            "Rota protegida por autenticacao.",
+            "Entrada de navegacao e labels pt-BR/en-US/es.",
+            "Layout funciona com sidebar expandida e colapsada."
+          ],
+          "validation": "Playwright acessa a tela e gera um codigo mockado pelo endpoint.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-027.3",
+          "name": "Testes, QA visual e verificacao final",
+          "detail": "Fechar o fluxo de vinculo com cobertura e revisao do vault.",
+          "checklist": [
+            "Testes unitarios e Playwright verdes.",
+            "QA visual em desktop/mobile e temas claro/escuro.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Fluxo web de vinculo documentado, testado e evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        }
+      ],
+      "evidence": ""
     }
   ]
 }
