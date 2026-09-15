@@ -140,3 +140,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-443](https://stakevault.atlassian.net/browse/SV-443) - Renomear data da aposta para data do evento
 - [SV-444](https://stakevault.atlassian.net/browse/SV-444) - Atualizar rotulos e traducoes da data do evento
 - [SV-445](https://stakevault.atlassian.net/browse/SV-445) - Verificacao final de nomenclatura
+- [SV-446](https://stakevault.atlassian.net/browse/SV-446) - Cadastro de time vinculado a esporte + corrigir quebra de contrato em POST /api/v1/bets
+- [SV-447](https://stakevault.atlassian.net/browse/SV-447) - Catalogo de times (tela nova) + formulario de aposta usando team1Id/team2Id
+- [SV-448](https://stakevault.atlassian.net/browse/SV-448) - CHANGELOG e verificacao final

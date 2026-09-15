@@ -44,6 +44,7 @@ describe('AppSideNav', () => {
                 leagues: { title: 'Ligas' },
                 markets: { title: 'Mercados' },
                 tipsters: { title: 'Tipsters' },
+                teams: { title: 'Times' },
               },
               theme: { switchToLight: 'Modo claro', switchToDark: 'Modo escuro' },
               language: { label: 'Idioma' },
@@ -93,6 +94,16 @@ describe('AppSideNav', () => {
 
     expect(document.querySelector('[data-testid="nav-sports-register"]')).toBeTruthy();
     expect(document.querySelector('[data-testid="nav-sports-dashboard"]')).toBeTruthy();
+  });
+
+  it('shows the "Times" link (no dashboard counterpart, unlike the other catalogs)', () => {
+    session('MEMBER');
+    const fixture = TestBed.createComponent(AppSideNav);
+    fixture.detectChanges();
+
+    const link = fixture.nativeElement.querySelector('[data-testid="nav-teams"]');
+    expect(link).toBeTruthy();
+    expect(link.getAttribute('href')).toBe('/teams');
   });
 
   it('logout() clears the session and navigates to /login', () => {

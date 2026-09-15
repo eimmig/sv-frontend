@@ -11,7 +11,7 @@ import { forkJoin, map } from 'rxjs';
 import { loadInto, submitForm } from '../../core/api-request';
 import { BetsApi } from '../../core/bets-api';
 import { BettingHouse, BettingHousesApi } from '../../core/betting-houses-api';
-import { CatalogEntry, catalogApi } from '../../core/catalog-api';
+import { CatalogEntry, Team, catalogApi, teamsApi } from '../../core/catalog-api';
 import { formatBrl } from '../../core/currency';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
@@ -22,9 +22,17 @@ interface FormOptions {
   readonly leagues: CatalogEntry[];
   readonly markets: CatalogEntry[];
   readonly tipsters: CatalogEntry[];
+  readonly teams: Team[];
 }
 
-const EMPTY_OPTIONS: FormOptions = { bettingHouses: [], sports: [], leagues: [], markets: [], tipsters: [] };
+const EMPTY_OPTIONS: FormOptions = {
+  bettingHouses: [],
+  sports: [],
+  leagues: [],
+  markets: [],
+  tipsters: [],
+  teams: [],
+};
 
 function nowForDatetimeLocal(): string {
   const now = new Date();
@@ -70,8 +78,8 @@ export class RegisterBet implements OnInit {
     marketId: ['', Validators.required],
     tipsterId: [''],
     ticketNumber: [''],
-    team1: [''],
-    team2: [''],
+    team1Id: [''],
+    team2Id: [''],
     description: [''],
     betType: [''],
     playType: [''],
@@ -92,6 +100,7 @@ export class RegisterBet implements OnInit {
         leagues: catalogApi(this.http, 'leagues').list(),
         markets: catalogApi(this.http, 'markets').list(),
         tipsters: catalogApi(this.http, 'tipsters').list(),
+        teams: teamsApi(this.http).list(),
       }),
       this.options,
       this.loadError,
@@ -113,8 +122,8 @@ export class RegisterBet implements OnInit {
       marketId: '',
       tipsterId: '',
       ticketNumber: '',
-      team1: '',
-      team2: '',
+      team1Id: '',
+      team2Id: '',
       description: '',
       betType: '',
       playType: '',
@@ -142,8 +151,8 @@ export class RegisterBet implements OnInit {
           marketId: raw.marketId,
           tipsterId: raw.tipsterId || null,
           ticketNumber: raw.ticketNumber || null,
-          team1: raw.team1 || null,
-          team2: raw.team2 || null,
+          team1Id: raw.team1Id || null,
+          team2Id: raw.team2Id || null,
           description: raw.description || null,
           betType: raw.betType || null,
           playType: raw.playType || null,

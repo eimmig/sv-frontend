@@ -38,3 +38,29 @@ export function catalogApi(
     create: (name: string) => http.post<CatalogEntry>(url, { name }),
   };
 }
+
+export interface Team {
+  readonly id: string;
+  readonly name: string;
+  readonly sportId: string;
+}
+
+/**
+ * Not structurally identical to the 4 catalogs above (bets-service feat-016/017): TEAM has a
+ * required sportId FK, so it needs its own {name, sportId} create body instead of reusing
+ * catalogApi's {name}-only shape.
+ */
+export function teamsApi(http: HttpClient): {
+  list(): Observable<Team[]>;
+  create(name: string, sportId: string): Observable<Team>;
+} {
+  const url = `${environment.apiGatewayUrl}/api/v1/teams`;
+
+  return {
+    list: () =>
+      http
+        .get<PagedResponse<Team>>(url, { params: new HttpParams().set('page', 0).set('size', MAX_PAGE_SIZE) })
+        .pipe(map((page) => page.content)),
+    create: (name: string, sportId: string) => http.post<Team>(url, { name, sportId }),
+  };
+}

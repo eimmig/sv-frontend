@@ -72,6 +72,15 @@ export const routes: Routes = [
   // CATALOG_DASHBOARD_RESOURCES to avoid 9 near-identical route literals.
   ...catalogManagerRoutes,
   ...catalogDashboardRoutes,
+  // TEAM (bets-service feat-016/017) isn't structurally identical to the 4 resources above
+  // (required sportId FK) - own route to shared/team-manager instead of a 5th data-driven entry
+  // in CATALOG_MANAGER_RESOURCES, and no dashboard counterpart yet (stats-service byTeam doesn't
+  // exist - epic-024's stats-service feat-018 is BLOCKED).
+  {
+    path: 'teams',
+    loadComponent: () => import('./shared/team-manager/team-manager').then((m) => m.TeamManager),
+    canActivate: [authGuard],
+  },
   {
     path: 'search-statistics',
     loadComponent: () =>

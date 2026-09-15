@@ -97,6 +97,12 @@ export class AppSideNav {
     { id: 'betting-houses', icon: 'account_balance', labelKey: 'nav.bettingHouses', registerRoute: 'betting-houses', dashboardRoute: 'betting-houses-dashboard' },
   ];
 
+  // TEAM has no dashboard counterpart yet (unlike `resources` below) - a plain link, not a
+  // register/dashboard mat-menu.
+  protected readonly catalogLinks: ReadonlyArray<{ route: string; icon: string; labelKey: string; testid: string }> = [
+    { route: 'teams', icon: 'groups_2', labelKey: 'catalogs.teams.title', testid: 'nav-teams' },
+  ];
+
   protected readonly secondaryLinks: ReadonlyArray<{ route: string; icon: string; labelKey: string; testid: string }> = [
     { route: 'search-statistics', icon: 'query_stats', labelKey: 'nav.searchStatistics', testid: 'nav-search-statistics' },
     { route: 'period-report', icon: 'calendar_month', labelKey: 'nav.periodReport', testid: 'nav-period-report' },

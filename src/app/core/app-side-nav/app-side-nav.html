@@ -62,6 +62,22 @@
       </mat-menu>
     }
 
+    @for (link of catalogLinks; track link.route) {
+      <a
+        [routerLink]="'/' + link.route"
+        routerLinkActive="side-nav__link--active"
+        class="side-nav__link"
+        [attr.data-testid]="link.testid"
+        [matTooltip]="collapsed() ? (link.labelKey | transloco) : ''"
+        matTooltipPosition="right"
+      >
+        <mat-icon>{{ link.icon }}</mat-icon>
+        @if (!collapsed()) {
+          <span>{{ link.labelKey | transloco }}</span>
+        }
+      </a>
+    }
+
     <div class="side-nav__divider"></div>
 
     @for (link of secondaryLinks; track link.route) {
