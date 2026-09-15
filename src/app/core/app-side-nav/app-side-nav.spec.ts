@@ -123,6 +123,20 @@ describe('AppSideNav', () => {
     expect(localStorage.getItem('stakevault.navCollapsed')).toBe('true');
   });
 
+  // Regression guard (feat-019.2): mat-icon-button on this button only does anything when
+  // MatButtonModule is imported - without it, Angular silently treats the attribute as inert and
+  // the button renders as a bare native <button> (no error, no test failure, only visible via a
+  // real browser's computed style or by checking for this class - see docs/CONVENTIONS.md).
+  it('applies Material button styling to the collapse toggle', () => {
+    session('MEMBER');
+    const fixture = TestBed.createComponent(AppSideNav);
+    fixture.detectChanges();
+
+    const toggle = (fixture.nativeElement as HTMLElement).querySelector('[data-testid="nav-collapse-toggle"]');
+
+    expect(toggle?.classList.contains('mat-mdc-icon-button')).toBe(true);
+  });
+
   // Real bug (feat-018.4 QA): an always-expanded 232px sidebar ate almost the entire mobile
   // viewport, breaking the "coluna única" responsive rule (RNF01, docs/DESIGN-SYSTEM.md) every
   // other page already follows below ~600px.
