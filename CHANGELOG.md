@@ -100,3 +100,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-387](https://stakevault.atlassian.net/browse/SV-387) - language-selector: fix de min-width (causa raiz do corte) + controles flutuantes no login
 - [SV-388](https://stakevault.atlassian.net/browse/SV-388) - Motion pass: view transitions, collapse do sidebar, animacao autoral do login
 - [SV-389](https://stakevault.atlassian.net/browse/SV-389) - QA visual final (Impeccable), testes, docs e verificacao final
+- [SV-398](https://stakevault.atlassian.net/browse/SV-398) - Corrigir alinhamento, tema e acesso ao idioma na sidebar
+- [SV-399](https://stakevault.atlassian.net/browse/SV-399) - Centralizar icones nas tres secoes da sidebar
+- [SV-400](https://stakevault.atlassian.net/browse/SV-400) - Aplicar tema claro ao botao de colapsar
+- [SV-401](https://stakevault.atlassian.net/browse/SV-401) - Manter seletor de idioma acessivel no modo colapsado
+- [SV-402](https://stakevault.atlassian.net/browse/SV-402) - Testes, QA visual e verificacao final

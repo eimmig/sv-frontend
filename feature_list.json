@@ -1324,9 +1324,9 @@
       "dependencies": [
         "feat-018"
       ],
-      "status": "not-started",
+      "status": "in-progress",
       "plan_review": "Plan Reviewer 2026-09-15: READY WITH CONCERNS. Evidencia: app-side-nav.scss confirma os 3 achados - .side-nav__link usa align-items:center/gap:12px sem centralizacao explicita por secao (icone+label alinhado a esquerda, nao centralizado quando colapsado alem do justify-content:center do link inteiro); .side-nav__collapse-toggle usa color:var(--color-text-secondary) (token semantico, ja deveria respeitar tema - a causa raiz mais provavel e o botao mat-icon-button herdando cor fixa de algum override global ou do proprio Material, nao a regra local; subtask 019.2 deve investigar antes de assumir onde esta o hardcode) e app-side-nav__footer contem app-language-selector/app-theme-toggle com width:100% mas nao ha CSS especifico pro modo colapsado - possivel causa do idioma sumir e o proprio .language-selector ter largura minima (120px, fix do feat-018.2) maior que side-nav--collapsed (72px), estourando ou sendo cortado pelo overflow-x:hidden do .side-nav. MINOR: subtask 019.3 deve testar explicitamente que o language-selector no rodape nao e cortado pelo overflow-x:hidden quando colapsado (72px < 120px min-width) - efeito colateral direto do fix de feat-018.2, nao mencionado no plano atual.",
-      "jira": "",
+      "jira": "SV-398",
       "subtasks": [
         {
           "id": "feat-019.1",
@@ -1340,7 +1340,7 @@
           "validation": "QA visual confirma alinhamento nas tres secoes em desktop e mobile, com sidebar expandida e colapsada.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-399"
         },
         {
           "id": "feat-019.2",
@@ -1354,7 +1354,7 @@
           "validation": "QA visual e teste de acessibilidade confirmam contraste e estados do botao nos dois temas.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-400"
         },
         {
           "id": "feat-019.3",
@@ -1369,7 +1369,7 @@
           "validation": "Playwright confirma a troca de idioma com sidebar expandida e colapsada nos tres locales.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-401"
         },
         {
           "id": "feat-019.4",
@@ -1385,7 +1385,7 @@
           "validation": "./init.sh verde, testes unitarios e Playwright verdes, evidence preenchida.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-402"
         }
       ],
       "evidence": ""
