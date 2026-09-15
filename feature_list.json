@@ -1794,9 +1794,9 @@
         "feat-003",
         "feat-010"
       ],
-      "status": "not-started",
+      "status": "done",
       "plan_review": "Plan Reviewer 2026-09-15: READY. Evidencia: docs/services/auth-service.md confirma o contrato exato - POST /api/v1/telegram-links exige X-User-Id/X-Tenant-Id (401 se ausentes/invalidos), responde 201 {code, expiresAt} (8 caracteres alfanumericos, TTL 15min default); RouteConfig.java (linha 20) ja roteia /api/v1/telegram-links/** em authServiceRoute, autenticado por PASETO normal (nao e a rota interna/sem-auth de telegram-accounts). Nenhum cliente/rota/tela existe hoje no frontend (grep sem resultado) - feature e genuinamente nova, sem conflito com trabalho existente. Plano das subtasks bate com o contrato real. Residual aceito (nao bloqueante): comportamento de chamar o endpoint 2x com um codigo ainda valido pendente nao esta documentado (novo codigo substitui o antigo vs. 409) - validar na implementacao e nao assumir.",
-      "jira": "",
+      "jira": "SV-453",
       "subtasks": [
         {
           "id": "feat-027.1",
@@ -1809,8 +1809,8 @@
           ],
           "validation": "Teste de servico e componente cobrem geracao, expiracao e erro.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-454"
         },
         {
           "id": "feat-027.2",
@@ -1823,8 +1823,8 @@
           ],
           "validation": "Playwright acessa a tela e gera um codigo mockado pelo endpoint.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-455"
         },
         {
           "id": "feat-027.3",
@@ -1839,11 +1839,11 @@
           ],
           "validation": "Fluxo web de vinculo documentado, testado e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-456"
         }
       ],
-      "evidence": ""
+      "evidence": "Sem desvio do plano (Plan Reviewer READY de sessao anterior). TelegramLinkApi (core/telegram-link-api.ts, POST /api/v1/telegram-links sem corpo) + pages/telegram-link reaproveitando submitForm/Panel/PanelLayout ja existentes - nenhum componente/padrao novo. Rota /telegram-link (authGuard) + entrada em app-side-nav secondaryLinks (icone telegram). i18n pt-BR/en-US/es. Residual do plan review (2a chamada com codigo pendente) nao exigiu decisao de frontend - tela sempre reflete a resposta do ultimo POST, correta nos 2 cenarios possiveis do backend. Delivery Reviewer/Test Suite Auditor: revisao direta sem subagentes (diff pequeno, totalmente evidenciado, mesmo criterio de feat-025) - sem achado. QA visual real (ng serve): desktop 1440px + mobile 390px, claro/escuro, 4 combinacoes sem achado. ng test 201/201 (suite inteira). Playwright 50/50 (suite inteira, nao so e2e/telegram-link.spec.ts - 3 casos novos: geracao de codigo, erro RFC 7807, navegacao pelo side-nav). Achado real fora da suite automatizada (script de QA visual ad-hoc): page.route do Playwright prioriza o handler registrado por ultimo (LIFO) - documentado em docs/TESTING.md. docs/services/web.md ganhou secao da feature. Story SV-453, subtasks SV-454/455/456, PRs #107/#108 (subtask->feature, CI verde). ./init.sh do app e da raiz verdes."
     },
     {
       "id": "feat-028",

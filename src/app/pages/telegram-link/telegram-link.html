@@ -1,0 +1,30 @@
+<app-panel-layout>
+  <app-panel [title]="'telegramLink.title' | transloco">
+    <p class="telegram-link__intro">{{ 'telegramLink.intro' | transloco }}</p>
+
+    @if (link(); as generated) {
+      <div class="telegram-link__result" data-testid="telegram-link-result">
+        <p class="telegram-link__code-label">{{ 'telegramLink.codeLabel' | transloco }}</p>
+        <p class="telegram-link__code" data-testid="telegram-link-code">{{ generated.code }}</p>
+        <p class="telegram-link__expires" data-testid="telegram-link-expires">
+          {{ 'telegramLink.expiresAtLabel' | transloco: { expiresAt: formatExpiresAt(generated.expiresAt) } }}
+        </p>
+      </div>
+    }
+
+    @if (formError(); as message) {
+      <p class="telegram-link__error" role="alert" data-testid="telegram-link-error">{{ message }}</p>
+    }
+
+    <button
+      mat-flat-button
+      type="button"
+      data-testid="telegram-link-generate"
+      [disabled]="submitting()"
+      (click)="generate()"
+    >
+      <mat-icon>telegram</mat-icon>
+      {{ (link() ? 'telegramLink.regenerate' : 'telegramLink.generate') | transloco }}
+    </button>
+  </app-panel>
+</app-panel-layout>

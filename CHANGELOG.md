@@ -7,6 +7,12 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 
+### Added
+
+- Tela "Vincular Telegram" (`feat-027`, rota `/telegram-link`): gera um código de curta duração
+  via `POST /api/v1/telegram-links` e mostra código + expiração, com entrada nova em
+  `app-side-nav`.
+
 ### Changed
 
 - `app-login-border-trace` (`feat-018.3`) reformulada: 1 caminho fechado único (contorno completo
@@ -147,3 +153,7 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-450](https://stakevault.atlassian.net/browse/SV-450) - Calcular curva acumulada mensal a partir do historico diario
 - [SV-451](https://stakevault.atlassian.net/browse/SV-451) - Filtro de range de meses e grade dinamica de mini-graficos
 - [SV-452](https://stakevault.atlassian.net/browse/SV-452) - Testes, QA visual e verificacao final
+- [SV-453](https://stakevault.atlassian.net/browse/SV-453) - Tela web para vinculo da conta Telegram
+- [SV-454](https://stakevault.atlassian.net/browse/SV-454) - Criar cliente e fluxo de codigo Telegram
+- [SV-455](https://stakevault.atlassian.net/browse/SV-455) - Adicionar rota e entrada de navegacao
+- [SV-456](https://stakevault.atlassian.net/browse/SV-456) - Testes, QA visual e verificacao final

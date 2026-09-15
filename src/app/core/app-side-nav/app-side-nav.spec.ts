@@ -34,6 +34,7 @@ describe('AppSideNav', () => {
                 dashboardMenuItem: 'Dashboard',
                 searchStatistics: 'Buscar estatísticas',
                 periodReport: 'Relatório do período',
+                telegramLink: 'Vincular Telegram',
                 users: 'Usuários',
                 logout: 'Sair',
                 collapse: 'Retrair menu',

@@ -94,6 +94,12 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'telegram-link',
+    loadComponent: () =>
+      import('./pages/telegram-link/telegram-link').then((m) => m.TelegramLinkPage),
+    canActivate: [authGuard],
+  },
+  {
     path: 'users',
     loadComponent: () => import('./pages/users/users').then((m) => m.Users),
     canActivate: [authGuard, adminGuard],

@@ -141,6 +141,7 @@
     "dashboardMenuItem": "Dashboard",
     "searchStatistics": "Search statistics",
     "periodReport": "Period report",
+    "telegramLink": "Link Telegram",
     "users": "Users",
     "logout": "Log out",
     "collapse": "Collapse menu",
@@ -163,6 +164,15 @@
       "ADMIN": "Admin",
       "MEMBER": "Member"
     }
+  },
+  "telegramLink": {
+    "title": "Link your Telegram account",
+    "intro": "Generate a short-lived code and send it to the Telegram bot to link your account and register bets from there.",
+    "generate": "Generate code",
+    "regenerate": "Generate new code",
+    "codeLabel": "Link code",
+    "expiresAtLabel": "Expires at {{expiresAt}}",
+    "genericError": "Could not generate the code. Please try again."
   },
   "bettingHouses": {
     "createTitle": "New betting house",
