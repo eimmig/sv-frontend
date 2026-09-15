@@ -1794,9 +1794,9 @@
         "feat-003",
         "feat-010"
       ],
-      "status": "not-started",
+      "status": "in-progress",
       "plan_review": "Plan Reviewer 2026-09-15: READY. Evidencia: docs/services/auth-service.md confirma o contrato exato - POST /api/v1/telegram-links exige X-User-Id/X-Tenant-Id (401 se ausentes/invalidos), responde 201 {code, expiresAt} (8 caracteres alfanumericos, TTL 15min default); RouteConfig.java (linha 20) ja roteia /api/v1/telegram-links/** em authServiceRoute, autenticado por PASETO normal (nao e a rota interna/sem-auth de telegram-accounts). Nenhum cliente/rota/tela existe hoje no frontend (grep sem resultado) - feature e genuinamente nova, sem conflito com trabalho existente. Plano das subtasks bate com o contrato real. Residual aceito (nao bloqueante): comportamento de chamar o endpoint 2x com um codigo ainda valido pendente nao esta documentado (novo codigo substitui o antigo vs. 409) - validar na implementacao e nao assumir.",
-      "jira": "",
+      "jira": "SV-453",
       "subtasks": [
         {
           "id": "feat-027.1",
@@ -1809,8 +1809,8 @@
           ],
           "validation": "Teste de servico e componente cobrem geracao, expiracao e erro.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-454"
         },
         {
           "id": "feat-027.2",
@@ -1824,7 +1824,7 @@
           "validation": "Playwright acessa a tela e gera um codigo mockado pelo endpoint.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-455"
         },
         {
           "id": "feat-027.3",
@@ -1840,7 +1840,7 @@
           "validation": "Fluxo web de vinculo documentado, testado e evidence preenchida.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-456"
         }
       ],
       "evidence": ""

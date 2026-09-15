@@ -141,6 +141,7 @@
     "dashboardMenuItem": "Dashboard",
     "searchStatistics": "Buscar estatísticas",
     "periodReport": "Relatório do período",
+    "telegramLink": "Vincular Telegram",
     "users": "Usuários",
     "logout": "Sair",
     "collapse": "Retrair menu",
@@ -163,6 +164,15 @@
       "ADMIN": "Administrador",
       "MEMBER": "Membro"
     }
+  },
+  "telegramLink": {
+    "title": "Vincular conta do Telegram",
+    "intro": "Gere um código de curta duração e envie-o para o bot do Telegram para vincular sua conta e registrar apostas por lá.",
+    "generate": "Gerar código",
+    "regenerate": "Gerar novo código",
+    "codeLabel": "Código de vínculo",
+    "expiresAtLabel": "Expira em {{expiresAt}}",
+    "genericError": "Não foi possível gerar o código. Tente novamente."
   },
   "bettingHouses": {
     "createTitle": "Nova casa de apostas",
