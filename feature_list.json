@@ -1735,9 +1735,9 @@
         "feat-014",
         "feat-015"
       ],
-      "status": "not-started",
-      "plan_review": "Plan Reviewer 2026-09-15: REVISE. Evidencia parte 1 (betType): register-bet.html/ts confirma betType como <input type=\"text\"> livre (linhas 99-108, form control sem Validators de enum) - troca por mat-select com 2 opcoes fixas (pre/live) e labels localizadas e direta, sem achado bloqueante. MAJOR parte 2 (byBetType): core/statistics-api.ts (BetMetrics, linha 14-16) tem um comentario explicito e pre-existente dizendo 'byBetType stays out of scope (epic-021 consumes it)' - ou seja, a tipagem/consumo de byBetType ja estava deliberadamente reservado pra outra feature (epic-021 'Visao geral', que ainda nem tem feature granular criada em apps/web/feature_list.json). Implementar feat-026.2 sem revisar essa decisao cria 2 features competindo pelo mesmo campo (risco de tipagem duplicada/divergente ou de epic-021 reabrir statistics-api.ts pra desfazer o que feat-026 fizer). Correcao: decidir agora, antes de codificar, se feat-026 passa a ser a dona de byBetType (movendo o comentario/decisao pra ca e liberando epic-021 pra so reusar o tipo) ou se feat-026.2 deve ser removida desta feature e o escopo de feat-026 fica so no betType do formulario - registrar a decisao na evidence antes de marcar in-progress.",
-      "jira": "",
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer 2026-09-15: REVISE. Evidencia parte 1 (betType): register-bet.html/ts confirma betType como <input type=\"text\"> livre (linhas 99-108, form control sem Validators de enum) - troca por mat-select com 2 opcoes fixas (pre/live) e labels localizadas e direta, sem achado bloqueante. MAJOR parte 2 (byBetType): core/statistics-api.ts (BetMetrics, linha 14-16) tem um comentario explicito e pre-existente dizendo 'byBetType stays out of scope (epic-021 consumes it)' - ou seja, a tipagem/consumo de byBetType ja estava deliberadamente reservado pra outra feature (epic-021 'Visao geral', que ainda nem tem feature granular criada em apps/web/feature_list.json). Implementar feat-026.2 sem revisar essa decisao cria 2 features competindo pelo mesmo campo (risco de tipagem duplicada/divergente ou de epic-021 reabrir statistics-api.ts pra desfazer o que feat-026 fizer). Correcao: decidir agora, antes de codificar, se feat-026 passa a ser a dona de byBetType (movendo o comentario/decisao pra ca e liberando epic-021 pra so reusar o tipo) ou se feat-026.2 deve ser removida desta feature e o escopo de feat-026 fica so no betType do formulario - registrar a decisao na evidence antes de marcar in-progress.\n\nDecisao do usuario (2026-09-15, via AskUserQuestion): feat-026 passa a ser a dona de byBetType. feat-026.2 segue no escopo original (tipar ByBetTypeMetrics em core/statistics-api.ts e exibir PRE/LIVE numa visao do frontend atual). O comentario 'byBetType stays out of scope (epic-021 consumes it)' em BetMetrics sera removido/corrigido no mesmo commit que adicionar o tipo. feat-029 (epic-021, 'Visao geral') passa a so reusar o tipo ja pronto quando for implementada depois, sem precisar adiciona-lo - ver nota adicionada no plan_review de feat-029. Veredito atualizado: READY (bloqueio de ownership removido; achados MINOR de betType da parte 1 ja endereçados no plano original).",
+      "jira": "SV-457",
       "subtasks": [
         {
           "id": "feat-026.1",
@@ -1750,8 +1750,8 @@
           ],
           "validation": "Teste de componente e Playwright cobrem cadastro PRE e LIVE.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-458"
         },
         {
           "id": "feat-026.2",
@@ -1765,7 +1765,7 @@
           "validation": "Teste de contrato e QA visual confirmam os dois buckets e suas metricas.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-459"
         },
         {
           "id": "feat-026.3",
@@ -1781,7 +1781,7 @@
           "validation": "Contrato frontend/backend alinhado e evidence preenchida.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-460"
         }
       ],
       "evidence": ""
@@ -1916,7 +1916,7 @@
         "feat-026"
       ],
       "status": "not-started",
-      "plan_review": "Plan Reviewer 2026-09-15: BLOCKED (feature criada nesta revisao - root tinha epic-021 sem backlog granular ate agora). Motivo do bloqueio: esta tela consome byBetType (Pre/Live nos cards), mas o Plan Reviewer desta mesma sessao encontrou que web feat-026 (epic-027) e a unica feature que hoje pretende tipar/consumir byBetType em core/statistics-api.ts - e a propria feat-026 esta em REVISE justamente porque o dono de byBetType nao esta decidido (o comentario existente em BetMetrics ja citava 'epic-021 consumes it', o que esta feature confirma). Esta feature (feat-029) nao pode comecar antes de: (1) feat-026 fechar com a decisao de quem tipa byBetType registrada; (2) se feat-026 nao tipar, esta feature herda a tarefa de adicionar ByBetTypeMetrics em statistics-api.ts. Alem disso, mesma dependencia cross-repo de feat-028: BankrollApi/SettingsApi ja existem no frontend mas dependem de api-gateway feat-013 (not-started) pra funcionar ponta a ponta - root epic-021 nao listava epic-026(api-gateway) como dependencia, corrigido nesta sessao. 'Saldo mais antigo do historico' (GET /api/v1/bankroll/balance no ponto mais antigo) exige achar a data da primeira aposta liquidada - nao ha endpoint dedicado pra isso; a abordagem mais simples e usar o primeiro item do array esparso de GET /api/v1/statistics/daily sem from/to como proxy da data mais antiga, mas isso nao esta decidido no plano e deve virar subtask explicita antes de codar.",
+      "plan_review": "Plan Reviewer 2026-09-15: BLOCKED (feature criada nesta revisao - root tinha epic-021 sem backlog granular ate agora). Motivo do bloqueio: esta tela consome byBetType (Pre/Live nos cards), mas o Plan Reviewer desta mesma sessao encontrou que web feat-026 (epic-027) e a unica feature que hoje pretende tipar/consumir byBetType em core/statistics-api.ts - e a propria feat-026 esta em REVISE justamente porque o dono de byBetType nao esta decidido (o comentario existente em BetMetrics ja citava 'epic-021 consumes it', o que esta feature confirma). Esta feature (feat-029) nao pode comecar antes de: (1) feat-026 fechar com a decisao de quem tipa byBetType registrada; (2) se feat-026 nao tipar, esta feature herda a tarefa de adicionar ByBetTypeMetrics em statistics-api.ts. Alem disso, mesma dependencia cross-repo de feat-028: BankrollApi/SettingsApi ja existem no frontend mas dependem de api-gateway feat-013 (not-started) pra funcionar ponta a ponta - root epic-021 nao listava epic-026(api-gateway) como dependencia, corrigido nesta sessao. 'Saldo mais antigo do historico' (GET /api/v1/bankroll/balance no ponto mais antigo) exige achar a data da primeira aposta liquidada - nao ha endpoint dedicado pra isso; a abordagem mais simples e usar o primeiro item do array esparso de GET /api/v1/statistics/daily sem from/to como proxy da data mais antiga, mas isso nao esta decidido no plano e deve virar subtask explicita antes de codar.\n\nDecisao do usuario (2026-09-15, via AskUserQuestion, registrada no plan_review de feat-026): feat-026 e a dona de byBetType - feat-026.2 tipa ByBetTypeMetrics em core/statistics-api.ts e exibe PRE/LIVE numa visao do frontend atual. Esta feature (feat-029) segue dependendo de feat-026 (ja listada em dependencies), mas o motivo agora e so 'esperar o tipo existir', nao mais decisao de ownership em aberto - quando feat-026 fechar, feat-029 so reusa ByBetTypeMetrics/o campo byBetType ja tipado, sem reabrir statistics-api.ts pra adiciona-lo. O restante do bloqueio (dependencia cross-repo de api-gateway feat-013, decisao de 'saldo mais antigo do historico') continua de pe - feature segue BLOCKED ate feat-026 fechar e ate esses 2 pontos serem resolvidos.",
       "jira": "",
       "subtasks": [
         {
