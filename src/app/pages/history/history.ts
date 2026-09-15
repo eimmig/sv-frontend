@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
+import { ActivatedRoute } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { forkJoin, map } from 'rxjs';
 
@@ -50,6 +51,9 @@ const TRANSACTION_TYPE_BADGE: Record<TransactionType, 'positive' | 'neutral'> = 
   withdrawal: 'neutral',
 };
 
+const BETS_TAB = 0;
+const TRANSACTIONS_TAB = 1;
+
 @Component({
   imports: [
     ReactiveFormsModule,
@@ -73,9 +77,13 @@ export class History implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly formBuilder = inject(FormBuilder);
   private readonly transloco = inject(TranslocoService);
+  private readonly route = inject(ActivatedRoute);
   protected readonly language = inject(Language);
 
   protected readonly formatBrl = formatBrl;
+  // Deep link from betting-houses' "move balance" action (?bettingHouseId=<id>): opens straight
+  // into the Movimentações tab with that house pre-selected, instead of the default Apostas tab.
+  protected readonly selectedTabIndex = signal(BETS_TAB);
   protected readonly options = signal<Options>(EMPTY_OPTIONS);
   protected readonly optionsError = signal<string | null>(null);
 
@@ -125,6 +133,12 @@ export class History implements OnInit {
     );
     this.applyBetFilter();
     this.applyTransactionFilter();
+
+    const bettingHouseId = this.route.snapshot.queryParamMap.get('bettingHouseId');
+    if (bettingHouseId) {
+      this.selectedTabIndex.set(TRANSACTIONS_TAB);
+      this.createTransactionForm.patchValue({ bettingHouseId });
+    }
   }
 
   protected nameOf(list: { id: string; name: string }[], id: string | null): string {

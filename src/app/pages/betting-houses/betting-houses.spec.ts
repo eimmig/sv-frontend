@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { BettingHouses } from './betting-houses';
@@ -19,6 +20,8 @@ describe('BettingHouses', () => {
         nameLabel: 'Nome',
         initialBalanceLabel: 'Saldo inicial',
         balanceLabel: 'Saldo atual',
+        actionsLabel: 'Ações',
+        moveBalance: 'Movimentar saldo',
         create: 'Criar casa de apostas',
         genericError: 'Não foi possível completar a operação. Tente novamente.',
       },
@@ -44,7 +47,7 @@ describe('BettingHouses', () => {
           translocoConfig: { availableLangs: ['pt-BR'], defaultLang: 'pt-BR' },
         }),
       ],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     }).compileComponents();
   });
 

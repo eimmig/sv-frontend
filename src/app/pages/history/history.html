@@ -1,7 +1,12 @@
 @if (optionsError(); as message) {
   <p class="history__error" role="alert" data-testid="history-options-error">{{ message }}</p>
 } @else {
-  <mat-tab-group class="history" data-testid="history-tabs">
+  <mat-tab-group
+    class="history"
+    data-testid="history-tabs"
+    [selectedIndex]="selectedTabIndex()"
+    (selectedIndexChange)="selectedTabIndex.set($event)"
+  >
     <mat-tab [label]="'history.betsTitle' | transloco">
       <form [formGroup]="betFilterForm" (ngSubmit)="applyBetFilter()" class="history__filters">
         <mat-form-field appearance="outline">

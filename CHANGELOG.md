@@ -16,6 +16,10 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
   lugar a um botão-ícone com `mat-menu` (mesmo padrão já usado pelos links de recurso), em vez de
   sumir do DOM inteiramente. Estado expandido intocado (mesmo `data-testid`, mesmos 3 e2e por
   `role=option`).
+- `betting-houses` (`feat-025`): ação "Movimentar saldo" por linha leva para `/history` já na aba
+  Movimentações com a casa pré-selecionada — ponte de navegação, não um formulário novo (o de
+  depósito/retirada já existia em `History`, intocado). Saldo por casa já re-sincroniza sozinho ao
+  voltar (Angular recria o componente da rota), sem código de sincronização de estado novo.
 
 ### Fixed
 
@@ -32,6 +36,13 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
   batendo com uma fixture fixa em `2026-09-11` - o teste falhava sempre que a suíte rodasse depois
   dessa data. Relógio congelado (`vi.setSystemTime`/`page.clock.setFixedTime`) em vez de mudar a
   fixture, que não é o que o componente realmente controla.
+- `shared/panel` (`feat-025`): "grid blowout" — a coluna nova de `betting-houses` (com o botão
+  "Movimentar saldo") estourava a largura da página inteira em telas estreitas, apesar da tabela
+  já estar dentro de um `overflow-x: auto`. Causa: `:host` de `app-panel` (o item de grid de
+  `app-panel-layout`) não tinha `min-width: 0` — grid/flex items usam `min-width: auto` por
+  padrão, que ignora `overflow` em qualquer descendente e trava o track do grid no tamanho do
+  conteúdo. `min-width: 0` no `:host` corrige para qualquer página que use `app-panel` com
+  conteúdo largo, não só `betting-houses`.
 - [SV-215](https://stakevault.atlassian.net/browse/SV-215) - Assets de logo + splash animado
 - [SV-216](https://stakevault.atlassian.net/browse/SV-216) - ngx-echarts instalado e provado
 - [SV-217](https://stakevault.atlassian.net/browse/SV-217) - Playwright + gate de cobertura 80%
@@ -119,3 +130,7 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-400](https://stakevault.atlassian.net/browse/SV-400) - Aplicar tema claro ao botao de colapsar
 - [SV-401](https://stakevault.atlassian.net/browse/SV-401) - Manter seletor de idioma acessivel no modo colapsado
 - [SV-402](https://stakevault.atlassian.net/browse/SV-402) - Testes, QA visual e verificacao final
+- [SV-403](https://stakevault.atlassian.net/browse/SV-403) - Implementar gestao de saldo e movimentacoes no frontend
+- [SV-404](https://stakevault.atlassian.net/browse/SV-404) - Ponte de navegacao Casas de Apostas -> Historico (Movimentacoes)
+- [SV-405](https://stakevault.atlassian.net/browse/SV-405) - Verificar atualizacao de saldo por casa apos movimentacao (sem codigo novo esperado)
+- [SV-406](https://stakevault.atlassian.net/browse/SV-406) - Testes, QA visual e verificacao final
