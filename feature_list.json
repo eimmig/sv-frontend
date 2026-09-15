@@ -1735,7 +1735,7 @@
           ],
           "validation": "Suite do frontend verde, fluxo financeiro demonstrado e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-406"
         }
       ],

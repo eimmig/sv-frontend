@@ -46,45 +46,47 @@
     @if (loadError(); as message) {
       <p class="betting-houses__error" role="alert" data-testid="betting-houses-load-error">{{ message }}</p>
     } @else {
-      <table class="betting-houses__table" data-testid="betting-houses-list">
-        <thead>
-          <tr>
-            <th>{{ 'bettingHouses.nameLabel' | transloco }}</th>
-            <th>{{ 'bettingHouses.initialBalanceLabel' | transloco }}</th>
-            <th>{{ 'bettingHouses.balanceLabel' | transloco }}</th>
-            <th>{{ 'bettingHouses.actionsLabel' | transloco }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (house of bettingHouses(); track house.id) {
-            <tr data-testid="betting-houses-row">
-              <td>{{ house.name }}</td>
-              <td>{{ formatBrl(house.initialBalance) }}</td>
-              <td>
-                {{ formatBrl(house.balance) }}
-                <span
-                  class="badge"
-                  [class.badge--positive]="delta(house) > 0"
-                  [class.badge--negative]="delta(house) < 0"
-                  [class.badge--neutral]="delta(house) === 0"
-                  data-testid="betting-houses-delta"
-                  >{{ formatDelta(delta(house)) }}</span
-                >
-              </td>
-              <td>
-                <a
-                  mat-stroked-button
-                  [routerLink]="['/history']"
-                  [queryParams]="{ bettingHouseId: house.id }"
-                  data-testid="betting-houses-move-balance"
-                >
-                  {{ 'bettingHouses.moveBalance' | transloco }}
-                </a>
-              </td>
+      <div class="betting-houses__table-wrap">
+        <table class="betting-houses__table" data-testid="betting-houses-list">
+          <thead>
+            <tr>
+              <th>{{ 'bettingHouses.nameLabel' | transloco }}</th>
+              <th>{{ 'bettingHouses.initialBalanceLabel' | transloco }}</th>
+              <th>{{ 'bettingHouses.balanceLabel' | transloco }}</th>
+              <th>{{ 'bettingHouses.actionsLabel' | transloco }}</th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @for (house of bettingHouses(); track house.id) {
+              <tr data-testid="betting-houses-row">
+                <td>{{ house.name }}</td>
+                <td>{{ formatBrl(house.initialBalance) }}</td>
+                <td>
+                  {{ formatBrl(house.balance) }}
+                  <span
+                    class="badge"
+                    [class.badge--positive]="delta(house) > 0"
+                    [class.badge--negative]="delta(house) < 0"
+                    [class.badge--neutral]="delta(house) === 0"
+                    data-testid="betting-houses-delta"
+                    >{{ formatDelta(delta(house)) }}</span
+                  >
+                </td>
+                <td>
+                  <a
+                    mat-stroked-button
+                    [routerLink]="['/history']"
+                    [queryParams]="{ bettingHouseId: house.id }"
+                    data-testid="betting-houses-move-balance"
+                  >
+                    {{ 'bettingHouses.moveBalance' | transloco }}
+                  </a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     }
   </app-panel>
 </app-panel-layout>
