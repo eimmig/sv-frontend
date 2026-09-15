@@ -50,6 +50,7 @@ describe('TelegramLinkPage', () => {
 
   it('does not call the API until the user clicks generate', () => {
     createComponent();
+    expect(fixture.componentInstance['link']()).toBeNull();
     httpMock.expectNone(`${environment.apiGatewayUrl}/api/v1/telegram-links`);
   });
 
@@ -87,6 +88,7 @@ describe('TelegramLinkPage', () => {
     fixture.componentInstance['generate']();
     fixture.componentInstance['generate']();
 
+    expect(fixture.componentInstance['submitting']()).toBe(true);
     httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/telegram-links`);
   });
 });
