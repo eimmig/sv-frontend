@@ -2,10 +2,9 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-09-11
-**Estado:** `feat-001` a `feat-015` `done`. `feat-015` (página "Relatório do período", `epic-017`
-da raiz) fechada nesta sessão, logo após `feat-014` (`epic-015`). Libera `epic-019` (dependia de
-`epic-015`, já liberado) — `epic-020`/`epic-021` já estavam liberados por outras dependências.
+**Última atualização:** 2026-09-15
+**Estado:** `feat-001` a `feat-019` `done`. `feat-019` (correções de UX da sidebar, `epic-023` da
+raiz) fechada nesta sessão.
 
 ## `feat-015` fechada — página "Relatório do período" (2026-09-11)
 
@@ -1148,3 +1147,54 @@ confirmou os 14 call sites usando `${environment.apiGatewayUrl}/...` via templat
 `feature/SV-379`→`develop` (#77) mergeados; `develop`→`main` (#78) também, CI de `main` verde
 (imagem publicada no GHCR). Confirmação de login real sem CORS via Ingress registrada no
 checklist de `feat-017.2` pela sessão que implementou a correção.
+
+## `feat-019` fechada — correções de UX da sidebar (2026-09-15)
+
+`epic-023` da raiz, continuação de `feat-018`. Plan Reviewer (rodado no início da sessão, antes
+de qualquer código) apontou 3 causas suspeitas para os 3 bugs relatados pelo usuário — nenhuma
+das 3 se confirmou; as causas reais só apareceram investigando de verdade:
+
+- **Ícone do tema não centralizava no rodapé colapsado**: não era falta de `justify-content` no
+  `.side-nav__link` (que já centraliza corretamente) — `app-theme-toggle` tem `:host {
+  display: block }` sem nenhuma centralização própria, e o footer força `width: 100%` no host só
+  pra dar largura total quando expandido. `width: 100%` define o tamanho da caixa, não como o
+  conteúdo dela se posiciona — o botão (~40px) ficava encostado na borda esquerda. Corrigido no
+  componente (`:host { display: flex; justify-content: center }`), não no pai.
+- **Botão de colapsar "com cor escura fixa no tema claro"**: não era CSS nenhum — `AppSideNav`
+  nunca importava `MatButtonModule`, então `mat-icon-button` era um atributo estático inerte
+  (Angular não erra, só ignora). O botão renderizava como `<button>` HTML puro, com o chrome
+  padrão do browser (fundo cinza, borda `outset`), que segue o `color-scheme` do sistema
+  operacional, não os tokens de tema do app — daí parecer "preso" num tema. Corrigido importando
+  o módulo.
+- **Seletor de idioma sumia quando colapsado**: não era o `overflow-x:hidden`/`min-width:120px`
+  que o plan review suspeitou — o template literalmente removia `<app-language-selector>` do DOM
+  (`@if (!collapsed())`). Corrigido com um input `collapsed` no componente: expandido mantém o
+  `mat-select` intocado (mesmo `data-testid`, não quebra os 3 e2e existentes que localizam opções
+  por `role=option`); colapsado troca por um botão-ícone + `mat-menu` (mesmo padrão já usado
+  pelos links de recurso da própria sidebar) — sidesteps o conflito de largura em vez de brigar
+  com ele via CSS.
+
+Evidência real por bug, não só leitura de código: screenshots antes/depois via `git stash`
+(confirma cada centralização), `getComputedStyle` antes/depois (confirma o `<button>` nativo virou
+`mat-mdc-icon-button`), `e2e/side-nav.spec.ts` novo (troca nas 3 locales pelo trigger colapsado,
+sem sobrepor tema/logout). QA visual desktop (1280px) e mobile (375px), claro e escuro, expandido
+e colapsado — 6 combinações conferidas com screenshots reais contra `ng serve`.
+
+Achado do Test Suite Auditor, corrigido antes de fechar: o fix de `.2` não tinha nenhuma proteção
+automatizada, só QA visual — teste novo (`classList.contains('mat-mdc-icon-button')`) adicionado
+e confirmado como guarda real (removendo o import manualmente, o teste falha).
+
+Achado lateral, fora do escopo mas descoberto rodando a suíte inteira como parte da própria
+verificação: `period-report.spec.ts` (unitário) e `e2e/period-report.spec.ts` dependiam de
+`new Date()` real batendo com uma fixture fixa em `2026-09-11` — quebravam sempre que a suíte
+rodasse depois dessa data. Corrigido congelando o relógio (`vi.setSystemTime`/
+`page.clock.setFixedTime`) em vez de mudar a fixture.
+
+`ng test`: 173/173. Playwright completo: 42/42. `./init.sh` do app e da raiz verdes. Delivery
+Reviewer e Test Suite Auditor: PASS nos dois (revisão direta, sem subagentes — diff pequeno e
+totalmente evidenciado). `docs/CONVENTIONS.md` (raiz) ganhou 2 gotchas reaproveitáveis (diretiva
+de atributo do Material sem módulo importado falha em silêncio; `width: 100%` no host não
+centraliza sozinho) e `docs/TESTING.md` ganhou o gotcha de fixture de data vs relógio real.
+
+Story SV-398, subtasks SV-399..402, PRs #84/#85/#86/#87 (subtasks→feature, fast-forward) + PR de
+`feature/SV-398`→`develop` (CI+SonarCloud verdes).
