@@ -171,6 +171,7 @@
     "createTitle": "Nueva entrada",
     "listTitle": "Registradas",
     "nameLabel": "Nombre",
+    "sportFieldLabel": "Deporte",
     "create": "Agregar",
     "genericError": "No se pudo completar la operación. Inténtalo de nuevo.",
     "sports": {
@@ -184,6 +185,9 @@
     },
     "tipsters": {
       "title": "Tipsters"
+    },
+    "teams": {
+      "title": "Equipos"
     }
   },
   "registerBet": {
@@ -199,7 +203,9 @@
     "tipsterNone": "Ninguno",
     "ticketNumberLabel": "Número de boleto",
     "team1Label": "Equipo 1",
+    "team1None": "Ninguno",
     "team2Label": "Equipo 2",
+    "team2None": "Ninguno",
     "betTypeLabel": "Tipo de apuesta",
     "playTypeLabel": "Tipo de jugada",
     "descriptionLabel": "Descripción",
