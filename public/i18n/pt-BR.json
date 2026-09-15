@@ -124,6 +124,15 @@
     "betsLabel": "Apostas",
     "genericError": "Não foi possível completar a operação. Tente novamente."
   },
+  "overview": {
+    "summaryTitle": "Visão geral",
+    "lucroTotalLabel": "Lucro Total (U)",
+    "preLiveLabel": "Pré / Live (U)",
+    "lucroMedioMensalLabel": "Lucro Médio Mensal (U)",
+    "roiLabel": "ROI",
+    "indeterminate": "Indeterminado",
+    "genericError": "Não foi possível completar a operação. Tente novamente."
+  },
   "login": {
     "title": "Entrar",
     "tagline": "Gestão de banca",

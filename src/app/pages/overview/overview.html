@@ -1,0 +1,42 @@
+<app-panel-layout>
+  <app-panel [title]="'overview.summaryTitle' | transloco">
+    @if (error(); as message) {
+      <p class="overview__error" role="alert" data-testid="overview-error">{{ message }}</p>
+    } @else {
+      @let total = lucroTotalUnidades();
+      @let pre = lucroPreUnidades();
+      @let live = lucroLiveUnidades();
+      @let mensal = lucroMedioMensal();
+      @let roiValue = roi();
+      <div class="overview__cards" data-testid="overview-summary-cards">
+        <app-kpi-card
+          [icon]="(total ?? 0) >= 0 ? 'trending_up' : 'trending_down'"
+          [label]="'overview.lucroTotalLabel' | transloco"
+          [value]="total === null ? ('overview.indeterminate' | transloco) : formatOdd(total)"
+          [sign]="total === null ? undefined : sign(total)"
+          testId="overview-lucro-total"
+        />
+        <app-kpi-card
+          icon="bolt"
+          [label]="'overview.preLiveLabel' | transloco"
+          [value]="pre === null || live === null ? ('overview.indeterminate' | transloco) : formatOdd(pre) + ' / ' + formatOdd(live)"
+          testId="overview-pre-live"
+        />
+        <app-kpi-card
+          icon="calendar_month"
+          [label]="'overview.lucroMedioMensalLabel' | transloco"
+          [value]="mensal === null ? ('overview.indeterminate' | transloco) : formatOdd(mensal)"
+          [sign]="mensal === null ? undefined : sign(mensal)"
+          testId="overview-lucro-medio-mensal"
+        />
+        <app-kpi-card
+          icon="percent"
+          [label]="'overview.roiLabel' | transloco"
+          [value]="roiValue === null ? ('overview.indeterminate' | transloco) : formatPercent(roiValue)"
+          [sign]="roiValue === null ? undefined : sign(roiValue)"
+          testId="overview-roi"
+        />
+      </div>
+    }
+  </app-panel>
+</app-panel-layout>
