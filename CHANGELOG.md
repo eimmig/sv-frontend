@@ -119,3 +119,7 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-400](https://stakevault.atlassian.net/browse/SV-400) - Aplicar tema claro ao botao de colapsar
 - [SV-401](https://stakevault.atlassian.net/browse/SV-401) - Manter seletor de idioma acessivel no modo colapsado
 - [SV-402](https://stakevault.atlassian.net/browse/SV-402) - Testes, QA visual e verificacao final
+- [SV-403](https://stakevault.atlassian.net/browse/SV-403) - Implementar gestao de saldo e movimentacoes no frontend
+- [SV-404](https://stakevault.atlassian.net/browse/SV-404) - Ponte de navegacao Casas de Apostas -> Historico (Movimentacoes)
+- [SV-405](https://stakevault.atlassian.net/browse/SV-405) - Verificar atualizacao de saldo por casa apos movimentacao (sem codigo novo esperado)
+- [SV-406](https://stakevault.atlassian.net/browse/SV-406) - Testes, QA visual e verificacao final

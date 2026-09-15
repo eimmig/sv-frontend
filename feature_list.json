@@ -1689,57 +1689,41 @@
         "feat-010",
         "feat-014"
       ],
-      "status": "not-started",
-      "plan_review": "Plan Reviewer 2026-09-15: READY WITH CONCERNS. Evidencia: TransactionsApi/TransactionType (deposit/withdrawal) e o formulario de movimentacao ja existem em pages/history/history.ts (nao em betting-houses), e betting-houses.html ja exibe initialBalance/balance por casa (colunas dedicadas, formatBrl). O 'gap' real e navegacao/atualizacao: o formulario fica na tela de Historico, nao na tela de Casas de Apostas onde o saldo por casa e exibido - description fala em 'integrar ao contexto das casas', mas as subtasks (025.1/025.2) nao decidem se o formulario MUDA de tela (para dentro de betting-houses) ou so passa a existir tambem la, e nem citam que History e Betting Houses sao rotas separadas (balance da casa so re-sincroniza sozinho ao navegar de novo pra rota, sem estado compartilhado hoje). MINOR: subtask 025.1 deve fixar em qual tela o fluxo de deposito/retirada mora antes de implementar (evitar 2 formularios divergentes); 025.2 deve testar explicitamente a navegacao History->Betting Houses apos a movimentacao, nao so o retorno da API mockado.",
-      "jira": "",
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer 2026-09-15: READY WITH CONCERNS. Evidencia: TransactionsApi/TransactionType (deposit/withdrawal) e o formulario de movimentacao ja existem em pages/history/history.ts (nao em betting-houses), e betting-houses.html ja exibe initialBalance/balance por casa (colunas dedicadas, formatBrl). O 'gap' real e navegacao/atualizacao: o formulario fica na tela de Historico, nao na tela de Casas de Apostas onde o saldo por casa e exibido - description fala em 'integrar ao contexto das casas', mas as subtasks (025.1/025.2) nao decidem se o formulario MUDA de tela (para dentro de betting-houses) ou so passa a existir tambem la, e nem citam que History e Betting Houses sao rotas separadas (balance da casa so re-sincroniza sozinho ao navegar de novo pra rota, sem estado compartilhado hoje). MINOR: subtask 025.1 deve fixar em qual tela o fluxo de deposito/retirada mora antes de implementar (evitar 2 formularios divergentes); 025.2 deve testar explicitamente a navegacao History->Betting Houses apos a movimentacao, nao so o retorno da API mockado. AMENDMENT 2026-09-15 (investigacao antes de codificar, decisao registrada): formulario/filtro/lista de movimentacoes em history.ts JA cobrem 025.1 e 025.3 por completo (deposit/withdrawal, validacao de valor positivo/casa obrigatoria, erros RFC 7807 localizados, lista com GET /api/v1/transactions paginado, badges deposito/retirada, datas localizadas) - nao serao reescritos nem duplicados em betting-houses, decisao explicita contra a 'segunda tela com o mesmo formulario' que o plan_review original temia. 'Saldo consolidado' (BankrollApi) tambem ja existe - Dashboard.ts ja chama bankrollApi.getBalance() (bankrollNow) como KPI; nao sera duplicado em betting-houses. betting-houses.ts usa constructor()->reload() sem route reuse customizada - Angular recria o componente a cada navegacao pra essa rota (comportamento default do Router), entao o saldo por casa ja re-sincroniza sozinho ao voltar de uma movimentacao, sem codigo novo (025.2 vira so verificacao/teste, nao implementacao). Escopo real, menor que o backlog original: 1 acao 'Movimentar saldo' por linha em betting-houses (routerLink pra /history com queryParam bettingHouseId), history.ts le esse queryParam no ngOnInit e (a) muda pra aba Movimentacoes (mat-tab-group ganha [selectedIndex] controlado por signal, hoje sem binding nenhum) e (b) pre-seleciona a casa no formulario existente - ponte de navegacao, nao um formulario novo.",
+      "jira": "SV-403",
       "subtasks": [
         {
           "id": "feat-025.1",
-          "name": "Adicionar fluxo visual de deposito e retirada",
-          "detail": "Usar TransactionsApi na tela de casas de apostas para permitir selecionar a casa, escolher deposito ou retirada e informar um valor positivo.",
+          "name": "Ponte de navegacao Casas de Apostas -> Historico (Movimentacoes)",
+          "detail": "O formulario de deposito/retirada ja existe em history.ts (025.1/025.3 do escopo original) - o gap real e alcancar esse formulario a partir do contexto das casas sem duplica-lo. Acao por linha em betting-houses.html navegando pra /history?bettingHouseId=<id>; history.ts le o query param, troca pra aba Movimentacoes e pre-seleciona a casa no formulario.",
           "checklist": [
-            "Formulario de movimentacao usa deposit e withdrawal do contrato existente.",
-            "Valor deve ser positivo e a casa deve ser obrigatoria.",
-            "Erros RFC 7807 e validacoes sao exibidos de forma localizada.",
-            "A retirada nao pode ser confundida com criacao de uma nova casa."
+            "betting-houses.html ganha coluna de acao com botao/link 'Movimentar saldo' por linha, routerLink /history com queryParams bettingHouseId.",
+            "mat-tab-group de history.ts ganha [selectedIndex] controlado por signal (hoje sem nenhum binding).",
+            "ngOnInit de History le queryParamMap.bettingHouseId: se presente, seleciona a aba Movimentacoes e faz patchValue no createTransactionForm.",
+            "Navegar sem query param (uso normal da tela) continua abrindo na aba Apostas (comportamento atual intocado)."
           ],
-          "validation": "Teste de componente e Playwright registram deposito e retirada por uma casa real usando o endpoint existente.",
+          "validation": "Playwright: clicar 'Movimentar saldo' numa casa leva pra /history com a aba certa e a casa certa pre-selecionada no formulario.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-404"
         },
         {
           "id": "feat-025.2",
-          "name": "Atualizar saldos por casa e saldo consolidado",
-          "detail": "Apos uma movimentacao, recarregar os dados da casa e usar BankrollApi para apresentar o saldo consolidado sem duplicar a regra de calculo do backend.",
+          "name": "Verificar atualizacao de saldo por casa apos movimentacao (sem codigo novo esperado)",
+          "detail": "betting-houses.ts recarrega no constructor() - Angular recria o componente a cada navegacao pra essa rota, entao o saldo ja deveria re-sincronizar sozinho ao voltar de uma movimentacao. Provar isso com um teste real (Playwright), nao assumir pela leitura do codigo.",
           "checklist": [
-            "Saldo por casa reflete initialBalance + depositos - retiradas + resultados liquidados.",
-            "Saldo consolidado usa BankrollApi e nao soma valores divergentes no cliente.",
-            "Estado de carregamento, sucesso e erro nao deixa valores antigos aparentando ser atuais.",
-            "Isolamento por tenant continua sendo responsabilidade do Gateway/backend."
+            "Fluxo completo testado: Casas de Apostas -> Movimentar saldo -> criar deposito/retirada em History -> voltar pra Casas de Apostas -> saldo da casa reflete a movimentacao, sem refresh manual da pagina.",
+            "Se o teste acima falhar (saldo NAO atualiza sozinho), so entao investigar/corrigir - nao adicionar sincronizacao de estado preventivamente sem prova do problema.",
+            "Saldo consolidado (Dashboard, ja existente via BankrollApi) nao e duplicado nem retocado nesta feature."
           ],
-          "validation": "Testes confirmam que deposito e retirada atualizam a casa correta e o saldo consolidado exibido.",
+          "validation": "Playwright prova o ciclo completo Casas de Apostas -> Historico -> Casas de Apostas com saldo atualizado.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-405"
         },
         {
           "id": "feat-025.3",
-          "name": "Integrar historico de movimentacoes",
-          "detail": "Exibir ou conectar o fluxo de movimentacoes ao historico financeiro ja previsto, permitindo conferir tipo, valor, casa e data sem criar uma segunda fonte de dados.",
-          "checklist": [
-            "Lista de movimentacoes usa GET /api/v1/transactions com filtros e paginacao existentes.",
-            "Depositos e retiradas ficam visualmente distinguiveis.",
-            "Datas, valores e labels respeitam os locales do frontend.",
-            "Tela nao duplica a regra nem os dados do historico existente."
-          ],
-          "validation": "Playwright confirma que a movimentacao criada aparece no historico financeiro.",
-          "owner": "agente",
-          "status": "not-started",
-          "jira": ""
-        },
-        {
-          "id": "feat-025.4",
           "name": "Testes, QA visual e verificacao final",
           "detail": "Fechar a entrega da gestao financeira com cobertura dos fluxos de saldo e revisao das discrepancias entre backlog e codigo.",
           "checklist": [
@@ -1752,7 +1736,7 @@
           "validation": "Suite do frontend verde, fluxo financeiro demonstrado e evidence preenchida.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-406"
         }
       ],
       "evidence": ""
