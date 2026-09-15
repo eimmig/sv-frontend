@@ -3,9 +3,42 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-15
-**Estado:** `feat-001` a `feat-019` e `feat-025` `done` (`feat-020`..`024`, `026`..`029` seguem
-`not-started`). `feat-025` (ponte de navegação Casas de Apostas -> Histórico para movimentação de
-saldo, `epic-025` da raiz) fechada nesta sessão, logo após `feat-019`.
+**Estado:** `feat-001` a `feat-021`, `feat-025`, `feat-028` e `feat-030` `done` (`feat-022`..`024`,
+`026`, `027`, `029` seguem `not-started`).
+
+## `feat-028` fechada — grade mensal de drawdown no dashboard (2026-09-15, mesmo dia)
+
+Fecha `epic-020` da raiz por completo (backlog granular criado e fechado na mesma sessão). Nova
+aba "Drawdown mensal" no `mat-tab-group` já existente do dashboard consolidado — grade dinâmica
+de N mini-gráficos (`shared/monthly-drawdown-chart`, reusa `buildLineChartOption` já existente),
+1 por mês do intervalo selecionado via 2 `<input type="month">`. Fórmula implementada exatamente
+como `docs/STATISTICS.md` — `saldoAtual` (`GET /api/v1/bankroll/balance` sem `at`), **não**
+`saldoFinal` do período (diferença sutil de `period-report-metrics.ts`, confirmada linha a linha
+pelo `Delivery Reviewer`). Módulo puro de cálculo co-localizado em `shared/` (não `pages/
+dashboard/`) — evita um componente compartilhado depender de um módulo de `pages/`.
+
+**2 achados reais, ambos corrigidos antes de fechar**: (1) design — os 2 campos de mês reagindo
+cada um independentemente disparavam requisições sobrepostas quando os dois mudavam (risco da
+resposta desatualizada resolver por último); corrigido batendo os dois atrás de um botão
+"Aplicar" explícito, mesmo padrão do `filterForm` de 5 selects do próprio `dashboard.ts`. (2)
+regressão pré-existente de `feat-021` (já em `develop`/`main`): `e2e/register-bet.spec.ts` nunca
+ganhou o mock de `/api/v1/teams` quando aquela feature acrescentou o catálogo de times ao
+`forkJoin` do formulário — sem ele, `forkJoin` nunca completa e **nenhum** campo do formulário
+fica interativo (não só o de time). Só apareceu rodando a suíte e2e inteira (`npx playwright
+test`), não o arquivo tocado — lição registrada em `docs/TESTING.md`.
+
+QA visual real (screenshots Playwright, desktop/mobile × claro/escuro) achou e corrigiu um bug
+real de responsividade mobile (filtro não quebrava linha, cortando os rótulos dos 2 campos).
+
+`Delivery Reviewer` (skill completa, não condensada): PASS, sem achado, com verificação
+independente da fórmula (`saldoAtual` vs `saldoFinal`) e da causa raiz da regressão de `feat-021`.
+2 achados reais do `SonarCloud` no gate `story -> develop` (não achados do review) corrigidos:
+`BLOCKER typescript:S2699` (teste sem assertion reconhecida — `httpMock.expectNone()` não conta
+pro Sonar) e `MAJOR typescript:S4165` (reassignment redundante no loop de meses — reescrito como
+índice linear de mês, sem par mutável ano/mês).
+
+Story SV-449 (subtasks SV-450/451/452), PRs #103/#104/#105/#106, CI+SonarCloud verdes.
+`./init.sh` (196 testes, 90%+ cobertura) e suíte e2e completa (47 testes) verdes.
 
 ## `feat-015` fechada — página "Relatório do período" (2026-09-11)
 
