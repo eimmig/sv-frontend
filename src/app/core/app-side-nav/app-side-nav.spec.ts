@@ -34,6 +34,7 @@ describe('AppSideNav', () => {
                 dashboardMenuItem: 'Dashboard',
                 searchStatistics: 'Buscar estatísticas',
                 periodReport: 'Relatório do período',
+                betTypeDashboard: 'Por tipo de aposta',
                 telegramLink: 'Vincular Telegram',
                 users: 'Usuários',
                 logout: 'Sair',

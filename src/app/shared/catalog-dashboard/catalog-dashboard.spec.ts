@@ -54,6 +54,7 @@ describe('CatalogDashboard', () => {
       byBettingHouse: [],
       byLeague: [],
       byTipster: [],
+      byBetType: [],
       monthly: [],
       ...overrides,
     });

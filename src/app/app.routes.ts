@@ -20,6 +20,10 @@ const CATALOG_DASHBOARD_RESOURCES: { path: string; segment: string; labelKey: st
   { path: 'markets-dashboard', segment: 'byMarket', labelKey: 'catalogDashboard.marketNameLabel' },
   { path: 'tipsters-dashboard', segment: 'byTipster', labelKey: 'catalogDashboard.tipsterNameLabel' },
   { path: 'betting-houses-dashboard', segment: 'byBettingHouse', labelKey: 'catalogDashboard.bettingHouseNameLabel' },
+  // feat-026 (web): byBetType is a fixed 2-item segment (PRE/LIVE), not a catalog resource - no
+  // "Cadastrar" counterpart (nothing to manage), so it isn't in CATALOG_MANAGER_RESOURCES, only
+  // here. Structurally identical to the other 5 dashboards otherwise.
+  { path: 'bet-type-dashboard', segment: 'byBetType', labelKey: 'catalogDashboard.betTypeNameLabel' },
 ];
 
 const catalogManagerRoutes: Route[] = CATALOG_MANAGER_RESOURCES.map(({ path, resourcePath }) => ({

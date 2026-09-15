@@ -1764,7 +1764,7 @@
           ],
           "validation": "Teste de contrato e QA visual confirmam os dois buckets e suas metricas.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-459"
         },
         {
