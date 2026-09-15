@@ -1384,7 +1384,7 @@
           ],
           "validation": "./init.sh verde, testes unitarios e Playwright verdes, evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-402"
         }
       ],

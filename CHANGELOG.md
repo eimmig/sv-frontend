@@ -12,12 +12,26 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - `app-login-border-trace` (`feat-018.3`) reformulada: 1 caminho fechado único (contorno completo
   do card) com 2 traços opostos girando continuamente (`stroke-dashoffset`), em vez de 2 metades
   que desenhavam/seguravam/recolhiam. Ajuste pedido pelo usuário após ver a animação original.
+- `app-language-selector` (`feat-019.3`): quando a sidebar está colapsada, o `mat-select` cede
+  lugar a um botão-ícone com `mat-menu` (mesmo padrão já usado pelos links de recurso), em vez de
+  sumir do DOM inteiramente. Estado expandido intocado (mesmo `data-testid`, mesmos 3 e2e por
+  `role=option`).
 
 ### Fixed
 
 - Chave do projeto no SonarCloud corrigida para `eimmig_sv-frontend`. O SonarCloud gera a chave como
   `<org>_<repo>` ao importar um repositório do GitHub; a forma sem prefixo, usada até aqui, faria a
   análise falhar com projeto inexistente.
+- `theme-toggle`/`side-nav__collapse-toggle` (`feat-019.1`/`.2`): ícone do tema não centralizava no
+  rodapé colapsado (`:host` `display:block` + `width:100%` forçado pelo footer, sem centralização);
+  botão de colapsar renderizava como `<button>` nativo sem nenhum estilo do Material (`AppSideNav`
+  nunca importava `MatButtonModule`, então o atributo `mat-icon-button` era um no-op silencioso) -
+  causa raiz real da "cor escura fixa no tema claro" relatada (chrome nativo do browser segue o
+  `color-scheme` do SO, não os tokens do app).
+- `period-report.spec.ts` (unitário e `e2e/period-report.spec.ts`): dependiam de `new Date()` real
+  batendo com uma fixture fixa em `2026-09-11` - o teste falhava sempre que a suíte rodasse depois
+  dessa data. Relógio congelado (`vi.setSystemTime`/`page.clock.setFixedTime`) em vez de mudar a
+  fixture, que não é o que o componente realmente controla.
 - [SV-215](https://stakevault.atlassian.net/browse/SV-215) - Assets de logo + splash animado
 - [SV-216](https://stakevault.atlassian.net/browse/SV-216) - ngx-echarts instalado e provado
 - [SV-217](https://stakevault.atlassian.net/browse/SV-217) - Playwright + gate de cobertura 80%
