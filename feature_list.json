@@ -1469,11 +1469,11 @@
           ],
           "validation": "Suite do frontend verde e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-448"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-15 (story SV-446, subtasks SV-447/SV-448, PR #99 subtask->story verde). Corrige uma quebra real de producao: bets-service feat-017 (fechada mais cedo na mesma sessao) trocou o contrato de POST /api/v1/bets de team1/team2 (texto livre) para team1Id/team2Id (UUID), e este repositorio nunca acompanhou - todo registro manual de aposta pelo site estava recebendo 400 (Jackson FAIL_ON_UNKNOWN_PROPERTIES). Plan Reviewer revisado (substitui o veredito BLOCKED anterior, cuja dependencia de fundo - bets-service feat-016/017 e api-gateway feat-015 - fechou na mesma sessao): tela nova shared/team-manager (catalogo de times vinculado a esporte, componente dedicado - TEAM tem FK sportId obrigatoria, nao e estruturalmente identico aos 4 catalogos de shared/catalog-manager, que ficou intocado, zero risco de regressao nas 4 telas ja estaveis) + register-bet trocando os 2 inputs de texto por selects team1Id/team2Id. Delivery Reviewer (rodado via skill completa, nao condensado - mudanca de negocio real, nao um padrao mecanico repetido): PASS, sem achado. Verificacao independente no proprio review: grep no repositorio inteiro confirmou zero referencia residual a team1/team2 fora da familia team1Id/team1Label/team1None; leitura direta de CreateBetRequest.java (bets-service) confirmou o contrato bate exatamente. ./init.sh verde (180 testes, cobertura 89%+, gate 80% mantido). docs/services/bets-service.md atualizado (fecha a nota de 'sequenciamento de deploy obrigatorio' deixada por feat-017) e docs/services/web.md (padrao do 6o catalogo sem par de Dashboard documentado). Sem filtro client-side de time por esporte (GET /api/v1/teams nao aceita esse query param, e leagues/markets tambem nao sao filtrados por esporte nesta tela hoje - consistente com o padrao existente, nao uma lacuna nova). Desbloqueia o deploy de bets-service em producao sem quebrar o formulario web."
     },
     {
       "id": "feat-022",
