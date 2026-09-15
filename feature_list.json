@@ -1368,7 +1368,7 @@
           ],
           "validation": "Playwright confirma a troca de idioma com sidebar expandida e colapsada nos tres locales.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-401"
         },
         {
