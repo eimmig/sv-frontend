@@ -2015,11 +2015,11 @@
         {
           "id": "feat-030.2",
           "name": "CHANGELOG e verificacao final",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-440"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-15 (story SV-438, subtasks SV-439/SV-440, PR #93 subtask->story verde). Sexta e ultima aplicacao identica do padrao ja revisado e fechado nos 5 repositorios anteriores de epic-028 nesta sessao (bets-service feat-018/stats-service feat-019/api-gateway feat-014/auth-service feat-016/telegram-integration feat-010). Unica diferenca real e o nome do Deployment (web), confirmado contra infra/k8s/web.yaml (sem namespace) e infra/k8s/ci-deployer-rbac.yaml (resourceNames ja incluia web). KUBE_CONFIG confirmado presente no repositorio. Delivery Reviewer: PASS (revisao condensada, sem achado). ./init.sh verde (90%+ cobertura). Guard comportou como esperado: deploy/build-and-push-image corretamente 'skipping' no evento de PR (run 35015065401). Disparo real do job adiado (mesma decisao das 5 features anteriores - promocao develop->main e decisao de release mais ampla). **Fecha epic-028 da raiz por completo** - era o ultimo dos 6 repositorios de aplicacao pendentes; infra/feat-007 (lado do servidor) ja estava done, os 6 jobs deploy agora existem (bets-service, stats-service, api-gateway, auth-service, telegram-integration, web)."
     }
   ]
 }
