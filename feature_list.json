@@ -1853,7 +1853,7 @@
         "feat-006",
         "feat-015"
       ],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "Plan Reviewer 2026-09-15: READY WITH CONCERNS (feature criada nesta revisao - root tinha epic-020 sem backlog granular ate agora). Evidencia: shared/monthly-profit-chart.ts ja e um componente parametrizado (input data, reusa buildLineChartOption de core/chart-theme.ts) - o precedente exato pra 'N mini-graficos, componente unico reaproveitado' que a description pede, sem duplicacao. period-report-metrics.ts (feat-015) ja resolve exatamente a mesma conta (netProfit dia a dia convertido pra unidades via saldoFinal x unitPercent, com fallback null em denominador zero) - so falta agrupar por mes e resetar o acumulado a cada virada, reaproveitando a mesma formula em vez de reescrever. BankrollApi.getBalance()/SettingsApi ja existem no frontend mas dependem de api-gateway feat-013 (services/api-gateway/feature_list.json, ainda not-started - Gateway hoje NAO roteia /api/v1/bankroll/** nem /api/v1/settings/**) - esta feature so funciona ponta a ponta depois daquele feat-013 fechar; root epic-020 nao lista epic-026 como dependencia, corrigido nesta sessao (ver feature_list.json da raiz). MINOR: description nao decide o layout responsivo da grade com N variavel (wrap em CSS grid auto-fit e a opcao mais simples, evitar layout fixo 3x4).",
       "jira": "SV-449",
       "subtasks": [
