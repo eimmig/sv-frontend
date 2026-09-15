@@ -1,0 +1,29 @@
+<form [formGroup]="filterForm" (ngSubmit)="applyFilter()" class="monthly-drawdown-grid__filter">
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'monthlyDrawdown.fromLabel' | transloco }}</mat-label>
+    <input matInput type="month" formControlName="fromMonth" data-testid="monthly-drawdown-from" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>{{ 'monthlyDrawdown.toLabel' | transloco }}</mat-label>
+    <input matInput type="month" formControlName="toMonth" data-testid="monthly-drawdown-to" />
+  </mat-form-field>
+
+  <button mat-flat-button type="submit" data-testid="monthly-drawdown-apply" [disabled]="filterForm.invalid">
+    {{ 'monthlyDrawdown.apply' | transloco }}
+  </button>
+</form>
+
+@if (loadError(); as message) {
+  <p class="monthly-drawdown-grid__error" role="alert" data-testid="monthly-drawdown-error">{{ message }}</p>
+} @else if (months().length === 0) {
+  <p class="monthly-drawdown-grid__empty" data-testid="monthly-drawdown-empty">
+    {{ 'monthlyDrawdown.emptyResult' | transloco }}
+  </p>
+} @else {
+  <div class="monthly-drawdown-grid__grid" data-testid="monthly-drawdown-grid">
+    @for (month of months(); track trackMonth($index, month)) {
+      <app-monthly-drawdown-chart [month]="month" />
+    }
+  </div>
+}

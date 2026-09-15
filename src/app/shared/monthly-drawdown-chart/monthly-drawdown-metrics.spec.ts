@@ -1,4 +1,4 @@
-import { DailyBetMetrics } from '../../../core/statistics-api';
+import { DailyBetMetrics } from '../../core/statistics-api';
 import { buildMonthlyDrawdown, resolveMonthRange } from './monthly-drawdown-metrics';
 
 function day(date: string, netProfit: number): DailyBetMetrics {

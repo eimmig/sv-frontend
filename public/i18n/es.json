@@ -52,6 +52,14 @@
     "bySportTitle": "Por deporte",
     "byMarketTitle": "Por mercado",
     "byBettingHouseTitle": "Por casa de apuestas",
+    "monthlyDrawdownTitle": "Drawdown mensual",
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
+  },
+  "monthlyDrawdown": {
+    "fromLabel": "Mes inicial",
+    "toLabel": "Mes final",
+    "apply": "Aplicar",
+    "emptyResult": "Ningún mes en el intervalo seleccionado.",
     "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
   },
   "catalogDashboard": {
