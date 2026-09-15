@@ -1426,11 +1426,11 @@
           ],
           "validation": "Rotulo validado visualmente e suite do frontend verde.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-445"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-15 (story SV-443, subtasks SV-444/SV-445, PR #96 subtask->story verde). Escopo exatamente como o Plan Reviewer previu: 3 chaves i18n (betDateLabel em pt-BR/en-US/es) trocadas de 'Data da aposta'/'Bet date'/'Fecha de la apuesta' para 'Data do evento'/'Event date'/'Fecha del evento', campo tecnico (betDate, datetime-local/ISO) intocado. Grep no repositorio inteiro confirmou nenhuma outra tela/teste referenciando o texto antigo (so o fixture de teste de register-bet.spec.ts, atualizado no mesmo commit por consistencia, nao por necessidade funcional). Delivery Reviewer: PASS, sem achado. ./init.sh verde. Vault revisado: nenhuma nota do assunto precisa de ajuste (mudanca de copy pura, ja coberta pela convencao geral de i18n em docs/CONVENTIONS.md)."
     },
     {
       "id": "feat-021",
