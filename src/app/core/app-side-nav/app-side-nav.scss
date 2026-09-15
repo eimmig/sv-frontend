@@ -1,0 +1,152 @@
+// docs/DESIGN-SYSTEM.md item 1: "coluna fixa estreita, logo no topo, botões de ícone empilhados
+// (ícone ativo = cor --color-brand)" - extended here with a collapsible width (feat-018, user
+// request) instead of the mockup's single fixed-narrow state.
+:host {
+  display: block;
+  height: 100%;
+}
+
+$width-expanded: 232px;
+$width-collapsed: 72px;
+
+.side-nav {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: $width-expanded;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  overflow-x: hidden;
+  overflow-y: auto;
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.side-nav--collapsed {
+  width: $width-collapsed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .side-nav {
+    transition: none;
+  }
+}
+
+.side-nav__brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  min-height: 32px;
+
+  .side-nav--collapsed & {
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 8px;
+  }
+}
+
+.side-nav__logo {
+  flex: 0 0 auto;
+}
+
+.side-nav__wordmark {
+  font-size: 17px;
+  line-height: 1;
+  white-space: nowrap;
+  flex: 1 1 auto;
+}
+
+.side-nav__wordmark-stake {
+  font-weight: 400;
+  color: var(--color-text-primary);
+}
+
+.side-nav__wordmark-vault {
+  font-weight: 500;
+  color: var(--color-brand);
+}
+
+.side-nav__collapse-toggle {
+  flex: 0 0 auto;
+  color: var(--color-text-secondary);
+}
+
+.side-nav__links {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+}
+
+.side-nav__divider {
+  height: 1px;
+  margin: 8px 8px;
+  background: var(--color-border);
+}
+
+.side-nav__link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+
+  mat-icon {
+    flex: 0 0 auto;
+  }
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &:hover {
+    background: var(--color-surface-elevated);
+    color: var(--color-text-primary);
+  }
+
+  .side-nav--collapsed & {
+    justify-content: center;
+    padding: 10px;
+  }
+}
+
+.side-nav__link--active {
+  color: var(--color-brand);
+  background: color-mix(in srgb, var(--color-brand) 12%, transparent);
+
+  &:hover {
+    color: var(--color-brand);
+    background: color-mix(in srgb, var(--color-brand) 18%, transparent);
+  }
+}
+
+.side-nav__spacer {
+  flex: 1 1 auto;
+}
+
+.side-nav__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  border-top: 1px solid var(--color-border);
+
+  app-language-selector,
+  app-theme-toggle {
+    width: 100%;
+  }
+}

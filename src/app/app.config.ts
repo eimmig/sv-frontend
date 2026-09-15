@@ -1,6 +1,6 @@
 import { ApplicationConfig, isDevMode, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
 import { provideTransloco } from '@jsverse/transloco';
 
 import { acceptLanguageInterceptor } from './core/accept-language-interceptor';
@@ -16,7 +16,10 @@ export const appConfig: ApplicationConfig = {
     // segment/labelKey) - avoids a thin wrapper page per resource, which would reintroduce the
     // SonarCloud duplication finding those shared components were built to avoid (feat-003).
     // Additive: no existing route passes `data` today, so no existing component is affected.
-    provideRouter(routes, withComponentInputBinding()),
+    // withViewTransitions() (feat-018.3): native browser View Transition on route navigation -
+    // the reduced-motion path (styles.scss) zeroes ::view-transition-old/new(root) instead of
+    // disabling the feature, per the same convention already used for the splash/sidebar.
+    provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
     provideHttpClient(withInterceptors([acceptLanguageInterceptor, authInterceptor])),
     provideTransloco({
       config: {

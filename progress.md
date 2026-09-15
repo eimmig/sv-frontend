@@ -2,10 +2,10 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-09-11
-**Estado:** `feat-001` a `feat-015` `done`. `feat-015` (página "Relatório do período", `epic-017`
-da raiz) fechada nesta sessão, logo após `feat-014` (`epic-015`). Libera `epic-019` (dependia de
-`epic-015`, já liberado) — `epic-020`/`epic-021` já estavam liberados por outras dependências.
+**Última atualização:** 2026-09-15
+**Estado:** `feat-001` a `feat-019` e `feat-025` `done` (`feat-020`..`024`, `026`..`029` seguem
+`not-started`). `feat-025` (ponte de navegação Casas de Apostas -> Histórico para movimentação de
+saldo, `epic-025` da raiz) fechada nesta sessão, logo após `feat-019`.
 
 ## `feat-015` fechada — página "Relatório do período" (2026-09-11)
 
@@ -501,6 +501,15 @@ independência reduzida declarada): PASS, sem achado. PR real (`subtask/SV-229` 
 
 - Depende de `auth-service` (epic-002) e `bets-service` (epic-003) existirem para integração
   real — `feat-001` (setup) pode ser feito de forma independente.
+- **Achado real, 2026-09-15 (sessão de `services/api-gateway feat-013`, rodando `./init.sh` da
+  raiz — não é trabalho deste harness, só passou por aqui)**:
+  `src/app/pages/period-report/period-report.spec.ts` (`renders one daily table row per day
+  fetched`) está falhando — fixture usa um dia fixo (`2026-09-11`) fora da janela que o preset
+  padrão da página calcula a partir de `new Date()` real; como "hoje" avançou além daquela data,
+  a tabela não inclui mais o dia da fixture. Teste dependente de tempo real, sem `Date` mockado —
+  vai voltar a quebrar a cada nova janela. Não corrigido aqui (fora do escopo de `feat-013`,
+  harness diferente) — quem pegar a próxima feature deste app precisa mockar o clock do teste
+  (`vi.setSystemTime`/similar) ou trocar a fixture por datas relativas ao `Date` mockado.
 
 ## Decisões tomadas
 
@@ -1125,3 +1134,168 @@ tocadas, claro/escuro, desktop/mobile. Vault atualizado nos mesmos commits das d
 `docs/DESIGN-SYSTEM.md` (correção da seção Angular Material, nota de contraste fechada, item 14
 implementado), `docs/TESTING.md` (gotcha de `mat-tab-group`/jsdom). Branches apagadas após merge
 (feature + 5 subtasks). Backlog de `apps/web` inteiro concluído com esta feature.
+
+## `feat-017` fechada — apiGatewayUrl relativo, corrige CORS em produção (2026-09-11)
+
+Achado real ao testar o deploy em k3s (`infra/feat-005`): bundle de produção chamava um domínio
+placeholder que nunca existiu em vez do host que serviu a página, bloqueando o login por CORS.
+Correção de 1 linha (`environment.ts`, `apiGatewayUrl: ''` — caminho relativo, mesma origem, já
+que o Ingress roteia `/api` pro `api-gateway` no mesmo host do `web`). `environment.development.ts`
+intocado. `npm test` 167/167 e `./init.sh` verdes; nenhum spec hardcoda o domínio antigo (grep
+confirmou os 14 call sites usando `${environment.apiGatewayUrl}/...` via template string).
+`Delivery Reviewer`/`Test Suite Auditor` (passe direto, mudança trivial já evidenciada no
+`plan_review`): PASS, sem achados. PRs `subtask/SV-380`→`feature/SV-379` (#76) e
+`feature/SV-379`→`develop` (#77) mergeados; `develop`→`main` (#78) também, CI de `main` verde
+(imagem publicada no GHCR). Confirmação de login real sem CORS via Ingress registrada no
+checklist de `feat-017.2` pela sessão que implementou a correção.
+
+## `feat-019` fechada — correções de UX da sidebar (2026-09-15)
+
+`epic-023` da raiz, continuação de `feat-018`. Plan Reviewer (rodado no início da sessão, antes
+de qualquer código) apontou 3 causas suspeitas para os 3 bugs relatados pelo usuário — nenhuma
+das 3 se confirmou; as causas reais só apareceram investigando de verdade:
+
+- **Ícone do tema não centralizava no rodapé colapsado**: não era falta de `justify-content` no
+  `.side-nav__link` (que já centraliza corretamente) — `app-theme-toggle` tem `:host {
+  display: block }` sem nenhuma centralização própria, e o footer força `width: 100%` no host só
+  pra dar largura total quando expandido. `width: 100%` define o tamanho da caixa, não como o
+  conteúdo dela se posiciona — o botão (~40px) ficava encostado na borda esquerda. Corrigido no
+  componente (`:host { display: flex; justify-content: center }`), não no pai.
+- **Botão de colapsar "com cor escura fixa no tema claro"**: não era CSS nenhum — `AppSideNav`
+  nunca importava `MatButtonModule`, então `mat-icon-button` era um atributo estático inerte
+  (Angular não erra, só ignora). O botão renderizava como `<button>` HTML puro, com o chrome
+  padrão do browser (fundo cinza, borda `outset`), que segue o `color-scheme` do sistema
+  operacional, não os tokens de tema do app — daí parecer "preso" num tema. Corrigido importando
+  o módulo.
+- **Seletor de idioma sumia quando colapsado**: não era o `overflow-x:hidden`/`min-width:120px`
+  que o plan review suspeitou — o template literalmente removia `<app-language-selector>` do DOM
+  (`@if (!collapsed())`). Corrigido com um input `collapsed` no componente: expandido mantém o
+  `mat-select` intocado (mesmo `data-testid`, não quebra os 3 e2e existentes que localizam opções
+  por `role=option`); colapsado troca por um botão-ícone + `mat-menu` (mesmo padrão já usado
+  pelos links de recurso da própria sidebar) — sidesteps o conflito de largura em vez de brigar
+  com ele via CSS.
+
+Evidência real por bug, não só leitura de código: screenshots antes/depois via `git stash`
+(confirma cada centralização), `getComputedStyle` antes/depois (confirma o `<button>` nativo virou
+`mat-mdc-icon-button`), `e2e/side-nav.spec.ts` novo (troca nas 3 locales pelo trigger colapsado,
+sem sobrepor tema/logout). QA visual desktop (1280px) e mobile (375px), claro e escuro, expandido
+e colapsado — 6 combinações conferidas com screenshots reais contra `ng serve`.
+
+Achado do Test Suite Auditor, corrigido antes de fechar: o fix de `.2` não tinha nenhuma proteção
+automatizada, só QA visual — teste novo (`classList.contains('mat-mdc-icon-button')`) adicionado
+e confirmado como guarda real (removendo o import manualmente, o teste falha).
+
+Achado lateral, fora do escopo mas descoberto rodando a suíte inteira como parte da própria
+verificação: `period-report.spec.ts` (unitário) e `e2e/period-report.spec.ts` dependiam de
+`new Date()` real batendo com uma fixture fixa em `2026-09-11` — quebravam sempre que a suíte
+rodasse depois dessa data. Corrigido congelando o relógio (`vi.setSystemTime`/
+`page.clock.setFixedTime`) em vez de mudar a fixture.
+
+`ng test`: 173/173. Playwright completo: 42/42. `./init.sh` do app e da raiz verdes. Delivery
+Reviewer e Test Suite Auditor: PASS nos dois (revisão direta, sem subagentes — diff pequeno e
+totalmente evidenciado). `docs/CONVENTIONS.md` (raiz) ganhou 2 gotchas reaproveitáveis (diretiva
+de atributo do Material sem módulo importado falha em silêncio; `width: 100%` no host não
+centraliza sozinho) e `docs/TESTING.md` ganhou o gotcha de fixture de data vs relógio real.
+
+Story SV-398, subtasks SV-399..402, PRs #84/#85/#86/#87 (subtasks→feature, fast-forward) + PR de
+`feature/SV-398`→`develop` (CI+SonarCloud verdes).
+
+## `feat-020`+`feat-021` fechadas — rótulo "Data do evento" + corrigir quebra real em `POST /api/v1/bets` (2026-09-15, mesmo dia)
+
+Continuação direta do fechamento de `epic-028` (entrada acima) na mesma sessão, a pedido explícito
+do usuário: corrigir a quebra de produção conhecida antes de qualquer deploy em massa.
+
+**`feat-020`** (pré-requisito declarado de `feat-021`, trivial): rótulo visível "Data da aposta"
+-> "Data do evento" nos 3 locales, contrato técnico (`betDate`) intocado. Story SV-443, PRs
+#96/#97/#98.
+
+**`feat-021`** — o fechamento real: `bets-service feat-017` (fechada mais cedo na mesma sessão)
+trocou `team1`/`team2` (texto livre) por `team1Id`/`team2Id` (UUID) em `POST /api/v1/bets`, e
+este repositório nunca acompanhou — `Jackson FAIL_ON_UNKNOWN_PROPERTIES` (sem override neste
+serviço) fazia todo registro manual de aposta pelo site devolver 400. `Plan Reviewer` desta
+feature tinha voltado `BLOCKED` numa sessão anterior (nenhuma tela de cadastro de time existia,
+premissa da description era falsa) — revisado nesta sessão porque a dependência de fundo fechou
+no mesmo dia (`bets-service feat-016`/`feat-017` + `api-gateway feat-015`, rota `/api/v1/teams`).
+
+Decisão de escopo tomada no plan review revisado: tela nova `shared/team-manager` (catálogo de
+times vinculado a esporte) em vez de estender `shared/catalog-manager` — `TEAM` tem FK `sportId`
+obrigatória, não é estruturalmente idêntico aos 4 catálogos que o componente compartilhado já
+serve, e sobrecarregá-lo arriscaria regressão nas 4 telas já estáveis por um recurso de forma
+diferente. Sem par de Dashboard (`stats-service feat-018`, que alinharia `DIM_TEAM` ao catálogo
+real, está `BLOCKED`). `register-bet.ts`/`.html` trocou os 2 inputs de texto livre por selects
+`team1Id`/`team2Id` — sem filtro client-side por esporte (`GET /api/v1/teams` não aceita esse
+parâmetro, e `leagueId`/`marketId` também já não são filtrados por esporte nesta tela hoje, então
+isso mantém o padrão existente).
+
+`Delivery Reviewer` rodado via skill completa (não a versão condensada usada nas features
+mecânicas de `epic-028`) — mudança de negócio real, não um padrão repetido. Verdicto PASS, sem
+achado, com 2 verificações independentes feitas no próprio review antes de fechar: grep no
+repositório inteiro confirmando zero referência residual a `team1`/`team2` texto livre, e leitura
+direta de `CreateBetRequest.java` (`bets-service`) confirmando que o contrato bate exatamente.
+
+Story SV-446 (subtasks SV-447/SV-448), PRs #99/#100/#101, CI+SonarCloud verdes. `docs/services/
+bets-service.md` atualizado (fecha a nota de "sequenciamento de deploy obrigatório" deixada por
+`bets-service feat-017`) e `docs/services/web.md` (padrão do 6º catálogo sem par de Dashboard
+documentado, mesmo lugar do padrão dos outros 5 — SSOT preservado).
+
+**Resultado prático**: a razão concreta que motivou adiar a promoção `bets-service develop ->
+main` nesta mesma sessão (ver entrada de `bets-service feat-018` em `services/bets-service/
+progress.md`) deixou de existir — o formulário web já envia o contrato novo.
+
+## `feat-030` fechada — CD automático, job `deploy` no `ci.yml` (2026-09-15, mesmo dia)
+
+Sexta e última aplicação idêntica do padrão de `epic-028` nesta sessão (depois de `bets-service
+feat-018`, `stats-service feat-019`, `api-gateway feat-014`, `auth-service feat-016`,
+`telegram-integration feat-010`) — mesmo `Plan Reviewer`, mesmas 2 correções MINOR já aplicadas
+(sem `azure/setup-kubectl`, `permissions: {}` explícito). Único repositório frontend tocado pelo
+padrão, mas o job `deploy` em si é agnóstico de stack (`kubectl` puro) — único ajuste real foi o
+nome do `Deployment` (`web`), confirmado contra `infra/k8s/web.yaml` (sem namespace) e
+`infra/k8s/ci-deployer-rbac.yaml` (`resourceNames` já incluía `web`). `KUBE_CONFIG` confirmado
+presente no repositório.
+
+Story SV-438 (subtasks SV-439/SV-440), PRs #93/#94/#95, CI+SonarCloud verdes. `Delivery
+Reviewer`: PASS (revisão condensada, sexta aplicação idêntica, sem achado). Fechamento em 2
+disparos de `--sync-status` (subtask done sozinha → `Review`; feature done em edição separada →
+`Done`). Disparo real do job adiado (mesma decisão dos outros 5 repositórios).
+
+**Fecha `epic-028` da raiz por completo** — era o último dos 6 repositórios de aplicação
+pendentes.
+
+## `feat-025` fechada — ponte de navegação para movimentação de saldo (2026-09-15)
+
+`epic-025` da raiz. Investigação antes de codificar (Plan Reviewer + leitura direta do código)
+mudou o escopo real, bem menor que o backlog original descrevia: o formulário de depósito/
+retirada, filtros e lista já existiam completos em `pages/history/history.ts`
+(`TransactionsApi`, validação, erros RFC 7807, badges, paginação) — não reescritos nem duplicados
+em `betting-houses`. Saldo consolidado (`BankrollApi`) também já existia, usado no Dashboard —
+não duplicado.
+
+Entregue: (1) ação "Movimentar saldo" por linha em `betting-houses.html`, `routerLink` para
+`/history?bettingHouseId=<id>`; `history.ts` lê o query param, seleciona a aba Movimentações
+(`mat-tab-group` nunca tinha `[selectedIndex]` antes — sempre abria em Apostas) e pré-seleciona a
+casa no formulário existente. (2) Provado via e2e com navegação SPA real (clique no link da
+sidebar, não `page.goto()` — que provaria só que um reload mostra dado fresco, não que o Router
+realmente recria o componente) que `betting-houses.ts` (`constructor()`→`reload()`, sem route
+reuse customizada) já re-sincroniza o saldo sozinho ao voltar de uma movimentação — sem nenhum
+código novo de sincronização de estado, confirmando a previsão do `plan_review`.
+
+**Achado real durante QA visual mobile, corrigido antes de fechar**: a coluna nova de ação
+estourava a página inteira em telas estreitas (375px), mesmo com a tabela já dentro de um
+`overflow-x: auto` (mesmo padrão de `history.scss`). Causa raiz — "grid blowout": `app-panel`
+(item real do grid de `app-panel-layout`) não tinha `min-width: 0` no `:host` — itens de grid/flex
+usam `min-width: auto` por padrão, que ignora `overflow` de qualquer descendente porque o cálculo
+de tamanho do track acontece antes/independente de como o overflow será renderizado. Corrigido no
+componente compartilhado (`shared/panel/panel.scss`), não só em `betting-houses` — protege
+qualquer página futura que use `app-panel` com conteúdo largo. Confirmado com
+`scrollWidth > clientWidth` real (não só a ausência de erro visual) que a tabela realmente rola e
+revela a coluna de ação.
+
+QA visual real via screenshots contra `ng serve`: desktop (1280px) e mobile (375px), claro e
+escuro. `ng test`: 173/173 (2 specs precisaram `provideRouter([])` para o `RouterLink`/
+`ActivatedRoute` novos — sem isso, `NG0201: No provider found for ActivatedRoute`). Playwright
+completo: 44/44 (2 e2e novos em `e2e/betting-houses-move-balance.spec.ts`). Delivery Reviewer e
+Test Suite Auditor: PASS nos dois, sem achado (revisão direta, sem subagentes — diff pequeno e
+totalmente evidenciado). `docs/CONVENTIONS.md` (raiz) ganhou o gotcha de grid blowout.
+
+Story SV-403, subtasks SV-404/405/406, PRs #89/#90/#91 (subtasks→feature, fast-forward) + PR de
+`feature/SV-403`→`develop` (CI+SonarCloud verdes). `./init.sh` do app e da raiz verdes.

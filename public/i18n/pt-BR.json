@@ -134,7 +134,9 @@
     "searchStatistics": "Buscar estatísticas",
     "periodReport": "Relatório do período",
     "users": "Usuários",
-    "logout": "Sair"
+    "logout": "Sair",
+    "collapse": "Retrair menu",
+    "expand": "Expandir menu"
   },
   "mustChangePassword": {
     "message": "Você está usando uma senha temporária. Troque-a assim que possível.",
@@ -160,6 +162,8 @@
     "nameLabel": "Nome",
     "initialBalanceLabel": "Saldo inicial",
     "balanceLabel": "Saldo atual",
+    "actionsLabel": "Ações",
+    "moveBalance": "Movimentar saldo",
     "create": "Criar casa de apostas",
     "genericError": "Não foi possível completar a operação. Tente novamente."
   },
@@ -167,6 +171,7 @@
     "createTitle": "Nova entrada",
     "listTitle": "Cadastradas",
     "nameLabel": "Nome",
+    "sportFieldLabel": "Esporte",
     "create": "Adicionar",
     "genericError": "Não foi possível completar a operação. Tente novamente.",
     "sports": {
@@ -180,6 +185,9 @@
     },
     "tipsters": {
       "title": "Tipsters"
+    },
+    "teams": {
+      "title": "Times"
     }
   },
   "registerBet": {
@@ -195,13 +203,15 @@
     "tipsterNone": "Nenhum",
     "ticketNumberLabel": "Número do bilhete",
     "team1Label": "Time 1",
+    "team1None": "Nenhum",
     "team2Label": "Time 2",
+    "team2None": "Nenhum",
     "betTypeLabel": "Tipo de aposta",
     "playTypeLabel": "Tipo de jogada",
     "descriptionLabel": "Descrição",
     "stakeLabel": "Valor apostado",
     "oddLabel": "Odd",
-    "betDateLabel": "Data da aposta",
+    "betDateLabel": "Data do evento",
     "reset": "Limpar",
     "submit": "Registrar aposta",
     "success": "Aposta registrada com sucesso.",

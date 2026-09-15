@@ -1,14 +1,36 @@
-<div class="language-selector">
-  <mat-icon aria-hidden="true">language</mat-icon>
-  <mat-select
-    [value]="language.current()"
-    [aria-label]="'language.label' | transloco"
-    data-testid="language-selector"
-    panelClass="language-selector__panel"
-    (selectionChange)="onLocaleSelected($event.value)"
-  >
-    @for (locale of locales; track locale.value) {
-      <mat-option [value]="locale.value">{{ locale.label }}</mat-option>
-    }
-  </mat-select>
+<div class="language-selector-host" [class.language-selector-host--collapsed]="collapsed()">
+  @if (collapsed()) {
+    <button
+      mat-icon-button
+      type="button"
+      class="language-selector__collapsed-trigger"
+      data-testid="language-selector-collapsed"
+      [attr.aria-label]="'language.label' | transloco"
+      [matMenuTriggerFor]="localeMenu"
+    >
+      <mat-icon aria-hidden="true">language</mat-icon>
+    </button>
+    <mat-menu #localeMenu="matMenu">
+      @for (locale of locales; track locale.value) {
+        <button mat-menu-item [attr.data-testid]="'language-option-' + locale.value" (click)="onLocaleSelected(locale.value)">
+          {{ locale.label }}
+        </button>
+      }
+    </mat-menu>
+  } @else {
+    <div class="language-selector">
+      <mat-icon aria-hidden="true">language</mat-icon>
+      <mat-select
+        [value]="language.current()"
+        [aria-label]="'language.label' | transloco"
+        data-testid="language-selector"
+        panelClass="language-selector__panel"
+        (selectionChange)="onLocaleSelected($event.value)"
+      >
+        @for (locale of locales; track locale.value) {
+          <mat-option [value]="locale.value">{{ locale.label }}</mat-option>
+        }
+      </mat-select>
+    </div>
+  }
 </div>

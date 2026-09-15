@@ -2,15 +2,20 @@
   <app-splash (done)="onSplashDone()" />
 }
 <div class="app-shell">
-  <div class="app-shell__toolbar">
-    <app-language-selector />
-    <app-theme-toggle />
-  </div>
   @if (auth.isAuthenticated()) {
-    <app-nav />
-    <app-must-change-password-banner />
+    <app-side-nav />
   }
-  <div class="app-shell__content">
-    <router-outlet />
+  <div class="app-shell__main">
+    @if (auth.isAuthenticated()) {
+      <app-must-change-password-banner />
+    } @else {
+      <div class="app-shell__floating-controls">
+        <app-language-selector />
+        <app-theme-toggle />
+      </div>
+    }
+    <div class="app-shell__content">
+      <router-outlet />
+    </div>
   </div>
 </div>

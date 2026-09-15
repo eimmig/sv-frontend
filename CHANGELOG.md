@@ -7,11 +7,42 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 
+### Changed
+
+- `app-login-border-trace` (`feat-018.3`) reformulada: 1 caminho fechado único (contorno completo
+  do card) com 2 traços opostos girando continuamente (`stroke-dashoffset`), em vez de 2 metades
+  que desenhavam/seguravam/recolhiam. Ajuste pedido pelo usuário após ver a animação original.
+- `app-language-selector` (`feat-019.3`): quando a sidebar está colapsada, o `mat-select` cede
+  lugar a um botão-ícone com `mat-menu` (mesmo padrão já usado pelos links de recurso), em vez de
+  sumir do DOM inteiramente. Estado expandido intocado (mesmo `data-testid`, mesmos 3 e2e por
+  `role=option`).
+- `betting-houses` (`feat-025`): ação "Movimentar saldo" por linha leva para `/history` já na aba
+  Movimentações com a casa pré-selecionada — ponte de navegação, não um formulário novo (o de
+  depósito/retirada já existia em `History`, intocado). Saldo por casa já re-sincroniza sozinho ao
+  voltar (Angular recria o componente da rota), sem código de sincronização de estado novo.
+
 ### Fixed
 
 - Chave do projeto no SonarCloud corrigida para `eimmig_sv-frontend`. O SonarCloud gera a chave como
   `<org>_<repo>` ao importar um repositório do GitHub; a forma sem prefixo, usada até aqui, faria a
   análise falhar com projeto inexistente.
+- `theme-toggle`/`side-nav__collapse-toggle` (`feat-019.1`/`.2`): ícone do tema não centralizava no
+  rodapé colapsado (`:host` `display:block` + `width:100%` forçado pelo footer, sem centralização);
+  botão de colapsar renderizava como `<button>` nativo sem nenhum estilo do Material (`AppSideNav`
+  nunca importava `MatButtonModule`, então o atributo `mat-icon-button` era um no-op silencioso) -
+  causa raiz real da "cor escura fixa no tema claro" relatada (chrome nativo do browser segue o
+  `color-scheme` do SO, não os tokens do app).
+- `period-report.spec.ts` (unitário e `e2e/period-report.spec.ts`): dependiam de `new Date()` real
+  batendo com uma fixture fixa em `2026-09-11` - o teste falhava sempre que a suíte rodasse depois
+  dessa data. Relógio congelado (`vi.setSystemTime`/`page.clock.setFixedTime`) em vez de mudar a
+  fixture, que não é o que o componente realmente controla.
+- `shared/panel` (`feat-025`): "grid blowout" — a coluna nova de `betting-houses` (com o botão
+  "Movimentar saldo") estourava a largura da página inteira em telas estreitas, apesar da tabela
+  já estar dentro de um `overflow-x: auto`. Causa: `:host` de `app-panel` (o item de grid de
+  `app-panel-layout`) não tinha `min-width: 0` — grid/flex items usam `min-width: auto` por
+  padrão, que ignora `overflow` em qualquer descendente e trava o track do grid no tamanho do
+  conteúdo. `min-width: 0` no `:host` corrige para qualquer página que use `app-panel` com
+  conteúdo largo, não só `betting-houses`.
 - [SV-215](https://stakevault.atlassian.net/browse/SV-215) - Assets de logo + splash animado
 - [SV-216](https://stakevault.atlassian.net/browse/SV-216) - ngx-echarts instalado e provado
 - [SV-217](https://stakevault.atlassian.net/browse/SV-217) - Playwright + gate de cobertura 80%
@@ -89,3 +120,26 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-379](https://stakevault.atlassian.net/browse/SV-379) - Corrigir apiGatewayUrl hardcoded (residual da feat-013) - CORS bloqueando login real
 - [SV-380](https://stakevault.atlassian.net/browse/SV-380) - apiGatewayUrl vazio (caminho relativo) em environment.ts
 - [SV-381](https://stakevault.atlassian.net/browse/SV-381) - CHANGELOG e verificacao final
+- [SV-385](https://stakevault.atlassian.net/browse/SV-385) - Navegacao lateral (sidebar) substitui nav superior, animacoes no shell e no login
+- [SV-386](https://stakevault.atlassian.net/browse/SV-386) - app-side-nav (sidebar colapsavel) substitui app-nav
+- [SV-387](https://stakevault.atlassian.net/browse/SV-387) - language-selector: fix de min-width (causa raiz do corte) + controles flutuantes no login
+- [SV-388](https://stakevault.atlassian.net/browse/SV-388) - Motion pass: view transitions, collapse do sidebar, animacao autoral do login
+- [SV-389](https://stakevault.atlassian.net/browse/SV-389) - QA visual final (Impeccable), testes, docs e verificacao final
+- [SV-398](https://stakevault.atlassian.net/browse/SV-398) - Corrigir alinhamento, tema e acesso ao idioma na sidebar
+- [SV-399](https://stakevault.atlassian.net/browse/SV-399) - Centralizar icones nas tres secoes da sidebar
+- [SV-400](https://stakevault.atlassian.net/browse/SV-400) - Aplicar tema claro ao botao de colapsar
+- [SV-401](https://stakevault.atlassian.net/browse/SV-401) - Manter seletor de idioma acessivel no modo colapsado
+- [SV-402](https://stakevault.atlassian.net/browse/SV-402) - Testes, QA visual e verificacao final
+- [SV-403](https://stakevault.atlassian.net/browse/SV-403) - Implementar gestao de saldo e movimentacoes no frontend
+- [SV-404](https://stakevault.atlassian.net/browse/SV-404) - Ponte de navegacao Casas de Apostas -> Historico (Movimentacoes)
+- [SV-405](https://stakevault.atlassian.net/browse/SV-405) - Verificar atualizacao de saldo por casa apos movimentacao (sem codigo novo esperado)
+- [SV-406](https://stakevault.atlassian.net/browse/SV-406) - Testes, QA visual e verificacao final
+- [SV-438](https://stakevault.atlassian.net/browse/SV-438) - CD: job de deploy automatico (kubectl rollout restart) no ci.yml
+- [SV-439](https://stakevault.atlassian.net/browse/SV-439) - Job deploy no ci.yml
+- [SV-440](https://stakevault.atlassian.net/browse/SV-440) - CHANGELOG e verificacao final
+- [SV-443](https://stakevault.atlassian.net/browse/SV-443) - Renomear data da aposta para data do evento
+- [SV-444](https://stakevault.atlassian.net/browse/SV-444) - Atualizar rotulos e traducoes da data do evento
+- [SV-445](https://stakevault.atlassian.net/browse/SV-445) - Verificacao final de nomenclatura
+- [SV-446](https://stakevault.atlassian.net/browse/SV-446) - Cadastro de time vinculado a esporte + corrigir quebra de contrato em POST /api/v1/bets
+- [SV-447](https://stakevault.atlassian.net/browse/SV-447) - Catalogo de times (tela nova) + formulario de aposta usando team1Id/team2Id
+- [SV-448](https://stakevault.atlassian.net/browse/SV-448) - CHANGELOG e verificacao final

@@ -14,8 +14,8 @@ export interface CreateBetInput {
   readonly marketId: string;
   readonly tipsterId: string | null;
   readonly ticketNumber: string | null;
-  readonly team1: string | null;
-  readonly team2: string | null;
+  readonly team1Id: string | null;
+  readonly team2Id: string | null;
   readonly description: string | null;
   readonly betType: string | null;
   readonly playType: string | null;
@@ -32,8 +32,8 @@ export interface Bet {
   readonly marketId: string;
   readonly tipsterId: string | null;
   readonly ticketNumber: string | null;
-  readonly team1: string | null;
-  readonly team2: string | null;
+  readonly team1Id: string | null;
+  readonly team2Id: string | null;
   readonly description: string | null;
   readonly betType: string | null;
   readonly playType: string | null;

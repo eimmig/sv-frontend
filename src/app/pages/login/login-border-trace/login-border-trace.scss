@@ -1,0 +1,36 @@
+:host {
+  position: absolute;
+  inset: -2px;
+  display: block;
+  pointer-events: none;
+}
+
+.login-border-trace {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.login-border-trace__segment {
+  fill: none;
+  stroke: var(--color-brand);
+  stroke-width: 3;
+  stroke-linecap: round;
+  opacity: 0.85;
+  animation: login-border-trace-spin 8s linear infinite;
+}
+
+
+@keyframes login-border-trace-spin {
+  100% {
+    stroke-dashoffset: calc(-1px * var(--trace-length));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-border-trace__segment {
+    animation: none;
+    stroke-dashoffset: 0;
+    opacity: 0.5;
+  }
+}

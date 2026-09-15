@@ -22,9 +22,13 @@ describe('RegisterBet', () => {
         marketLabel: 'Mercado',
         tipsterLabel: 'Tipster',
         tipsterNone: 'Nenhum',
+        team1Label: 'Time 1',
+        team1None: 'Nenhum',
+        team2Label: 'Time 2',
+        team2None: 'Nenhum',
         stakeLabel: 'Valor apostado',
         oddLabel: 'Odd',
-        betDateLabel: 'Data da aposta',
+        betDateLabel: 'Data do evento',
         reset: 'Limpar',
         submit: 'Registrar aposta',
         success: 'Aposta registrada com sucesso.',
@@ -53,6 +57,15 @@ describe('RegisterBet', () => {
         .expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/${resource}`)
         .flush({ content: [{ id, name }], page: 0, size: 100, totalElements: 1, totalPages: 1 });
     }
+    httpMock
+      .expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/teams`)
+      .flush({
+        content: [{ id: 'tm-1', name: 'Flamengo', sportId: 'sp-1' }],
+        page: 0,
+        size: 100,
+        totalElements: 1,
+        totalPages: 1,
+      });
   }
 
   function fillRequiredFields() {
@@ -88,7 +101,7 @@ describe('RegisterBet', () => {
     httpMock.verify();
   });
 
-  it('loads betting houses and the 4 catalogs into the dropdown options', () => {
+  it('loads betting houses, the 4 catalogs and the team catalog into the dropdown options', () => {
     const options = fixture.componentInstance['options']();
 
     expect(options.bettingHouses).toHaveLength(1);
@@ -96,6 +109,7 @@ describe('RegisterBet', () => {
     expect(options.leagues).toHaveLength(1);
     expect(options.markets).toHaveLength(1);
     expect(options.tipsters).toHaveLength(1);
+    expect(options.teams).toHaveLength(1);
   });
 
   it('submits with the Idempotency-Key header, shows a success banner and resets the form', () => {
@@ -110,6 +124,18 @@ describe('RegisterBet', () => {
 
     expect(fixture.componentInstance['successMessage']()).toBe('Aposta registrada com sucesso.');
     expect(fixture.componentInstance['form'].value.bettingHouseId).toBe('');
+  });
+
+  it('sends the selected team ids, not free text, when both teams are chosen', () => {
+    fillRequiredFields();
+    fixture.componentInstance['form'].patchValue({ team1Id: 'tm-1', team2Id: '' });
+
+    fixture.componentInstance['submit']();
+
+    const request = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/bets`);
+    expect(request.request.body.team1Id).toBe('tm-1');
+    expect(request.request.body.team2Id).toBeNull();
+    request.flush({ id: '1', status: 'pending' });
   });
 
   it('shows the RFC 7807 detail on a validation error (e.g. invalid odd)', () => {

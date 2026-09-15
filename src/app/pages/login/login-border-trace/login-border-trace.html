@@ -1,0 +1,13 @@
+<svg
+  class="login-border-trace"
+  [attr.viewBox]="'0 0 ' + width() + ' ' + height()"
+  preserveAspectRatio="none"
+  aria-hidden="true"
+>
+  <path
+    class="login-border-trace__segment"
+    [attr.d]="path()"
+    [attr.stroke-dasharray]="dashArray()"
+    [style.--trace-length]="perimeter()"
+  />
+</svg>

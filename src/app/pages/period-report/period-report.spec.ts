@@ -2,6 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
+import { vi } from 'vitest';
 
 import { PeriodReport } from './period-report';
 import { environment } from '../../../environments/environment';
@@ -88,6 +89,11 @@ describe('PeriodReport', () => {
   }
 
   beforeEach(async () => {
+    // The "Hoje" default preset resolves from a real `new Date()` (period-preset-filter.ts) and
+    // the fixture data below is fixed to 2026-09-11 - freeze the clock so "today" always matches
+    // the fixture, regardless of which real day the suite runs on.
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-09-11T12:00:00Z'));
     await TestBed.configureTestingModule({
       imports: [
         PeriodReport,
@@ -100,7 +106,10 @@ describe('PeriodReport', () => {
     }).compileComponents();
   });
 
-  afterEach(() => httpMock.verify());
+  afterEach(() => {
+    httpMock.verify();
+    vi.useRealTimers();
+  });
 
   it('loads with the period-preset-filter default ("Hoje") and renders the summary cards', () => {
     createComponent();

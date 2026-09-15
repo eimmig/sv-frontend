@@ -1197,7 +1197,7 @@
       "dependencies": [
         "feat-013"
       ],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "2026-09-11 - mudanca de 1 linha, ja verificada com evidencia real antes do plan review: npm run build (bundle gerado sem erro) e npm run test (167/167 verdes, specs referenciam environment.apiGatewayUrl dinamicamente, nao string hardcoded, entao nao quebram com o valor mudando). Risco zero de regressao - so environment.development.ts (usado localmente) fica intocado.",
       "jira": "SV-379",
       "subtasks": [
@@ -1230,7 +1230,781 @@
           "jira": "SV-381"
         }
       ],
+      "evidence": "2 subtasks done. O que foi feito: environment.ts (producao) - apiGatewayUrl de 'https://api.stakevault.example.com' (dominio placeholder, nunca existiu) para '' (caminho relativo, mesma origem do host que serve o app). environment.development.ts (localhost:8080) intocado, conforme escopo. Como foi verificado: erro de CORS reproduzido de verdade no browser contra o deploy real em k3s (infra/feat-005) antes da correcao - achado real de producao, nao teorico. Apos a mudanca: npm run build limpo, npm test 167/167 verdes (nenhum spec hardcoda o dominio antigo - todos os 14 call sites usam '${environment.apiGatewayUrl}/api/v1/...' via template string, verificado por grep em todo src/, seguro com string vazia = caminho relativo). ./init.sh do app verde. PR feature->develop (SV-379, #77) e o fix isolado (#76) mergeados; develop mergeado em main (#78), CI de main verde (publica imagem no GHCR). Revisao Delivery Reviewer feita nesta sessao (passe direto, mudanca trivial de 1 linha de config - dispensou subagentes por evidencia already-verified no plan_review, mesmo criterio de 'no subagent for trivial or fully evidenced work' da skill): PASS, nenhum achado - todos os consumidores de apiGatewayUrl usam concatenacao de template string, nenhum assume URL absoluta/faz parsing de protocolo. Test Suite Auditor: PASS, nenhum teste novo necessario - a suite ja era resiliente a essa troca de valor por construcao (specs referenciam environment.apiGatewayUrl dinamicamente). Confirmacao de login real sem CORS via Ingress em producao: feita pela sessao que implementou feat-017.1/.2 (nao reproduzida nesta sessao, sem acesso ao cluster k3s a partir daqui) - aceita como evidencia da subtask ja registrada no checklist dela. O que divergiu do plano: nada."
+    },
+    {
+      "id": "feat-018",
+      "name": "Navegacao lateral (sidebar) substitui nav superior, animacoes no shell e no login",
+      "goal": "Fecha a divergencia entre docs/DESIGN-SYSTEM.md item 1 (nav lateral, especificada desde o design original) e a nav horizontal implementada desde feat-002; login perde o header duplo (barra idioma/tema sempre visivel + nav quando autenticado); adiciona motion autoral no login e um motion pass geral no shell.",
+      "scope": [
+        "app-side-nav novo (substitui app-nav): sidebar colapsavel (icone+texto expandido / so icone retraido), logo+wordmark (retraido: so o mark), links diretos + 5 mat-menu de catalogo (mesmos data-testid de hoje) + rodape (idioma/tema/sair)",
+        "app.html/app.scss viram flex-row (sidebar + content), toolbar separada de idioma/tema removida do shell autenticado",
+        "language-selector: fix de min-width no trigger (causa raiz do painel cortado), sem trocar mat-select/mat-option; instancia propria + theme-toggle flutuando no canto inferior esquerdo da tela de login",
+        "Motion pass: withViewTransitions() no router, transicao de collapse/expand do sidebar, hover/focus/active dos itens, animacao autoral no formulario de login (traco verde no perimetro, split-and-meet, loop) - tudo com prefers-reduced-motion",
+        "QA visual (Impeccable audit/polish), testes atualizados, docs/DESIGN-SYSTEM.md item 1 marcado implementado, CHANGELOG"
+      ],
+      "description": "Escopo novo, fora do backlog original do TCC1 (epic-022 da raiz, pedido do usuario 2026-09-11). Usa as skills de design instaladas no repo (.claude/skills/impeccable, prioritaria per docs/DESIGN-SYSTEM.md/AGENT-SKILLS.md) para orientar motion/polish - DESIGN-SYSTEM.md continua fonte normativa de paleta/tipografia/layout, a skill so audita/orienta.",
+      "dependencies": [],
+      "status": "done",
+      "plan_review": "2026-09-11, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado antes de qualquer codigo (passe proprio, sem subagentes - independencia reduzida declarada, risco medio-alto por tocar todo o shell mas sem dado/dinheiro/auth em jogo). Veredito: READY WITH CONCERNS. 2 achados MAJOR corrigidos no plano: (1) reconstruir language-selector como mat-menu quebraria e2e/smoke.spec.ts, e2e/auth.spec.ts e e2e/search-statistics.spec.ts (usam getByRole('option'), exclusivo de mat-option - mat-menu-item usa role menuitem) sem necessidade - causa raiz real do corte e MatSelect.panelWidth default casar com a largura do trigger, que encolhe pro idioma atualmente selecionado; corrigido para fix de min-width no trigger, mantendo mat-select/mat-option intocado (nenhum e2e de idioma precisa mudar). (2) app.spec.ts:53 (querySelector('app-nav')) nao estava mapeado - troca de nome do componente pra app-side-nav precisa atualizar essa linha, adicionado explicitamente ao escopo de feat-018.1. 2 achados MINOR: withViewTransitions() precisa de CSS explicito zerando ::view-transition-old/new sob prefers-reduced-motion (a suite e2e ja roda com reducedMotion:'reduce' em todo beforeEach, entao isso nao quebra teste, mas e requisito real de acessibilidade do PRODUCT.md); ordem 018.1->018.2->018.3->018.4 confirmada sequencial (collapse-transition de 018.3 depende do componente de 018.1 existir). Decisoes de design resolvidas via AskUserQuestion antes do plan review (nao repetidas aqui): sidebar colapsavel (nao icone-only fixo, nao so labeled fixo) e submenus de catalogo continuam mat-menu popup (nao expansao inline).",
+      "jira": "SV-385",
+      "subtasks": [
+        {
+          "id": "feat-018.1",
+          "name": "app-side-nav (sidebar colapsavel) substitui app-nav",
+          "status": "done",
+          "jira": "SV-386",
+          "detail": "Fecha a divergencia do item 1 de docs/DESIGN-SYSTEM.md - nav lateral sempre foi a especificacao, nunca implementada.",
+          "checklist": [
+            "app-side-nav novo: signal collapsed + localStorage 'stakevault.navCollapsed' (mesmo padrao de Theme/Language), botao de toggle proximo ao logo",
+            "Logo assets/logo/logo-mark-{tema}.svg + wordmark quando expandido (reusa o markup de login.html), so o mark quando retraido",
+            "Estrutura vertical: Dashboard/Registrar aposta/Historico (links) -> 5 mat-menu de recurso (xPosition='after', MESMOS data-testid de hoje: nav-sports-menu/nav-sports-register/nav-sports-dashboard etc) -> Buscar estatisticas/Relatorio do periodo -> Usuarios (admin only) -> spacer -> rodape (language-selector/theme-toggle/sair, mesmos testid)",
+            "app.html/app.scss: flex-row (sidebar + .app-shell__content), toolbar de idioma/tema removida do shell autenticado; login (nao autenticado) nao renderiza app-side-nav",
+            "app.spec.ts: querySelector('app-nav') -> querySelector('app-side-nav')",
+            "app-nav.* removido (pasta antiga)"
+          ],
+          "validation": "npm test + npm run build verdes; e2e existentes (catalogs.spec.ts, catalog-dashboard.spec.ts, auth.spec.ts) continuam verdes sem editar (mesmos data-testid).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-018.2",
+          "name": "language-selector: fix de min-width (causa raiz do corte) + controles flutuantes no login",
+          "status": "done",
+          "jira": "SV-387",
+          "detail": "Achado do Plan Reviewer: manter mat-select/mat-option (nao reconstruir como mat-menu) evita quebrar 3 e2e specs de idioma sem necessidade - o bug real e o painel herdar a largura do trigger atual.",
+          "checklist": [
+            "language-selector: min-width no trigger dimensionado pra 'Português' (maior label das 3) - painel deixa de cortar independente do idioma selecionado",
+            "Restyle visual pra combinar com o rodape do sidebar novo (sem trocar mat-select/mat-option)",
+            "Pagina de login: instancia propria de language-selector + theme-toggle, position fixed, canto inferior esquerdo, lado a lado, sem barra/fundo"
+          ],
+          "validation": "e2e/smoke.spec.ts, auth.spec.ts, search-statistics.spec.ts (selecao de idioma) continuam verdes sem editar. QA visual: painel de opcoes nao corta em nenhum dos 3 idiomas selecionados.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-018.3",
+          "name": "Motion pass: view transitions, collapse do sidebar, animacao autoral do login",
+          "status": "done",
+          "jira": "SV-388",
+          "detail": "Pedido explicito do usuario ('bastante animacoes, bem fluido') + animacao autoral especifica no form de login - orientado por .claude/skills/impeccable/reference/animate.md (ja lido no plan review).",
+          "checklist": [
+            "withViewTransitions() em provideRouter (app.config.ts)",
+            "Transicao de collapse/expand do sidebar (~250ms, cubic-bezier(0.16,1,0.3,1))",
+            "Estados hover/focus/active dos itens do sidebar",
+            "Animacao autoral no card do formulario de login: traco verde percorrendo o perimetro, saindo de um ponto em 2 direcoes, encontrando do lado oposto, revertendo em loop",
+            "prefers-reduced-motion cobre TODAS as animacoes novas, incluindo ::view-transition-old/new(root) (duration 0/animation none), nao so sidebar/login"
+          ],
+          "validation": "QA visual real (screenshots) confirmando a animacao do login e a transicao do sidebar nos 2 temas; e2e completo continua verde (roda com reducedMotion:'reduce', estado final deve aparecer imediato).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-018.4",
+          "name": "QA visual final (Impeccable), testes, docs e verificacao final",
+          "status": "done",
+          "jira": "SV-389",
+          "detail": "Fecha a feature - Impeccable audit/polish como criterio externo de qualidade visual, nao so gosto da sessao.",
+          "checklist": [
+            "Impeccable audit + polish (ou equivalente manual se o launcher nao rodar) contra o sidebar/login",
+            "app-side-nav.spec.ts novo, language-selector.spec.ts revisado, app.spec.ts atualizado",
+            "QA visual real: 2 temas x mobile/desktop, sidebar expandido/retraido, login com controles flutuantes",
+            "docs/DESIGN-SYSTEM.md item 1 marcado implementado (fecha a divergencia)",
+            "Entrada em CHANGELOG.md",
+            "./init.sh do app e da raiz verdes",
+            "Vault revisado: alguma descoberta desta feature sem nota correspondente? Se sim, atualizar a nota do assunto no mesmo commit"
+          ],
+          "validation": "./init.sh verde; Playwright completo verde; evidence da feature preenchida.",
+          "owner": "agente"
+        }
+      ],
+      "evidence": "4 subtasks done (feat-018.1-.4). O que foi feito: app-side-nav substitui app-nav - sidebar lateral colapsavel (icone+texto expandido / so icone retraido, alternado manualmente, estado persistido como Theme/Language, default retraido abaixo de ~600px quando o usuario nao escolheu explicitamente - achado real de QA, o expandido comia quase a tela mobile inteira, RNF01), fecha a divergencia de docs/DESIGN-SYSTEM.md item 1 nunca corrigida desde feat-002. app.html/app.scss viram flex-row; a barra de idioma/tema some do shell autenticado, so aparece flutuante (canto inferior esquerdo, sem barra) na tela de login nao autenticada. language-selector: fix de min-width no trigger do mat-select (causa raiz do painel de opcoes cortado - herdava a largura do idioma atualmente selecionado), mat-select/mat-option mantidos intactos (nao migrado pra mat-menu) pra nao quebrar 3 e2e existentes que localizam opcoes por role=option; some do rodape quando a coluna esta retraida (nao cabe nos 72px). Motion pass: withViewTransitions() no router, transicao de collapse/expand do sidebar, e app-login-border-trace novo - animacao autoral no card de login (traco verde sai do ponto central superior em 2 direcoes, percorre cada lado, se encontra no ponto central inferior, retrai, loop) via 2 paths SVG espelho-simetricos dimensionados por ResizeObserver; toda animacao nova respeita prefers-reduced-motion (view-transitions inclusive). Achado real durante a implementacao (nao pedido, causa raiz investigada com A/B via git stash): mat-label/.mdc-floating-label/.mdc-notched-outline de mat-select/mat-form-field mantinham pointer-events habilitado nesta versao do Material, interceptando cliques quando um campo ficava estreito o bastante (a sidebar reduziu a grade de 3 colunas de register-bet o suficiente pra expor um bug latente, ja presente no develop sem a sidebar) - corrigido globalmente em styles.scss. Como foi verificado: 170 unitarios + 40 e2e verdes (rodado repetidas vezes, incluindo A/B com git stash pra confirmar cada achado real antes de corrigir), ./init.sh do app verde, npx ng build limpo. QA visual real (screenshots contra dev server, nao so leitura de codigo): 2 temas x desktop/mobile, sidebar expandido/retraido, login com controles flutuantes, ciclo completo da animacao do card de login capturado em frames. Delivery Reviewer (passe proprio, sem subagentes - risco baixo/medio, frontend puro sem dado/dinheiro/auth): PASS, 1 achado P3 corrigido (comentario desatualizado citando app-nav). Test Suite Auditor: CONCERNS nao-bloqueante - achado P2 aceito (fix de pointer-events do Material so tem protecao e2e indireta hoje, via register-bet.spec.ts ficar estreito o bastante por coincidencia de layout; registrado pra sessao futura adicionar teste deterministico dedicado) e achado P3 aceito (sem spec pro app-login-border-trace, decorativo puro, mesmo precedente de splash.spec.ts que so testa timing funcional). O que divergiu do plano: nada de fundo - o Plan Reviewer ja corrigiu a decisao tecnica (manter mat-select em vez de mat-menu) antes do codigo. docs/DESIGN-SYSTEM.md item 1 marcado implementado (nota de confirmacao com o achado do default mobile), docs/services/web.md ganhou secao nova, docs/CONVENTIONS.md documentou o gotcha do Material. Adendo 2026-09-15: app-login-border-trace reformulada a pedido do usuario apos ver a animacao original - 1 caminho fechado (contorno completo do card) com 2 tracos opostos girando continuamente via stroke-dashoffset, em vez de 2 metades desenhar/segurar/recolher. Commit direto em develop (mudanca cosmetica isolada, sem feature/subtask nova - mesmo precedente de pequenos ajustes pos-fechamento em outros harnesses)."
+    },
+    {
+      "id": "feat-019",
+      "name": "Corrigir alinhamento, tema e acesso ao idioma na sidebar",
+      "description": "Corrigir tres problemas de UX na barra lateral introduzida em feat-018: centralizar os icones nas tres secoes da barra, fazer o botao de expandir/colapsar respeitar o tema claro e manter o botao de alterar idioma acessivel quando a barra estiver colapsada.",
+      "dependencies": [
+        "feat-018"
+      ],
+      "status": "done",
+      "plan_review": "Plan Reviewer 2026-09-15: READY WITH CONCERNS. Evidencia: app-side-nav.scss confirma os 3 achados - .side-nav__link usa align-items:center/gap:12px sem centralizacao explicita por secao (icone+label alinhado a esquerda, nao centralizado quando colapsado alem do justify-content:center do link inteiro); .side-nav__collapse-toggle usa color:var(--color-text-secondary) (token semantico, ja deveria respeitar tema - a causa raiz mais provavel e o botao mat-icon-button herdando cor fixa de algum override global ou do proprio Material, nao a regra local; subtask 019.2 deve investigar antes de assumir onde esta o hardcode) e app-side-nav__footer contem app-language-selector/app-theme-toggle com width:100% mas nao ha CSS especifico pro modo colapsado - possivel causa do idioma sumir e o proprio .language-selector ter largura minima (120px, fix do feat-018.2) maior que side-nav--collapsed (72px), estourando ou sendo cortado pelo overflow-x:hidden do .side-nav. MINOR: subtask 019.3 deve testar explicitamente que o language-selector no rodape nao e cortado pelo overflow-x:hidden quando colapsado (72px < 120px min-width) - efeito colateral direto do fix de feat-018.2, nao mencionado no plano atual.",
+      "jira": "SV-398",
+      "subtasks": [
+        {
+          "id": "feat-019.1",
+          "name": "Centralizar icones nas tres secoes da sidebar",
+          "detail": "Ajustar o layout dos grupos da sidebar para que todos os icones usem o mesmo alinhamento central da secao do meio, nos estados expandido e colapsado.",
+          "checklist": [
+            "Icones das tres secoes ficam centralizados horizontalmente quando a sidebar esta colapsada.",
+            "Alinhamento permanece consistente quando a sidebar esta expandida.",
+            "Nenhum label ou estado ativo desloca o centro visual do icone."
+          ],
+          "validation": "QA visual confirma alinhamento nas tres secoes em desktop e mobile, com sidebar expandida e colapsada.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-399"
+        },
+        {
+          "id": "feat-019.2",
+          "name": "Aplicar tema claro ao botao de colapsar",
+          "detail": "Corrigir as cores do botao de expandir/colapsar para usar os tokens do tema ativo, eliminando o estado escuro fixo no tema claro.",
+          "checklist": [
+            "Botao usa tokens semanticos do tema em vez de cor escura fixa.",
+            "Estados normal, hover, foco e ativo funcionam no tema claro.",
+            "Tema escuro preserva contraste e aparencia atuais sem regressao."
+          ],
+          "validation": "QA visual e teste de acessibilidade confirmam contraste e estados do botao nos dois temas.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-400"
+        },
+        {
+          "id": "feat-019.3",
+          "name": "Manter seletor de idioma acessivel no modo colapsado",
+          "detail": "Corrigir a disposicao do seletor de idioma para que ele nao desapareca quando a sidebar estiver retraida, mantendo a troca de idioma utilizavel sem expandir a barra.",
+          "checklist": [
+            "Botao de idioma permanece visivel ou acessivel no modo colapsado.",
+            "Seletor continua abrindo e permitindo trocar entre pt-BR, en-US e es.",
+            "A solucao nao cria sobreposicao com o botao de tema, logout ou conteudo principal.",
+            "Sidebar colapsada (72px) nao corta o language-selector (min-width:120px do fix de feat-018.2) via overflow-x:hidden - achado do Plan Reviewer."
+          ],
+          "validation": "Playwright confirma a troca de idioma com sidebar expandida e colapsada nos tres locales.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-401"
+        },
+        {
+          "id": "feat-019.4",
+          "name": "Testes, QA visual e verificacao final",
+          "detail": "Fechar a correcao com cobertura dos estados da sidebar e verificacao visual dos dois temas.",
+          "checklist": [
+            "Testes unitarios e Playwright cobrem alinhamento, tema claro e idioma no modo colapsado.",
+            "QA visual em desktop/mobile, temas claro/escuro e sidebar expandida/colapsada.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "./init.sh verde, testes unitarios e Playwright verdes, evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-402"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-15 (branch feature/SV-398, story SV-398, subtasks SV-399..402, PRs #84/#85/#86/#87, merge fast-forward em cada, CI verde nos 4). Os 3 bugs reportados tinham causa raiz diferente do suspeito no plan_review: (1) theme-toggle nao centralizava porque seu :host (display:block) nao tinha centralizacao propria - o footer forcava width:100% no host, mas isso so define o tamanho da caixa, nao centraliza o botao de tamanho fixo (~40px) dentro dela; corrigido com :host { display:flex; justify-content:center }; nao era um problema do .side-nav__link (que ja centraliza via justify-content proprio) nem das 3 secoes em si. (2) botao de colapsar nunca respeitava nenhum tema porque AppSideNav nunca importava MatButtonModule - mat-icon-button virava atributo estatico inerte (sem erro), o botao renderizava como <button> nativo puro (fundo cinza, borda outset, chrome do browser seguindo o color-scheme do SO, nao os tokens do app) - nao era CSS/override nenhum, so import faltando. (3) language-selector sumia porque literalmente saia do DOM (@if (!collapsed())), nao por causa do overflow-x:hidden/min-width:120px que o plan_review suspeitou - corrigido com input `collapsed` que troca o mat-select por um botao-icone + mat-menu (mesmo padrao dos links de recurso ja existentes no componente) quando colapsado, sidestepping o conflito de largura em vez de brigar com ele via CSS. Evidencia real por bug: screenshots antes/depois via git stash (nao so leitura de codigo) confirmando cada centralizacao; computed style (border/background) provando o <button> nativo antes e as classes mat-mdc-* depois; e2e novo (e2e/side-nav.spec.ts) provando troca nas 3 locales pelo trigger colapsado sem sobrepor tema/logout. QA visual desktop (1280px) e mobile (375px), claro e escuro, expandido e colapsado - 6 combinacoes conferidas. Delivery Reviewer e Test Suite Auditor rodados (revisao direta, sem subagentes - diff pequeno e totalmente evidenciado): PASS nos dois; achado do Test Suite Auditor corrigido antes de fechar - fix de .2 nao tinha nenhuma protecao automatizada contra regressao, so QA visual; teste novo (classList.contains('mat-mdc-icon-button')) adicionado e confirmado como guarda real (removendo o import manualmente o teste falha). Achado lateral, fora do escopo desta feature mas descoberto rodando a suite completa como parte da propria verificacao: period-report.spec.ts (unitario) e e2e/period-report.spec.ts tinham uma fixture de data fixa (2026-09-11) comparada contra new Date() real - quebravam sempre que a suite rodasse depois dessa data; corrigido congelando o relogio (vi.setSystemTime/page.clock.setFixedTime) em vez de mudar a fixture. ng test: 173/173 (2 testes novos do language-selector + 1 guarda de regressao). Playwright completo: 42/42 (2 specs novos). ./init.sh do app e da raiz verdes. docs/CONVENTIONS.md ganhou 2 gotchas reaproveitaveis (diretiva de atributo do Material sem modulo importado falha em silencio; width:100% no host nao centraliza sozinho) e docs/TESTING.md ganhou o gotcha de fixture de data vs relogio real - todos no mesmo commit das correcoes. Fecha epic-023 da raiz - epic independente, nao bloqueia nem e bloqueado por outro epic aberto."
+    },
+    {
+      "id": "feat-020",
+      "name": "Renomear data da aposta para data do evento",
+      "description": "Na tela de criar aposta, substituir o rotulo visivel 'Data da aposta' por 'Data do evento', mantendo inicialmente o contrato tecnico e o campo de data existentes. Avaliar no planejamento se tooltips, historico, filtros, traducoes e demais telas devem usar a mesma nomenclatura para evitar ambiguidade entre data do evento, registro e liquidacao.",
+      "dependencies": [
+        "feat-004"
+      ],
+      "status": "done",
+      "plan_review": "Plan Reviewer 2026-09-15: READY. Achado: 'Data da aposta' e o form control betDate (type=datetime-local) em register-bet.html/registerBet.betDateLabel - so 3 chaves i18n (pt-BR/en-US/es) mudam, contrato tecnico (campo betDate, formato ISO) intocado, escopo bate com a description (renomear rotulo, nao o dominio). Sem dependencia real de epic-024/feat-016 (decisao de TEAM) - troca de texto e ortogonal a modelagem de time. Nenhum achado bloqueante.",
+      "jira": "SV-443",
+      "subtasks": [
+        {
+          "id": "feat-020.1",
+          "name": "Atualizar rotulos e traducoes da data do evento",
+          "detail": "Localizar a label da tela de registro e verificar a paridade pt-BR/en-US/es sem alterar o significado do campo no backend.",
+          "checklist": [
+            "Tela de criar aposta exibe 'Data do evento' em pt-BR.",
+            "Strings equivalentes em en-US e es permanecem sincronizadas.",
+            "Historico, filtros e acessibilidade nao ficam com nomenclatura conflitante."
+          ],
+          "validation": "Teste de componente e Playwright confirmam o rotulo nos tres locales.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-444"
+        },
+        {
+          "id": "feat-020.2",
+          "name": "Verificacao final de nomenclatura",
+          "detail": "Confirmar se a mudanca de linguagem exige ajuste documental ou de contrato, sem renomear campos tecnicos sem decisao cross-service.",
+          "checklist": [
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Rotulo validado visualmente e suite do frontend verde.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-445"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-15 (story SV-443, subtasks SV-444/SV-445, PR #96 subtask->story verde). Escopo exatamente como o Plan Reviewer previu: 3 chaves i18n (betDateLabel em pt-BR/en-US/es) trocadas de 'Data da aposta'/'Bet date'/'Fecha de la apuesta' para 'Data do evento'/'Event date'/'Fecha del evento', campo tecnico (betDate, datetime-local/ISO) intocado. Grep no repositorio inteiro confirmou nenhuma outra tela/teste referenciando o texto antigo (so o fixture de teste de register-bet.spec.ts, atualizado no mesmo commit por consistencia, nao por necessidade funcional). Delivery Reviewer: PASS, sem achado. ./init.sh verde. Vault revisado: nenhuma nota do assunto precisa de ajuste (mudanca de copy pura, ja coberta pela convencao geral de i18n em docs/CONVENTIONS.md)."
+    },
+    {
+      "id": "feat-021",
+      "name": "Cadastro de time vinculado a esporte + corrigir quebra de contrato em POST /api/v1/bets",
+      "description": "bets-service feat-017 (2026-09-15, mesma rodada de epic-024) trocou team1/team2 (texto livre) por team1Id/team2Id (UUID) no contrato REST de POST /api/v1/bets - apps/web ainda envia os campos antigos, quebrando (400) todo registro manual de aposta pelo site. Escopo revisado apos bets-service feat-016/017 e api-gateway feat-015 (rota /api/v1/teams) terem fechado nesta mesma sessao: (1) tela nova de cadastro de time vinculado a esporte (nao existia nenhuma antes - achado real do Plan Reviewer anterior, a description original pressupunha uma tela ja existente); (2) formulario de registro de aposta trocando os 2 inputs de texto livre por selects alimentados pelo catalogo real.",
+      "dependencies": [
+        "feat-020"
+      ],
+      "status": "done",
+      "plan_review": "Plan Reviewer (2026-09-15, revisado - substitui o veredito BLOCKED anterior agora que a dependencia de fundo fechou na mesma sessao): READY. bets-service feat-016/017 done (TEAM: POST/GET /api/v1/teams, chave natural name+sportId, TeamResponse com sportId); api-gateway feat-015 done (rota /api/v1/teams roteada). Decisao de escopo tomada (nao era mais ambigua): tela NOVA dedicada (shared/team-manager, nao uma 5a entrada em CatalogManager - TEAM nao e estruturalmente identico aos outros 4 catalogos, tem FK sportId obrigatoria, sobrecarregar o componente compartilhado arriscaria regressao nas 4 telas ja estaveis) + formulario de aposta trocando team1/team2 texto livre por team1Id/team2Id select (sem filtro client-side por esporte - GET /api/v1/teams nao aceita esse query param, e leagues/markets ja nao sao filtrados por esporte na tela hoje, entao nao filtrar teams e consistente com o padrao existente, nao uma lacuna nova). Sem dashboard (byTeam) - stats-service feat-018 (DIM_TEAM alignment) esta BLOCKED, fora de escopo. Sem BLOCKER.",
+      "jira": "SV-446",
+      "subtasks": [
+        {
+          "id": "feat-021.1",
+          "name": "Catalogo de times (tela nova) + formulario de aposta usando team1Id/team2Id",
+          "detail": "core/catalog-api.ts ganha teamsApi (create com sportId); shared/team-manager (tela nova, rota /teams, link no side-nav); register-bet troca os 2 inputs de texto por selects alimentados pelo catalogo; bets-api.ts atualiza os tipos.",
+          "checklist": [
+            "POST /api/v1/bets deixa de enviar team1/team2 - so team1Id/team2Id (ou omitidos).",
+            "Tela /teams permite cadastrar e listar times vinculados a esporte.",
+            "Traducoes pt-BR/en-US/es para os novos rotulos."
+          ],
+          "validation": "Testes de componente cobrem catalogo de times e o formulario de aposta com selects.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-447"
+        },
+        {
+          "id": "feat-021.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechar a feature com testes, CHANGELOG e verificacao do vault.",
+          "checklist": [
+            "Testes unitarios verdes, gate de cobertura mantido.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Suite do frontend verde e evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-448"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-15 (story SV-446, subtasks SV-447/SV-448, PR #99 subtask->story verde). Corrige uma quebra real de producao: bets-service feat-017 (fechada mais cedo na mesma sessao) trocou o contrato de POST /api/v1/bets de team1/team2 (texto livre) para team1Id/team2Id (UUID), e este repositorio nunca acompanhou - todo registro manual de aposta pelo site estava recebendo 400 (Jackson FAIL_ON_UNKNOWN_PROPERTIES). Plan Reviewer revisado (substitui o veredito BLOCKED anterior, cuja dependencia de fundo - bets-service feat-016/017 e api-gateway feat-015 - fechou na mesma sessao): tela nova shared/team-manager (catalogo de times vinculado a esporte, componente dedicado - TEAM tem FK sportId obrigatoria, nao e estruturalmente identico aos 4 catalogos de shared/catalog-manager, que ficou intocado, zero risco de regressao nas 4 telas ja estaveis) + register-bet trocando os 2 inputs de texto por selects team1Id/team2Id. Delivery Reviewer (rodado via skill completa, nao condensado - mudanca de negocio real, nao um padrao mecanico repetido): PASS, sem achado. Verificacao independente no proprio review: grep no repositorio inteiro confirmou zero referencia residual a team1/team2 fora da familia team1Id/team1Label/team1None; leitura direta de CreateBetRequest.java (bets-service) confirmou o contrato bate exatamente. ./init.sh verde (180 testes, cobertura 89%+, gate 80% mantido). docs/services/bets-service.md atualizado (fecha a nota de 'sequenciamento de deploy obrigatorio' deixada por feat-017) e docs/services/web.md (padrao do 6o catalogo sem par de Dashboard documentado). Sem filtro client-side de time por esporte (GET /api/v1/teams nao aceita esse query param, e leagues/markets tambem nao sao filtrados por esporte nesta tela hoje - consistente com o padrao existente, nao uma lacuna nova). Desbloqueia o deploy de bets-service em producao sem quebrar o formulario web."
+    },
+    {
+      "id": "feat-022",
+      "name": "Date picker e formato localizado para campos de data",
+      "description": "Atualizar o frontend para que todos os campos de data utilizem date picker em vez de inputs de texto ou datetime-local sem suporte visual, e deixem de exibir o formato americano por padrao. A exibicao deve respeitar o locale ativo (pt-BR/en-US/es), enquanto a conversao para os formatos tecnicos das APIs permanece centralizada e compativel com os contratos existentes.",
+      "dependencies": [
+        "feat-004",
+        "feat-014",
+        "feat-015"
+      ],
+      "status": "not-started",
+      "plan_review": "Plan Reviewer 2026-09-15: REVISE. Evidencia: @angular/material 22.1.6 instalado, mas MatDatepicker NUNCA foi usado no app - todos os campos de data hoje sao input nativo type=\"date\" (period-preset-filter.html) ou type=\"datetime-local\" (register-bet.html, betDate com hora+data). core/date-format.ts ja faz formatacao de EXIBICAO por locale via Intl.DateTimeFormat (padrao reaproveitavel), mas isso e ortogonal ao DateAdapter que o MatDatepicker exige para o proprio picker (MAT_DATE_LOCALE/provideNativeDateAdapter ou provideMomentDateAdapter) - nenhum provider desses existe hoje. MAJOR 1: MAT_DATE_LOCALE e um DI token estatico; o app troca idioma em runtime via transloco (language-selector ja existe) - o plano nao tem subtask pra rebind do locale do datepicker quando o usuario troca de idioma sem reload de pagina (sem isso o calendario fica preso no locale do boot). MAJOR 2: betDate e datetime-local (data E hora) - MatDatepicker só cobre a parte de data; description do inventario (022.1) trata 'campos de data e data/hora' como o mesmo problema, mas exige verificar se @angular/material 22 expõe mat-timepicker estavel (adicionado nas versoes recentes do Material, confirmar na documentacao oficial da versao instalada antes de comprometer o design) ou compor date+time separado - decisao de UX que falta no plano. Amendment: adicionar subtask explicita entre 022.1 e 022.2 para (a) escolher/confirmar DateAdapter e prover MAT_DATE_LOCALE reativo ao idioma ativo, (b) decidir tratamento de datetime-local (mat-timepicker vs. 2 controles) antes de tocar em register-bet.",
+      "jira": "",
+      "subtasks": [
+        {
+          "id": "feat-022.1",
+          "name": "Inventariar campos de data do frontend",
+          "detail": "Mapear todos os campos de data e data/hora nas telas e componentes compartilhados antes de escolher a implementacao comum.",
+          "checklist": [
+            "Criar aposta usa date picker e data/hora do evento conforme o dominio.",
+            "Filtros de periodo, historico, relatorio e dashboards sao incluidos no inventario.",
+            "Separar formato de exibicao localizado dos formatos tecnicos enviados pela API."
+          ],
+          "validation": "Inventario revisado sem campos de data fora do escopo ou conversoes duplicadas.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-022.2",
+          "name": "Adicionar date picker e formatacao por locale",
+          "detail": "Aplicar o componente de selecao de data do design system e configurar exibicao pt-BR/en-US/es sem quebrar datas de filtros ou formularios.",
+          "checklist": [
+            "Campos de data exibem date picker com teclado e acessibilidade.",
+            "Formato visivel acompanha o idioma ativo e nao fica preso ao formato americano.",
+            "Campos de data/hora preservam hora e timezone definidos pelo dominio.",
+            "Conversao para yyyy-MM-dd ou ISO ocorre no limite com a API, nao no template."
+          ],
+          "validation": "Testes de componente cobrem os tres locales, abertura do date picker e conversao enviada ao backend.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-022.3",
+          "name": "Atualizar testes, QA visual e documentacao",
+          "detail": "Validar a experiencia nos fluxos que usam periodo e registrar qualquer convencao nova de locale ou timezone.",
+          "checklist": [
+            "Playwright cobre criar aposta, filtros de periodo e relatorio com date picker.",
+            "QA visual em desktop/mobile e nos tres locales.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Suite do frontend verde e contratos tecnicos de data preservados.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        }
+      ],
       "evidence": ""
+    },
+    {
+      "id": "feat-023",
+      "name": "Corrigir sobreposicao do seletor de idioma no login",
+      "description": "Corrigir o seletor de idioma da tela de login, que atualmente fica sobreposto e corta parte do icone. O controle deve manter o icone inteiro visivel, area de clique adequada e posicionamento consistente nos tres locales, temas e tamanhos de tela.",
+      "dependencies": [
+        "feat-018"
+      ],
+      "status": "not-started",
+      "plan_review": "Plan Reviewer 2026-09-15: READY WITH CONCERNS. Evidencia: app-shell__floating-controls (app.scss, position:fixed, left/bottom:16px, z-index:10, sem overflow nem largura fixa) e language-selector.html (mat-icon 'language' 18px + mat-select, sem CSS que corte o icone) nao mostram causa obvia de corte - a suspeita mais provavel e o min-width:120px do mat-select (fix de feat-018.2, comentado no proprio SCSS como resolvendo um bug DIFERENTE: painel de opcoes largo demais/estreito demais, nao o icone) interagindo com o espaco apertado do canto da tela em telas pequenas, ou z-index do app-login-border-trace (animacao autoral de feat-018) sobrepondo o canto se a viewport for pequena o suficiente pro card de login alcancar bottom-left. MINOR: subtask 023.1 ja prve investigar a causa antes de corrigir (correto) - so reforcar que nao deve assumir que o fix de feat-018.2 (min-width do painel) e a mesma causa deste bug (sintoma diferente: icone cortado, nao painel estreito).",
+      "jira": "",
+      "subtasks": [
+        {
+          "id": "feat-023.1",
+          "name": "Corrigir layout e area de clique do idioma",
+          "detail": "Investigar a causa do corte ou sobreposicao entre icone, controle e elementos flutuantes do login, ajustando dimensoes e posicionamento sem esconder parte do icone.",
+          "checklist": [
+            "Icone do seletor fica completamente visivel.",
+            "Area de clique nao fica sobreposta por outro controle ou container.",
+            "Posicionamento funciona com textos dos tres locales e sem overflow."
+          ],
+          "validation": "QA visual confirma o seletor inteiro e clicavel em desktop e mobile.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-023.2",
+          "name": "Validar temas, locales e acessibilidade",
+          "detail": "Garantir que a correcao nao dependa do tema ou do idioma selecionado e preserve foco e navegacao por teclado.",
+          "checklist": [
+            "Temas claro e escuro nao cortam nem deslocam o icone.",
+            "pt-BR, en-US e es cabem sem sobreposicao.",
+            "Foco visivel e navegacao por teclado permanecem utilizaveis."
+          ],
+          "validation": "Playwright cobre os tres locales e os dois temas na tela de login.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-023.3",
+          "name": "Testes, QA visual e verificacao final",
+          "detail": "Fechar a correcao com testes de regressao, QA visual e revisao da documentacao do shell de autenticacao.",
+          "checklist": [
+            "Teste de regressao cobre o seletor sem corte ou sobreposicao.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Suite do frontend verde, QA visual aprovado e evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        }
+      ],
+      "evidence": ""
+    },
+    {
+      "id": "feat-024",
+      "name": "Ajustar espacamento e formulario das telas de cadastro",
+      "description": "Melhorar o layout das telas de cadastro: criar espacamento visual entre o menu lateral e o card 'Nova entrada', e reposicionar o botao 'Adicionar' para uma linha propria ou outra composicao responsiva mais equilibrada, evitando que fique apertado ao lado do campo de nome.",
+      "dependencies": [
+        "feat-016",
+        "feat-019"
+      ],
+      "status": "not-started",
+      "plan_review": "Plan Reviewer 2026-09-15: READY. Evidencia: shared/catalog-manager (catalog-manager.html/scss) e de fato o UNICO componente reusado pelos 5 cadastros (confirma a premissa de feat-024.3, sem risco de duplicacao) - .catalog-manager__form usa display:flex/align-items:flex-start/gap:12px com o mat-form-field em flex:1 e o botao Adicionar como irmao direto na mesma linha, confirmando literalmente o bug descrito (botao espremido ao lado do campo Nome em telas estreitas). :host tem padding:16px 0 (sem padding lateral) - o respiro em relacao a sidebar depende do layout do container pai (app-panel-layout), a investigar na subtask 024.1. Nenhum achado bloqueante; ajustar layout dentro deste unico componente compartilhado resolve as 5 telas de uma vez, como o plano ja assume.",
+      "jira": "",
+      "subtasks": [
+        {
+          "id": "feat-024.1",
+          "name": "Criar espacamento entre sidebar e cadastro",
+          "detail": "Ajustar o shell ou layout da pagina para que o card de nova entrada nao fique colado no menu lateral, preservando o alinhamento com a area de cadastradas.",
+          "checklist": [
+            "Existe espacamento visual consistente entre sidebar e card de cadastro.",
+            "Card de nova entrada e painel de cadastradas mantem alinhamento e largura equilibrados.",
+            "Espacamento funciona com sidebar expandida e colapsada."
+          ],
+          "validation": "QA visual confirma o respiro entre menu e cards em desktop e mobile.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-024.2",
+          "name": "Reposicionar botao Adicionar",
+          "detail": "Reorganizar o formulario de nova entrada para que o botao Adicionar fique em uma linha propria ou em uma composicao responsiva equivalente, sem competir visualmente com o campo Nome.",
+          "checklist": [
+            "Botao Adicionar nao fica apertado ou desalinhado ao lado do campo Nome.",
+            "Campo e botao mantem hierarquia visual clara nos temas claro e escuro.",
+            "Layout responsivo nao cria overflow nem desloca o painel de cadastradas."
+          ],
+          "validation": "Testes de componente e QA visual confirmam a composicao em desktop, tablet e mobile.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-024.3",
+          "name": "Aplicar em todas as telas de cadastro",
+          "detail": "Garantir que o ajuste seja compartilhado por esporte, liga, mercado, tipster e casa de apostas, sem duplicar estilos ou criar excecoes por recurso.",
+          "checklist": [
+            "Todas as telas de cadastro usam o layout compartilhado corrigido.",
+            "Estados vazio, carregando, erro e lista cadastrada permanecem legiveis.",
+            "Nenhum dashboard ou tela de consulta sofre regressao visual."
+          ],
+          "validation": "Playwright ou testes de rota cobrem os cinco cadastros e confirmam o layout comum.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-024.4",
+          "name": "Testes, QA visual e verificacao final",
+          "detail": "Fechar o ajuste com validacao visual, testes e revisao da documentacao de layout.",
+          "checklist": [
+            "QA visual em desktop/mobile, temas claro/escuro e sidebar expandida/colapsada.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Suite do frontend verde e evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        }
+      ],
+      "evidence": ""
+    },
+    {
+      "id": "feat-025",
+      "name": "Implementar gestao de saldo e movimentacoes no frontend",
+      "description": "Fechar o gap de integracao financeira identificado na auditoria: o frontend ja possui TransactionsApi, BankrollApi e um formulario de movimentacoes na tela de historico, mas a gestao ainda nao esta integrada ao contexto da tela de casas nem validada ponta a ponta pelo Gateway. Consolidar a experiencia de depositos/retiradas, atualizar o saldo por casa apos cada movimentacao e exibir o saldo consolidado quando aplicavel.",
+      "dependencies": [
+        "feat-003",
+        "feat-010",
+        "feat-014"
+      ],
+      "status": "done",
+      "plan_review": "Plan Reviewer 2026-09-15: READY WITH CONCERNS. Evidencia: TransactionsApi/TransactionType (deposit/withdrawal) e o formulario de movimentacao ja existem em pages/history/history.ts (nao em betting-houses), e betting-houses.html ja exibe initialBalance/balance por casa (colunas dedicadas, formatBrl). O 'gap' real e navegacao/atualizacao: o formulario fica na tela de Historico, nao na tela de Casas de Apostas onde o saldo por casa e exibido - description fala em 'integrar ao contexto das casas', mas as subtasks (025.1/025.2) nao decidem se o formulario MUDA de tela (para dentro de betting-houses) ou so passa a existir tambem la, e nem citam que History e Betting Houses sao rotas separadas (balance da casa so re-sincroniza sozinho ao navegar de novo pra rota, sem estado compartilhado hoje). MINOR: subtask 025.1 deve fixar em qual tela o fluxo de deposito/retirada mora antes de implementar (evitar 2 formularios divergentes); 025.2 deve testar explicitamente a navegacao History->Betting Houses apos a movimentacao, nao so o retorno da API mockado. AMENDMENT 2026-09-15 (investigacao antes de codificar, decisao registrada): formulario/filtro/lista de movimentacoes em history.ts JA cobrem 025.1 e 025.3 por completo (deposit/withdrawal, validacao de valor positivo/casa obrigatoria, erros RFC 7807 localizados, lista com GET /api/v1/transactions paginado, badges deposito/retirada, datas localizadas) - nao serao reescritos nem duplicados em betting-houses, decisao explicita contra a 'segunda tela com o mesmo formulario' que o plan_review original temia. 'Saldo consolidado' (BankrollApi) tambem ja existe - Dashboard.ts ja chama bankrollApi.getBalance() (bankrollNow) como KPI; nao sera duplicado em betting-houses. betting-houses.ts usa constructor()->reload() sem route reuse customizada - Angular recria o componente a cada navegacao pra essa rota (comportamento default do Router), entao o saldo por casa ja re-sincroniza sozinho ao voltar de uma movimentacao, sem codigo novo (025.2 vira so verificacao/teste, nao implementacao). Escopo real, menor que o backlog original: 1 acao 'Movimentar saldo' por linha em betting-houses (routerLink pra /history com queryParam bettingHouseId), history.ts le esse queryParam no ngOnInit e (a) muda pra aba Movimentacoes (mat-tab-group ganha [selectedIndex] controlado por signal, hoje sem binding nenhum) e (b) pre-seleciona a casa no formulario existente - ponte de navegacao, nao um formulario novo.",
+      "jira": "SV-403",
+      "subtasks": [
+        {
+          "id": "feat-025.1",
+          "name": "Ponte de navegacao Casas de Apostas -> Historico (Movimentacoes)",
+          "detail": "O formulario de deposito/retirada ja existe em history.ts (025.1/025.3 do escopo original) - o gap real e alcancar esse formulario a partir do contexto das casas sem duplica-lo. Acao por linha em betting-houses.html navegando pra /history?bettingHouseId=<id>; history.ts le o query param, troca pra aba Movimentacoes e pre-seleciona a casa no formulario.",
+          "checklist": [
+            "betting-houses.html ganha coluna de acao com botao/link 'Movimentar saldo' por linha, routerLink /history com queryParams bettingHouseId.",
+            "mat-tab-group de history.ts ganha [selectedIndex] controlado por signal (hoje sem nenhum binding).",
+            "ngOnInit de History le queryParamMap.bettingHouseId: se presente, seleciona a aba Movimentacoes e faz patchValue no createTransactionForm.",
+            "Navegar sem query param (uso normal da tela) continua abrindo na aba Apostas (comportamento atual intocado)."
+          ],
+          "validation": "Playwright: clicar 'Movimentar saldo' numa casa leva pra /history com a aba certa e a casa certa pre-selecionada no formulario.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-404"
+        },
+        {
+          "id": "feat-025.2",
+          "name": "Verificar atualizacao de saldo por casa apos movimentacao (sem codigo novo esperado)",
+          "detail": "betting-houses.ts recarrega no constructor() - Angular recria o componente a cada navegacao pra essa rota, entao o saldo ja deveria re-sincronizar sozinho ao voltar de uma movimentacao. Provar isso com um teste real (Playwright), nao assumir pela leitura do codigo.",
+          "checklist": [
+            "Fluxo completo testado: Casas de Apostas -> Movimentar saldo -> criar deposito/retirada em History -> voltar pra Casas de Apostas -> saldo da casa reflete a movimentacao, sem refresh manual da pagina.",
+            "Se o teste acima falhar (saldo NAO atualiza sozinho), so entao investigar/corrigir - nao adicionar sincronizacao de estado preventivamente sem prova do problema.",
+            "Saldo consolidado (Dashboard, ja existente via BankrollApi) nao e duplicado nem retocado nesta feature."
+          ],
+          "validation": "Playwright prova o ciclo completo Casas de Apostas -> Historico -> Casas de Apostas com saldo atualizado.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-405"
+        },
+        {
+          "id": "feat-025.3",
+          "name": "Testes, QA visual e verificacao final",
+          "detail": "Fechar a entrega da gestao financeira com cobertura dos fluxos de saldo e revisao das discrepancias entre backlog e codigo.",
+          "checklist": [
+            "Testes unitarios e Playwright cobrem deposito, retirada, erro e atualizacao de saldo.",
+            "QA visual em desktop/mobile e temas claro/escuro.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Suite do frontend verde, fluxo financeiro demonstrado e evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-406"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-15 (branch feature/SV-403, story SV-403, subtasks SV-404/405/406, PRs #89/#90/#91, fast-forward em cada). Investigacao antes de codificar mudou o escopo real: formulario de deposito/retirada, filtros e lista ja existiam completos em pages/history/history.ts (TransactionsApi, validacao, erros RFC 7807, badges, paginacao) - nao reescritos nem duplicados em betting-houses. Saldo consolidado (BankrollApi) ja existe no Dashboard - nao duplicado. Entregue: (1) acao 'Movimentar saldo' por linha em betting-houses.html, routerLink pra /history?bettingHouseId=<id>; history.ts le o query param, seleciona a aba Movimentacoes (mat-tab-group nunca tinha [selectedIndex] antes) e pre-seleciona a casa no formulario existente. (2) Provado via e2e com navegacao SPA real (clique no link da sidebar, nao page.goto) que betting-houses.ts (constructor()->reload(), sem route reuse customizada) ja re-sincroniza o saldo sozinho ao voltar - sem codigo novo de sincronizacao, confirmando a previsao do plan_review. (3) Achado real durante QA visual mobile: a coluna nova estourava a pagina inteira em telas estreitas mesmo com a tabela dentro de overflow-x:auto - causa raiz e 'grid blowout' (app-panel, item de grid de app-panel-layout, sem min-width:0, ignora overflow de qualquer descendente) - corrigido no componente compartilhado, protege qualquer pagina futura com conteudo largo dentro de app-panel, nao so betting-houses. QA visual real via screenshots contra ng serve: desktop (1280px) e mobile (375px), claro e escuro, incluindo prova de que o scroll horizontal da tabela funciona (scrollWidth > clientWidth) e revela a coluna de acao. ng test: 173/173 (2 specs precisaram provideRouter([]) pro RouterLink/ActivatedRoute novos). Playwright completo: 44/44 (2 e2e novos). Delivery Reviewer e Test Suite Auditor rodados (revisao direta, sem subagentes - diff pequeno e totalmente evidenciado): PASS nos dois, sem achado. docs/CONVENTIONS.md (raiz) ganhou o gotcha de grid blowout, reaproveitavel para qualquer componente usando app-panel. ./init.sh do app e da raiz verdes."
+    },
+    {
+      "id": "feat-026",
+      "name": "Alinhar betType e exibir agrupamento PRE/LIVE",
+      "description": "Alinhar o formulario de registro de aposta ao contrato do backend, substituindo o texto livre de betType por selecao limitada a pre/live, e consumir o agrupamento byBetType ja retornado pelo stats-service em uma visao apropriada do frontend.",
+      "dependencies": [
+        "feat-004",
+        "feat-014",
+        "feat-015"
+      ],
+      "status": "not-started",
+      "plan_review": "Plan Reviewer 2026-09-15: REVISE. Evidencia parte 1 (betType): register-bet.html/ts confirma betType como <input type=\"text\"> livre (linhas 99-108, form control sem Validators de enum) - troca por mat-select com 2 opcoes fixas (pre/live) e labels localizadas e direta, sem achado bloqueante. MAJOR parte 2 (byBetType): core/statistics-api.ts (BetMetrics, linha 14-16) tem um comentario explicito e pre-existente dizendo 'byBetType stays out of scope (epic-021 consumes it)' - ou seja, a tipagem/consumo de byBetType ja estava deliberadamente reservado pra outra feature (epic-021 'Visao geral', que ainda nem tem feature granular criada em apps/web/feature_list.json). Implementar feat-026.2 sem revisar essa decisao cria 2 features competindo pelo mesmo campo (risco de tipagem duplicada/divergente ou de epic-021 reabrir statistics-api.ts pra desfazer o que feat-026 fizer). Correcao: decidir agora, antes de codificar, se feat-026 passa a ser a dona de byBetType (movendo o comentario/decisao pra ca e liberando epic-021 pra so reusar o tipo) ou se feat-026.2 deve ser removida desta feature e o escopo de feat-026 fica so no betType do formulario - registrar a decisao na evidence antes de marcar in-progress.",
+      "jira": "",
+      "subtasks": [
+        {
+          "id": "feat-026.1",
+          "name": "Trocar betType por selecao PRE/LIVE",
+          "detail": "Usar controle de selecao com os valores tecnicos pre e live e labels localizadas, evitando requests rejeitados por enum invalido.",
+          "checklist": [
+            "Formulario envia somente pre ou live.",
+            "Interface TypeScript deixa de usar string livre para betType.",
+            "pt-BR, en-US e es possuem labels e validacoes sincronizadas."
+          ],
+          "validation": "Teste de componente e Playwright cobrem cadastro PRE e LIVE.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-026.2",
+          "name": "Consumir byBetType no frontend",
+          "detail": "Adicionar byBetType ao contrato de estatisticas e apresenta-lo na visao apropriada sem duplicar componentes de segmentos existentes.",
+          "checklist": [
+            "StatisticsApi tipa byBetType com os buckets PRE e LIVE.",
+            "Visao exibe metricas por tipo conforme o contrato do backend.",
+            "Apostas sem betType continuam fora dos buckets, sem contagem artificial."
+          ],
+          "validation": "Teste de contrato e QA visual confirmam os dois buckets e suas metricas.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-026.3",
+          "name": "Testes, QA visual e verificacao final",
+          "detail": "Fechar a paridade com o backend e registrar qualquer ajuste de documentacao necessario.",
+          "checklist": [
+            "Testes unitarios e Playwright verdes.",
+            "QA visual em desktop/mobile e temas claro/escuro.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Contrato frontend/backend alinhado e evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        }
+      ],
+      "evidence": ""
+    },
+    {
+      "id": "feat-027",
+      "name": "Tela web para vinculo da conta Telegram",
+      "description": "Criar o fluxo web para gerar e acompanhar o codigo de vinculo da conta Telegram, consumindo POST /api/v1/telegram-links do auth-service atraves do Gateway. O bot ja confirma o codigo no backend, mas hoje nao existe cliente, rota ou tela Angular para o usuario iniciar o processo.",
+      "dependencies": [
+        "feat-003",
+        "feat-010"
+      ],
+      "status": "not-started",
+      "plan_review": "Plan Reviewer 2026-09-15: READY. Evidencia: docs/services/auth-service.md confirma o contrato exato - POST /api/v1/telegram-links exige X-User-Id/X-Tenant-Id (401 se ausentes/invalidos), responde 201 {code, expiresAt} (8 caracteres alfanumericos, TTL 15min default); RouteConfig.java (linha 20) ja roteia /api/v1/telegram-links/** em authServiceRoute, autenticado por PASETO normal (nao e a rota interna/sem-auth de telegram-accounts). Nenhum cliente/rota/tela existe hoje no frontend (grep sem resultado) - feature e genuinamente nova, sem conflito com trabalho existente. Plano das subtasks bate com o contrato real. Residual aceito (nao bloqueante): comportamento de chamar o endpoint 2x com um codigo ainda valido pendente nao esta documentado (novo codigo substitui o antigo vs. 409) - validar na implementacao e nao assumir.",
+      "jira": "",
+      "subtasks": [
+        {
+          "id": "feat-027.1",
+          "name": "Criar cliente e fluxo de codigo Telegram",
+          "detail": "Implementar cliente HTTP, estado de carregamento/erro/sucesso e exibicao do codigo de curta duracao.",
+          "checklist": [
+            "POST /api/v1/telegram-links usa autenticacao do usuario logado.",
+            "Codigo, expiracao e instrucoes de uso sao exibidos com clareza.",
+            "Erros RFC 7807 sao localizados e nao expõem credenciais."
+          ],
+          "validation": "Teste de servico e componente cobrem geracao, expiracao e erro.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-027.2",
+          "name": "Adicionar rota e entrada de navegacao",
+          "detail": "Disponibilizar a tela em uma rota autenticada coerente com o shell atual e os tres locales.",
+          "checklist": [
+            "Rota protegida por autenticacao.",
+            "Entrada de navegacao e labels pt-BR/en-US/es.",
+            "Layout funciona com sidebar expandida e colapsada."
+          ],
+          "validation": "Playwright acessa a tela e gera um codigo mockado pelo endpoint.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-027.3",
+          "name": "Testes, QA visual e verificacao final",
+          "detail": "Fechar o fluxo de vinculo com cobertura e revisao do vault.",
+          "checklist": [
+            "Testes unitarios e Playwright verdes.",
+            "QA visual em desktop/mobile e temas claro/escuro.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Fluxo web de vinculo documentado, testado e evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        }
+      ],
+      "evidence": ""
+    },
+    {
+      "id": "feat-028",
+      "name": "Grade mensal de drawdown (curva acumulada em unidades)",
+      "description": "Escopo da raiz (epic-020), sem feature granular ate 2026-09-15 - criada agora pelo Plan Reviewer. Secao/aba nova dentro do dashboard consolidado (feat-006/feat-014): filtro de 2 date pickers (mes inicial/final, sem reusar period-preset-filter - e um filtro de range de MESES dedicado), grade dinamica de N mini-graficos de linha (1 por mes do intervalo), cada um mostrando o lucro acumulado em unidades dentro daquele mes (reseta pra 0 no dia 1, soma dia a dia, dia sem aposta carrega o acumulado igual). Fonte: 1 chamada a GET /api/v1/statistics/daily cobrindo o intervalo inteiro (from=dia 1 do mes inicial, to=ultimo dia do mes final) + GET /api/v1/settings (unitPercent) - zero endpoint novo de backend. Formulas em docs/STATISTICS.md.",
+      "dependencies": [
+        "feat-006",
+        "feat-015"
+      ],
+      "status": "not-started",
+      "plan_review": "Plan Reviewer 2026-09-15: READY WITH CONCERNS (feature criada nesta revisao - root tinha epic-020 sem backlog granular ate agora). Evidencia: shared/monthly-profit-chart.ts ja e um componente parametrizado (input data, reusa buildLineChartOption de core/chart-theme.ts) - o precedente exato pra 'N mini-graficos, componente unico reaproveitado' que a description pede, sem duplicacao. period-report-metrics.ts (feat-015) ja resolve exatamente a mesma conta (netProfit dia a dia convertido pra unidades via saldoFinal x unitPercent, com fallback null em denominador zero) - so falta agrupar por mes e resetar o acumulado a cada virada, reaproveitando a mesma formula em vez de reescrever. BankrollApi.getBalance()/SettingsApi ja existem no frontend mas dependem de api-gateway feat-013 (services/api-gateway/feature_list.json, ainda not-started - Gateway hoje NAO roteia /api/v1/bankroll/** nem /api/v1/settings/**) - esta feature so funciona ponta a ponta depois daquele feat-013 fechar; root epic-020 nao lista epic-026 como dependencia, corrigido nesta sessao (ver feature_list.json da raiz). MINOR: description nao decide o layout responsivo da grade com N variavel (wrap em CSS grid auto-fit e a opcao mais simples, evitar layout fixo 3x4).",
+      "jira": "",
+      "subtasks": [
+        {
+          "id": "feat-028.1",
+          "name": "Calcular curva acumulada mensal a partir do historico diario",
+          "detail": "Modulo puro (mesmo padrao de period-report-metrics.ts) que recebe DailyBetMetrics[] do intervalo inteiro, unitPercent e saldoFinal, agrupa por mes e retorna o acumulado dia a dia dentro de cada mes, resetando na virada.",
+          "checklist": [
+            "Reaproveita a formula de profitUnidades ja usada em period-report-metrics.ts (netProfit dia / (saldoFinal x unitPercent)).",
+            "Acumulado reseta pra 0 no dia 1 de cada mes, soma dia a dia dentro do mes.",
+            "Dia sem aposta carrega o acumulado do dia anterior (nao ha lacuna nem reset fora da virada).",
+            "Denominador zero (saldoFinal ou unitPercent = 0) retorna null por dia, mesmo padrao defensivo ja usado."
+          ],
+          "validation": "Teste unitario cobre virada de mes, mes sem nenhuma aposta e denominador zero.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-028.2",
+          "name": "Filtro de range de meses e grade dinamica de mini-graficos",
+          "detail": "2 date pickers (inicio/fim, granularidade de mes) e grade CSS responsiva com N instancias de app-monthly-profit-chart (ou variante equivalente), N = numero de meses do intervalo.",
+          "checklist": [
+            "Intervalo efetivo trava em fronteira de mes (dia 01 do mes inicial ate ultimo dia do mes final), independente do dia exato clicado.",
+            "1 unica chamada a GET /api/v1/statistics/daily pro intervalo inteiro, sem 1 chamada por mes.",
+            "Grade acomoda contagem variavel de meses sem layout fixo (CSS grid auto-fit ou equivalente).",
+            "Reusa o componente de grafico existente parametrizado por mes, sem duplicar o wrapper ngx-echarts."
+          ],
+          "validation": "Teste de componente cobre 1 mes, varios meses e troca de intervalo recalculando a grade.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-028.3",
+          "name": "Testes, QA visual e verificacao final",
+          "detail": "Fechar a feature com cobertura da grade, QA visual e revisao do vault.",
+          "checklist": [
+            "Testes unitarios e Playwright cobrem calculo de acumulado e renderizacao da grade.",
+            "QA visual em desktop/mobile, temas claro/escuro, com 1 e com varios meses no intervalo.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Suite do frontend verde e evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        }
+      ],
+      "evidence": ""
+    },
+    {
+      "id": "feat-029",
+      "name": "Tela \"Visao geral\" pos-login (curva de drawdown vitalicia + resumo mensal)",
+      "description": "Escopo da raiz (epic-021), sem feature granular ate 2026-09-15 - criada agora pelo Plan Reviewer. Tela nova, sem filtro de periodo (todo o historico do tenant): 1 curva continua de lucro acumulado em unidades desde a primeira aposta liquidada, cards (Lucro Total (U), Pre/Live via byBetType, Lucro Medio Mensal (U) = lucroTotalUnidades/12, ROI = roiMedioDiario do ano corrente) e tabela mensal Jan-Dez (saldo inicio/fim derivado client-side, entradas/vitorias/perdas, odd media, WR%, ROI, profit $ e U). Fonte: GET /api/v1/statistics/daily sem from/to, GET /api/v1/statistics sem periodo (overall + monthly do ano corrente + byBetType), GET /api/v1/bankroll/balance 1x no ponto mais antigo do historico, GET /api/v1/settings. Decisao de UX pendente (nao bloqueante): se substitui o redirect pos-login atual (hoje vai pra /dashboard) ou vira link novo na nav.",
+      "dependencies": [
+        "feat-014",
+        "feat-015",
+        "feat-026"
+      ],
+      "status": "not-started",
+      "plan_review": "Plan Reviewer 2026-09-15: BLOCKED (feature criada nesta revisao - root tinha epic-021 sem backlog granular ate agora). Motivo do bloqueio: esta tela consome byBetType (Pre/Live nos cards), mas o Plan Reviewer desta mesma sessao encontrou que web feat-026 (epic-027) e a unica feature que hoje pretende tipar/consumir byBetType em core/statistics-api.ts - e a propria feat-026 esta em REVISE justamente porque o dono de byBetType nao esta decidido (o comentario existente em BetMetrics ja citava 'epic-021 consumes it', o que esta feature confirma). Esta feature (feat-029) nao pode comecar antes de: (1) feat-026 fechar com a decisao de quem tipa byBetType registrada; (2) se feat-026 nao tipar, esta feature herda a tarefa de adicionar ByBetTypeMetrics em statistics-api.ts. Alem disso, mesma dependencia cross-repo de feat-028: BankrollApi/SettingsApi ja existem no frontend mas dependem de api-gateway feat-013 (not-started) pra funcionar ponta a ponta - root epic-021 nao listava epic-026(api-gateway) como dependencia, corrigido nesta sessao. 'Saldo mais antigo do historico' (GET /api/v1/bankroll/balance no ponto mais antigo) exige achar a data da primeira aposta liquidada - nao ha endpoint dedicado pra isso; a abordagem mais simples e usar o primeiro item do array esparso de GET /api/v1/statistics/daily sem from/to como proxy da data mais antiga, mas isso nao esta decidido no plano e deve virar subtask explicita antes de codar.",
+      "jira": "",
+      "subtasks": [
+        {
+          "id": "feat-029.1",
+          "name": "Resolver data mais antiga e saldo inicial do historico",
+          "detail": "Definir e implementar como obter a data da primeira aposta liquidada (proxy: primeiro item do array esparso de /statistics/daily sem from/to) e buscar GET /api/v1/bankroll/balance?at=<essa data> uma unica vez.",
+          "checklist": [
+            "Historico vazio (tenant sem aposta liquidada) tem estado tratado sem erro.",
+            "Saldo mensal seguinte e derivado client-side somando o netProfit diario acumulado, sem 1 chamada de bankroll por mes.",
+            "Decisao registrada em evidence sobre a fonte da 'data mais antiga' (proxy do /daily, nao endpoint dedicado)."
+          ],
+          "validation": "Teste unitario cobre tenant com historico, tenant vazio e virada de ano.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-029.2",
+          "name": "Cards de resumo vitalicios",
+          "detail": "Lucro Total (U), Pre/Live (netProfit de cada bucket de byBetType convertido pra unidades - usa o tipo definido por feat-026), Lucro Medio Mensal (U) = lucroTotalUnidades/12, ROI = roiMedioDiario (formula ja existente em period-report-metrics.ts, reaproveitada sem filtro de periodo).",
+          "checklist": [
+            "byBetType consumido via o tipo/decisao definidos por feat-026, sem retipar em paralelo.",
+            "Lucro Medio Mensal usa 12 fixo (ano corrente), nao os meses com aposta.",
+            "Formulas batem com docs/STATISTICS.md."
+          ],
+          "validation": "Teste de componente cobre os 4 cards com dados reais do overall/monthly.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-029.3",
+          "name": "Tabela mensal Jan-Dez e decisao de navegacao pos-login",
+          "detail": "Tabela com saldo inicio/fim derivado, entradas/vitorias/perdas, odd media, WR%, ROI, profit $ e U por mes de monthly[]. Decidir e registrar se a tela substitui o redirect pos-login (/dashboard) ou vira link novo na nav.",
+          "checklist": [
+            "12 linhas (Jan-Dez do ano corrente), meses sem aposta com zeros e sem erro.",
+            "Decisao de navegacao pos-login registrada em evidence, nao deixada implicita no codigo.",
+            "Nenhum calculo duplica logica ja existente em period-report-metrics.ts sem justificativa."
+          ],
+          "validation": "Playwright cobre a tabela completa e a navegacao decidida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        },
+        {
+          "id": "feat-029.4",
+          "name": "Testes, QA visual e verificacao final",
+          "detail": "Fechar a tela com cobertura, QA visual e revisao do vault.",
+          "checklist": [
+            "Testes unitarios e Playwright verdes.",
+            "QA visual em desktop/mobile, temas claro/escuro.",
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Suite do frontend verde e evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": ""
+        }
+      ],
+      "evidence": ""
+    },
+    {
+      "id": "feat-030",
+      "name": "CD: job de deploy automatico (kubectl rollout restart) no ci.yml",
+      "description": "Fecha epic-028 da raiz (decisao do usuario, 2026-09-15) neste repositorio: job novo 'deploy' no ci.yml, needs: build-and-push-image (feat-013), if restrito a push em main, rodando kubectl rollout restart deployment/web -n <namespace> contra o kubeconfig do secret KUBE_CONFIG (gerado por infra/feat-007 - ServiceAccount de CI com RBAC restrito, fora deste repositorio). Nao reaplica manifest - a imagem e referenciada por tag :latest no Deployment, o restart e o suficiente pra repuxar a imagem nova publicada pelo job anterior.",
+      "dependencies": [
+        "feat-013"
+      ],
+      "status": "done",
+      "plan_review": "Plan Reviewer (2026-09-15): READY. Sexta e ultima aplicacao do mesmo padrao mecanico de epic-028 nesta sessao (bets-service feat-018, stats-service feat-019, api-gateway feat-014, auth-service feat-016, telegram-integration feat-010, todos ja fechados) - o job deploy em si e agnostico de stack, so muda o Deployment alvo. Confirmado contra este repositorio antes de codificar: infra/k8s/web.yaml define o Deployment 'web' sem namespace (default); RBAC de infra/k8s/ci-deployer-rbac.yaml ja inclui 'web' em resourceNames; secret KUBE_CONFIG confirmado presente neste repositorio GitHub (gh secret list); default_workflow_permissions='write' (gh api), confirmando permissions: {} explicito necessario. As 2 correcoes MINOR ja aplicadas nas 5 instancias anteriores (sem azure/setup-kubectl, permissions: {} explicito) entram direto no plano aqui. Sem BLOCKER. Fecha epic-028 da raiz (ultimo dos 6 repositorios de aplicacao).",
+      "jira": "SV-438",
+      "subtasks": [
+        {
+          "id": "feat-030.1",
+          "name": "Job deploy no ci.yml",
+          "status": "done",
+          "jira": "SV-439"
+        },
+        {
+          "id": "feat-030.2",
+          "name": "CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-440"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-15 (story SV-438, subtasks SV-439/SV-440, PR #93 subtask->story verde). Sexta e ultima aplicacao identica do padrao ja revisado e fechado nos 5 repositorios anteriores de epic-028 nesta sessao (bets-service feat-018/stats-service feat-019/api-gateway feat-014/auth-service feat-016/telegram-integration feat-010). Unica diferenca real e o nome do Deployment (web), confirmado contra infra/k8s/web.yaml (sem namespace) e infra/k8s/ci-deployer-rbac.yaml (resourceNames ja incluia web). KUBE_CONFIG confirmado presente no repositorio. Delivery Reviewer: PASS (revisao condensada, sem achado). ./init.sh verde (90%+ cobertura). Guard comportou como esperado: deploy/build-and-push-image corretamente 'skipping' no evento de PR (run 35015065401). Disparo real do job adiado (mesma decisao das 5 features anteriores - promocao develop->main e decisao de release mais ampla). **Fecha epic-028 da raiz por completo** - era o ultimo dos 6 repositorios de aplicacao pendentes; infra/feat-007 (lado do servidor) ja estava done, os 6 jobs deploy agora existem (bets-service, stats-service, api-gateway, auth-service, telegram-integration, web)."
     }
   ]
 }
