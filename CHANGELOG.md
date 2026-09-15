@@ -137,3 +137,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-438](https://stakevault.atlassian.net/browse/SV-438) - CD: job de deploy automatico (kubectl rollout restart) no ci.yml
 - [SV-439](https://stakevault.atlassian.net/browse/SV-439) - Job deploy no ci.yml
 - [SV-440](https://stakevault.atlassian.net/browse/SV-440) - CHANGELOG e verificacao final
+- [SV-443](https://stakevault.atlassian.net/browse/SV-443) - Renomear data da aposta para data do evento
+- [SV-444](https://stakevault.atlassian.net/browse/SV-444) - Atualizar rotulos e traducoes da data do evento
+- [SV-445](https://stakevault.atlassian.net/browse/SV-445) - Verificacao final de nomenclatura

@@ -205,7 +205,7 @@
     "descriptionLabel": "Descripción",
     "stakeLabel": "Monto apostado",
     "oddLabel": "Cuota",
-    "betDateLabel": "Fecha de la apuesta",
+    "betDateLabel": "Fecha del evento",
     "reset": "Limpiar",
     "submit": "Registrar apuesta",
     "success": "Apuesta registrada con éxito.",

@@ -1397,9 +1397,9 @@
       "dependencies": [
         "feat-004"
       ],
-      "status": "not-started",
+      "status": "in-progress",
       "plan_review": "Plan Reviewer 2026-09-15: READY. Achado: 'Data da aposta' e o form control betDate (type=datetime-local) em register-bet.html/registerBet.betDateLabel - so 3 chaves i18n (pt-BR/en-US/es) mudam, contrato tecnico (campo betDate, formato ISO) intocado, escopo bate com a description (renomear rotulo, nao o dominio). Sem dependencia real de epic-024/feat-016 (decisao de TEAM) - troca de texto e ortogonal a modelagem de time. Nenhum achado bloqueante.",
-      "jira": "",
+      "jira": "SV-443",
       "subtasks": [
         {
           "id": "feat-020.1",
@@ -1412,8 +1412,8 @@
           ],
           "validation": "Teste de componente e Playwright confirmam o rotulo nos tres locales.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-444"
         },
         {
           "id": "feat-020.2",
@@ -1426,11 +1426,11 @@
           ],
           "validation": "Rotulo validado visualmente e suite do frontend verde.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-445"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-15 (story SV-443, subtasks SV-444/SV-445, PR #96 subtask->story verde). Escopo exatamente como o Plan Reviewer previu: 3 chaves i18n (betDateLabel em pt-BR/en-US/es) trocadas de 'Data da aposta'/'Bet date'/'Fecha de la apuesta' para 'Data do evento'/'Event date'/'Fecha del evento', campo tecnico (betDate, datetime-local/ISO) intocado. Grep no repositorio inteiro confirmou nenhuma outra tela/teste referenciando o texto antigo (so o fixture de teste de register-bet.spec.ts, atualizado no mesmo commit por consistencia, nao por necessidade funcional). Delivery Reviewer: PASS, sem achado. ./init.sh verde. Vault revisado: nenhuma nota do assunto precisa de ajuste (mudanca de copy pura, ja coberta pela convencao geral de i18n em docs/CONVENTIONS.md)."
     },
     {
       "id": "feat-021",
