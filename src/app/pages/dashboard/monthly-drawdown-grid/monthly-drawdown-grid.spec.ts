@@ -160,6 +160,10 @@ describe('MonthlyDrawdownGrid', () => {
     fixture.componentInstance['filterForm'].patchValue({ fromMonth: '' });
     fixture.componentInstance['applyFilter']();
 
+    // expectNone() IS the real assertion (a network request is a side effect, not a return
+    // value) - the redundant expect() below only satisfies SonarCloud's typescript:S2699
+    // (does not recognize HttpTestingController's own assertion methods as assertions).
+    expect(fixture.componentInstance['filterForm'].invalid).toBe(true);
     httpMock.expectNone((req) => req.url === DAILY_URL);
   });
 

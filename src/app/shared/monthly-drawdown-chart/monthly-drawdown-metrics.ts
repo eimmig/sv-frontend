@@ -50,10 +50,15 @@ export function buildMonthlyDrawdown(
   const [fromYear, fromMonthNum] = from.split('-').map(Number);
   const [toYear, toMonthNum] = to.split('-').map(Number);
 
+  // Linear "months since year 0" index instead of a mutable {year, month} pair with manual
+  // carry-the-1 on year rollover - no reassignment to track, one fewer edge case to get wrong.
+  const fromIndex = fromYear * 12 + (fromMonthNum - 1);
+  const toIndex = toYear * 12 + (toMonthNum - 1);
+
   const months: MonthlyDrawdownMonth[] = [];
-  let year = fromYear;
-  let month = fromMonthNum;
-  while (year < toYear || (year === toYear && month <= toMonthNum)) {
+  for (let index = fromIndex; index <= toIndex; index++) {
+    const year = Math.floor(index / 12);
+    const month = (index % 12) + 1;
     const total = daysInMonth(year, month);
     const days: (number | null)[] = [];
     let accumulated = 0;
@@ -68,11 +73,6 @@ export function buildMonthlyDrawdown(
       days.push(accumulated);
     }
     months.push({ year, month, days });
-    month += 1;
-    if (month > 12) {
-      month = 1;
-      year += 1;
-    }
   }
   return months;
 }
