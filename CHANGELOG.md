@@ -134,3 +134,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-404](https://stakevault.atlassian.net/browse/SV-404) - Ponte de navegacao Casas de Apostas -> Historico (Movimentacoes)
 - [SV-405](https://stakevault.atlassian.net/browse/SV-405) - Verificar atualizacao de saldo por casa apos movimentacao (sem codigo novo esperado)
 - [SV-406](https://stakevault.atlassian.net/browse/SV-406) - Testes, QA visual e verificacao final
+- [SV-438](https://stakevault.atlassian.net/browse/SV-438) - CD: job de deploy automatico (kubectl rollout restart) no ci.yml
+- [SV-439](https://stakevault.atlassian.net/browse/SV-439) - Job deploy no ci.yml
+- [SV-440](https://stakevault.atlassian.net/browse/SV-440) - CHANGELOG e verificacao final
