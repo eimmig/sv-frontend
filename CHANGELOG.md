@@ -12,8 +12,14 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - Tela "Vincular Telegram" (`feat-027`, rota `/telegram-link`): gera um código de curta duração
   via `POST /api/v1/telegram-links` e mostra código + expiração, com entrada nova em
   `app-side-nav`.
+- Dashboard "Por tipo de aposta" (`feat-026`, rota `/bet-type-dashboard`): ranking PRE/LIVE
+  reaproveitando `shared/catalog-dashboard`, consumindo o segmento `byBetType` novo em
+  `StatisticsDashboard`.
 
 ### Changed
+
+- `register-bet` (`feat-026`): campo "Tipo de aposta" trocado de texto livre para `mat-select`
+  com 2 opções fixas (`pre`/`live`) + "não classificado", alinhado ao enum do backend.
 
 - `app-login-border-trace` (`feat-018.3`) reformulada: 1 caminho fechado único (contorno completo
   do card) com 2 traços opostos girando continuamente (`stroke-dashoffset`), em vez de 2 metades
