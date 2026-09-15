@@ -1,14 +1,13 @@
 import { Component, DestroyRef, ElementRef, computed, inject, signal } from '@angular/core';
 
 /**
- * Decorative focal-moment animation for the login card (feat-018.3, user request): a green line
- * leaves the top-center point in 2 directions, races down each side, meets at the bottom-center
- * point, then retracts back the way it came - loops while the login page is visible.
- *
- * Both halves are built from the SAME start point (top-center) to the SAME end point
- * (bottom-center), one clockwise and one counter-clockwise, through matching corners - that
- * mirror symmetry guarantees equal path length without measuring, so animating both with
- * identical keyframes makes them meet exactly at the bottom-center point every cycle.
+ * Decorative focal-moment animation for the login card (feat-018.3, user request; reworked
+ * 2026-09-12 per user feedback): a single closed path traces the card's full rounded-rect
+ * outline, with a stroke-dasharray of 2 dashes + 2 gaps sized so each dash/gap pair spans
+ * exactly half the perimeter - that makes the two dashes always sit opposite each other (roughly
+ * diagonal corners on a non-square card), never drifting closer or farther apart. Animating
+ * stroke-dashoffset continuously (not a draw/hold/retract loop) spins both dashes around the
+ * whole card forever, one chasing the other with a fixed gap between them.
  */
 @Component({
   selector: 'app-login-border-trace',
@@ -19,21 +18,47 @@ import { Component, DestroyRef, ElementRef, computed, inject, signal } from '@an
 export class LoginBorderTrace {
   private readonly host = inject(ElementRef<HTMLElement>);
   private static readonly RADIUS = 16; // matches shared/panel's border-radius (panel.scss)
+  // Fraction of each half-perimeter given to the gap (rest is the visible dash) - keeps the two
+  // dashes clearly separated without shrinking them into short ticks.
+  private static readonly GAP_FRACTION = 0.3;
 
   protected readonly width = signal(0);
   protected readonly height = signal(0);
 
   protected readonly radius = computed(() => Math.min(LoginBorderTrace.RADIUS, this.width() / 2, this.height() / 2));
 
-  protected readonly length = computed(() => {
+  private readonly halfPerimeter = computed(() => {
     const w = this.width();
     const h = this.height();
     const r = this.radius();
     return Math.max(0, w - 2 * r + (h - 2 * r) + Math.PI * r);
   });
 
-  protected readonly pathRight = computed(() => this.halfPath('right'));
-  protected readonly pathLeft = computed(() => this.halfPath('left'));
+  protected readonly perimeter = computed(() => this.halfPerimeter() * 2);
+
+  private readonly gapLength = computed(() => this.halfPerimeter() * LoginBorderTrace.GAP_FRACTION);
+  private readonly dashLength = computed(() => this.halfPerimeter() - this.gapLength());
+
+  protected readonly dashArray = computed(() => {
+    const dash = this.dashLength();
+    const gap = this.gapLength();
+    return `${dash} ${gap} ${dash} ${gap}`;
+  });
+
+  protected readonly path = computed(() => {
+    const w = this.width();
+    const h = this.height();
+    const r = this.radius();
+    if (w === 0 || h === 0) {
+      return '';
+    }
+    // Starts just clockwise of the top-left corner so that corner is a dash's literal starting
+    // point; the second dash (offset by exactly half the perimeter) lands opposite it.
+    return (
+      `M ${r} 0 H ${w - r} A ${r} ${r} 0 0 1 ${w} ${r} V ${h - r} A ${r} ${r} 0 0 1 ${w - r} ${h} ` +
+      `H ${r} A ${r} ${r} 0 0 1 0 ${h - r} V ${r} A ${r} ${r} 0 0 1 ${r} 0 Z`
+    );
+  });
 
   constructor() {
     const observer = new ResizeObserver(([entry]) => {
@@ -42,18 +67,5 @@ export class LoginBorderTrace {
     });
     observer.observe(this.host.nativeElement);
     inject(DestroyRef).onDestroy(() => observer.disconnect());
-  }
-
-  private halfPath(side: 'left' | 'right'): string {
-    const w = this.width();
-    const h = this.height();
-    const r = this.radius();
-    if (w === 0 || h === 0) {
-      return '';
-    }
-    if (side === 'right') {
-      return `M ${w / 2} 0 H ${w - r} A ${r} ${r} 0 0 1 ${w} ${r} V ${h - r} A ${r} ${r} 0 0 1 ${w - r} ${h} H ${w / 2}`;
-    }
-    return `M ${w / 2} 0 H ${r} A ${r} ${r} 0 0 0 0 ${r} V ${h - r} A ${r} ${r} 0 0 0 ${r} ${h} H ${w / 2}`;
   }
 }

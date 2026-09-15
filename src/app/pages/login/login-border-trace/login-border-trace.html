@@ -6,14 +6,8 @@
 >
   <path
     class="login-border-trace__segment"
-    [attr.d]="pathRight()"
-    [attr.stroke-dasharray]="length()"
-    [style.--trace-length]="length()"
-  />
-  <path
-    class="login-border-trace__segment"
-    [attr.d]="pathLeft()"
-    [attr.stroke-dasharray]="length()"
-    [style.--trace-length]="length()"
+    [attr.d]="path()"
+    [attr.stroke-dasharray]="dashArray()"
+    [style.--trace-length]="perimeter()"
   />
 </svg>

@@ -14,24 +14,16 @@
 .login-border-trace__segment {
   fill: none;
   stroke: var(--color-brand);
-  stroke-width: 2;
+  stroke-width: 3;
   stroke-linecap: round;
   opacity: 0.85;
-  animation: login-border-trace-draw 3.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  animation: login-border-trace-spin 8s linear infinite;
 }
 
-// Draw from the start point (0% -> 45%), hold the full outline briefly (45% -> 55%), then
-// retract back toward the start point (55% -> 100%) - a "breathing" loop, not a one-shot reveal.
-@keyframes login-border-trace-draw {
-  0% {
-    stroke-dashoffset: var(--trace-length);
-  }
-  45%,
-  55% {
-    stroke-dashoffset: 0;
-  }
+
+@keyframes login-border-trace-spin {
   100% {
-    stroke-dashoffset: var(--trace-length);
+    stroke-dashoffset: calc(-1px * var(--trace-length));
   }
 }
 

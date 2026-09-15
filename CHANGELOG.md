@@ -7,6 +7,12 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 
+### Changed
+
+- `app-login-border-trace` (`feat-018.3`) reformulada: 1 caminho fechado único (contorno completo
+  do card) com 2 traços opostos girando continuamente (`stroke-dashoffset`), em vez de 2 metades
+  que desenhavam/seguravam/recolhiam. Ajuste pedido pelo usuário após ver a animação original.
+
 ### Fixed
 
 - Chave do projeto no SonarCloud corrigida para `eimmig_sv-frontend`. O SonarCloud gera a chave como
