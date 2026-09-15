@@ -1200,6 +1200,25 @@ centraliza sozinho) e `docs/TESTING.md` ganhou o gotcha de fixture de data vs re
 Story SV-398, subtasks SV-399..402, PRs #84/#85/#86/#87 (subtasks→feature, fast-forward) + PR de
 `feature/SV-398`→`develop` (CI+SonarCloud verdes).
 
+## `feat-030` fechada — CD automático, job `deploy` no `ci.yml` (2026-09-15, mesmo dia)
+
+Sexta e última aplicação idêntica do padrão de `epic-028` nesta sessão (depois de `bets-service
+feat-018`, `stats-service feat-019`, `api-gateway feat-014`, `auth-service feat-016`,
+`telegram-integration feat-010`) — mesmo `Plan Reviewer`, mesmas 2 correções MINOR já aplicadas
+(sem `azure/setup-kubectl`, `permissions: {}` explícito). Único repositório frontend tocado pelo
+padrão, mas o job `deploy` em si é agnóstico de stack (`kubectl` puro) — único ajuste real foi o
+nome do `Deployment` (`web`), confirmado contra `infra/k8s/web.yaml` (sem namespace) e
+`infra/k8s/ci-deployer-rbac.yaml` (`resourceNames` já incluía `web`). `KUBE_CONFIG` confirmado
+presente no repositório.
+
+Story SV-438 (subtasks SV-439/SV-440), PRs #93/#94/#95, CI+SonarCloud verdes. `Delivery
+Reviewer`: PASS (revisão condensada, sexta aplicação idêntica, sem achado). Fechamento em 2
+disparos de `--sync-status` (subtask done sozinha → `Review`; feature done em edição separada →
+`Done`). Disparo real do job adiado (mesma decisão dos outros 5 repositórios).
+
+**Fecha `epic-028` da raiz por completo** — era o último dos 6 repositórios de aplicação
+pendentes.
+
 ## `feat-025` fechada — ponte de navegação para movimentação de saldo (2026-09-15)
 
 `epic-025` da raiz. Investigação antes de codificar (Plan Reviewer + leitura direta do código)
