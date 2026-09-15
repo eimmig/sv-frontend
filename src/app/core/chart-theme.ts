@@ -25,7 +25,7 @@ export function withAlpha(hexColor: string, alpha: number): string {
  */
 export function buildLineChartOption(
   categories: string[],
-  values: number[],
+  values: (number | null)[],
   brandColor: string,
   borderColor: string,
 ): EChartsCoreOption {

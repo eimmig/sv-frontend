@@ -25,6 +25,7 @@ import { MonthlyProfitChart } from '../../shared/monthly-profit-chart/monthly-pr
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 import { PeriodPresetFilter, PeriodRange } from '../../shared/period-preset-filter/period-preset-filter';
+import { MonthlyDrawdownGrid } from './monthly-drawdown-grid/monthly-drawdown-grid';
 
 interface Options {
   readonly bettingHouses: BettingHouse[];
@@ -67,6 +68,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
     MatTabsModule,
     KpiCard,
     MonthlyProfitChart,
+    MonthlyDrawdownGrid,
     Panel,
     PanelLayout,
     PeriodPresetFilter,

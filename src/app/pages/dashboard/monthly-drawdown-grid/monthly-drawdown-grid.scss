@@ -1,0 +1,40 @@
+:host {
+  display: block;
+}
+
+.monthly-drawdown-grid__filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  mat-form-field {
+    flex: 1 1 140px;
+    max-width: 200px;
+  }
+
+  button {
+    // Real bug (feat-028 QA visual): with no min-height match to the form fields, the button sat
+    // noticeably off-center once the fields wrapped to their own row on narrow viewports.
+    margin-top: 4px;
+  }
+}
+
+.monthly-drawdown-grid__error {
+  margin: 0;
+  color: var(--color-negative);
+  font-size: 14px;
+}
+
+.monthly-drawdown-grid__empty {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.monthly-drawdown-grid__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
