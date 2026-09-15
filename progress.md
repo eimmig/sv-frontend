@@ -1200,6 +1200,48 @@ centraliza sozinho) e `docs/TESTING.md` ganhou o gotcha de fixture de data vs re
 Story SV-398, subtasks SV-399..402, PRs #84/#85/#86/#87 (subtasks→feature, fast-forward) + PR de
 `feature/SV-398`→`develop` (CI+SonarCloud verdes).
 
+## `feat-020`+`feat-021` fechadas — rótulo "Data do evento" + corrigir quebra real em `POST /api/v1/bets` (2026-09-15, mesmo dia)
+
+Continuação direta do fechamento de `epic-028` (entrada acima) na mesma sessão, a pedido explícito
+do usuário: corrigir a quebra de produção conhecida antes de qualquer deploy em massa.
+
+**`feat-020`** (pré-requisito declarado de `feat-021`, trivial): rótulo visível "Data da aposta"
+-> "Data do evento" nos 3 locales, contrato técnico (`betDate`) intocado. Story SV-443, PRs
+#96/#97/#98.
+
+**`feat-021`** — o fechamento real: `bets-service feat-017` (fechada mais cedo na mesma sessão)
+trocou `team1`/`team2` (texto livre) por `team1Id`/`team2Id` (UUID) em `POST /api/v1/bets`, e
+este repositório nunca acompanhou — `Jackson FAIL_ON_UNKNOWN_PROPERTIES` (sem override neste
+serviço) fazia todo registro manual de aposta pelo site devolver 400. `Plan Reviewer` desta
+feature tinha voltado `BLOCKED` numa sessão anterior (nenhuma tela de cadastro de time existia,
+premissa da description era falsa) — revisado nesta sessão porque a dependência de fundo fechou
+no mesmo dia (`bets-service feat-016`/`feat-017` + `api-gateway feat-015`, rota `/api/v1/teams`).
+
+Decisão de escopo tomada no plan review revisado: tela nova `shared/team-manager` (catálogo de
+times vinculado a esporte) em vez de estender `shared/catalog-manager` — `TEAM` tem FK `sportId`
+obrigatória, não é estruturalmente idêntico aos 4 catálogos que o componente compartilhado já
+serve, e sobrecarregá-lo arriscaria regressão nas 4 telas já estáveis por um recurso de forma
+diferente. Sem par de Dashboard (`stats-service feat-018`, que alinharia `DIM_TEAM` ao catálogo
+real, está `BLOCKED`). `register-bet.ts`/`.html` trocou os 2 inputs de texto livre por selects
+`team1Id`/`team2Id` — sem filtro client-side por esporte (`GET /api/v1/teams` não aceita esse
+parâmetro, e `leagueId`/`marketId` também já não são filtrados por esporte nesta tela hoje, então
+isso mantém o padrão existente).
+
+`Delivery Reviewer` rodado via skill completa (não a versão condensada usada nas features
+mecânicas de `epic-028`) — mudança de negócio real, não um padrão repetido. Verdicto PASS, sem
+achado, com 2 verificações independentes feitas no próprio review antes de fechar: grep no
+repositório inteiro confirmando zero referência residual a `team1`/`team2` texto livre, e leitura
+direta de `CreateBetRequest.java` (`bets-service`) confirmando que o contrato bate exatamente.
+
+Story SV-446 (subtasks SV-447/SV-448), PRs #99/#100/#101, CI+SonarCloud verdes. `docs/services/
+bets-service.md` atualizado (fecha a nota de "sequenciamento de deploy obrigatório" deixada por
+`bets-service feat-017`) e `docs/services/web.md` (padrão do 6º catálogo sem par de Dashboard
+documentado, mesmo lugar do padrão dos outros 5 — SSOT preservado).
+
+**Resultado prático**: a razão concreta que motivou adiar a promoção `bets-service develop ->
+main` nesta mesma sessão (ver entrada de `bets-service feat-018` em `services/bets-service/
+progress.md`) deixou de existir — o formulário web já envia o contrato novo.
+
 ## `feat-030` fechada — CD automático, job `deploy` no `ci.yml` (2026-09-15, mesmo dia)
 
 Sexta e última aplicação idêntica do padrão de `epic-028` nesta sessão (depois de `bets-service
