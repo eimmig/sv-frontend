@@ -162,6 +162,8 @@
     "nameLabel": "Nombre",
     "initialBalanceLabel": "Saldo inicial",
     "balanceLabel": "Saldo actual",
+    "actionsLabel": "Acciones",
+    "moveBalance": "Mover saldo",
     "create": "Crear casa de apuestas",
     "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
   },

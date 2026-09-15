@@ -162,6 +162,8 @@
     "nameLabel": "Name",
     "initialBalanceLabel": "Initial balance",
     "balanceLabel": "Current balance",
+    "actionsLabel": "Actions",
+    "moveBalance": "Move balance",
     "create": "Create betting house",
     "genericError": "Could not complete the operation. Please try again."
   },

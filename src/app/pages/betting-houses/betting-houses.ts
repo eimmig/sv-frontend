@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { map } from 'rxjs';
 
@@ -18,6 +19,7 @@ import { PanelLayout } from '../../shared/panel-layout/panel-layout';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    RouterLink,
     TranslocoPipe,
     Panel,
     PanelLayout,

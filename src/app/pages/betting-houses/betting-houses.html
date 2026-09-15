@@ -52,6 +52,7 @@
             <th>{{ 'bettingHouses.nameLabel' | transloco }}</th>
             <th>{{ 'bettingHouses.initialBalanceLabel' | transloco }}</th>
             <th>{{ 'bettingHouses.balanceLabel' | transloco }}</th>
+            <th>{{ 'bettingHouses.actionsLabel' | transloco }}</th>
           </tr>
         </thead>
         <tbody>
@@ -69,6 +70,16 @@
                   data-testid="betting-houses-delta"
                   >{{ formatDelta(delta(house)) }}</span
                 >
+              </td>
+              <td>
+                <a
+                  mat-stroked-button
+                  [routerLink]="['/history']"
+                  [queryParams]="{ bettingHouseId: house.id }"
+                  data-testid="betting-houses-move-balance"
+                >
+                  {{ 'bettingHouses.moveBalance' | transloco }}
+                </a>
               </td>
             </tr>
           }

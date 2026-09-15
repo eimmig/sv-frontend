@@ -1705,7 +1705,7 @@
           ],
           "validation": "Playwright: clicar 'Movimentar saldo' numa casa leva pra /history com a aba certa e a casa certa pre-selecionada no formulario.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-404"
         },
         {
