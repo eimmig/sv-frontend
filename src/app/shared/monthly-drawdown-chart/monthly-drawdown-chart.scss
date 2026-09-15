@@ -1,0 +1,18 @@
+:host {
+  display: block;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 8px 12px 0;
+}
+
+.monthly-drawdown-chart__title {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: capitalize;
+}
+
+.monthly-drawdown-chart__canvas {
+  height: 140px;
+}

@@ -1884,7 +1884,7 @@
           ],
           "validation": "Teste de componente cobre 1 mes, varios meses e troca de intervalo recalculando a grade.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-451"
         },
         {

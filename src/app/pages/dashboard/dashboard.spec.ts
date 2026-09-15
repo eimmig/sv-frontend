@@ -52,6 +52,7 @@ function stubCanvasContext(): void {
 const BANKROLL_URL = `${environment.apiGatewayUrl}/api/v1/bankroll/balance`;
 const SETTINGS_URL = `${environment.apiGatewayUrl}/api/v1/settings`;
 const STATISTICS_URL = `${environment.apiGatewayUrl}/api/v1/statistics`;
+const DAILY_STATISTICS_URL = `${environment.apiGatewayUrl}/api/v1/statistics/daily`;
 
 describe('Dashboard', () => {
   let fixture: ComponentFixture<Dashboard>;
@@ -124,7 +125,10 @@ describe('Dashboard', () => {
   /**
    * The period-preset-filter defaults to "Hoje" (from === to), so the bankrollFrom/bankrollTo
    * requests share the same 'at' param and can't be told apart by expectOne - match() returns
-   * both and each is flushed the same way. bankrollNow (no 'at') and settings are distinct URLs/params.
+   * both and each is flushed the same way. bankrollNow (no 'at') and settings each now have 2
+   * pending requests too (Dashboard's own + app-monthly-drawdown-grid's, feat-028 - the grid is
+   * always instantiated on creation, mat-tab doesn't lazy-load its content), so those also use
+   * match() instead of expectOne.
    */
   function flushDashboardData(overrides: Record<string, unknown> = {}) {
     httpMock.expectOne((req) => req.url === STATISTICS_URL).flush({
@@ -151,10 +155,13 @@ describe('Dashboard', () => {
     for (const request of httpMock.match((req) => req.url === BANKROLL_URL && req.params.has('at'))) {
       request.flush({ at: request.request.params.get('at')!, balance: 1000 });
     }
-    httpMock
-      .expectOne((req) => req.url === BANKROLL_URL && !req.params.has('at'))
-      .flush({ at: 'now', balance: 2000 });
-    httpMock.expectOne((req) => req.url === SETTINGS_URL).flush({ unitPercent: 0.01 });
+    for (const request of httpMock.match((req) => req.url === BANKROLL_URL && !req.params.has('at'))) {
+      request.flush({ at: 'now', balance: 2000 });
+    }
+    for (const request of httpMock.match((req) => req.url === SETTINGS_URL)) {
+      request.flush({ unitPercent: 0.01 });
+    }
+    httpMock.expectOne((req) => req.url === DAILY_STATISTICS_URL).flush([]);
   }
 
   function createComponent() {
@@ -276,8 +283,13 @@ describe('Dashboard', () => {
     for (const request of httpMock.match((req) => req.url === BANKROLL_URL && req.params.has('at'))) {
       request.flush({ at: request.request.params.get('at')!, balance: 1000 });
     }
-    httpMock.expectOne((req) => req.url === BANKROLL_URL && !req.params.has('at')).flush({ at: 'now', balance: 0 });
-    httpMock.expectOne((req) => req.url === SETTINGS_URL).flush({ unitPercent: 0.01 });
+    for (const request of httpMock.match((req) => req.url === BANKROLL_URL && !req.params.has('at'))) {
+      request.flush({ at: 'now', balance: 0 });
+    }
+    for (const request of httpMock.match((req) => req.url === SETTINGS_URL)) {
+      request.flush({ unitPercent: 0.01 });
+    }
+    httpMock.expectOne((req) => req.url === DAILY_STATISTICS_URL).flush([]);
     fixture.detectChanges();
 
     // Missing-translation fallback text for the active lang (see cardValue's comment) - not
@@ -320,6 +332,14 @@ describe('Dashboard', () => {
     httpMock
       .expectOne((req) => req.url === STATISTICS_URL)
       .flush({ detail: 'Filtro inválido.' }, { status: 400, statusText: 'Bad Request' });
+    // app-monthly-drawdown-grid's own forkJoin is independent of Dashboard's - its daily
+    // statistics request needs a real array (not the generic {} below), or its pipe's
+    // .map() throws synchronously instead of surfacing as a normal HTTP error.
+    for (const request of httpMock.match((req) => req.url === DAILY_STATISTICS_URL)) {
+      if (!request.cancelled) {
+        request.flush([]);
+      }
+    }
     for (const request of httpMock.match(() => true)) {
       if (!request.cancelled) {
         request.flush({});

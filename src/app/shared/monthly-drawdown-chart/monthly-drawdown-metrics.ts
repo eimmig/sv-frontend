@@ -1,4 +1,4 @@
-import { DailyBetMetrics } from '../../../core/statistics-api';
+import { DailyBetMetrics } from '../../core/statistics-api';
 
 export interface MonthlyDrawdownMonth {
   readonly year: number;
