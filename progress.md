@@ -501,6 +501,15 @@ independência reduzida declarada): PASS, sem achado. PR real (`subtask/SV-229` 
 
 - Depende de `auth-service` (epic-002) e `bets-service` (epic-003) existirem para integração
   real — `feat-001` (setup) pode ser feito de forma independente.
+- **Achado real, 2026-09-15 (sessão de `services/api-gateway feat-013`, rodando `./init.sh` da
+  raiz — não é trabalho deste harness, só passou por aqui)**:
+  `src/app/pages/period-report/period-report.spec.ts` (`renders one daily table row per day
+  fetched`) está falhando — fixture usa um dia fixo (`2026-09-11`) fora da janela que o preset
+  padrão da página calcula a partir de `new Date()` real; como "hoje" avançou além daquela data,
+  a tabela não inclui mais o dia da fixture. Teste dependente de tempo real, sem `Date` mockado —
+  vai voltar a quebrar a cada nova janela. Não corrigido aqui (fora do escopo de `feat-013`,
+  harness diferente) — quem pegar a próxima feature deste app precisa mockar o clock do teste
+  (`vi.setSystemTime`/similar) ou trocar a fixture por datas relativas ao `Date` mockado.
 
 ## Decisões tomadas
 
