@@ -1823,7 +1823,7 @@
           ],
           "validation": "Playwright acessa a tela e gera um codigo mockado pelo endpoint.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-455"
         },
         {
