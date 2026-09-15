@@ -1434,50 +1434,35 @@
     },
     {
       "id": "feat-021",
-      "name": "Ajustar cadastro de time para vinculo com esporte",
-      "description": "Atualizar a tela de cadastro de time para suportar o vinculo com esporte exigido pelo novo modelo de dominio. O formulario deve permitir selecionar o esporte relacionado ao time, exibir validacoes e enviar o identificador correto ao catalogo de times quando o backend estiver definido.",
+      "name": "Cadastro de time vinculado a esporte + corrigir quebra de contrato em POST /api/v1/bets",
+      "description": "bets-service feat-017 (2026-09-15, mesma rodada de epic-024) trocou team1/team2 (texto livre) por team1Id/team2Id (UUID) no contrato REST de POST /api/v1/bets - apps/web ainda envia os campos antigos, quebrando (400) todo registro manual de aposta pelo site. Escopo revisado apos bets-service feat-016/017 e api-gateway feat-015 (rota /api/v1/teams) terem fechado nesta mesma sessao: (1) tela nova de cadastro de time vinculado a esporte (nao existia nenhuma antes - achado real do Plan Reviewer anterior, a description original pressupunha uma tela ja existente); (2) formulario de registro de aposta trocando os 2 inputs de texto livre por selects alimentados pelo catalogo real.",
       "dependencies": [
         "feat-020"
       ],
-      "status": "not-started",
-      "plan_review": "Plan Reviewer 2026-09-15: BLOCKED. Hoje NAO EXISTE tela de cadastro de time no frontend (register-bet.html trata team1/team2 como 2 inputs de texto livre dentro do formulario de aposta, catalog-manager.ts/html so serve sport/league/market/tipster/betting-house) - a description e as subtasks pressupoem uma tela de cadastro de time ja existente, o que e falso. Bloqueado pela mesma dependencia de fundo do bets-service feat-016 (nao ha entidade TEAM, nem endpoint de catalogo, nem decisao publicada sobre chave name+sportId vs. outra) - feat-021.1 ja reconhece isso ('sem fixar nomes ou ids antes da decisao do epic-024'), mas a subtask 2 (implementar tela) nao pode comecar sem: (1) bets-service feat-016 publicar a decisao e o endpoint de catalogo de TEAM existir de fato; (2) esta feature dexier explicitamente se e uma tela NOVA (dashboard/cadastro dedicado, seguindo o padrao catalog-manager) ou uma extensao do formulario de aposta (trocar os 2 inputs de texto de team1/team2 por selects, escopo bem maior e cross-cutting com feat-026/betType). Acao: aguardar feat-016, entao reescrever a description pra refletir 'criar' em vez de 'atualizar' a tela.",
-      "jira": "",
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (2026-09-15, revisado - substitui o veredito BLOCKED anterior agora que a dependencia de fundo fechou na mesma sessao): READY. bets-service feat-016/017 done (TEAM: POST/GET /api/v1/teams, chave natural name+sportId, TeamResponse com sportId); api-gateway feat-015 done (rota /api/v1/teams roteada). Decisao de escopo tomada (nao era mais ambigua): tela NOVA dedicada (shared/team-manager, nao uma 5a entrada em CatalogManager - TEAM nao e estruturalmente identico aos outros 4 catalogos, tem FK sportId obrigatoria, sobrecarregar o componente compartilhado arriscaria regressao nas 4 telas ja estaveis) + formulario de aposta trocando team1/team2 texto livre por team1Id/team2Id select (sem filtro client-side por esporte - GET /api/v1/teams nao aceita esse query param, e leagues/markets ja nao sao filtrados por esporte na tela hoje, entao nao filtrar teams e consistente com o padrao existente, nao uma lacuna nova). Sem dashboard (byTeam) - stats-service feat-018 (DIM_TEAM alignment) esta BLOCKED, fora de escopo. Sem BLOCKER.",
+      "jira": "SV-446",
       "subtasks": [
         {
           "id": "feat-021.1",
-          "name": "Definir contrato do formulario de time",
-          "detail": "Alinhar os campos da tela com o contrato futuro de TEAM e SPORT, sem fixar nomes ou ids antes da decisao do epic-024.",
+          "name": "Catalogo de times (tela nova) + formulario de aposta usando team1Id/team2Id",
+          "detail": "core/catalog-api.ts ganha teamsApi (create com sportId); shared/team-manager (tela nova, rota /teams, link no side-nav); register-bet troca os 2 inputs de texto por selects alimentados pelo catalogo; bets-api.ts atualiza os tipos.",
           "checklist": [
-            "Campo de esporte obrigatorio quando exigido pelo modelo aprovado.",
-            "Selecao de esporte usa catalogo real, sem lista hardcoded.",
-            "Edicao e cadastro preservam o vinculo time-esporte."
+            "POST /api/v1/bets deixa de enviar team1/team2 - so team1Id/team2Id (ou omitidos).",
+            "Tela /teams permite cadastrar e listar times vinculados a esporte.",
+            "Traducoes pt-BR/en-US/es para os novos rotulos."
           ],
-          "validation": "Contrato do formulario documentado e validado contra o endpoint de catalogo definido no backend.",
+          "validation": "Testes de componente cobrem catalogo de times e o formulario de aposta com selects.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "in-progress",
+          "jira": "SV-447"
         },
         {
           "id": "feat-021.2",
-          "name": "Implementar tela e traducoes",
-          "detail": "Adicionar o controle de esporte ao cadastro de time e manter a experiencia consistente nos tres locales.",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechar a feature com testes, CHANGELOG e verificacao do vault.",
           "checklist": [
-            "Formulario envia o sportId ou campo equivalente definido pelo contrato.",
-            "Mensagens de label, validacao e erro existem em pt-BR, en-US e es.",
-            "Fluxos de cadastro e edicao continuam responsivos."
-          ],
-          "validation": "Testes de componente e Playwright cobrem cadastro e edicao com esporte selecionado.",
-          "owner": "agente",
-          "status": "not-started",
-          "jira": ""
-        },
-        {
-          "id": "feat-021.3",
-          "name": "Testes, QA visual e verificacao final",
-          "detail": "Fechar a alteracao da tela com testes, QA visual e verificacao do vault.",
-          "checklist": [
-            "Testes unitarios e Playwright verdes.",
-            "QA visual em desktop e mobile, temas claro e escuro.",
+            "Testes unitarios verdes, gate de cobertura mantido.",
             "Entrada em CHANGELOG.md.",
             "./init.sh do app e da raiz verdes.",
             "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
@@ -1485,7 +1470,7 @@
           "validation": "Suite do frontend verde e evidence preenchida.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-448"
         }
       ],
       "evidence": ""

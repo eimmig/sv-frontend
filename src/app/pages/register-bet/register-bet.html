@@ -73,26 +73,22 @@
 
         <mat-form-field appearance="outline">
           <mat-label>{{ 'registerBet.team1Label' | transloco }}</mat-label>
-          <input
-            matInput
-            id="register-bet-team1-input"
-            type="text"
-            formControlName="team1"
-            data-testid="register-bet-team1"
-            [attr.aria-label]="'registerBet.team1Label' | transloco"
-          />
+          <mat-select formControlName="team1Id" data-testid="register-bet-team1">
+            <mat-option value="">{{ 'registerBet.team1None' | transloco }}</mat-option>
+            @for (team of options().teams; track team.id) {
+              <mat-option [value]="team.id">{{ team.name }}</mat-option>
+            }
+          </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>{{ 'registerBet.team2Label' | transloco }}</mat-label>
-          <input
-            matInput
-            id="register-bet-team2-input"
-            type="text"
-            formControlName="team2"
-            data-testid="register-bet-team2"
-            [attr.aria-label]="'registerBet.team2Label' | transloco"
-          />
+          <mat-select formControlName="team2Id" data-testid="register-bet-team2">
+            <mat-option value="">{{ 'registerBet.team2None' | transloco }}</mat-option>
+            @for (team of options().teams; track team.id) {
+              <mat-option [value]="team.id">{{ team.name }}</mat-option>
+            }
+          </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline">

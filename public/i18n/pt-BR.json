@@ -171,6 +171,7 @@
     "createTitle": "Nova entrada",
     "listTitle": "Cadastradas",
     "nameLabel": "Nome",
+    "sportFieldLabel": "Esporte",
     "create": "Adicionar",
     "genericError": "Não foi possível completar a operação. Tente novamente.",
     "sports": {
@@ -184,6 +185,9 @@
     },
     "tipsters": {
       "title": "Tipsters"
+    },
+    "teams": {
+      "title": "Times"
     }
   },
   "registerBet": {
@@ -199,7 +203,9 @@
     "tipsterNone": "Nenhum",
     "ticketNumberLabel": "Número do bilhete",
     "team1Label": "Time 1",
+    "team1None": "Nenhum",
     "team2Label": "Time 2",
+    "team2None": "Nenhum",
     "betTypeLabel": "Tipo de aposta",
     "playTypeLabel": "Tipo de jogada",
     "descriptionLabel": "Descrição",
