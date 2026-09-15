@@ -74,6 +74,12 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
       }
       return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ unitPercent: 0.01 }) });
     });
+    // feat-028: app-monthly-drawdown-grid is always instantiated on dashboard load (mat-tab
+    // doesn't lazy-render), so its own daily-statistics call needs a route too - unmocked, this
+    // would hang every test in this file the same way bankroll/settings did for feat-014.
+    await page.route('**/api/v1/statistics/daily*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) }),
+    );
   });
 
   test('loads overall metrics and a sport breakdown row, defaulting to the "Hoje" period', async ({ page }) => {
@@ -189,5 +195,47 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
     await page.getByTestId('dashboard-unit-percent-save').click();
 
     await expect(page.getByTestId('dashboard-unit-percent-success')).toBeVisible();
+  });
+
+  test.describe('epic-020 - monthly drawdown grid', () => {
+    test.beforeEach(async ({ page }) => {
+      await page.route('**/api/v1/statistics*', (route) =>
+        route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(statisticsBundle()) }),
+      );
+    });
+
+    test('renders one mini-chart for the default current-month range', async ({ page }) => {
+      await page.goto('/dashboard');
+      await expect(page.getByTestId('dashboard-total-staked')).toContainText('R$');
+
+      await page.getByRole('tab', { name: 'Monthly drawdown' }).click();
+
+      await expect(page.getByTestId('monthly-drawdown-chart-title')).toHaveCount(1);
+    });
+
+    test('applying a 3-month range renders 3 mini-charts, one per month', async ({ page }) => {
+      await page.goto('/dashboard');
+      await expect(page.getByTestId('dashboard-total-staked')).toContainText('R$');
+      await page.getByRole('tab', { name: 'Monthly drawdown' }).click();
+      await expect(page.getByTestId('monthly-drawdown-chart-title')).toHaveCount(1);
+
+      await page.getByTestId('monthly-drawdown-from').fill('2026-01');
+      await page.getByTestId('monthly-drawdown-to').fill('2026-03');
+      await page.getByTestId('monthly-drawdown-apply').click();
+
+      await expect(page.getByTestId('monthly-drawdown-chart-title')).toHaveCount(3);
+    });
+
+    test('shows the empty-result message when the end month is before the start month', async ({ page }) => {
+      await page.goto('/dashboard');
+      await expect(page.getByTestId('dashboard-total-staked')).toContainText('R$');
+      await page.getByRole('tab', { name: 'Monthly drawdown' }).click();
+
+      await page.getByTestId('monthly-drawdown-from').fill('2026-06');
+      await page.getByTestId('monthly-drawdown-to').fill('2026-01');
+      await page.getByTestId('monthly-drawdown-apply').click();
+
+      await expect(page.getByTestId('monthly-drawdown-empty')).toBeVisible();
+    });
   });
 });
