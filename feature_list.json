@@ -1397,9 +1397,9 @@
       "dependencies": [
         "feat-004"
       ],
-      "status": "not-started",
+      "status": "in-progress",
       "plan_review": "Plan Reviewer 2026-09-15: READY. Achado: 'Data da aposta' e o form control betDate (type=datetime-local) em register-bet.html/registerBet.betDateLabel - so 3 chaves i18n (pt-BR/en-US/es) mudam, contrato tecnico (campo betDate, formato ISO) intocado, escopo bate com a description (renomear rotulo, nao o dominio). Sem dependencia real de epic-024/feat-016 (decisao de TEAM) - troca de texto e ortogonal a modelagem de time. Nenhum achado bloqueante.",
-      "jira": "",
+      "jira": "SV-443",
       "subtasks": [
         {
           "id": "feat-020.1",
@@ -1412,8 +1412,8 @@
           ],
           "validation": "Teste de componente e Playwright confirmam o rotulo nos tres locales.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "in-progress",
+          "jira": "SV-444"
         },
         {
           "id": "feat-020.2",
@@ -1427,7 +1427,7 @@
           "validation": "Rotulo validado visualmente e suite do frontend verde.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-445"
         }
       ],
       "evidence": ""
