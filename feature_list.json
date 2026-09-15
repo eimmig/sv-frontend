@@ -1353,7 +1353,7 @@
           ],
           "validation": "QA visual e teste de acessibilidade confirmam contraste e estados do botao nos dois temas.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-400"
         },
         {

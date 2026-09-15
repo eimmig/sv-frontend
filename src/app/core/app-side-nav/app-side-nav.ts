@@ -1,5 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -39,7 +40,17 @@ function storedCollapsed(): boolean {
  * persists the same way as Theme/Language (signal + localStorage), independent of both.
  */
 @Component({
-  imports: [RouterLink, RouterLinkActive, MatIconModule, MatMenuModule, MatTooltipModule, TranslocoPipe, LanguageSelector, ThemeToggle],
+  imports: [
+    RouterLink,
+    RouterLinkActive,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatTooltipModule,
+    TranslocoPipe,
+    LanguageSelector,
+    ThemeToggle,
+  ],
   selector: 'app-side-nav',
   styleUrl: './app-side-nav.scss',
   templateUrl: './app-side-nav.html',
