@@ -1339,7 +1339,7 @@
           ],
           "validation": "QA visual confirma alinhamento nas tres secoes em desktop e mobile, com sidebar expandida e colapsada.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-399"
         },
         {
