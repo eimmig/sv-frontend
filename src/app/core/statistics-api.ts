@@ -12,8 +12,8 @@ export interface BetMetrics {
   readonly winRate: number;
   readonly settledCount: number;
   /** wonCount/lostCount/voidCount/preCount/liveCount/avgOdd - stats-service epic-014, only
-   *  consumed here from feat-014 (web) onward; byBetType stays out of scope (epic-021 consumes
-   *  it). avgOdd is null when no settled bet has an odd yet. */
+   *  consumed here from feat-014 (web) onward. avgOdd is null when no settled bet has an odd
+   *  yet. */
   readonly wonCount: number;
   readonly lostCount: number;
   readonly voidCount: number;
@@ -60,6 +60,10 @@ export interface StatisticsDashboard {
    *  same shape as the other segments above. */
   readonly byLeague: SegmentedBetMetrics[];
   readonly byTipster: SegmentedBetMetrics[];
+  /** stats-service epic-014, feat-026 (web) - fixed 2-item segment (dimensionId PRE/LIVE only,
+   *  never a 3rd bucket): same shape as the other segments above, apostas sem betType nao
+   *  entram em nenhum dos 2 (docs/API-CONTRACTS.md). */
+  readonly byBetType: SegmentedBetMetrics[];
   readonly monthly: MonthlyBetMetrics[];
 }
 
@@ -72,6 +76,7 @@ export const EMPTY_STATISTICS_DASHBOARD: StatisticsDashboard = {
   byBettingHouse: [],
   byLeague: [],
   byTipster: [],
+  byBetType: [],
   monthly: [],
 };
 

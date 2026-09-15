@@ -74,7 +74,8 @@
     "leagueNameLabel": "Liga",
     "marketNameLabel": "Mercado",
     "tipsterNameLabel": "Tipster",
-    "bettingHouseNameLabel": "Casa de apostas"
+    "bettingHouseNameLabel": "Casa de apostas",
+    "betTypeNameLabel": "Tipo de aposta"
   },
   "searchStatistics": {
     "filtersTitle": "Filtros",
@@ -141,6 +142,7 @@
     "dashboardMenuItem": "Dashboard",
     "searchStatistics": "Buscar estatísticas",
     "periodReport": "Relatório do período",
+    "betTypeDashboard": "Por tipo de aposta",
     "telegramLink": "Vincular Telegram",
     "users": "Usuários",
     "logout": "Sair",

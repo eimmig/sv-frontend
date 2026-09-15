@@ -13,7 +13,7 @@ import { PeriodPresetFilter, PeriodRange } from '../period-preset-filter/period-
 
 /** One key per segment array already returned by GET /api/v1/statistics (StatisticsDashboard) -
  *  every catalog dashboard reads the SAME bundle, just a different key. */
-export type CatalogSegment = 'bySport' | 'byLeague' | 'byMarket' | 'byTipster' | 'byBettingHouse';
+export type CatalogSegment = 'bySport' | 'byLeague' | 'byMarket' | 'byTipster' | 'byBettingHouse' | 'byBetType';
 
 /**
  * Reusable ranking view for a single catalog resource (sports, leagues, markets, tipsters,
