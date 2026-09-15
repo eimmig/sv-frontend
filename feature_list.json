@@ -1439,7 +1439,7 @@
       "dependencies": [
         "feat-020"
       ],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "Plan Reviewer (2026-09-15, revisado - substitui o veredito BLOCKED anterior agora que a dependencia de fundo fechou na mesma sessao): READY. bets-service feat-016/017 done (TEAM: POST/GET /api/v1/teams, chave natural name+sportId, TeamResponse com sportId); api-gateway feat-015 done (rota /api/v1/teams roteada). Decisao de escopo tomada (nao era mais ambigua): tela NOVA dedicada (shared/team-manager, nao uma 5a entrada em CatalogManager - TEAM nao e estruturalmente identico aos outros 4 catalogos, tem FK sportId obrigatoria, sobrecarregar o componente compartilhado arriscaria regressao nas 4 telas ja estaveis) + formulario de aposta trocando team1/team2 texto livre por team1Id/team2Id select (sem filtro client-side por esporte - GET /api/v1/teams nao aceita esse query param, e leagues/markets ja nao sao filtrados por esporte na tela hoje, entao nao filtrar teams e consistente com o padrao existente, nao uma lacuna nova). Sem dashboard (byTeam) - stats-service feat-018 (DIM_TEAM alignment) esta BLOCKED, fora de escopo. Sem BLOCKER.",
       "jira": "SV-446",
       "subtasks": [
