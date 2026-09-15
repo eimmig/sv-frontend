@@ -157,3 +157,7 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-454](https://stakevault.atlassian.net/browse/SV-454) - Criar cliente e fluxo de codigo Telegram
 - [SV-455](https://stakevault.atlassian.net/browse/SV-455) - Adicionar rota e entrada de navegacao
 - [SV-456](https://stakevault.atlassian.net/browse/SV-456) - Testes, QA visual e verificacao final
+- [SV-457](https://stakevault.atlassian.net/browse/SV-457) - Alinhar betType e exibir agrupamento PRE/LIVE
+- [SV-458](https://stakevault.atlassian.net/browse/SV-458) - Trocar betType por selecao PRE/LIVE
+- [SV-459](https://stakevault.atlassian.net/browse/SV-459) - Consumir byBetType no frontend
+- [SV-460](https://stakevault.atlassian.net/browse/SV-460) - Testes, QA visual e verificacao final

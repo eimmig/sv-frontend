@@ -120,6 +120,7 @@ describe('RegisterBet', () => {
     const request = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/bets`);
     expect(request.request.headers.get('Idempotency-Key')).toBeTruthy();
     expect(request.request.body.bettingHouseId).toBe('bh-1');
+    expect(request.request.body.betType).toBeNull();
     request.flush({ id: '1', status: 'pending' });
 
     expect(fixture.componentInstance['successMessage']()).toBe('Aposta registrada com sucesso.');
@@ -135,6 +136,17 @@ describe('RegisterBet', () => {
     const request = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/bets`);
     expect(request.request.body.team1Id).toBe('tm-1');
     expect(request.request.body.team2Id).toBeNull();
+    request.flush({ id: '1', status: 'pending' });
+  });
+
+  it('sends the chosen bet type (pre/live) instead of the previous free-text value', () => {
+    fillRequiredFields();
+    fixture.componentInstance['form'].patchValue({ betType: 'live' });
+
+    fixture.componentInstance['submit']();
+
+    const request = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/bets`);
+    expect(request.request.body.betType).toBe('live');
     request.flush({ id: '1', status: 'pending' });
   });
 
