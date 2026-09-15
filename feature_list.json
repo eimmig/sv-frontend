@@ -1454,7 +1454,7 @@
           ],
           "validation": "Testes de componente cobrem catalogo de times e o formulario de aposta com selects.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-447"
         },
         {
