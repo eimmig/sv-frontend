@@ -7,52 +7,53 @@
 
 ## Objetivo atual
 
-`feat-001`..`feat-021`, `feat-025`, `feat-028` e `feat-030` `done` (`feat-022`..`024`, `026`,
-`027`, `029` seguem `not-started`). `epic-020` da raiz fechado por completo (`feat-028`).
+`feat-001`..`feat-021`, `feat-025`, `feat-027`, `feat-028` e `feat-030` `done` (`feat-022`..`024`,
+`026`, `029` seguem `not-started`). `epic-020`/`epic-023` da raiz fechados por completo.
+`epic-027` segue `in-progress` — só `feat-027` fechou; `feat-026` (mesmo epic) ainda `REVISE`.
 
 ## Concluído nesta sessão (2026-09-15)
 
-- [x] `feat-019` fechada (epic-023, sidebar) — ver entrada datada em `progress.md`.
-- [x] `feat-025` fechada (ponte de navegação Casas de Apostas -> Histórico). Ver `progress.md`.
-- [x] `feat-030` fechada (CD automático, `epic-028` da raiz — o epic de infra, não confundir com
-      `apps/web feat-028` desta sessão). Ver `progress.md`.
-- [x] `feat-020`+`feat-021` fechadas (rótulo "Data do evento" + correção de quebra real em
-      `POST /api/v1/bets`). Ver `progress.md`.
-- [x] **`feat-028` fechada — fecha `epic-020` da raiz por completo**: grade mensal de drawdown
-      (curva acumulada em unidades) na nova aba do dashboard consolidado. `Delivery Reviewer`
-      (skill completa): PASS. 2 achados reais corrigidos antes de fechar: design (2 campos de mês
-      batched atrás de um botão Aplicar, evitando requests sobrepostos) e uma regressão real
-      pré-existente de `feat-021` no e2e de `register-bet` (só apareceu rodando a suíte e2e
-      inteira). QA visual real achou e corrigiu um bug de responsividade mobile. 2 achados do
-      SonarCloud no gate pesado corrigidos (teste sem assertion reconhecida; reassignment
-      redundante). Ver `progress.md` para o detalhe completo.
-- [x] **Os 6 repositórios de aplicação promovidos `develop -> main`** — `apps/web` incluído.
-      Achado real de infraestrutura (não de código, não desta feature): o job `deploy` automático
-      falha em todos os 6, `KUBE_CONFIG` aponta pro túnel SSH local do usuário, inalcançável por
-      um runner hospedado do GitHub Actions. Usuário decidiu deixar como está por agora. Detalhe
-      completo em `../../docs/services/infra.md` "CD automático via CI" e
-      `../../session-handoff.md`.
+- [x] `feat-019`, `feat-025`, `feat-030`, `feat-020`+`feat-021`, `feat-028` fechadas — ver
+      entradas datadas em `progress.md`.
+- [x] Os 6 repositórios de aplicação promovidos `develop -> main`. Achado real de infraestrutura
+      (deploy automático `kubectl` inalcançável do runner GitHub) documentado em
+      `../../docs/services/infra.md` e `../../session-handoff.md`; usuário decidiu deixar como
+      está por agora.
+- [x] **`feat-027` fechada** — tela de vínculo da conta Telegram (`TelegramLinkApi` +
+      `pages/telegram-link`, rota `/telegram-link`, entrada em `app-side-nav`). Sem desvio do
+      plano (`Plan Reviewer` já READY de sessão anterior). QA visual real (desktop/mobile,
+      claro/escuro) sem achado. `ng test` 201/201, Playwright 50/50 (suíte inteira, não só os
+      specs tocados). Ver `progress.md` para o detalhe completo.
 
 ## Bloqueios / Riscos
 
-Nenhum. A imagem `:latest` deste repositório no GHCR está atualizada (main promovido) — o
-`kubectl rollout restart` em produção continua manual (túnel SSH) até a decisão de rede acima ser
+Nenhum. A imagem `:latest` deste repositório no GHCR está atualizada — o `kubectl rollout
+restart` em produção continua manual (túnel SSH) até a decisão de rede de `infra.md` ser
 revisitada.
 
 ## Próxima sessão — por onde começar
 
 1. Rodar `./init.sh` (deve sair `0`).
-2. Backlog aberto deste harness: `feat-022`..`024`, `026`, `027`, `029` (`not-started`), mapeados
-   aos epics `epic-024`/`026`/`027`/`021` da raiz — `Plan Reviewer` já rodou contra todos numa
-   sessão anterior (ver `plan_review` de cada um em `feature_list.json`). Vereditos variam de
-   `READY` a `BLOCKED` — `feat-026`(parte 2, byBetType)/`feat-029` têm decisão pendente do usuário
-   antes de codificar (ver o texto de cada `plan_review`). `feat-024` (espaçamento dos cadastros)
-   é `READY`, sem bloqueio conhecido. `feat-022` (date picker) tem 2 achados MAJOR do Plan
-   Reviewer já corrigidos no plano (ver seu `plan_review`) — reler antes de codificar.
-3. `app-panel` (`shared/panel`) ganhou `min-width: 0` no `:host` numa sessão anterior — qualquer
-   página nova que use `app-panel` com conteúdo largo (tabela, código) já herda a proteção contra
-   "grid blowout" (ver `docs/CONVENTIONS.md`), não precisa repetir o fix.
-4. Ao adicionar uma chamada HTTP nova a um `forkJoin` já existente numa página (ex.: mais um
-   catálogo), atualizar o mock e2e (`page.route`) daquela página no mesmo commit — ver
-   `docs/TESTING.md` (achado real desta sessão, `feat-021`/`feat-028`) — e rodar
-   `npx playwright test` completo (não só o arquivo tocado) antes de fechar a feature.
+2. `epic-027` da raiz segue `in-progress`: falta só `feat-026` para fechá-lo. `feat-026` é
+   `REVISE` — antes de codificar, decidir quem é dono do campo `byBetType`
+   (`core/statistics-api.ts`, `BetMetrics`): a parte 2 de `feat-026` ("Alinhar betType e exibir
+   agrupamento PRE/LIVE") ou `feat-029`/`epic-021`, que hoje tem um comentário explícito dizendo
+   "byBetType stays out of scope (epic-021 consumes it)". Ler o `plan_review` de `feat-026` na
+   íntegra antes de decidir — se for uma decisão de design real (não só "quem primeiro"),
+   perguntar ao usuário em vez de decidir sozinho.
+3. Backlog aberto restante deste harness: `feat-022`..`024`, `026`, `029` (`not-started`),
+   mapeados aos epics `epic-024`/`026`/`021` da raiz. `feat-024` (espaçamento dos cadastros) é
+   `READY`, sem bloqueio conhecido. `feat-022` (date picker) tem 2 achados MAJOR do Plan Reviewer
+   já corrigidos no plano — reler antes de codificar.
+4. `app-panel` (`shared/panel`) ganhou `min-width: 0` no `:host` numa sessão anterior — qualquer
+   página nova que use `app-panel` com conteúdo largo já herda a proteção contra "grid blowout",
+   não precisa repetir o fix.
+5. Ao adicionar uma chamada HTTP nova a um `forkJoin` já existente numa página, atualizar o mock
+   e2e (`page.route`) daquela página no mesmo commit e rodar `npx playwright test` completo (não
+   só o arquivo tocado) antes de fechar a feature — achado real de `feat-021`/`feat-028`, ver
+   `docs/TESTING.md`.
+6. `page.route()` no Playwright dá prioridade ao handler registrado **por último** (LIFO) — um
+   mock genérico (`**/api/**`) registrado depois de um mock específico o sobrepõe inteiramente.
+   Registrar sempre o genérico primeiro, o específico depois (gotcha hit num script de QA visual
+   ad-hoc desta sessão, fora da suíte de testes real — que já registra 1 handler por padrão e
+   nunca teve esse conflito).

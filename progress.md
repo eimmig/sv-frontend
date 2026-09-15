@@ -1332,3 +1332,31 @@ totalmente evidenciado). `docs/CONVENTIONS.md` (raiz) ganhou o gotcha de grid bl
 
 Story SV-403, subtasks SV-404/405/406, PRs #89/#90/#91 (subtasks→feature, fast-forward) + PR de
 `feature/SV-403`→`develop` (CI+SonarCloud verdes). `./init.sh` do app e da raiz verdes.
+
+## `feat-027` fechada — tela de vínculo da conta Telegram (2026-09-15)
+
+`epic-027` da raiz (cobre `feat-026` + `feat-027` — só `feat-027` fecha nesta sessão; `feat-026`
+segue `REVISE`, decisão de dono de `byBetType` ainda pendente do usuário, ver `plan_review`
+daquela feature). `Plan Reviewer` já tinha rodado `READY` numa sessão anterior — contrato
+confirmado em `docs/services/auth-service.md`: `POST /api/v1/telegram-links` sem corpo, só
+`Authorization: Bearer` (Gateway resolve `X-User-Id`/`X-Tenant-Id` do token), `201`
+`{code, expiresAt}`.
+
+Implementação sem desvio do plano: `TelegramLinkApi` novo (`core/telegram-link-api.ts`, mesmo
+padrão de `BettingHousesApi`/`SettingsApi`), tela `pages/telegram-link` reaproveitando
+`submitForm`/`Panel`/`PanelLayout` já existentes — nenhum componente ou padrão novo precisou ser
+criado. Rota `/telegram-link` (`authGuard`) e entrada em `app-side-nav`'s `secondaryLinks` (ícone
+`telegram`, sem par de Dashboard — não é catálogo). i18n nos 3 locales.
+
+Residual aceito do plan review (chamar o endpoint 2x com um código pendente — substitui vs.
+`409`) não exigiu decisão: a tela sempre reflete a resposta do último `POST`, correta nos dois
+casos (substitui o código exibido, ou mostra o RFC 7807 de `409`/`429`) sem acoplamento a qual
+comportamento o backend realmente tem.
+
+QA visual real via screenshots contra `ng serve`: desktop (1440px) e mobile (390px), claro e
+escuro — 4 combinações, sem achado. `ng test`: 201/201 (suíte inteira). Playwright completo:
+50/50 (3 e2e novos em `e2e/telegram-link.spec.ts`: geração de código, erro RFC 7807, navegação
+pelo side-nav). `docs/services/web.md` ganhou a seção da feature.
+
+Story SV-453, subtasks SV-454/455/456, PRs #107/#108 (subtasks→feature, CI verde) + PR de
+`feature/SV-453`→`develop` (gate completo). `./init.sh` do app e da raiz verdes.
