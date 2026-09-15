@@ -9,7 +9,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { forkJoin, map } from 'rxjs';
 
 import { loadInto, submitForm } from '../../core/api-request';
-import { BetsApi } from '../../core/bets-api';
+import { BetType, BetsApi } from '../../core/bets-api';
 import { BettingHouse, BettingHousesApi } from '../../core/betting-houses-api';
 import { CatalogEntry, Team, catalogApi, teamsApi } from '../../core/catalog-api';
 import { formatBrl } from '../../core/currency';
@@ -63,6 +63,7 @@ export class RegisterBet implements OnInit {
   private readonly transloco = inject(TranslocoService);
 
   protected readonly formatBrl = formatBrl;
+  protected readonly betTypes: readonly BetType[] = ['pre', 'live'];
   protected readonly options = signal<FormOptions>(EMPTY_OPTIONS);
   protected readonly loadError = signal<string | null>(null);
   protected readonly submitting = signal(false);
@@ -154,7 +155,7 @@ export class RegisterBet implements OnInit {
           team1Id: raw.team1Id || null,
           team2Id: raw.team2Id || null,
           description: raw.description || null,
-          betType: raw.betType || null,
+          betType: (raw.betType || null) as BetType | null,
           playType: raw.playType || null,
           stake: raw.stake,
           odd: raw.odd,

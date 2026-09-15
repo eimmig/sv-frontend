@@ -1360,3 +1360,31 @@ pelo side-nav). `docs/services/web.md` ganhou a seção da feature.
 
 Story SV-453, subtasks SV-454/455/456, PRs #107/#108 (subtasks→feature, CI verde) + PR de
 `feature/SV-453`→`develop` (gate completo). `./init.sh` do app e da raiz verdes.
+
+## `feat-026` fechada — paridade betType (mat-select) + byBetType (dashboard PRE/LIVE) (2026-09-15, mesmo dia)
+
+Fecha `epic-027` da raiz por completo (junto com `feat-027`, fechada mais cedo na mesma sessão).
+`Plan Reviewer` tinha voltado `REVISE`: a parte 2 (byBetType) competia com `feat-029`/`epic-021`
+pelo mesmo campo em `core/statistics-api.ts` (comentário pré-existente reservava `byBetType` pra
+`epic-021`). Decisão levada ao usuário via `AskUserQuestion` antes de codificar: **`feat-026`
+passa a ser a dona de `byBetType`** — `feat-029` (ainda não implementada) só reusa o tipo depois.
+Decisão registrada no `plan_review` de `feat-026` e `feat-029`.
+
+**`feat-026.1`**: `register-bet`'s `betType` era `<input type="text">` livre, embora
+`CreateBetRequest.betType` (bets-service) seja um enum `BetType` (`@JsonProperty("pre"/"live")`)
+há várias sessões — trocado por `mat-select` com 3 opções (`pre`/`live`/vazio). Sem quebra: o
+campo já era opcional/nulo no backend, só não validava valores fora do enum na tela.
+
+**`feat-026.2`**: `byBetType: SegmentedBetMetrics[]` adicionado a `StatisticsDashboard`, comentário
+de out-of-scope removido. Reusa `shared/catalog-dashboard` (já genérico, `data()[segment()]`) em
+vez de um componente novo — só mais uma entrada em `CatalogSegment` e uma 6ª rota
+(`/bet-type-dashboard`), sem par de "Cadastrar" (não é catálogo gerenciável).
+
+QA visual real (`ng serve`): desktop 1440px + mobile 390px, claro/escuro, dashboard novo +
+`mat-select` do formulário — sem achado. `ng test` 203/203 (suíte inteira). Playwright 52/52
+(suíte inteira, 2 e2e novos: `register-bet` com PRE/LIVE via `mat-select`, `bet-type-dashboard`
+via nav real). `docs/services/web.md` ganhou a seção "Paridade betType/byBetType" e corrigiu a
+nota desatualizada de `epic-015` que ainda atribuía `byBetType` a `epic-021`.
+
+Story SV-457, subtasks SV-458/459/460, PRs #111/#112 (subtask→feature, CI verde) + PR de
+`feature/SV-457`→`develop` (gate completo). `./init.sh` do app e da raiz verdes.

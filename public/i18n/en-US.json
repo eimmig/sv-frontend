@@ -74,7 +74,8 @@
     "leagueNameLabel": "League",
     "marketNameLabel": "Market",
     "tipsterNameLabel": "Tipster",
-    "bettingHouseNameLabel": "Betting house"
+    "bettingHouseNameLabel": "Betting house",
+    "betTypeNameLabel": "Bet type"
   },
   "searchStatistics": {
     "filtersTitle": "Filters",
@@ -141,6 +142,7 @@
     "dashboardMenuItem": "Dashboard",
     "searchStatistics": "Search statistics",
     "periodReport": "Period report",
+    "betTypeDashboard": "By bet type",
     "telegramLink": "Link Telegram",
     "users": "Users",
     "logout": "Log out",
@@ -225,6 +227,9 @@
     "team2Label": "Team 2",
     "team2None": "None",
     "betTypeLabel": "Bet type",
+    "betTypeNone": "Unclassified",
+    "betTypePre": "Pre-match",
+    "betTypeLive": "Live",
     "playTypeLabel": "Play type",
     "descriptionLabel": "Description",
     "stakeLabel": "Stake",

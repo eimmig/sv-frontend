@@ -64,6 +64,36 @@ test.describe('RF04 - manual bet registration', () => {
     await expect(page.getByTestId('register-bet-stake')).toHaveValue('0');
   });
 
+  test('registers a bet with a PRE/LIVE bet type selected via mat-select, not free text', async ({ page }) => {
+    let requestBody: Record<string, unknown> | null = null;
+    await page.route('**/api/v1/bets', (route) => {
+      requestBody = route.request().postDataJSON();
+      return route.fulfill({
+        status: 201,
+        contentType: 'application/json',
+        body: JSON.stringify({ id: '1', status: 'pending' }),
+      });
+    });
+
+    await page.goto('/register-bet');
+    await page.getByTestId('register-bet-betting-house').click();
+    await page.getByRole('option', { name: 'Bet365' }).click();
+    await page.getByTestId('register-bet-sport').click();
+    await page.getByRole('option', { name: 'Futebol' }).click();
+    await page.getByTestId('register-bet-league').click();
+    await page.getByRole('option', { name: 'Brasileirão' }).click();
+    await page.getByTestId('register-bet-market').click();
+    await page.getByRole('option', { name: 'Handicap' }).click();
+    await page.getByTestId('register-bet-bet-type').click();
+    await page.getByRole('option', { name: 'Live' }).click();
+    await page.getByTestId('register-bet-stake').fill('100');
+    await page.getByTestId('register-bet-odd').fill('1.5');
+    await page.getByTestId('register-bet-submit').click();
+
+    await expect(page.getByTestId('register-bet-success')).toBeVisible();
+    expect(requestBody?.['betType']).toBe('live');
+  });
+
   test('shows the RFC 7807 detail when the odd is invalid', async ({ page }) => {
     await page.route('**/api/v1/bets', (route) =>
       route.fulfill({
