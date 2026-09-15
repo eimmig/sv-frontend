@@ -105,7 +105,11 @@ test.describe('feat-025 - betting houses balance movement bridge', () => {
     await page.getByTestId('history-create-transaction-submit').click();
     await expect(page.getByTestId('history-create-transaction-success')).toBeVisible();
 
-    await page.goto('/betting-houses');
+    // In-app SPA navigation (sidebar link), not a full page reload - a reload would trivially
+    // show fresh data regardless of whether Angular's router actually recreates the component.
+    await page.getByTestId('nav-betting-houses-menu').click();
+    await page.getByTestId('nav-betting-houses-register').click();
+    await expect(page).toHaveURL(/\/betting-houses$/);
     await expect(page.getByTestId('betting-houses-row')).toContainText(/R\$\s*150,00/);
   });
 });

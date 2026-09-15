@@ -1719,7 +1719,7 @@
           ],
           "validation": "Playwright prova o ciclo completo Casas de Apostas -> Historico -> Casas de Apostas com saldo atualizado.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-405"
         },
         {
