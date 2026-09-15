@@ -1324,9 +1324,9 @@
       "dependencies": [
         "feat-018"
       ],
-      "status": "not-started",
+      "status": "done",
       "plan_review": "Plan Reviewer 2026-09-15: READY WITH CONCERNS. Evidencia: app-side-nav.scss confirma os 3 achados - .side-nav__link usa align-items:center/gap:12px sem centralizacao explicita por secao (icone+label alinhado a esquerda, nao centralizado quando colapsado alem do justify-content:center do link inteiro); .side-nav__collapse-toggle usa color:var(--color-text-secondary) (token semantico, ja deveria respeitar tema - a causa raiz mais provavel e o botao mat-icon-button herdando cor fixa de algum override global ou do proprio Material, nao a regra local; subtask 019.2 deve investigar antes de assumir onde esta o hardcode) e app-side-nav__footer contem app-language-selector/app-theme-toggle com width:100% mas nao ha CSS especifico pro modo colapsado - possivel causa do idioma sumir e o proprio .language-selector ter largura minima (120px, fix do feat-018.2) maior que side-nav--collapsed (72px), estourando ou sendo cortado pelo overflow-x:hidden do .side-nav. MINOR: subtask 019.3 deve testar explicitamente que o language-selector no rodape nao e cortado pelo overflow-x:hidden quando colapsado (72px < 120px min-width) - efeito colateral direto do fix de feat-018.2, nao mencionado no plano atual.",
-      "jira": "",
+      "jira": "SV-398",
       "subtasks": [
         {
           "id": "feat-019.1",
@@ -1339,8 +1339,8 @@
           ],
           "validation": "QA visual confirma alinhamento nas tres secoes em desktop e mobile, com sidebar expandida e colapsada.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-399"
         },
         {
           "id": "feat-019.2",
@@ -1353,8 +1353,8 @@
           ],
           "validation": "QA visual e teste de acessibilidade confirmam contraste e estados do botao nos dois temas.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-400"
         },
         {
           "id": "feat-019.3",
@@ -1368,8 +1368,8 @@
           ],
           "validation": "Playwright confirma a troca de idioma com sidebar expandida e colapsada nos tres locales.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-401"
         },
         {
           "id": "feat-019.4",
@@ -1384,11 +1384,11 @@
           ],
           "validation": "./init.sh verde, testes unitarios e Playwright verdes, evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-402"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-15 (branch feature/SV-398, story SV-398, subtasks SV-399..402, PRs #84/#85/#86/#87, merge fast-forward em cada, CI verde nos 4). Os 3 bugs reportados tinham causa raiz diferente do suspeito no plan_review: (1) theme-toggle nao centralizava porque seu :host (display:block) nao tinha centralizacao propria - o footer forcava width:100% no host, mas isso so define o tamanho da caixa, nao centraliza o botao de tamanho fixo (~40px) dentro dela; corrigido com :host { display:flex; justify-content:center }; nao era um problema do .side-nav__link (que ja centraliza via justify-content proprio) nem das 3 secoes em si. (2) botao de colapsar nunca respeitava nenhum tema porque AppSideNav nunca importava MatButtonModule - mat-icon-button virava atributo estatico inerte (sem erro), o botao renderizava como <button> nativo puro (fundo cinza, borda outset, chrome do browser seguindo o color-scheme do SO, nao os tokens do app) - nao era CSS/override nenhum, so import faltando. (3) language-selector sumia porque literalmente saia do DOM (@if (!collapsed())), nao por causa do overflow-x:hidden/min-width:120px que o plan_review suspeitou - corrigido com input `collapsed` que troca o mat-select por um botao-icone + mat-menu (mesmo padrao dos links de recurso ja existentes no componente) quando colapsado, sidestepping o conflito de largura em vez de brigar com ele via CSS. Evidencia real por bug: screenshots antes/depois via git stash (nao so leitura de codigo) confirmando cada centralizacao; computed style (border/background) provando o <button> nativo antes e as classes mat-mdc-* depois; e2e novo (e2e/side-nav.spec.ts) provando troca nas 3 locales pelo trigger colapsado sem sobrepor tema/logout. QA visual desktop (1280px) e mobile (375px), claro e escuro, expandido e colapsado - 6 combinacoes conferidas. Delivery Reviewer e Test Suite Auditor rodados (revisao direta, sem subagentes - diff pequeno e totalmente evidenciado): PASS nos dois; achado do Test Suite Auditor corrigido antes de fechar - fix de .2 nao tinha nenhuma protecao automatizada contra regressao, so QA visual; teste novo (classList.contains('mat-mdc-icon-button')) adicionado e confirmado como guarda real (removendo o import manualmente o teste falha). Achado lateral, fora do escopo desta feature mas descoberto rodando a suite completa como parte da propria verificacao: period-report.spec.ts (unitario) e e2e/period-report.spec.ts tinham uma fixture de data fixa (2026-09-11) comparada contra new Date() real - quebravam sempre que a suite rodasse depois dessa data; corrigido congelando o relogio (vi.setSystemTime/page.clock.setFixedTime) em vez de mudar a fixture. ng test: 173/173 (2 testes novos do language-selector + 1 guarda de regressao). Playwright completo: 42/42 (2 specs novos). ./init.sh do app e da raiz verdes. docs/CONVENTIONS.md ganhou 2 gotchas reaproveitaveis (diretiva de atributo do Material sem modulo importado falha em silencio; width:100% no host nao centraliza sozinho) e docs/TESTING.md ganhou o gotcha de fixture de data vs relogio real - todos no mesmo commit das correcoes. Fecha epic-023 da raiz - epic independente, nao bloqueia nem e bloqueado por outro epic aberto."
     },
     {
       "id": "feat-020",
