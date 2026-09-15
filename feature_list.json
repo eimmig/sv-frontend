@@ -2002,10 +2002,23 @@
       "dependencies": [
         "feat-013"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (2026-09-15): READY. Sexta e ultima aplicacao do mesmo padrao mecanico de epic-028 nesta sessao (bets-service feat-018, stats-service feat-019, api-gateway feat-014, auth-service feat-016, telegram-integration feat-010, todos ja fechados) - o job deploy em si e agnostico de stack, so muda o Deployment alvo. Confirmado contra este repositorio antes de codificar: infra/k8s/web.yaml define o Deployment 'web' sem namespace (default); RBAC de infra/k8s/ci-deployer-rbac.yaml ja inclui 'web' em resourceNames; secret KUBE_CONFIG confirmado presente neste repositorio GitHub (gh secret list); default_workflow_permissions='write' (gh api), confirmando permissions: {} explicito necessario. As 2 correcoes MINOR ja aplicadas nas 5 instancias anteriores (sem azure/setup-kubectl, permissions: {} explicito) entram direto no plano aqui. Sem BLOCKER. Fecha epic-028 da raiz (ultimo dos 6 repositorios de aplicacao).",
+      "jira": "SV-438",
+      "subtasks": [
+        {
+          "id": "feat-030.1",
+          "name": "Job deploy no ci.yml",
+          "status": "in-progress",
+          "jira": "SV-439"
+        },
+        {
+          "id": "feat-030.2",
+          "name": "CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-440"
+        }
+      ],
       "evidence": ""
     }
   ]
