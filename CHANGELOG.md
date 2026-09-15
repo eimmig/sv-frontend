@@ -7,6 +7,12 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 
+### Added
+
+- Tela "Vincular Telegram" (`feat-027`, rota `/telegram-link`): gera um código de curta duração
+  via `POST /api/v1/telegram-links` e mostra código + expiração, com entrada nova em
+  `app-side-nav`.
+
 ### Changed
 
 - `app-login-border-trace` (`feat-018.3`) reformulada: 1 caminho fechado único (contorno completo
