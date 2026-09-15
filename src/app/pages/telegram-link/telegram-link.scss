@@ -1,0 +1,44 @@
+:host {
+  display: block;
+  height: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.telegram-link__intro {
+  margin: 0 0 16px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.telegram-link__result {
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.telegram-link__code-label {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.telegram-link__code {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: 4px;
+}
+
+.telegram-link__expires {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.telegram-link__error {
+  margin: 0 0 16px;
+  color: var(--color-negative);
+  font-size: 14px;
+}
