@@ -1944,7 +1944,7 @@
           ],
           "validation": "Teste de componente cobre os 4 cards com dados reais do overall/monthly.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-463"
         },
         {

@@ -124,6 +124,15 @@
     "betsLabel": "Bets",
     "genericError": "Could not complete the operation. Please try again."
   },
+  "overview": {
+    "summaryTitle": "Overview",
+    "lucroTotalLabel": "Total Profit (U)",
+    "preLiveLabel": "Pre / Live (U)",
+    "lucroMedioMensalLabel": "Average Monthly Profit (U)",
+    "roiLabel": "ROI",
+    "indeterminate": "Undetermined",
+    "genericError": "Could not complete the operation. Please try again."
+  },
   "login": {
     "title": "Sign in",
     "tagline": "Bankroll management",
