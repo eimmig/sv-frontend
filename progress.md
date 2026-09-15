@@ -3,8 +3,9 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-15
-**Estado:** `feat-001` a `feat-019` `done`. `feat-019` (correções de UX da sidebar, `epic-023` da
-raiz) fechada nesta sessão.
+**Estado:** `feat-001` a `feat-019` e `feat-025` `done` (`feat-020`..`024`, `026`..`029` seguem
+`not-started`). `feat-025` (ponte de navegação Casas de Apostas -> Histórico para movimentação de
+saldo, `epic-025` da raiz) fechada nesta sessão, logo após `feat-019`.
 
 ## `feat-015` fechada — página "Relatório do período" (2026-09-11)
 
@@ -1198,3 +1199,42 @@ centraliza sozinho) e `docs/TESTING.md` ganhou o gotcha de fixture de data vs re
 
 Story SV-398, subtasks SV-399..402, PRs #84/#85/#86/#87 (subtasks→feature, fast-forward) + PR de
 `feature/SV-398`→`develop` (CI+SonarCloud verdes).
+
+## `feat-025` fechada — ponte de navegação para movimentação de saldo (2026-09-15)
+
+`epic-025` da raiz. Investigação antes de codificar (Plan Reviewer + leitura direta do código)
+mudou o escopo real, bem menor que o backlog original descrevia: o formulário de depósito/
+retirada, filtros e lista já existiam completos em `pages/history/history.ts`
+(`TransactionsApi`, validação, erros RFC 7807, badges, paginação) — não reescritos nem duplicados
+em `betting-houses`. Saldo consolidado (`BankrollApi`) também já existia, usado no Dashboard —
+não duplicado.
+
+Entregue: (1) ação "Movimentar saldo" por linha em `betting-houses.html`, `routerLink` para
+`/history?bettingHouseId=<id>`; `history.ts` lê o query param, seleciona a aba Movimentações
+(`mat-tab-group` nunca tinha `[selectedIndex]` antes — sempre abria em Apostas) e pré-seleciona a
+casa no formulário existente. (2) Provado via e2e com navegação SPA real (clique no link da
+sidebar, não `page.goto()` — que provaria só que um reload mostra dado fresco, não que o Router
+realmente recria o componente) que `betting-houses.ts` (`constructor()`→`reload()`, sem route
+reuse customizada) já re-sincroniza o saldo sozinho ao voltar de uma movimentação — sem nenhum
+código novo de sincronização de estado, confirmando a previsão do `plan_review`.
+
+**Achado real durante QA visual mobile, corrigido antes de fechar**: a coluna nova de ação
+estourava a página inteira em telas estreitas (375px), mesmo com a tabela já dentro de um
+`overflow-x: auto` (mesmo padrão de `history.scss`). Causa raiz — "grid blowout": `app-panel`
+(item real do grid de `app-panel-layout`) não tinha `min-width: 0` no `:host` — itens de grid/flex
+usam `min-width: auto` por padrão, que ignora `overflow` de qualquer descendente porque o cálculo
+de tamanho do track acontece antes/independente de como o overflow será renderizado. Corrigido no
+componente compartilhado (`shared/panel/panel.scss`), não só em `betting-houses` — protege
+qualquer página futura que use `app-panel` com conteúdo largo. Confirmado com
+`scrollWidth > clientWidth` real (não só a ausência de erro visual) que a tabela realmente rola e
+revela a coluna de ação.
+
+QA visual real via screenshots contra `ng serve`: desktop (1280px) e mobile (375px), claro e
+escuro. `ng test`: 173/173 (2 specs precisaram `provideRouter([])` para o `RouterLink`/
+`ActivatedRoute` novos — sem isso, `NG0201: No provider found for ActivatedRoute`). Playwright
+completo: 44/44 (2 e2e novos em `e2e/betting-houses-move-balance.spec.ts`). Delivery Reviewer e
+Test Suite Auditor: PASS nos dois, sem achado (revisão direta, sem subagentes — diff pequeno e
+totalmente evidenciado). `docs/CONVENTIONS.md` (raiz) ganhou o gotcha de grid blowout.
+
+Story SV-403, subtasks SV-404/405/406, PRs #89/#90/#91 (subtasks→feature, fast-forward) + PR de
+`feature/SV-403`→`develop` (CI+SonarCloud verdes). `./init.sh` do app e da raiz verdes.
