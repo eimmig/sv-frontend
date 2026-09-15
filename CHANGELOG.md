@@ -143,3 +143,7 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-446](https://stakevault.atlassian.net/browse/SV-446) - Cadastro de time vinculado a esporte + corrigir quebra de contrato em POST /api/v1/bets
 - [SV-447](https://stakevault.atlassian.net/browse/SV-447) - Catalogo de times (tela nova) + formulario de aposta usando team1Id/team2Id
 - [SV-448](https://stakevault.atlassian.net/browse/SV-448) - CHANGELOG e verificacao final
+- [SV-449](https://stakevault.atlassian.net/browse/SV-449) - Grade mensal de drawdown (curva acumulada em unidades)
+- [SV-450](https://stakevault.atlassian.net/browse/SV-450) - Calcular curva acumulada mensal a partir do historico diario
+- [SV-451](https://stakevault.atlassian.net/browse/SV-451) - Filtro de range de meses e grade dinamica de mini-graficos
+- [SV-452](https://stakevault.atlassian.net/browse/SV-452) - Testes, QA visual e verificacao final
