@@ -24,7 +24,7 @@ describe('RegisterBet', () => {
         tipsterNone: 'Nenhum',
         stakeLabel: 'Valor apostado',
         oddLabel: 'Odd',
-        betDateLabel: 'Data da aposta',
+        betDateLabel: 'Data do evento',
         reset: 'Limpar',
         submit: 'Registrar aposta',
         success: 'Aposta registrada com sucesso.',
