@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { History } from './history';
@@ -308,5 +308,57 @@ describe('History', () => {
     expect(fixture.componentInstance['createTransactionError']()).toBe(
       'Não foi possível completar a operação. Tente novamente.',
     );
+  });
+});
+
+// feat-025.1: deep link from betting-houses' "move balance" action (?bettingHouseId=<id>).
+// Separate module so the ActivatedRoute override applies before ngOnInit runs - the main
+// describe's fixture is already created (with an empty route) by the time any of its tests run.
+describe('History - deep link from betting houses', () => {
+  let fixture: ComponentFixture<History>;
+  let httpMock: HttpTestingController;
+
+  beforeEach(async () => {
+    localStorage.removeItem('stakevault.language');
+    await TestBed.configureTestingModule({
+      imports: [
+        History,
+        TranslocoTestingModule.forRoot({
+          langs: { 'pt-BR': { history: { genericError: 'Erro.' } } },
+          translocoConfig: { availableLangs: ['pt-BR'], defaultLang: 'pt-BR' },
+        }),
+      ],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { queryParamMap: convertToParamMap({ bettingHouseId: 'bh-1' }) } },
+        },
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(History);
+    httpMock = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    for (const resource of ['betting-houses', 'sports', 'leagues', 'markets', 'tipsters']) {
+      httpMock
+        .expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/${resource}`)
+        .flush({ content: [], page: 0, size: 100, totalElements: 0, totalPages: 0 });
+    }
+    httpMock
+      .expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/bets`)
+      .flush({ content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 });
+    httpMock
+      .expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/transactions`)
+      .flush({ content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 });
+  });
+
+  afterEach(() => httpMock.verify());
+
+  it('selects the Movimentações tab and pre-fills the betting house from the query param', () => {
+    expect(fixture.componentInstance['selectedTabIndex']()).toBe(1);
+    expect(fixture.componentInstance['createTransactionForm'].value.bettingHouseId).toBe('bh-1');
   });
 });
