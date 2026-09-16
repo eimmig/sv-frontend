@@ -1,7 +1,12 @@
+// Real bug (feat-024.1): missing horizontal padding here (was `16px 0`) let this page's panel
+// touch the sidebar directly, with no visual gap - every other routed page already uses
+// `padding: 24px` + `box-sizing: border-box` (see pages/betting-houses/betting-houses.scss),
+// this one was the one inconsistent case.
 :host {
   display: block;
   height: 100%;
-  padding: 16px 0;
+  padding: 24px;
+  box-sizing: border-box;
 }
 
 .catalog-manager__form {
