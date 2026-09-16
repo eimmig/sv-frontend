@@ -2089,7 +2089,7 @@
           "jira": "SV-494"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-16 (story SV-490, subtasks SV-491/492/493/494, PRs #136-#139 subtask->story, todos com CI verde). Implementado: (1) Material Symbols Outlined carregado em ADICAO ao Material Icons classico (index.html), aplicado via fontSet seletivo nos mat-icon de app-side-nav/language-selector/theme-toggle, exceto o icone telegram (nao existe no Symbols - confirmado contra o codepoints oficial do google/material-design-icons no GitHub durante o Plan Reviewer); (2) scrollbar tematizada (thin, --color-border) em .side-nav; (3) decisao documentada em docs/DESIGN-SYSTEM.md (commit 155fadb, repo raiz sv-harness). Delivery Reviewer: PASS, com 1 achado real corrigido durante a propria revisao - os commits 5c1747d/99832db haviam absorvido por engano um hunk alheio (ajuste de largura do menu de recursos, WIP nao commitado de outra sessao/feature nos mesmos arquivos) porque o git add pegou o arquivo inteiro; revertido no commit 59ae268 e restaurado como edicao local nao commitada (stash/pop) para nao perder o trabalho de quem quer que seja o dono - net diff contra develop confirmado limpo. Test Suite Auditor: CONCERNS -> endereçado - adicionado 1 teste de regressao (subtask feat-032.4, descoberta durante a auditoria) cobrindo a unica logica condicional da feature (fontSet do telegram); validado que a asserção certa e classList.contains (o fontSet dinamico via [fontSet] nao reflete como atributo DOM, so como classe). ./init.sh verde (230 testes -> 231 com o teste novo, 90%+ cobertura). Nenhum outro servico ou pagina fora do escopo tocado (KPI cards e telegram-link mantidos no Material Icons classico)."
     }
   ]
 }
