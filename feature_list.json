@@ -1528,7 +1528,7 @@
           ],
           "validation": "Testes de componente cobrem os tres locales, abertura do date picker e que o valor enviado a API continua yyyy-MM-dd.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-483"
         },
         {
