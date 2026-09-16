@@ -1644,7 +1644,7 @@
           ],
           "validation": "Playwright ou testes de rota cobrem os cinco cadastros e confirmam o layout comum.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-473"
         },
         {

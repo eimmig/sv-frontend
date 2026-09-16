@@ -39,6 +39,13 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ### Fixed
 
+- `shared/catalog-manager` (`feat-024`, telas de cadastro de esporte/liga/mercado/tipster/casa
+  de apostas): `:host` sem padding lateral colava o card de "Nova entrada" no menu lateral;
+  `.catalog-manager__form` em `display: flex` na horizontal (campo Nome + botão "Adicionar" lado
+  a lado) espremia o campo a poucos caracteres em viewports estreitos, chegando a cortar o
+  próprio label. Padding lateral adicionado ao `:host` e formulário trocado para `flex-direction:
+  column` (botão em linha própria) — mesmo padrão já usado por `shared/team-manager`, agora
+  compartilhado pelas 5 telas.
 - `app-language-selector` (`feat-023.1`): o pill expandido (`.language-selector-host`) usava
   `display: block` envolvendo um filho com `width: 100%` — sem uma largura definida no ancestral
   (como na tela de login, onde os controles flutuam sem largura própria), o cálculo de
