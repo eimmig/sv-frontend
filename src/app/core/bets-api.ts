@@ -6,6 +6,7 @@ import { PagedResponse } from './paged-response';
 import { environment } from '../../environments/environment';
 
 export type BetStatus = 'pending' | 'won' | 'lost' | 'void';
+export type BetType = 'pre' | 'live';
 
 export interface CreateBetInput {
   readonly bettingHouseId: string;
@@ -17,7 +18,7 @@ export interface CreateBetInput {
   readonly team1Id: string | null;
   readonly team2Id: string | null;
   readonly description: string | null;
-  readonly betType: string | null;
+  readonly betType: BetType | null;
   readonly playType: string | null;
   readonly stake: number;
   readonly odd: number;
@@ -35,7 +36,7 @@ export interface Bet {
   readonly team1Id: string | null;
   readonly team2Id: string | null;
   readonly description: string | null;
-  readonly betType: string | null;
+  readonly betType: BetType | null;
   readonly playType: string | null;
   readonly stake: number;
   readonly odd: number;

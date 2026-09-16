@@ -69,7 +69,7 @@ describe('Login', () => {
     expect(component['form'].valid).toBe(true);
   });
 
-  it('navigates to /dashboard on successful login', () => {
+  it('navigates to /overview on successful login', () => {
     component['form'].setValue({ slug: 'acme', email: 'ana@acme', password: 'secret' });
 
     component['submit']();
@@ -78,7 +78,7 @@ describe('Login', () => {
       .expectOne(`${environment.apiGatewayUrl}/api/v1/auth/login`)
       .flush({ token: 't', userId: 'u', role: 'MEMBER', mustChangePassword: false });
 
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/dashboard');
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/overview');
     expect(TestBed.inject(Auth).isAuthenticated()).toBe(true);
   });
 

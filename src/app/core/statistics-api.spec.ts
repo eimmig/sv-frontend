@@ -37,9 +37,6 @@ describe('StatisticsApi', () => {
     request.flush({ overall: { totalStaked: 0, netProfit: 0, roi: 0, winRate: 0, settledCount: 0 }, bySport: [], byMarket: [], byBettingHouse: [], monthly: [] });
   });
 
-  // feat-014: wonCount/lostCount/voidCount/preCount/liveCount/avgOdd (stats-service epic-014)
-  // flow through the response unchanged - the extended BetMetrics fields are consumed by the
-  // dashboard's new cards (feat-014.3), not transformed here.
   it('passes through the extended BetMetrics fields (wonCount/lostCount/voidCount/preCount/liveCount/avgOdd)', () => {
     let result: unknown;
     api.get({}).subscribe((dashboard) => (result = dashboard.overall));
@@ -80,8 +77,27 @@ describe('StatisticsApi', () => {
     });
   });
 
-  // feat-015 ("Relatório do período"): real endpoint since stats-service epic-016, never
-  // consumed by the frontend until now.
+  it('passes through the byBetType segment (PRE/LIVE buckets)', () => {
+    let result: unknown;
+    api.get({}).subscribe((dashboard) => (result = dashboard.byBetType));
+
+    const request = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/statistics`);
+    const byBetType = [
+      { dimensionId: 'PRE', dimensionName: 'PRE', metrics: { totalStaked: 700, netProfit: 100, roi: 0.14, winRate: 0.55, settledCount: 30 } },
+      { dimensionId: 'LIVE', dimensionName: 'LIVE', metrics: { totalStaked: 300, netProfit: 50, roi: 0.17, winRate: 0.58, settledCount: 12 } },
+    ];
+    request.flush({
+      overall: { totalStaked: 0, netProfit: 0, roi: 0, winRate: 0, settledCount: 0 },
+      bySport: [],
+      byMarket: [],
+      byBettingHouse: [],
+      byBetType,
+      monthly: [],
+    });
+
+    expect(result).toEqual(byBetType);
+  });
+
   it('getDaily() GETs /api/v1/statistics/daily with the same filter params as get()', () => {
     let result: unknown;
     api.getDaily({ from: '2026-01-01', to: '2026-01-31' }).subscribe((daily) => (result = daily));

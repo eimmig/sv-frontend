@@ -2,10 +2,99 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-09-15
-**Estado:** `feat-001` a `feat-019` e `feat-025` `done` (`feat-020`..`024`, `026`..`029` seguem
-`not-started`). `feat-025` (ponte de navegação Casas de Apostas -> Histórico para movimentação de
-saldo, `epic-025` da raiz) fechada nesta sessão, logo após `feat-019`.
+**Última atualização:** 2026-09-16
+**Estado:** `feat-001` a `feat-030` `done` — backlog deste app esgotado. Nota: a linha anterior
+deste arquivo listava `feat-026`/`027`/`029` como `not-started`, desatualizada em relação ao
+`feature_list.json` (já `done` há mais tempo) — corrigido aqui.
+
+## `feat-022` fechada — date picker e formato localizado para campos de data (2026-09-16)
+
+Fecha `epic-024` da raiz por completo (era o último item pendente daquele epic). 5 subtasks
+(story SV-480, subtasks SV-481..485, PRs #129-133 subtask→feature + #134 feature→develop):
+
+- **`feat-022.1`**: inventário confirmado por `grep` — `period-preset-filter` (compartilhado por
+  dashboard/period-report/catalog-dashboard), `history` (2 pares from/to), `search-statistics`
+  (1 par), `register-bet` (`betDate` único, `datetime-local`).
+- **`feat-022.2`**: `provideNativeDateAdapter()` (sem dependência nova — sem `moment`/`date-fns`/
+  `luxon`, mesma filosofia `Intl` de `core/date-format.ts`) + rebind reativo de locale —
+  `MAT_DATE_LOCALE` sozinho é um DI token estático, então `App` (`app.ts`) registra
+  `effect(() => dateAdapter.setLocale(language.current()))` no construtor, reaproveitando o
+  signal `Language.current` já existente (já dirige `TranslocoService` em todo o app) em vez de
+  escutar `transloco.langChanges$` direto.
+- **`feat-022.3`**: os 3 filtros trocam `input type="date"` por `mat-datepicker` — valor interno
+  passa de `string` pra `Date`, conversão pro contrato `yyyy-MM-dd` move pro limite (reaproveita
+  `toDateOnly()` já existente), sem mudança de query param.
+- **`feat-022.4`** (achado real do Plan Reviewer, corrigido antes de codificar): a ideia inicial
+  de compartilhar 1 `FormControl` entre `mat-datepicker` e `mat-timepicker` foi **rejeitada**
+  depois de ler o código-fonte real do Material instalado (não só os `.d.ts`) — o merge de
+  data/hora é **assimétrico por design**: `MatTimepickerInput` preserva a data ao trocar a hora,
+  mas `MatDatepickerInputBase` não preserva a hora ao trocar a data (`NativeDateAdapter` zera pra
+  meia-noite). Corrigido: `betDate` vira 2 `FormControl` independentes (`betDateOnly`/
+  `betTimeOnly`, nunca compartilham valor), combinados via `setHours`/`setMinutes` só no submit —
+  mesmo princípio de conversão no limite já usado nos filtros.
+- **`feat-022.5`**: testes Playwright reais dos 2 widgets (clique no calendário, hora digitada em
+  formato 24h), QA visual manual (3 locales × 2 temas × 2 viewports — confirmado `dd/mm/yyyy`
+  pt-BR, `d/m/yyyy` es, `m/d/yyyy` en-US, sem problema de layout mobile), 2 achados reais
+  documentados no vault (`docs/TESTING.md`: `getByRole('gridcell', {name: 'N'})` nunca localiza
+  um dia do calendário, o nome acessível vem do `aria-label` do botão interno, não do número
+  visível; `docs/services/web.md`: o gotcha do merge assimétrico, pra reaproveitar se outro campo
+  data+hora aparecer).
+
+`Delivery Reviewer`/`Test Suite Auditor` rodados contra o diff completo (22 arquivos): `PASS`,
+sem achado bloqueante. `./init.sh` verde (cobertura ~91% mantida) nas 5 subtasks. 1 flake do
+Playwright confirmado não-recorrente via `--retries=1` (teste pré-existente não relacionado).
+
+## `feat-024` fechada — espacamento e formulario das telas de cadastro (2026-09-16)
+
+`shared/catalog-manager` (sports/leagues/markets/tipsters) e `shared/team-manager` (`/teams`)
+tinham `:host` sem padding lateral (card colava no menu lateral) e `.catalog-manager__form` em
+`flex-direction: row` (campo Nome + botão Adicionar lado a lado), espremendo o campo a poucos
+caracteres em viewports estreitos. Corrigido para `padding: 24px` + `flex-direction: column`
+(botão em linha própria), aplicado às 6 telas de formulário (5 cadastros + times).
+
+**`Delivery Reviewer`/`Test Suite Auditor` acharam 2 gaps reais antes do merge para `develop`**,
+ambos corrigidos na própria `feature/SV-470` antes do gate pesado: (1) `team-manager` recebeu o
+mesmo fix de padding mas ficou sem cobertura Playwright em `/teams` e sem menção no
+`CHANGELOG.md` — corrigido, `/teams` agora é a 6ª rota testada; (2) a asserção original
+("gap até a sidebar" via bounding-box, threshold `8px`) não provava o fix de padding — ancestrais
+(`app-panel`, chrome do Material) já geram 40-64px de gap sozinhos, confirmado revertendo o
+`:host` padding e vendo o teste continuar verde. Trocado por leitura direta de
+`getComputedStyle(host).paddingLeft`, validada por mutação (reverter falha, restaurar passa).
+Ver `docs/DESIGN-SYSTEM.md` seção "Layout em painéis" para os 2 gotchas documentados.
+
+## `feat-028` fechada — grade mensal de drawdown no dashboard (2026-09-15, mesmo dia)
+
+Fecha `epic-020` da raiz por completo (backlog granular criado e fechado na mesma sessão). Nova
+aba "Drawdown mensal" no `mat-tab-group` já existente do dashboard consolidado — grade dinâmica
+de N mini-gráficos (`shared/monthly-drawdown-chart`, reusa `buildLineChartOption` já existente),
+1 por mês do intervalo selecionado via 2 `<input type="month">`. Fórmula implementada exatamente
+como `docs/STATISTICS.md` — `saldoAtual` (`GET /api/v1/bankroll/balance` sem `at`), **não**
+`saldoFinal` do período (diferença sutil de `period-report-metrics.ts`, confirmada linha a linha
+pelo `Delivery Reviewer`). Módulo puro de cálculo co-localizado em `shared/` (não `pages/
+dashboard/`) — evita um componente compartilhado depender de um módulo de `pages/`.
+
+**2 achados reais, ambos corrigidos antes de fechar**: (1) design — os 2 campos de mês reagindo
+cada um independentemente disparavam requisições sobrepostas quando os dois mudavam (risco da
+resposta desatualizada resolver por último); corrigido batendo os dois atrás de um botão
+"Aplicar" explícito, mesmo padrão do `filterForm` de 5 selects do próprio `dashboard.ts`. (2)
+regressão pré-existente de `feat-021` (já em `develop`/`main`): `e2e/register-bet.spec.ts` nunca
+ganhou o mock de `/api/v1/teams` quando aquela feature acrescentou o catálogo de times ao
+`forkJoin` do formulário — sem ele, `forkJoin` nunca completa e **nenhum** campo do formulário
+fica interativo (não só o de time). Só apareceu rodando a suíte e2e inteira (`npx playwright
+test`), não o arquivo tocado — lição registrada em `docs/TESTING.md`.
+
+QA visual real (screenshots Playwright, desktop/mobile × claro/escuro) achou e corrigiu um bug
+real de responsividade mobile (filtro não quebrava linha, cortando os rótulos dos 2 campos).
+
+`Delivery Reviewer` (skill completa, não condensada): PASS, sem achado, com verificação
+independente da fórmula (`saldoAtual` vs `saldoFinal`) e da causa raiz da regressão de `feat-021`.
+2 achados reais do `SonarCloud` no gate `story -> develop` (não achados do review) corrigidos:
+`BLOCKER typescript:S2699` (teste sem assertion reconhecida — `httpMock.expectNone()` não conta
+pro Sonar) e `MAJOR typescript:S4165` (reassignment redundante no loop de meses — reescrito como
+índice linear de mês, sem par mutável ano/mês).
+
+Story SV-449 (subtasks SV-450/451/452), PRs #103/#104/#105/#106, CI+SonarCloud verdes.
+`./init.sh` (196 testes, 90%+ cobertura) e suíte e2e completa (47 testes) verdes.
 
 ## `feat-015` fechada — página "Relatório do período" (2026-09-11)
 
@@ -1299,3 +1388,142 @@ totalmente evidenciado). `docs/CONVENTIONS.md` (raiz) ganhou o gotcha de grid bl
 
 Story SV-403, subtasks SV-404/405/406, PRs #89/#90/#91 (subtasks→feature, fast-forward) + PR de
 `feature/SV-403`→`develop` (CI+SonarCloud verdes). `./init.sh` do app e da raiz verdes.
+
+## `feat-027` fechada — tela de vínculo da conta Telegram (2026-09-15)
+
+`epic-027` da raiz (cobre `feat-026` + `feat-027` — só `feat-027` fecha nesta sessão; `feat-026`
+segue `REVISE`, decisão de dono de `byBetType` ainda pendente do usuário, ver `plan_review`
+daquela feature). `Plan Reviewer` já tinha rodado `READY` numa sessão anterior — contrato
+confirmado em `docs/services/auth-service.md`: `POST /api/v1/telegram-links` sem corpo, só
+`Authorization: Bearer` (Gateway resolve `X-User-Id`/`X-Tenant-Id` do token), `201`
+`{code, expiresAt}`.
+
+Implementação sem desvio do plano: `TelegramLinkApi` novo (`core/telegram-link-api.ts`, mesmo
+padrão de `BettingHousesApi`/`SettingsApi`), tela `pages/telegram-link` reaproveitando
+`submitForm`/`Panel`/`PanelLayout` já existentes — nenhum componente ou padrão novo precisou ser
+criado. Rota `/telegram-link` (`authGuard`) e entrada em `app-side-nav`'s `secondaryLinks` (ícone
+`telegram`, sem par de Dashboard — não é catálogo). i18n nos 3 locales.
+
+Residual aceito do plan review (chamar o endpoint 2x com um código pendente — substitui vs.
+`409`) não exigiu decisão: a tela sempre reflete a resposta do último `POST`, correta nos dois
+casos (substitui o código exibido, ou mostra o RFC 7807 de `409`/`429`) sem acoplamento a qual
+comportamento o backend realmente tem.
+
+QA visual real via screenshots contra `ng serve`: desktop (1440px) e mobile (390px), claro e
+escuro — 4 combinações, sem achado. `ng test`: 201/201 (suíte inteira). Playwright completo:
+50/50 (3 e2e novos em `e2e/telegram-link.spec.ts`: geração de código, erro RFC 7807, navegação
+pelo side-nav). `docs/services/web.md` ganhou a seção da feature.
+
+Story SV-453, subtasks SV-454/455/456, PRs #107/#108 (subtasks→feature, CI verde) + PR de
+`feature/SV-453`→`develop` (gate completo). `./init.sh` do app e da raiz verdes.
+
+## `feat-026` fechada — paridade betType (mat-select) + byBetType (dashboard PRE/LIVE) (2026-09-15, mesmo dia)
+
+Fecha `epic-027` da raiz por completo (junto com `feat-027`, fechada mais cedo na mesma sessão).
+`Plan Reviewer` tinha voltado `REVISE`: a parte 2 (byBetType) competia com `feat-029`/`epic-021`
+pelo mesmo campo em `core/statistics-api.ts` (comentário pré-existente reservava `byBetType` pra
+`epic-021`). Decisão levada ao usuário via `AskUserQuestion` antes de codificar: **`feat-026`
+passa a ser a dona de `byBetType`** — `feat-029` (ainda não implementada) só reusa o tipo depois.
+Decisão registrada no `plan_review` de `feat-026` e `feat-029`.
+
+**`feat-026.1`**: `register-bet`'s `betType` era `<input type="text">` livre, embora
+`CreateBetRequest.betType` (bets-service) seja um enum `BetType` (`@JsonProperty("pre"/"live")`)
+há várias sessões — trocado por `mat-select` com 3 opções (`pre`/`live`/vazio). Sem quebra: o
+campo já era opcional/nulo no backend, só não validava valores fora do enum na tela.
+
+**`feat-026.2`**: `byBetType: SegmentedBetMetrics[]` adicionado a `StatisticsDashboard`, comentário
+de out-of-scope removido. Reusa `shared/catalog-dashboard` (já genérico, `data()[segment()]`) em
+vez de um componente novo — só mais uma entrada em `CatalogSegment` e uma 6ª rota
+(`/bet-type-dashboard`), sem par de "Cadastrar" (não é catálogo gerenciável).
+
+QA visual real (`ng serve`): desktop 1440px + mobile 390px, claro/escuro, dashboard novo +
+`mat-select` do formulário — sem achado. `ng test` 203/203 (suíte inteira). Playwright 52/52
+(suíte inteira, 2 e2e novos: `register-bet` com PRE/LIVE via `mat-select`, `bet-type-dashboard`
+via nav real). `docs/services/web.md` ganhou a seção "Paridade betType/byBetType" e corrigiu a
+nota desatualizada de `epic-015` que ainda atribuía `byBetType` a `epic-021`.
+
+Story SV-457, subtasks SV-458/459/460, PRs #111/#112 (subtask→feature, CI verde) + PR de
+`feature/SV-457`→`develop` (gate completo). `./init.sh` do app e da raiz verdes.
+
+## `feat-029` fechada — tela "Visão geral" pós-login, fecha `epic-021` da raiz (2026-09-15, mesmo dia)
+
+Continuação direta do fechamento de `epic-027` (entrada anterior): as 2 dependências que
+bloqueavam `feat-029` (ownership de `byBetType`, roteamento de bankroll/settings no
+`api-gateway`) fecharam na mesma sessão, liberando `epic-021`. Restava 1 decisão de UX marcada
+como "não bloqueante" desde a criação do backlog: se a tela nova substitui o redirect pós-login
+atual (`/dashboard`) ou vira só mais um link na nav. Levada ao usuário via `AskUserQuestion` antes
+de codificar — **escolheu substituir o redirect**: `login.ts` agora navega pra `/overview` em vez
+de `/dashboard` (nos 2 pontos: sessão já autenticada e submit bem-sucedido), `/dashboard` virou
+item normal de `app-side-nav` (perdeu só o status de landing page, nada mais mudou nele).
+
+4 subtasks, sem desvio do `Plan Reviewer` (já `READY` de mais cedo na sessão):
+
+- **`feat-029.1`**: `pages/overview/overview-metrics.ts` (`resolveEarliestDate`,
+  `buildLifetimeCurve`, `buildMonthlyBalances`) — funções puras, 100% cobertura. "Início do
+  histórico" usa o primeiro item do array esparço/ordenado de `GET /api/v1/statistics/daily` sem
+  `from`/`to` como proxy (decisão já prevista no plan review, sem endpoint dedicado).
+- **`feat-029.2`**: componente `Overview` com os 4 cards vitalícios. `roiMedioDiario` extraído de
+  `period-report-metrics.ts` (antes só inline ali) pra reuso sem duplicar fórmula — exatamente o
+  que o plano pedia. Busca `daily`/`statistics`/`bankroll`/`settings` em paralelo
+  (`forkJoin`), depois decide via `switchMap` se busca `saldoInicioHistorico` (pulado inteiramente
+  pra um tenant sem histórico).
+- **`feat-029.3`**: tabela mensal Jan-Dez + troca do redirect pós-login. **Achado real, diverge da
+  descrição do próprio epic**: `aggregateByMonth` (`stats-service`) não escopa `monthly` ao ano
+  corrente quando a chamada não tem `from`/`to` — agrupa `(year, month)` sobre o histórico inteiro
+  do tenant, sem filtro de data nenhum. `buildMonthlyTable` filtra por ano no cliente antes de
+  casar cada mês com seu `BetMetrics` (testado explicitamente: 2 anos diferentes com o mesmo
+  número de mês não se misturam). Documentado em `docs/API-CONTRACTS.md` e
+  `docs/services/web.md`.
+- **`feat-029.4`**: fechamento. QA visual real (`ng serve`): desktop 1440px + mobile 390px,
+  claro/escuro, sem achado.
+
+**Achado real de teste, não de produto** (só apareceu no gate pesado, CI): `telegram-link.spec.ts`
+e `overview.spec.ts` sobrescreviam `navigator.language` sem restaurar no `afterEach` — diferente
+de todo outro spec do app que já faz isso (`core/language.spec.ts`, `history.spec.ts`). A
+sobrescrita vazava pro próximo arquivo de teste que o Vitest escalasse no mesmo worker, quebrando
+uma asserção de formatação numérica em `period-report.spec.ts` sem nenhuma relação óbvia com a
+causa — não reproduzia localmente (depende do sharding, que difere entre a máquina local e o
+runner de CI). Corrigido nos 2 arquivos, documentado em `docs/TESTING.md`. 2 achados de
+SonarCloud no gate pesado (mesma classe já vista antes: teste sem assertion reconhecida;
+`arr[arr.length-1]` -> `arr.at(-1)`) corrigidos antes do merge.
+
+`ng test` 221/221 (suíte inteira), Playwright 55/55 (suíte inteira, 3 e2e novos em
+`e2e/overview.spec.ts`).
+
+Story SV-461, subtasks SV-462/463/464/465, PRs #115/#116/#117/#118 (subtask→feature, CI verde) +
+PR de `feature/SV-461`→`develop` (gate completo, incluindo os 2 achados de SonarCloud). `./init.sh`
+do app e da raiz verdes. **Fecha `epic-021` da raiz por completo.**
+
+## `feat-023` fechada — corrigir sobreposição do seletor de idioma no login (2026-09-15, mesmo dia)
+
+Achado de usuário (screenshot real): pill do idioma sobreposto ao botão de tema no login,
+cortando parte do ícone. Continua o backlog de `epic-024` da raiz (times/jogadores — este é o
+item de UI que ficou pendente daquela rodada). Investigação real (`getBoundingClientRect()`
+contra o dev server, não suposição a partir do CSS) achou a causa exata em
+`core/language-selector/language-selector.scss`: `.language-selector-host` usava `display:
+block` envolvendo um filho (`.language-selector`) com `width: 100%`. Funciona quando um ancestral
+tem largura definida (a sidebar, onde este componente também é usado, sempre deu certo) — quebra
+quando o container também se auto-dimensiona pelo conteúdo (a tela de login, um `flex` sem
+largura própria). Medido: o `mat-select` renderizava 13–26px mais largo que o próprio pill,
+vazando sobre o `theme-toggle` adjacente. Trocado pra `display: flex` (mesmo modo de layout do
+filho — Flexbox tem regra explícita pra filho percentual em container auto-dimensionado, CSS
+Flexbox §9.9). Sem efeito na sidebar.
+
+**Achado secundário, mesma investigação**: `login.scss` usava `min-height: 100dvh` sem
+`overflow-y`, deixando o formulário ficar atrás dos controles flutuantes em viewports curtos sem
+nenhuma forma de rolar até ele (`.app-shell__content` clipa com `overflow:hidden`). Corrigido pra
+`height: 100%` + `overflow-y: auto` (padrão já usado por outras páginas) + `padding-bottom`
+reservando o espaço dos controles + `margin: auto 0` no lugar de `align-items: center` sozinho
+(técnica "flexbug #3"). Residual aceito, documentado: viewport extremamente curto (celular em
+paisagem <450px) ainda mostra sobreposição parcial até o usuário rolar — tocar no padding do
+`shared/panel` compartilhado eliminaria isso mas arriscaria regressão em toda página que o usa.
+
+QA visual real (`ng serve`): desktop, mobile (320–414px), viewport curto/paisagem, claro/escuro,
+3 locales — sem achado além do residual documentado. `ng test` 221/221 (suíte inteira). Playwright
+64/64 (suíte inteira, 9 e2e novos em `e2e/login-layout.spec.ts`: sem sobreposição em 3 locales x 2
+temas, navegação por teclado). `docs/CONVENTIONS.md` ganhou o gotcha reutilizável (`display: block`
++ filho `width: 100%` sem largura de ancestral), `docs/services/web.md` documentou a seção.
+
+Story SV-466, subtasks SV-467/468/469, PRs #120/#121/#122 (subtask→feature, CI verde) + PR de
+`feature/SV-466`→`develop` (gate completo, incluindo SonarCloud). `./init.sh` do app e da raiz
+verdes.

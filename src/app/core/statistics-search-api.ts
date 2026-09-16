@@ -44,11 +44,8 @@ export interface StatisticsTeam {
 }
 
 /**
- * GET /api/v1/statistics/search and GET /api/v1/statistics/teams - the
- * "Buscar Estatisticas" pre-bet decision screen (feat-012), distinct from
- * the dashboard bundle in statistics-api.ts. Both endpoints are separate
- * from the dashboard's GET /api/v1/statistics on purpose (see
- * docs/API-CONTRACTS.md): sport+league are mandatory here.
+ * GET /api/v1/statistics/search and GET /api/v1/statistics/teams, distinct from the dashboard
+ * bundle in statistics-api.ts - sport+league are mandatory here (see docs/API-CONTRACTS.md).
  */
 @Injectable({ providedIn: 'root' })
 export class StatisticsSearchApi {

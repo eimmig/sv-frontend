@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-function statisticsBundle(bySport: unknown[]) {
+function statisticsBundle(bySport: unknown[], byBetType: unknown[] = []) {
   return {
     overall: {
       totalStaked: 0,
@@ -20,6 +20,7 @@ function statisticsBundle(bySport: unknown[]) {
     byBettingHouse: [],
     byLeague: [],
     byTipster: [],
+    byBetType,
     monthly: [],
   };
 }
@@ -93,5 +94,33 @@ test.describe('shared/catalog-dashboard (ranking per segment)', () => {
     await page.goto('/leagues-dashboard');
 
     await expect(page.getByTestId('catalog-dashboard-error')).toContainText('Filtro inválido.');
+  });
+
+  test('opens /bet-type-dashboard from the nav and shows the PRE/LIVE buckets', async ({ page }) => {
+    await page.route('**/api/v1/statistics*', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(
+          statisticsBundle(
+            [],
+            [
+              { dimensionId: 'PRE', dimensionName: 'PRE', metrics: { totalStaked: 700, netProfit: 100, roi: 0.14, winRate: 0.55, settledCount: 30, wonCount: 17, lostCount: 13, voidCount: 0, preCount: 30, liveCount: 0, avgOdd: 1.9 } },
+              { dimensionId: 'LIVE', dimensionName: 'LIVE', metrics: { totalStaked: 300, netProfit: 50, roi: 0.17, winRate: 0.58, settledCount: 12, wonCount: 7, lostCount: 5, voidCount: 0, preCount: 0, liveCount: 12, avgOdd: 2.1 } },
+            ],
+          ),
+        ),
+      }),
+    );
+
+    await page.goto('/dashboard');
+    await page.getByTestId('nav-bet-type-dashboard').click();
+
+    await expect(page).toHaveURL(/\/bet-type-dashboard$/);
+    const rows = page.getByTestId('catalog-dashboard-row');
+    await expect(rows).toHaveCount(2);
+    // LIVE has the higher ROI (17% > 14%) and must rank first.
+    await expect(rows.first()).toContainText('LIVE');
+    await expect(rows.last()).toContainText('PRE');
   });
 });

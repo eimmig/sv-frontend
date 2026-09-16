@@ -33,7 +33,7 @@ test.describe('RF01/RF02 - authentication and tenant user management', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
   });
 
-  test('successful login navigates to the dashboard and shows the nav', async ({ page }) => {
+  test('successful login navigates to the overview screen and shows the nav', async ({ page }) => {
     await mockLogin(page, { token: 'v4.local.token', userId: 'u1', role: 'ADMIN', mustChangePassword: false });
     await page.goto('/login');
 
@@ -42,7 +42,7 @@ test.describe('RF01/RF02 - authentication and tenant user management', () => {
     await page.getByTestId('login-password').fill('secret');
     await page.getByTestId('login-submit').click();
 
-    await expect(page).toHaveURL(/\/dashboard$/);
+    await expect(page).toHaveURL(/\/overview$/);
     await expect(page.getByTestId('app-nav')).toBeVisible();
   });
 

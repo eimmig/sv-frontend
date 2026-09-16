@@ -39,9 +39,6 @@ test.describe('epic-017 - "Relatório do período" page', () => {
         }),
       );
     });
-    // "**/api/v1/statistics*" (single trailing star) does NOT match "/api/v1/statistics/daily" -
-    // Playwright's "*" glob excludes "/", only "**" crosses path segments (real gotcha hit while
-    // QA-testing this feature, see feat-015.4 evidence). One route branches on the sub-path.
     await page.route('**/api/v1/statistics**', (route) => {
       const url = new URL(route.request().url());
       if (url.pathname.endsWith('/daily')) {
@@ -93,6 +90,37 @@ test.describe('epic-017 - "Relatório do período" page', () => {
     await page.getByRole('option', { name: 'Last month' }).click();
 
     await expect.poll(() => lastFrom).not.toBe(initialFrom);
+  });
+
+  // feat-022: proves the "Custom" preset's real mat-datepicker widgets (calendar click, not
+  // .fill() on a native input) drive the from/to query params - period-preset-filter.ts unit
+  // tests already cover the boundary conversion, this proves the actual UI wiring.
+  test('picks a custom date range via the datepicker calendars', async ({ page }) => {
+    let lastFrom: string | null = null;
+    let lastTo: string | null = null;
+    await page.route('**/api/v1/statistics**', (route) => {
+      const url = new URL(route.request().url());
+      if (url.pathname.endsWith('/daily')) {
+        return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) });
+      }
+      lastFrom = url.searchParams.get('from');
+      lastTo = url.searchParams.get('to');
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(statisticsBundle()) });
+    });
+
+    await page.goto('/period-report');
+    await expect(page.getByTestId('period-report-roi-bankroll')).toBeVisible();
+
+    await page.getByTestId('period-preset-select').click();
+    await page.getByRole('option', { name: 'Custom' }).click();
+
+    await page.getByTestId('period-preset-custom-from-toggle').click();
+    await page.getByRole('button', { name: 'September 5, 2026' }).click();
+    await page.getByTestId('period-preset-custom-to-toggle').click();
+    await page.getByRole('button', { name: 'September 10, 2026' }).click();
+
+    await expect.poll(() => lastFrom).toBe('2026-09-05');
+    await expect.poll(() => lastTo).toBe('2026-09-10');
   });
 
   test('shows the RFC 7807 detail when the statistics request fails', async ({ page }) => {

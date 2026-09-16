@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { SearchStatistics } from './search-statistics';
@@ -130,7 +131,7 @@ describe('SearchStatistics', () => {
           translocoConfig: { availableLangs: ['en-US'], defaultLang: 'en-US' },
         }),
       ],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideNativeDateAdapter()],
     }).compileComponents();
   });
 
@@ -225,6 +226,26 @@ describe('SearchStatistics', () => {
     expect(el.querySelector('[data-testid="search-statistics-empty-before-search"]')).toBeNull();
     expect(el.querySelector('[data-testid="search-statistics-empty-result"]')).toBeTruthy();
     expect(el.querySelector('[data-testid="search-statistics-cards"]')).toBeNull();
+  });
+
+  it('sends the from/to date picker values as yyyy-MM-dd query params', () => {
+    createComponent();
+    flushOptions();
+    fixture.detectChanges();
+    fixture.componentInstance['filterForm'].controls.sportId.setValue('sports-1');
+    httpMock.expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/statistics/teams`).flush([]);
+    fixture.componentInstance['filterForm'].controls.leagueId.setValue('leagues-1');
+    fixture.componentInstance['filterForm'].controls.from.setValue(new Date(2026, 0, 1));
+    fixture.componentInstance['filterForm'].controls.to.setValue(new Date(2026, 0, 31));
+    fixture.componentInstance['search']();
+
+    const request = httpMock.expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/statistics/search`);
+    expect(request.request.params.get('from')).toBe('2026-01-01');
+    expect(request.request.params.get('to')).toBe('2026-01-31');
+    request.flush({
+      summary: { betCount: 0, totalStaked: 0, netProfit: 0, roi: 0, winRate: 0, avgOdd: 0, maxDrawdown: 0, sharpeRatio: null },
+      timeline: [],
+    });
   });
 
   it('renders all summary cards, including betCount, on a real result', () => {

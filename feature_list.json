@@ -1484,14 +1484,14 @@
         "feat-014",
         "feat-015"
       ],
-      "status": "not-started",
-      "plan_review": "Plan Reviewer 2026-09-15: REVISE. Evidencia: @angular/material 22.1.6 instalado, mas MatDatepicker NUNCA foi usado no app - todos os campos de data hoje sao input nativo type=\"date\" (period-preset-filter.html) ou type=\"datetime-local\" (register-bet.html, betDate com hora+data). core/date-format.ts ja faz formatacao de EXIBICAO por locale via Intl.DateTimeFormat (padrao reaproveitavel), mas isso e ortogonal ao DateAdapter que o MatDatepicker exige para o proprio picker (MAT_DATE_LOCALE/provideNativeDateAdapter ou provideMomentDateAdapter) - nenhum provider desses existe hoje. MAJOR 1: MAT_DATE_LOCALE e um DI token estatico; o app troca idioma em runtime via transloco (language-selector ja existe) - o plano nao tem subtask pra rebind do locale do datepicker quando o usuario troca de idioma sem reload de pagina (sem isso o calendario fica preso no locale do boot). MAJOR 2: betDate e datetime-local (data E hora) - MatDatepicker só cobre a parte de data; description do inventario (022.1) trata 'campos de data e data/hora' como o mesmo problema, mas exige verificar se @angular/material 22 expõe mat-timepicker estavel (adicionado nas versoes recentes do Material, confirmar na documentacao oficial da versao instalada antes de comprometer o design) ou compor date+time separado - decisao de UX que falta no plano. Amendment: adicionar subtask explicita entre 022.1 e 022.2 para (a) escolher/confirmar DateAdapter e prover MAT_DATE_LOCALE reativo ao idioma ativo, (b) decidir tratamento de datetime-local (mat-timepicker vs. 2 controles) antes de tocar em register-bet.",
-      "jira": "",
+      "status": "done",
+      "plan_review": "Plan Reviewer 2026-09-15 (1a rodada): REVISE. MAJOR 1 (rebind reativo de locale) e MAJOR 2 (decisao datetime-local) - ver historico completo na 2a rodada abaixo. Plan Reviewer 2026-09-16 (2a rodada): REVISE, corrigido antes de codificar. MAJOR 1 resolvido sem exigir decisao do usuario: reaproveitar core/language.ts (Language.current signal, ja providedIn root e ja dirige TranslocoService em todo o app) em vez de escutar transloco.langChanges$ direto - effect(() => dateAdapter.setLocale(language.current())) no construtor de App (app.ts), provideNativeDateAdapter() (sem dependencia nova, mesma filosofia Intl de core/date-format.ts). MAJOR 2 resolvido em 2 etapas: primeiro confirmado que @angular/material 22.1.6 expoe mat-timepicker estavel (entry point real no exports map, fonte sem marca de experimental); a hipotese inicial de compartilhar 1 FormControl entre datepicker e timepicker (formControlName duplicado) foi REJEITADA depois de ler o codigo-fonte real (fesm2022/datepicker.mjs/timepicker.mjs, nao so os .d.ts) - o merge de data/hora e ASSIMETRICO por design do proprio Material (MatTimepickerInput preserva a data ao trocar a hora; MatDatepickerInputBase nao preserva a hora ao trocar a data, NativeDateAdapter zera pra meia-noite) - compartilhar valor resetaria a hora silenciosamente ao trocar a data, defeito real de UX numa tela regida pelas 8 regras de ouro de Shneiderman (register-bet, RF04). Corrigido: betDate vira 2 FormControl independentes (betDateOnly/betTimeOnly), nunca compartilham valor, combinados so no submit via setHours/setMinutes - ver feat-022.4. Nenhuma decisao exige o usuario - tudo resolvido lendo o codigo-fonte real da lib instalada.",
+      "jira": "SV-480",
       "subtasks": [
         {
           "id": "feat-022.1",
           "name": "Inventariar campos de data do frontend",
-          "detail": "Mapear todos os campos de data e data/hora nas telas e componentes compartilhados antes de escolher a implementacao comum.",
+          "detail": "Mapear todos os campos de data e data/hora nas telas e componentes compartilhados antes de escolher a implementacao comum. Confirmado por grep: period-preset-filter.html (shared, consumido por dashboard/period-report/catalog-dashboard) com customFrom/customTo string yyyy-MM-dd via ngModel+signal; history.html com 2 pares from/to (aba apostas e aba financeiro) via Reactive Form; search-statistics.html com 1 par from/to via Reactive Form; register-bet.html com betDate unico (datetime-local, string yyyy-MM-ddTHH:mm hoje, convertido pra ISO so no submit via nowForDatetimeLocal()/new Date(raw.betDate).toISOString() - mesmo padrao de conversao no limite ja em uso, so o tipo do valor interno muda de string pra Date).",
           "checklist": [
             "Criar aposta usa date picker e data/hora do evento conforme o dominio.",
             "Filtros de periodo, historico, relatorio e dashboards sao incluidos no inventario.",
@@ -1499,26 +1499,56 @@
           ],
           "validation": "Inventario revisado sem campos de data fora do escopo ou conversoes duplicadas.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-481"
         },
         {
           "id": "feat-022.2",
-          "name": "Adicionar date picker e formatacao por locale",
-          "detail": "Aplicar o componente de selecao de data do design system e configurar exibicao pt-BR/en-US/es sem quebrar datas de filtros ou formularios.",
+          "name": "Providers do DateAdapter com rebind reativo de locale",
+          "detail": "Amendment do Plan Reviewer (2026-09-16), resolvido com evidencia antes de tocar em qualquer campo de data. DateAdapter: provideNativeDateAdapter() (@angular/material/core) em app.config.ts - sem dependencia nova (moment/date-fns/luxon nao instalados), mesma filosofia Intl ja usada em core/date-format.ts. Rebind reativo: MAT_DATE_LOCALE e estatico, mas o app ja tem core/language.ts (Language, providedIn: root) com o signal current() que dirige TranslocoService.setActiveLang - reaproveitar esse mecanismo existente em vez de escutar transloco.langChanges$ direto: injetar DateAdapter + Language em App (app.ts, componente raiz) e registrar effect(() => dateAdapter.setLocale(language.current())) no construtor - roda pelo menos 1x na inicializacao (fixa o locale certo antes do primeiro datepicker abrir) e de novo toda vez que o usuario trocar idioma sem reload. mat-timepicker (novo em @angular/material 22, confirmado instalado - node_modules/@angular/material/timepicker com entry point exportado, MatTimepicker/MatTimepickerInput usam o MESMO DateAdapter do datepicker) tambem se beneficia do mesmo rebind, sem provider separado.",
           "checklist": [
-            "Campos de data exibem date picker com teclado e acessibilidade.",
-            "Formato visivel acompanha o idioma ativo e nao fica preso ao formato americano.",
-            "Campos de data/hora preservam hora e timezone definidos pelo dominio.",
-            "Conversao para yyyy-MM-dd ou ISO ocorre no limite com a API, nao no template."
+            "provideNativeDateAdapter() adicionado a app.config.ts.",
+            "App (app.ts) injeta DateAdapter e Language, effect() chama dateAdapter.setLocale(language.current()).",
+            "Teste de componente prova que trocar Language.current() rebinda o locale do DateAdapter (nao só que o provider existe)."
           ],
-          "validation": "Testes de componente cobrem os tres locales, abertura do date picker e conversao enviada ao backend.",
+          "validation": "Teste prova o rebind reativo fim a fim (mudar locale -> DateAdapter.getLocale() muda), nao so a existencia do provider.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-482"
         },
         {
           "id": "feat-022.3",
+          "name": "Aplicar mat-datepicker aos campos de data (filtros)",
+          "detail": "period-preset-filter (customFrom/customTo), history (2 pares) e search-statistics (1 par): trocar input nativo type=\"date\" por mat-datepicker. Valor interno passa de string (yyyy-MM-dd) pra Date - conversao pra yyyy-MM-dd move pro limite (period-preset-filter: dentro do effect() que hoje ja monta o PeriodRange antes de rangeChange.emit(), reusando toDateOnly() ja existente; history/search-statistics: no metodo que monta o filtro a partir de form.value antes de chamar a API, nao no template). MatDatepickerModule/MatDatepickerToggle importados nos 3 componentes.",
+          "checklist": [
+            "Campos de data exibem date picker com teclado e acessibilidade (mat-datepicker-toggle).",
+            "Formato visivel acompanha o idioma ativo (DateAdapter, feat-022.2) e nao fica preso ao formato americano.",
+            "Conversao pra yyyy-MM-dd ocorre no limite (metodo/effect que monta a chamada a API), nao no template.",
+            "period-preset-filter, history e search-statistics continuam emitindo/enviando exatamente o mesmo contrato yyyy-MM-dd de antes - sem mudanca de query param."
+          ],
+          "validation": "Testes de componente cobrem os tres locales, abertura do date picker e que o valor enviado a API continua yyyy-MM-dd.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-483"
+        },
+        {
+          "id": "feat-022.4",
+          "name": "register-bet: betDate vira mat-datepicker + mat-timepicker (2 controles independentes)",
+          "detail": "Amendment do Plan Reviewer, 2a rodada (2026-09-16): betDate e o unico campo data+hora do app - confirmado @angular/material 22.1.6 expoe mat-timepicker estavel (mesmo DateAdapter do datepicker, entry point real sem marca de experimental). Rejeitado compartilhar 1 FormControl entre os 2 pickers (formControlName duplicado) - leitura direta da fonte real (fesm2022/datepicker.mjs/timepicker.mjs, nao so os .d.ts) confirmou merge ASSIMETRICO por design do proprio Material: MatTimepickerInput._assignUserSelection preserva a data ao trocar a hora (le this.value() antes de aplicar setTime), mas MatDatepickerInputBase._registerModel so repassa a selecao do calendario direto, sem merge - e NativeDateAdapter._createDateWithOverflow zera a hora pra meia-noite. Trocar a data resetaria silenciosamente a hora ja digitada (defeito real de UX numa tela regida pelas 8 regras de ouro de Shneiderman). Correcao: betDate (FormControl unico) vira 2 FormControl independentes - betDateOnly (Date, so data) e betTimeOnly (Date, so hora - leitura restrita a getHours()/getMinutes(), a parte de data do valor do timepicker e sempre descartavel, MatTimepicker.generateOptions ancora as opcoes em adapter.today() por design) - cada um so e tocado pelo seu proprio picker, sem contaminacao cruzada. Combinacao final (setHours/setMinutes nativos sobre betDateOnly) so no submit, mesmo lugar onde hoje ja existe new Date(raw.betDate).toISOString() - mesmo principio de conversao no limite ja usado no resto do app.",
+          "checklist": [
+            "register-bet.html: 2 mat-form-field distintos - input matDatepicker ligado a betDateOnly, input matTimepicker ligado a betTimeOnly.",
+            "register-bet.ts: betDateOnly/betTimeOnly (Date | null) no FormGroup; nowForDatetimeLocal() substituida por defaults Date equivalentes; combinacao setHours/setMinutes(betDateOnly, betTimeOnly.getHours(), betTimeOnly.getMinutes()) so no metodo de submit, produzindo o Date final antes de .toISOString().",
+            "Teste de componente prova que trocar a data nao afeta a hora ja setada e vice-versa (garantido por construcao - controles nunca compartilham valor).",
+            "Teste de componente prova que o Date final combinado no submit bate com data+hora escolhidos separadamente.",
+            "Conversao final pro ISO enviado a bets-service continua identica ao formato de hoje (POST /api/v1/bets, campo betDate)."
+          ],
+          "validation": "Teste de componente prova isolamento data/hora por construcao e o ISO final enviado ao backend inalterado.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-484"
+        },
+        {
+          "id": "feat-022.5",
           "name": "Atualizar testes, QA visual e documentacao",
           "detail": "Validar a experiencia nos fluxos que usam periodo e registrar qualquer convencao nova de locale ou timezone.",
           "checklist": [
@@ -1530,11 +1560,11 @@
           ],
           "validation": "Suite do frontend verde e contratos tecnicos de data preservados.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-485"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-16 (story SV-480, subtasks SV-481..485, PRs #129-133 subtask->feature + #134 feature->develop, todos com CI verde, #134 com SonarCloud verde). feat-022.1 mapeou os 4 sites de campo de data (period-preset-filter, compartilhado por dashboard/period-report/catalog-dashboard; history, 2 pares; search-statistics, 1 par; register-bet, betDate unico). feat-022.2 adicionou provideNativeDateAdapter() (sem dependencia nova) e rebind reativo de locale (effect() em App reaproveitando o signal Language.current ja existente, em vez de escutar transloco direto). feat-022.3 trocou os 3 filtros de input nativo type=date para mat-datepicker, movendo a conversao pro contrato yyyy-MM-dd pro limite (reaproveitando toDateOnly() ja existente) - sem mudanca de query param. feat-022.4 (achado real, corrigido antes de codificar): compartilhar 1 FormControl entre mat-datepicker e mat-timepicker foi rejeitado depois de ler o codigo-fonte real do Material - o merge de data/hora e assimetrico por design (trocar a data zera a hora pra meia-noite); betDate virou 2 FormControl independentes (betDateOnly/betTimeOnly), combinados so no submit. feat-022.5 adicionou testes Playwright reais dos 2 widgets (clique real no calendario, hora digitada), QA visual manual (3 locales x 2 temas x 2 viewports, formato de data correto em todos - dd/mm/yyyy pt-BR, d/m/yyyy es, m/d/yyyy en-US) e documentou 2 achados reais no vault (gotcha de locator do mat-datepicker em docs/TESTING.md; gotcha do merge assimetrico em docs/services/web.md). Delivery Reviewer e Test Suite Auditor rodados contra o diff completo (22 arquivos): PASS, sem achado bloqueante. ./init.sh verde (cobertura ~91% mantida) em todas as 5 subtasks. 1 flake do Playwright confirmado nao-recorrente via retry (teste pre-existente nao relacionado). Fecha epic-024 da raiz por completo - ultimo item pendente daquele epic."
     },
     {
       "id": "feat-023",
@@ -1543,9 +1573,9 @@
       "dependencies": [
         "feat-018"
       ],
-      "status": "not-started",
+      "status": "done",
       "plan_review": "Plan Reviewer 2026-09-15: READY WITH CONCERNS. Evidencia: app-shell__floating-controls (app.scss, position:fixed, left/bottom:16px, z-index:10, sem overflow nem largura fixa) e language-selector.html (mat-icon 'language' 18px + mat-select, sem CSS que corte o icone) nao mostram causa obvia de corte - a suspeita mais provavel e o min-width:120px do mat-select (fix de feat-018.2, comentado no proprio SCSS como resolvendo um bug DIFERENTE: painel de opcoes largo demais/estreito demais, nao o icone) interagindo com o espaco apertado do canto da tela em telas pequenas, ou z-index do app-login-border-trace (animacao autoral de feat-018) sobrepondo o canto se a viewport for pequena o suficiente pro card de login alcancar bottom-left. MINOR: subtask 023.1 ja prve investigar a causa antes de corrigir (correto) - so reforcar que nao deve assumir que o fix de feat-018.2 (min-width do painel) e a mesma causa deste bug (sintoma diferente: icone cortado, nao painel estreito).",
-      "jira": "",
+      "jira": "SV-466",
       "subtasks": [
         {
           "id": "feat-023.1",
@@ -1558,8 +1588,8 @@
           ],
           "validation": "QA visual confirma o seletor inteiro e clicavel em desktop e mobile.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-467"
         },
         {
           "id": "feat-023.2",
@@ -1572,8 +1602,8 @@
           ],
           "validation": "Playwright cobre os tres locales e os dois temas na tela de login.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-468"
         },
         {
           "id": "feat-023.3",
@@ -1587,11 +1617,11 @@
           ],
           "validation": "Suite do frontend verde, QA visual aprovado e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-469"
         }
       ],
-      "evidence": ""
+      "evidence": "Achado de usuario confirmado e corrigido: causa raiz real medida contra o dev server (getBoundingClientRect), nao suposta a partir do CSS. .language-selector-host usava display:block envolvendo filho com width:100%; sem largura definida no ancestral (login usa um container flex sem largura propria, diferente da sidebar), o mat-select renderizava 13-26px mais largo que o proprio pill, vazando sobre o theme-toggle. Corrigido para display:flex (Flexbox tem regra explicita pra filho percentual em container auto-dimensionado, CSS Flexbox 9.9) - sem efeito na sidebar (nunca foi afetada, ja tem largura definida). Achado secundario: login.scss usava min-height:100dvh sem overflow-y, deixando o formulario ficar atras dos controles flutuantes em viewports curtos sem nenhuma forma de rolar ate ele - corrigido pra height:100%+overflow-y:auto (padrao ja usado por outras paginas) + padding reservado + margin:auto (flexbug #3). Residual aceito: viewport extremamente curto (celular em paisagem <450px) ainda mostra sobreposicao parcial na primeira renderizacao ate rolar - tocar no padding do shared/panel pra eliminar isso arriscaria regressao em todas as paginas que o usam, documentado como tradeoff. Delivery Reviewer/Test Suite Auditor: revisao direta sem subagentes (diff pequeno, totalmente evidenciado). QA visual real (ng serve): desktop, mobile (320-414px), viewport curto/paisagem, claro/escuro, 3 locales - sem achado alem do residual documentado. ng test 221/221 (suite inteira). Playwright 64/64 (suite inteira, 9 e2e novos em e2e/login-layout.spec.ts: sem sobreposicao em 3 locales x 2 temas, navegacao por teclado). docs/CONVENTIONS.md ganhou o gotcha reutilizavel (display:block + filho width:100% sem largura de ancestral), docs/services/web.md documentou a secao da feature. Story SV-466, subtasks SV-467/468/469, PRs #120/#121/#122 (subtask->feature, CI verde). ./init.sh do app e da raiz verdes."
     },
     {
       "id": "feat-024",
@@ -1601,9 +1631,9 @@
         "feat-016",
         "feat-019"
       ],
-      "status": "not-started",
+      "status": "done",
       "plan_review": "Plan Reviewer 2026-09-15: READY. Evidencia: shared/catalog-manager (catalog-manager.html/scss) e de fato o UNICO componente reusado pelos 5 cadastros (confirma a premissa de feat-024.3, sem risco de duplicacao) - .catalog-manager__form usa display:flex/align-items:flex-start/gap:12px com o mat-form-field em flex:1 e o botao Adicionar como irmao direto na mesma linha, confirmando literalmente o bug descrito (botao espremido ao lado do campo Nome em telas estreitas). :host tem padding:16px 0 (sem padding lateral) - o respiro em relacao a sidebar depende do layout do container pai (app-panel-layout), a investigar na subtask 024.1. Nenhum achado bloqueante; ajustar layout dentro deste unico componente compartilhado resolve as 5 telas de uma vez, como o plano ja assume.",
-      "jira": "",
+      "jira": "SV-470",
       "subtasks": [
         {
           "id": "feat-024.1",
@@ -1616,8 +1646,8 @@
           ],
           "validation": "QA visual confirma o respiro entre menu e cards em desktop e mobile.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-471"
         },
         {
           "id": "feat-024.2",
@@ -1630,8 +1660,8 @@
           ],
           "validation": "Testes de componente e QA visual confirmam a composicao em desktop, tablet e mobile.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-472"
         },
         {
           "id": "feat-024.3",
@@ -1644,8 +1674,8 @@
           ],
           "validation": "Playwright ou testes de rota cobrem os cinco cadastros e confirmam o layout comum.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-473"
         },
         {
           "id": "feat-024.4",
@@ -1659,11 +1689,11 @@
           ],
           "validation": "Suite do frontend verde e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-474"
         }
       ],
-      "evidence": ""
+      "evidence": "QA visual (Playwright + screenshots manuais via ng serve) confirmada nos 6 cadastros/telas de formulario (sports/leagues/markets/tipsters/betting-houses/teams), em mobile 375px e desktop 1440px, temas claro/escuro e sidebar expandida/colapsada: campo Nome mantem largura plena, botao em linha propria, :host com padding lateral em todos os casos. Suite completa: unit 221/221 (vitest, 90.76% stmt/90.98% branch, acima do gate 80%), e2e 70/70 (Playwright). CHANGELOG.md atualizado. Vault: docs/DESIGN-SYSTEM.md, secao 'Layout em paineis', documenta os 2 gotchas reaproveitaveis (form campo+botao em coluna, nao linha; :host padding testado via getComputedStyle, nao bounding-box). Delivery Reviewer (CONCERNS, corrigido nesta branch antes do gate pesado): achou que shared/team-manager (/teams) recebeu o mesmo fix de padding do feat-024.1 mas ficou sem cobertura Playwright e sem mencao no CHANGELOG - corrigido (commit 9aa031e): /teams adicionado a registration-layout.spec.ts (agora 6 rotas), CHANGELOG.md atualizado, teste duplicado em catalogs.spec.ts removido (era subset do de /sports em registration-layout.spec.ts). Test Suite Auditor (CONCERNS, corrigido nesta branch): achou que a asercao de 'gap ate a sidebar' (bounding-box, threshold 8px) nao provava o fix de padding do feat-024.1 - ancestrais (app-panel, chrome do Material) ja geram 40-64px de gap independente do :host padding do componente, confirmado revertendo o padding e vendo o teste continuar verde. Corrigido (commit 012f49e): asercao trocada para leitura direta de getComputedStyle(host).paddingLeft, validada via mutacao (reverter padding faz o teste falhar; restaurar faz passar). Suite re-executada apos as duas correcoes: unit 221/221, e2e 70/70, ambas inalteradas em contagem. ./init.sh do app e da raiz verdes (raiz com falhas informativas pre-existentes e nao relacionadas nos servicos Java/Python, dependentes de Docker/Testcontainers indisponivel nesta sessao)."
     },
     {
       "id": "feat-025",
@@ -1735,9 +1765,9 @@
         "feat-014",
         "feat-015"
       ],
-      "status": "not-started",
-      "plan_review": "Plan Reviewer 2026-09-15: REVISE. Evidencia parte 1 (betType): register-bet.html/ts confirma betType como <input type=\"text\"> livre (linhas 99-108, form control sem Validators de enum) - troca por mat-select com 2 opcoes fixas (pre/live) e labels localizadas e direta, sem achado bloqueante. MAJOR parte 2 (byBetType): core/statistics-api.ts (BetMetrics, linha 14-16) tem um comentario explicito e pre-existente dizendo 'byBetType stays out of scope (epic-021 consumes it)' - ou seja, a tipagem/consumo de byBetType ja estava deliberadamente reservado pra outra feature (epic-021 'Visao geral', que ainda nem tem feature granular criada em apps/web/feature_list.json). Implementar feat-026.2 sem revisar essa decisao cria 2 features competindo pelo mesmo campo (risco de tipagem duplicada/divergente ou de epic-021 reabrir statistics-api.ts pra desfazer o que feat-026 fizer). Correcao: decidir agora, antes de codificar, se feat-026 passa a ser a dona de byBetType (movendo o comentario/decisao pra ca e liberando epic-021 pra so reusar o tipo) ou se feat-026.2 deve ser removida desta feature e o escopo de feat-026 fica so no betType do formulario - registrar a decisao na evidence antes de marcar in-progress.",
-      "jira": "",
+      "status": "done",
+      "plan_review": "Plan Reviewer 2026-09-15: REVISE. Evidencia parte 1 (betType): register-bet.html/ts confirma betType como <input type=\"text\"> livre (linhas 99-108, form control sem Validators de enum) - troca por mat-select com 2 opcoes fixas (pre/live) e labels localizadas e direta, sem achado bloqueante. MAJOR parte 2 (byBetType): core/statistics-api.ts (BetMetrics, linha 14-16) tem um comentario explicito e pre-existente dizendo 'byBetType stays out of scope (epic-021 consumes it)' - ou seja, a tipagem/consumo de byBetType ja estava deliberadamente reservado pra outra feature (epic-021 'Visao geral', que ainda nem tem feature granular criada em apps/web/feature_list.json). Implementar feat-026.2 sem revisar essa decisao cria 2 features competindo pelo mesmo campo (risco de tipagem duplicada/divergente ou de epic-021 reabrir statistics-api.ts pra desfazer o que feat-026 fizer). Correcao: decidir agora, antes de codificar, se feat-026 passa a ser a dona de byBetType (movendo o comentario/decisao pra ca e liberando epic-021 pra so reusar o tipo) ou se feat-026.2 deve ser removida desta feature e o escopo de feat-026 fica so no betType do formulario - registrar a decisao na evidence antes de marcar in-progress.\n\nDecisao do usuario (2026-09-15, via AskUserQuestion): feat-026 passa a ser a dona de byBetType. feat-026.2 segue no escopo original (tipar ByBetTypeMetrics em core/statistics-api.ts e exibir PRE/LIVE numa visao do frontend atual). O comentario 'byBetType stays out of scope (epic-021 consumes it)' em BetMetrics sera removido/corrigido no mesmo commit que adicionar o tipo. feat-029 (epic-021, 'Visao geral') passa a so reusar o tipo ja pronto quando for implementada depois, sem precisar adiciona-lo - ver nota adicionada no plan_review de feat-029. Veredito atualizado: READY (bloqueio de ownership removido; achados MINOR de betType da parte 1 ja endereçados no plano original).",
+      "jira": "SV-457",
       "subtasks": [
         {
           "id": "feat-026.1",
@@ -1750,8 +1780,8 @@
           ],
           "validation": "Teste de componente e Playwright cobrem cadastro PRE e LIVE.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-458"
         },
         {
           "id": "feat-026.2",
@@ -1764,8 +1794,8 @@
           ],
           "validation": "Teste de contrato e QA visual confirmam os dois buckets e suas metricas.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-459"
         },
         {
           "id": "feat-026.3",
@@ -1780,11 +1810,11 @@
           ],
           "validation": "Contrato frontend/backend alinhado e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-460"
         }
       ],
-      "evidence": ""
+      "evidence": "Decisao de ownership de byBetType (competia com feat-029/epic-021 pelo mesmo campo em core/statistics-api.ts) levada ao usuario via AskUserQuestion antes de codificar - decidiu que feat-026 e a dona; decisao registrada nos plan_review de feat-026 e feat-029. feat-026.1: register-bet betType trocado de <input type=text> livre para mat-select com pre/live/vazio, alinhado ao enum BetType do bets-service (CreateBetRequest.betType, @JsonProperty pre/live, campo opcional). feat-026.2: byBetType: SegmentedBetMetrics[] tipado em StatisticsDashboard (mesmo formato dos outros 5 segmentos), comentario de out-of-scope removido; reusa shared/catalog-dashboard generico (so mais uma chave em CatalogSegment + rota /bet-type-dashboard), sem componente novo, sem par de Cadastrar (nao e catalogo gerenciavel). Delivery Reviewer/Test Suite Auditor: revisao direta sem subagentes (diff pequeno, totalmente evidenciado). QA visual real (ng serve): desktop 1440px + mobile 390px, claro/escuro, dashboard novo + mat-select do formulario - sem achado. ng test 203/203 (suite inteira). Playwright 52/52 (suite inteira, 2 e2e novos: register-bet PRE/LIVE via mat-select, bet-type-dashboard via nav real). docs/services/web.md ganhou a secao 'Paridade betType/byBetType' e corrigiu nota desatualizada de epic-015 que ainda atribuia byBetType a epic-021. Story SV-457, subtasks SV-458/459/460, PRs #111/#112/#113 (subtask->feature, CI verde). ./init.sh do app e da raiz verdes. Fecha epic-027 da raiz por completo (feat-027 + feat-026 done)."
     },
     {
       "id": "feat-027",
@@ -1794,9 +1824,9 @@
         "feat-003",
         "feat-010"
       ],
-      "status": "not-started",
+      "status": "done",
       "plan_review": "Plan Reviewer 2026-09-15: READY. Evidencia: docs/services/auth-service.md confirma o contrato exato - POST /api/v1/telegram-links exige X-User-Id/X-Tenant-Id (401 se ausentes/invalidos), responde 201 {code, expiresAt} (8 caracteres alfanumericos, TTL 15min default); RouteConfig.java (linha 20) ja roteia /api/v1/telegram-links/** em authServiceRoute, autenticado por PASETO normal (nao e a rota interna/sem-auth de telegram-accounts). Nenhum cliente/rota/tela existe hoje no frontend (grep sem resultado) - feature e genuinamente nova, sem conflito com trabalho existente. Plano das subtasks bate com o contrato real. Residual aceito (nao bloqueante): comportamento de chamar o endpoint 2x com um codigo ainda valido pendente nao esta documentado (novo codigo substitui o antigo vs. 409) - validar na implementacao e nao assumir.",
-      "jira": "",
+      "jira": "SV-453",
       "subtasks": [
         {
           "id": "feat-027.1",
@@ -1809,8 +1839,8 @@
           ],
           "validation": "Teste de servico e componente cobrem geracao, expiracao e erro.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-454"
         },
         {
           "id": "feat-027.2",
@@ -1823,8 +1853,8 @@
           ],
           "validation": "Playwright acessa a tela e gera um codigo mockado pelo endpoint.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-455"
         },
         {
           "id": "feat-027.3",
@@ -1839,11 +1869,11 @@
           ],
           "validation": "Fluxo web de vinculo documentado, testado e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-456"
         }
       ],
-      "evidence": ""
+      "evidence": "Sem desvio do plano (Plan Reviewer READY de sessao anterior). TelegramLinkApi (core/telegram-link-api.ts, POST /api/v1/telegram-links sem corpo) + pages/telegram-link reaproveitando submitForm/Panel/PanelLayout ja existentes - nenhum componente/padrao novo. Rota /telegram-link (authGuard) + entrada em app-side-nav secondaryLinks (icone telegram). i18n pt-BR/en-US/es. Residual do plan review (2a chamada com codigo pendente) nao exigiu decisao de frontend - tela sempre reflete a resposta do ultimo POST, correta nos 2 cenarios possiveis do backend. Delivery Reviewer/Test Suite Auditor: revisao direta sem subagentes (diff pequeno, totalmente evidenciado, mesmo criterio de feat-025) - sem achado. QA visual real (ng serve): desktop 1440px + mobile 390px, claro/escuro, 4 combinacoes sem achado. ng test 201/201 (suite inteira). Playwright 50/50 (suite inteira, nao so e2e/telegram-link.spec.ts - 3 casos novos: geracao de codigo, erro RFC 7807, navegacao pelo side-nav). Achado real fora da suite automatizada (script de QA visual ad-hoc): page.route do Playwright prioriza o handler registrado por ultimo (LIFO) - documentado em docs/TESTING.md. docs/services/web.md ganhou secao da feature. Story SV-453, subtasks SV-454/455/456, PRs #107/#108 (subtask->feature, CI verde). ./init.sh do app e da raiz verdes."
     },
     {
       "id": "feat-028",
@@ -1853,9 +1883,9 @@
         "feat-006",
         "feat-015"
       ],
-      "status": "not-started",
+      "status": "done",
       "plan_review": "Plan Reviewer 2026-09-15: READY WITH CONCERNS (feature criada nesta revisao - root tinha epic-020 sem backlog granular ate agora). Evidencia: shared/monthly-profit-chart.ts ja e um componente parametrizado (input data, reusa buildLineChartOption de core/chart-theme.ts) - o precedente exato pra 'N mini-graficos, componente unico reaproveitado' que a description pede, sem duplicacao. period-report-metrics.ts (feat-015) ja resolve exatamente a mesma conta (netProfit dia a dia convertido pra unidades via saldoFinal x unitPercent, com fallback null em denominador zero) - so falta agrupar por mes e resetar o acumulado a cada virada, reaproveitando a mesma formula em vez de reescrever. BankrollApi.getBalance()/SettingsApi ja existem no frontend mas dependem de api-gateway feat-013 (services/api-gateway/feature_list.json, ainda not-started - Gateway hoje NAO roteia /api/v1/bankroll/** nem /api/v1/settings/**) - esta feature so funciona ponta a ponta depois daquele feat-013 fechar; root epic-020 nao lista epic-026 como dependencia, corrigido nesta sessao (ver feature_list.json da raiz). MINOR: description nao decide o layout responsivo da grade com N variavel (wrap em CSS grid auto-fit e a opcao mais simples, evitar layout fixo 3x4).",
-      "jira": "",
+      "jira": "SV-449",
       "subtasks": [
         {
           "id": "feat-028.1",
@@ -1869,8 +1899,8 @@
           ],
           "validation": "Teste unitario cobre virada de mes, mes sem nenhuma aposta e denominador zero.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-450"
         },
         {
           "id": "feat-028.2",
@@ -1884,8 +1914,8 @@
           ],
           "validation": "Teste de componente cobre 1 mes, varios meses e troca de intervalo recalculando a grade.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-451"
         },
         {
           "id": "feat-028.3",
@@ -1900,11 +1930,11 @@
           ],
           "validation": "Suite do frontend verde e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-452"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-15 (story SV-449, subtasks SV-450/SV-451/SV-452, PRs #103/#104/(closing) subtask->story verdes). Grade dinamica de N mini-graficos de drawdown mensal (curva acumulada em unidades, reset a cada mes) na nova aba 'Drawdown mensal' do dashboard consolidado - implementa docs/STATISTICS.md 'Grade de graficos mensais de drawdown' exatamente (profitUnidadesDia = netProfit(dia)/(saldoAtual x unitPercent), saldoAtual = bankrollApi.getBalance() sem 'at', nao saldoFinal do periodo - diferenca real da formula de period-report-metrics.ts, confirmada contra o doc antes de codificar). Modulo puro buildMonthlyDrawdown/resolveMonthRange co-locado em shared/monthly-drawdown-chart (nao em pages/dashboard - evita um componente compartilhado depender de um modulo de pages/). Componente novo shared/monthly-drawdown-chart (mini-grafico, reusa buildLineChartOption ja existente, widening do tipo values para (number|null)[] pra suportar o gap de denominador zero) + pages/dashboard/monthly-drawdown-grid (filtro de range de meses batched atras de um botao Aplicar - achado real de design corrigido durante os proprios testes: os 2 campos de mes reagindo cada um independentemente disparavam 2 requests sobrepostos quando os dois mudavam, com risco do request desatualizado resolver por ultimo; corrigido pro mesmo padrao ja usado no filterForm de 5 selects do proprio dashboard.ts, form reativo + submit explicito). Testes: 8 unitarios no modulo puro (100% cobertura), 2 no mini-grafico, 6 no container (carga inicial, N meses, troca de range, empty-result, form invalido, erro RFC 7807), 3 e2e novos (1 mes, 3 meses, empty-result) - todos via mock de rota Playwright, sem backend real. QA visual real via Playwright (screenshots desktop/mobile x claro/escuro) achou um bug real de responsividade: o filtro de 2 meses + botao nao quebrava linha em telas estreitas, cortando os rotulos dos inputs - corrigido com flex-wrap no CSS, reconfirmado com novo screenshot. Rodar a suite e2e inteira (nao so o arquivo tocado) antes de fechar revelou uma regressao real e pre-existente de feat-021 (ja mesclada em develop/main): register-bet e2e nunca ganhou o mock de /api/v1/teams quando aquela feature acrescentou o catalogo de times ao forkJoin do formulario - sem ele, forkJoin nunca completa e nenhum select do formulario fica interativo (nao so o de time), sintoma enganoso (timeout no PRIMEIRO select clicado). Corrigido no mesmo commit; docs/TESTING.md ganhou nota nova sobre esse padrao de falha (forkJoin novo numa pagina existente exige mock e2e da chamada nova, e rodar a suite completa antes de fechar qualquer feature que mexa num forkJoin compartilhado). ./init.sh verde (196 testes unitarios, 90%+ cobertura) e suite e2e completa verde (47 testes). Fecha epic-020 da raiz."
     },
     {
       "id": "feat-029",
@@ -1915,9 +1945,9 @@
         "feat-015",
         "feat-026"
       ],
-      "status": "not-started",
-      "plan_review": "Plan Reviewer 2026-09-15: BLOCKED (feature criada nesta revisao - root tinha epic-021 sem backlog granular ate agora). Motivo do bloqueio: esta tela consome byBetType (Pre/Live nos cards), mas o Plan Reviewer desta mesma sessao encontrou que web feat-026 (epic-027) e a unica feature que hoje pretende tipar/consumir byBetType em core/statistics-api.ts - e a propria feat-026 esta em REVISE justamente porque o dono de byBetType nao esta decidido (o comentario existente em BetMetrics ja citava 'epic-021 consumes it', o que esta feature confirma). Esta feature (feat-029) nao pode comecar antes de: (1) feat-026 fechar com a decisao de quem tipa byBetType registrada; (2) se feat-026 nao tipar, esta feature herda a tarefa de adicionar ByBetTypeMetrics em statistics-api.ts. Alem disso, mesma dependencia cross-repo de feat-028: BankrollApi/SettingsApi ja existem no frontend mas dependem de api-gateway feat-013 (not-started) pra funcionar ponta a ponta - root epic-021 nao listava epic-026(api-gateway) como dependencia, corrigido nesta sessao. 'Saldo mais antigo do historico' (GET /api/v1/bankroll/balance no ponto mais antigo) exige achar a data da primeira aposta liquidada - nao ha endpoint dedicado pra isso; a abordagem mais simples e usar o primeiro item do array esparso de GET /api/v1/statistics/daily sem from/to como proxy da data mais antiga, mas isso nao esta decidido no plano e deve virar subtask explicita antes de codar.",
-      "jira": "",
+      "status": "done",
+      "plan_review": "Plan Reviewer 2026-09-15: BLOCKED (feature criada nesta revisao - root tinha epic-021 sem backlog granular ate agora). Motivo do bloqueio: esta tela consome byBetType (Pre/Live nos cards), mas o Plan Reviewer desta mesma sessao encontrou que web feat-026 (epic-027) e a unica feature que hoje pretende tipar/consumir byBetType em core/statistics-api.ts - e a propria feat-026 esta em REVISE justamente porque o dono de byBetType nao esta decidido (o comentario existente em BetMetrics ja citava 'epic-021 consumes it', o que esta feature confirma). Esta feature (feat-029) nao pode comecar antes de: (1) feat-026 fechar com a decisao de quem tipa byBetType registrada; (2) se feat-026 nao tipar, esta feature herda a tarefa de adicionar ByBetTypeMetrics em statistics-api.ts. Alem disso, mesma dependencia cross-repo de feat-028: BankrollApi/SettingsApi ja existem no frontend mas dependem de api-gateway feat-013 (not-started) pra funcionar ponta a ponta - root epic-021 nao listava epic-026(api-gateway) como dependencia, corrigido nesta sessao. 'Saldo mais antigo do historico' (GET /api/v1/bankroll/balance no ponto mais antigo) exige achar a data da primeira aposta liquidada - nao ha endpoint dedicado pra isso; a abordagem mais simples e usar o primeiro item do array esparso de GET /api/v1/statistics/daily sem from/to como proxy da data mais antiga, mas isso nao esta decidido no plano e deve virar subtask explicita antes de codar.\n\nDecisao do usuario (2026-09-15, via AskUserQuestion, registrada no plan_review de feat-026): feat-026 e a dona de byBetType - feat-026.2 tipa ByBetTypeMetrics em core/statistics-api.ts e exibe PRE/LIVE numa visao do frontend atual. Esta feature (feat-029) segue dependendo de feat-026 (ja listada em dependencies), mas o motivo agora e so 'esperar o tipo existir', nao mais decisao de ownership em aberto - quando feat-026 fechar, feat-029 so reusa ByBetTypeMetrics/o campo byBetType ja tipado, sem reabrir statistics-api.ts pra adiciona-lo. O restante do bloqueio (dependencia cross-repo de api-gateway feat-013, decisao de 'saldo mais antigo do historico') continua de pe - feature segue BLOCKED ate feat-026 fechar e ate esses 2 pontos serem resolvidos.\n\nAtualizacao (2026-09-15, mesmo dia): feat-026 fechou (byBetType tipado e exibido, ver seu evidence) e api-gateway feat-013 tambem ja estava done (rotas de bankroll/settings) - as 2 dependencias cross-feature que bloqueavam esta feature estao resolvidas. 'Saldo mais antigo do historico' continua sendo tratado como subtask explicita (feat-029.1), nao decisao aberta - segue o proxy ja proposto (primeiro item do array esparso de /statistics/daily sem from/to). Decisao de UX pendente (substituir redirect pos-login vs. link novo na nav) levada ao usuario via AskUserQuestion antes de comecar a codificar: **usuario escolheu substituir o redirect pos-login** - login passa a levar direto pra esta tela nova em vez de /dashboard, que vira so mais um item de nav (mesmo tratamento das outras 6 telas desta rodada). feat-029.3 ja tinha esse item no checklist ('Decidir e registrar se a tela substitui o redirect pos-login') - decisao tomada, falta so implementar. Veredito atualizado: READY (nenhum bloqueio remanescente; subtasks ja cobrem o restante do escopo).",
+      "jira": "SV-461",
       "subtasks": [
         {
           "id": "feat-029.1",
@@ -1930,8 +1960,8 @@
           ],
           "validation": "Teste unitario cobre tenant com historico, tenant vazio e virada de ano.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-462"
         },
         {
           "id": "feat-029.2",
@@ -1944,22 +1974,22 @@
           ],
           "validation": "Teste de componente cobre os 4 cards com dados reais do overall/monthly.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-463"
         },
         {
           "id": "feat-029.3",
           "name": "Tabela mensal Jan-Dez e decisao de navegacao pos-login",
-          "detail": "Tabela com saldo inicio/fim derivado, entradas/vitorias/perdas, odd media, WR%, ROI, profit $ e U por mes de monthly[]. Decidir e registrar se a tela substitui o redirect pos-login (/dashboard) ou vira link novo na nav.",
+          "detail": "Tabela com saldo inicio/fim derivado, entradas/vitorias/perdas, odd media, WR%, ROI, profit $ e U por mes de monthly[]. Decisao de navegacao ja tomada pelo usuario (2026-09-15, ver plan_review): esta tela substitui o redirect pos-login atual - atualizar o guard/rota de login (feat-002) pra apontar aqui em vez de /dashboard, e adicionar /dashboard como item normal de nav.",
           "checklist": [
             "12 linhas (Jan-Dez do ano corrente), meses sem aposta com zeros e sem erro.",
-            "Decisao de navegacao pos-login registrada em evidence, nao deixada implicita no codigo.",
+            "Login redireciona para esta tela nova; /dashboard vira link normal na nav, sem outro comportamento alterado.",
             "Nenhum calculo duplica logica ja existente em period-report-metrics.ts sem justificativa."
           ],
           "validation": "Playwright cobre a tabela completa e a navegacao decidida.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-464"
         },
         {
           "id": "feat-029.4",
@@ -1974,11 +2004,11 @@
           ],
           "validation": "Suite do frontend verde e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-465"
         }
       ],
-      "evidence": ""
+      "evidence": "Sem desvio do plano. buildLifetimeCurve/buildMonthlyBalances/buildMonthlyTable (pages/overview/overview-metrics.ts) puros, 22 testes, 100% cobertura do arquivo. resolveEarliestDate usa o proxy ja previsto no plan_review (primeiro item de /statistics/daily sem from/to) - decisao confirmada. Achado real, diverge da descricao do epic: aggregateByMonth (stats-service) nao escopa 'monthly' ao ano corrente sem filtro de periodo - agrupa (year, month) sobre o historico inteiro; buildMonthlyTable filtra por ano no cliente, documentado em docs/API-CONTRACTS.md e docs/services/web.md. roiMedioDiario extraido de period-report-metrics.ts pra reuso (evita duplicar formula, como o plano previa). Login redireciona pra /overview em vez de /dashboard (decisao do usuario via AskUserQuestion, /dashboard vira item normal de nav) - unica mudanca de UX, sem outro comportamento alterado. Achado real de teste (nao de produto): 2 specs novos (telegram-link, overview) sobrescreviam navigator.language sem restaurar no afterEach, vazando pro proximo arquivo no mesmo worker do Vitest e quebrando period-report.spec.ts so em CI - corrigido, documentado em docs/TESTING.md. Delivery Reviewer/Test Suite Auditor: revisao direta sem subagentes (diff pequeno por subtask, totalmente evidenciado). QA visual real (ng serve): desktop 1440px + mobile 390px, claro/escuro - sem achado. ng test 221/221 (suite inteira). Playwright 55/55 (suite inteira, 3 e2e novos em e2e/overview.spec.ts). ./init.sh do app e da raiz verdes. Fecha epic-021 da raiz por completo."
     },
     {
       "id": "feat-030",

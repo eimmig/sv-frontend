@@ -12,10 +12,8 @@ import { Language } from '../../core/language';
 import { MonthlyBetMetrics } from '../../core/statistics-api';
 import { Theme } from '../../core/theme';
 
-// Tree-shaken build registered inside this lazy-loaded component rather than
-// app.config.ts, so echarts' ~500kB core only ships to the dashboard route
-// (see docs/DESIGN-SYSTEM.md item 6, same scoping already used by the
-// feat-001.6 proof-of-concept this component supersedes).
+// Tree-shaken build registered inside this lazy-loaded component rather than app.config.ts, so
+// echarts' ~500kB core only ships to the dashboard route.
 echarts.use([LineChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
 function buildChartOption(
@@ -29,7 +27,7 @@ function buildChartOption(
   return buildLineChartOption(labels, netProfit, brandColor, borderColor);
 }
 
-/** Real dashboard chart (feat-006) - monthly net profit trend from StatisticsDashboard.monthly. */
+/** Monthly net profit trend from StatisticsDashboard.monthly. */
 @Component({
   imports: [NgxEchartsDirective],
   providers: [provideEchartsCore({ echarts })],

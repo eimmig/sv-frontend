@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { RegisterBet } from './register-bet';
@@ -29,6 +30,7 @@ describe('RegisterBet', () => {
         stakeLabel: 'Valor apostado',
         oddLabel: 'Odd',
         betDateLabel: 'Data do evento',
+        betTimeLabel: 'Hora do evento',
         reset: 'Limpar',
         submit: 'Registrar aposta',
         success: 'Aposta registrada com sucesso.',
@@ -88,7 +90,7 @@ describe('RegisterBet', () => {
           translocoConfig: { availableLangs: ['pt-BR'], defaultLang: 'pt-BR' },
         }),
       ],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideNativeDateAdapter()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegisterBet);
@@ -120,6 +122,7 @@ describe('RegisterBet', () => {
     const request = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/bets`);
     expect(request.request.headers.get('Idempotency-Key')).toBeTruthy();
     expect(request.request.body.bettingHouseId).toBe('bh-1');
+    expect(request.request.body.betType).toBeNull();
     request.flush({ id: '1', status: 'pending' });
 
     expect(fixture.componentInstance['successMessage']()).toBe('Aposta registrada com sucesso.');
@@ -138,6 +141,17 @@ describe('RegisterBet', () => {
     request.flush({ id: '1', status: 'pending' });
   });
 
+  it('sends the chosen bet type (pre/live) instead of the previous free-text value', () => {
+    fillRequiredFields();
+    fixture.componentInstance['form'].patchValue({ betType: 'live' });
+
+    fixture.componentInstance['submit']();
+
+    const request = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/bets`);
+    expect(request.request.body.betType).toBe('live');
+    request.flush({ id: '1', status: 'pending' });
+  });
+
   it('shows the RFC 7807 detail on a validation error (e.g. invalid odd)', () => {
     fillRequiredFields();
 
@@ -151,6 +165,49 @@ describe('RegisterBet', () => {
       );
 
     expect(fixture.componentInstance['formError']()).toBe('A odd informada deve ser estritamente maior que 1,00 (RN07).');
+  });
+
+  // feat-022.4: betDateOnly/betTimeOnly sao 2 FormControl independentes (nunca compartilham
+  // valor) exatamente para evitar o merge assimetrico do proprio Angular Material entre
+  // mat-datepicker e mat-timepicker (trocar a data zerar a hora pra meia-noite).
+  it('changing the date does not reset the previously chosen time', () => {
+    fixture.componentInstance['form'].controls.betTimeOnly.setValue(new Date(2026, 0, 1, 21, 30));
+
+    fixture.componentInstance['form'].controls.betDateOnly.setValue(new Date(2026, 5, 15));
+
+    const time = fixture.componentInstance['form'].controls.betTimeOnly.value;
+    expect(time?.getHours()).toBe(21);
+    expect(time?.getMinutes()).toBe(30);
+  });
+
+  it('changing the time does not affect the previously chosen date', () => {
+    fixture.componentInstance['form'].controls.betDateOnly.setValue(new Date(2026, 5, 15));
+
+    fixture.componentInstance['form'].controls.betTimeOnly.setValue(new Date(2026, 0, 1, 21, 30));
+
+    const date = fixture.componentInstance['form'].controls.betDateOnly.value;
+    expect(date?.getFullYear()).toBe(2026);
+    expect(date?.getMonth()).toBe(5);
+    expect(date?.getDate()).toBe(15);
+  });
+
+  it('combines the date and time pickers into the final ISO sent to bets-service', () => {
+    fillRequiredFields();
+    fixture.componentInstance['form'].patchValue({
+      betDateOnly: new Date(2026, 5, 15),
+      betTimeOnly: new Date(2020, 0, 1, 21, 30),
+    });
+
+    fixture.componentInstance['submit']();
+
+    const request = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/bets`);
+    const sentDate = new Date(request.request.body.betDate as string);
+    expect(sentDate.getFullYear()).toBe(2026);
+    expect(sentDate.getMonth()).toBe(5);
+    expect(sentDate.getDate()).toBe(15);
+    expect(sentDate.getHours()).toBe(21);
+    expect(sentDate.getMinutes()).toBe(30);
+    request.flush({ id: '1', status: 'pending' });
   });
 
   it('does not submit while the form is invalid', () => {

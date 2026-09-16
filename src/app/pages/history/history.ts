@@ -1,7 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -22,6 +23,7 @@ import { toProblemDetail } from '../../core/problem-detail';
 import { Transaction, TransactionsApi, TransactionType } from '../../core/transactions-api';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
+import { toDateOnly } from '../../shared/period-preset-filter/period-preset-filter';
 
 type SettledBetStatus = 'won' | 'lost' | 'void';
 
@@ -58,6 +60,7 @@ const TRANSACTIONS_TAB = 1;
   imports: [
     ReactiveFormsModule,
     MatButtonModule,
+    MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -97,16 +100,16 @@ export class History implements OnInit {
     leagueId: [''],
     marketId: [''],
     tipsterId: [''],
-    from: [''],
-    to: [''],
+    from: new FormControl<Date | null>(null),
+    to: new FormControl<Date | null>(null),
   });
 
   protected readonly transactionsPage = signal<PagedResponse<Transaction>>(emptyPage());
   protected readonly transactionsError = signal<string | null>(null);
   protected readonly transactionFilterForm = this.formBuilder.nonNullable.group({
     bettingHouseId: [''],
-    from: [''],
-    to: [''],
+    from: new FormControl<Date | null>(null),
+    to: new FormControl<Date | null>(null),
   });
 
   protected readonly creatingTransaction = signal(false);
@@ -183,8 +186,8 @@ export class History implements OnInit {
           leagueId: raw.leagueId || undefined,
           marketId: raw.marketId || undefined,
           tipsterId: raw.tipsterId || undefined,
-          from: raw.from || undefined,
-          to: raw.to || undefined,
+          from: raw.from ? toDateOnly(raw.from) : undefined,
+          to: raw.to ? toDateOnly(raw.to) : undefined,
         },
         page,
       ),
@@ -232,8 +235,8 @@ export class History implements OnInit {
       this.transactionsApi.list(
         {
           bettingHouseId: raw.bettingHouseId || undefined,
-          from: raw.from || undefined,
-          to: raw.to || undefined,
+          from: raw.from ? toDateOnly(raw.from) : undefined,
+          to: raw.to ? toDateOnly(raw.to) : undefined,
         },
         page,
       ),

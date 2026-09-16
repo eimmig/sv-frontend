@@ -4,8 +4,7 @@ import { addDays, toDateOnly } from '../../shared/period-preset-filter/period-pr
 export interface DailyTableRow {
   readonly date: string;
   readonly roiPercent: number;
-  /** null when saldoFinal or unitPercent is 0 - same defensive pattern as the dashboard's
-   *  unidadesApostadas (feat-014), never divides by zero in the template. */
+  /** null when saldoFinal or unitPercent is 0 - never divides by zero in the template. */
   readonly roiUnidades: number | null;
   readonly roiReais: number;
   readonly apostas: number;
@@ -35,8 +34,7 @@ function parseDateOnly(value: string): Date {
 /**
  * One row per calendar day in [from, to] - the API's /daily response is a sparse array (only
  * days with at least 1 settled bet), this fills the gaps with zero so the table has no missing
- * rows. "saldoFinal" here plays the role of docs/STATISTICS.md's generic "saldoAtual" (see
- * feat-015's plan_review: this page fetches only saldoInicial/saldoFinal, no separate "now" call).
+ * rows. "saldoFinal" here plays the role of docs/STATISTICS.md's generic "saldoAtual".
  */
 export function buildDailyTable(
   daily: readonly DailyBetMetrics[],
@@ -66,6 +64,13 @@ export function buildDailyTable(
   return rows;
 }
 
+/** Simple (unweighted) average of each settled-bet day's roi - docs/STATISTICS.md "Métricas da
+ *  página 'Relatório do período'". Reused as-is (no filtro de período) by pages/overview for its
+ *  ROI card (docs/STATISTICS.md "Tela 'Visão geral'"). */
+export function roiMedioDiario(daily: readonly DailyBetMetrics[]): number | null {
+  return daily.length === 0 ? null : daily.reduce((sum, day) => sum + day.roi, 0) / daily.length;
+}
+
 /**
  * Summary cards for the "Relatório do período" page - formulas and reference values in
  * docs/STATISTICS.md. All ratios return null (rendered as "Indeterminado") on a zero
@@ -79,8 +84,6 @@ export function computeSummary(
   unitPercent: number,
 ): PeriodReportSummary {
   const roiBankroll = saldoInicial === 0 ? null : overall.netProfit / saldoInicial;
-
-  const roiMedioDiario = daily.length === 0 ? null : daily.reduce((sum, day) => sum + day.roi, 0) / daily.length;
 
   const unitsDenominator = saldoFinal * unitPercent;
   const profitUnidades = unitsDenominator === 0 ? null : overall.netProfit / unitsDenominator;
@@ -99,7 +102,7 @@ export function computeSummary(
 
   return {
     roiBankroll,
-    roiMedioDiario,
+    roiMedioDiario: roiMedioDiario(daily),
     profitUnidades,
     profitReais: overall.netProfit,
     unitPercentTotal: unitPercent,

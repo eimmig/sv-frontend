@@ -58,11 +58,13 @@
           <input
             matInput
             id="search-statistics-from-input"
-            type="date"
+            [matDatepicker]="fromPicker"
             formControlName="from"
             data-testid="search-statistics-filter-from"
             [attr.aria-label]="'searchStatistics.fromLabel' | transloco"
           />
+          <mat-datepicker-toggle matIconSuffix [for]="fromPicker" />
+          <mat-datepicker #fromPicker />
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -70,11 +72,13 @@
           <input
             matInput
             id="search-statistics-to-input"
-            type="date"
+            [matDatepicker]="toPicker"
             formControlName="to"
             data-testid="search-statistics-filter-to"
             [attr.aria-label]="'searchStatistics.toLabel' | transloco"
           />
+          <mat-datepicker-toggle matIconSuffix [for]="toPicker" />
+          <mat-datepicker #toPicker />
         </mat-form-field>
 
         <button mat-flat-button type="submit" [disabled]="filterForm.invalid" data-testid="search-statistics-submit">

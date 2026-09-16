@@ -7,7 +7,23 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 
+### Added
+
+- Tela "Vincular Telegram" (`feat-027`, rota `/telegram-link`): gera um código de curta duração
+  via `POST /api/v1/telegram-links` e mostra código + expiração, com entrada nova em
+  `app-side-nav`.
+- Dashboard "Por tipo de aposta" (`feat-026`, rota `/bet-type-dashboard`): ranking PRE/LIVE
+  reaproveitando `shared/catalog-dashboard`, consumindo o segmento `byBetType` novo em
+  `StatisticsDashboard`.
+- Tela "Visão geral" pós-login (`feat-029`, epic-021, rota `/overview`): curva de lucro
+  acumulado vitalícia, 4 cards (Lucro Total, Pré/Live, Lucro Médio Mensal, ROI) e tabela mensal
+  Jan-Dez do ano corrente. **Login agora redireciona para cá em vez de `/dashboard`** —
+  `/dashboard` continua acessível como item normal de nav.
+
 ### Changed
+
+- `register-bet` (`feat-026`): campo "Tipo de aposta" trocado de texto livre para `mat-select`
+  com 2 opções fixas (`pre`/`live`) + "não classificado", alinhado ao enum do backend.
 
 - `app-login-border-trace` (`feat-018.3`) reformulada: 1 caminho fechado único (contorno completo
   do card) com 2 traços opostos girando continuamente (`stroke-dashoffset`), em vez de 2 metades
@@ -23,6 +39,22 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ### Fixed
 
+- `shared/catalog-manager` (`feat-024`, telas de cadastro de esporte/liga/mercado/tipster/casa
+  de apostas): `:host` sem padding lateral colava o card de "Nova entrada" no menu lateral;
+  `.catalog-manager__form` em `display: flex` na horizontal (campo Nome + botão "Adicionar" lado
+  a lado) espremia o campo a poucos caracteres em viewports estreitos, chegando a cortar o
+  próprio label. Padding lateral adicionado ao `:host` e formulário trocado para `flex-direction:
+  column` (botão em linha própria). `shared/team-manager` (`/teams`) tinha o mesmo `:host` sem
+  padding lateral (copiado de `catalog-manager` em `feat-021`, antes deste ajuste existir) —
+  mesmo padding aplicado ali também. Layout compartilhado agora cobre as 5 telas de catálogo mais
+  `/teams`, com cobertura Playwright dedicada para as 6.
+- `app-language-selector` (`feat-023.1`): o pill expandido (`.language-selector-host`) usava
+  `display: block` envolvendo um filho com `width: 100%` — sem uma largura definida no ancestral
+  (como na tela de login, onde os controles flutuam sem largura própria), o cálculo de
+  shrink-to-fit subestimava a largura real do `mat-select`, deixando-o vazar ~13-26px pra fora do
+  próprio pill e sobrepor o botão de tema adjacente. Trocado para `display: flex` (mesmo modo de
+  layout do filho), que tem regra bem definida pra esse caso (CSS Flexbox §9.9). Sem efeito na
+  sidebar (já tinha largura definida, nunca foi afetada).
 - Chave do projeto no SonarCloud corrigida para `eimmig_sv-frontend`. O SonarCloud gera a chave como
   `<org>_<repo>` ao importar um repositório do GitHub; a forma sem prefixo, usada até aqui, faria a
   análise falhar com projeto inexistente.
@@ -143,3 +175,35 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-446](https://stakevault.atlassian.net/browse/SV-446) - Cadastro de time vinculado a esporte + corrigir quebra de contrato em POST /api/v1/bets
 - [SV-447](https://stakevault.atlassian.net/browse/SV-447) - Catalogo de times (tela nova) + formulario de aposta usando team1Id/team2Id
 - [SV-448](https://stakevault.atlassian.net/browse/SV-448) - CHANGELOG e verificacao final
+- [SV-449](https://stakevault.atlassian.net/browse/SV-449) - Grade mensal de drawdown (curva acumulada em unidades)
+- [SV-450](https://stakevault.atlassian.net/browse/SV-450) - Calcular curva acumulada mensal a partir do historico diario
+- [SV-451](https://stakevault.atlassian.net/browse/SV-451) - Filtro de range de meses e grade dinamica de mini-graficos
+- [SV-452](https://stakevault.atlassian.net/browse/SV-452) - Testes, QA visual e verificacao final
+- [SV-453](https://stakevault.atlassian.net/browse/SV-453) - Tela web para vinculo da conta Telegram
+- [SV-454](https://stakevault.atlassian.net/browse/SV-454) - Criar cliente e fluxo de codigo Telegram
+- [SV-455](https://stakevault.atlassian.net/browse/SV-455) - Adicionar rota e entrada de navegacao
+- [SV-456](https://stakevault.atlassian.net/browse/SV-456) - Testes, QA visual e verificacao final
+- [SV-457](https://stakevault.atlassian.net/browse/SV-457) - Alinhar betType e exibir agrupamento PRE/LIVE
+- [SV-458](https://stakevault.atlassian.net/browse/SV-458) - Trocar betType por selecao PRE/LIVE
+- [SV-459](https://stakevault.atlassian.net/browse/SV-459) - Consumir byBetType no frontend
+- [SV-460](https://stakevault.atlassian.net/browse/SV-460) - Testes, QA visual e verificacao final
+- [SV-461](https://stakevault.atlassian.net/browse/SV-461) - Tela "Visao geral" pos-login (curva de drawdown vitalicia + resumo mensal)
+- [SV-462](https://stakevault.atlassian.net/browse/SV-462) - Resolver data mais antiga e saldo inicial do historico
+- [SV-463](https://stakevault.atlassian.net/browse/SV-463) - Cards de resumo vitalicios
+- [SV-464](https://stakevault.atlassian.net/browse/SV-464) - Tabela mensal Jan-Dez e decisao de navegacao pos-login
+- [SV-465](https://stakevault.atlassian.net/browse/SV-465) - Testes, QA visual e verificacao final
+- [SV-466](https://stakevault.atlassian.net/browse/SV-466) - Corrigir sobreposicao do seletor de idioma no login
+- [SV-467](https://stakevault.atlassian.net/browse/SV-467) - Corrigir layout e area de clique do idioma
+- [SV-468](https://stakevault.atlassian.net/browse/SV-468) - Validar temas, locales e acessibilidade
+- [SV-469](https://stakevault.atlassian.net/browse/SV-469) - Testes, QA visual e verificacao final
+- [SV-470](https://stakevault.atlassian.net/browse/SV-470) - Ajustar espacamento e formulario das telas de cadastro
+- [SV-471](https://stakevault.atlassian.net/browse/SV-471) - Criar espacamento entre sidebar e cadastro
+- [SV-472](https://stakevault.atlassian.net/browse/SV-472) - Reposicionar botao Adicionar
+- [SV-473](https://stakevault.atlassian.net/browse/SV-473) - Aplicar em todas as telas de cadastro
+- [SV-474](https://stakevault.atlassian.net/browse/SV-474) - Testes, QA visual e verificacao final
+- [SV-480](https://stakevault.atlassian.net/browse/SV-480) - Date picker e formato localizado para campos de data
+- [SV-481](https://stakevault.atlassian.net/browse/SV-481) - Inventariar campos de data do frontend
+- [SV-482](https://stakevault.atlassian.net/browse/SV-482) - Providers do DateAdapter com rebind reativo de locale
+- [SV-483](https://stakevault.atlassian.net/browse/SV-483) - Aplicar mat-datepicker aos campos de data (filtros)
+- [SV-484](https://stakevault.atlassian.net/browse/SV-484) - register-bet: betDate vira mat-datepicker + mat-timepicker (2 controles independentes)
+- [SV-485](https://stakevault.atlassian.net/browse/SV-485) - Atualizar testes, QA visual e documentacao

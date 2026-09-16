@@ -46,9 +46,8 @@ export interface Team {
 }
 
 /**
- * Not structurally identical to the 4 catalogs above (bets-service feat-016/017): TEAM has a
- * required sportId FK, so it needs its own {name, sportId} create body instead of reusing
- * catalogApi's {name}-only shape.
+ * Not structurally identical to the 4 catalogs above: TEAM has a required sportId FK, so it
+ * needs its own {name, sportId} create body instead of reusing catalogApi's {name}-only shape.
  */
 export function teamsApi(http: HttpClient): {
   list(): Observable<Team[]>;

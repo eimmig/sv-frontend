@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
@@ -87,7 +88,7 @@ describe('History', () => {
           translocoConfig: { availableLangs: ['pt-BR'], defaultLang: 'pt-BR' },
         }),
       ],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]), provideNativeDateAdapter()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(History);
@@ -124,6 +125,19 @@ describe('History', () => {
     request.flush({ content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 });
   });
 
+  it('sends the from/to date picker values as yyyy-MM-dd query params for bets', () => {
+    fixture.componentInstance['betFilterForm'].patchValue({
+      from: new Date(2026, 0, 1),
+      to: new Date(2026, 0, 31),
+    });
+    fixture.componentInstance['applyBetFilter']();
+
+    const request = httpMock.expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/bets`);
+    expect(request.request.params.get('from')).toBe('2026-01-01');
+    expect(request.request.params.get('to')).toBe('2026-01-31');
+    request.flush({ content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 });
+  });
+
   it('advances to the next page of bets and back', () => {
     fixture.componentInstance['betsNextPage']();
     const next = httpMock.expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/bets`);
@@ -142,6 +156,19 @@ describe('History', () => {
 
     const request = httpMock.expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/transactions`);
     expect(request.request.params.get('bettingHouseId')).toBe('bh-1');
+    request.flush({ content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 });
+  });
+
+  it('sends the from/to date picker values as yyyy-MM-dd query params for transactions', () => {
+    fixture.componentInstance['transactionFilterForm'].patchValue({
+      from: new Date(2026, 5, 1),
+      to: new Date(2026, 5, 30),
+    });
+    fixture.componentInstance['applyTransactionFilter']();
+
+    const request = httpMock.expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/transactions`);
+    expect(request.request.params.get('from')).toBe('2026-06-01');
+    expect(request.request.params.get('to')).toBe('2026-06-30');
     request.flush({ content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 });
   });
 
@@ -311,7 +338,6 @@ describe('History', () => {
   });
 });
 
-// feat-025.1: deep link from betting-houses' "move balance" action (?bettingHouseId=<id>).
 // Separate module so the ActivatedRoute override applies before ngOnInit runs - the main
 // describe's fixture is already created (with an empty route) by the time any of its tests run.
 describe('History - deep link from betting houses', () => {
@@ -332,6 +358,7 @@ describe('History - deep link from betting houses', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([]),
+        provideNativeDateAdapter(),
         {
           provide: ActivatedRoute,
           useValue: { snapshot: { queryParamMap: convertToParamMap({ bettingHouseId: 'bh-1' }) } },

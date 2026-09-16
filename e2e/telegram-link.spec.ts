@@ -1,0 +1,63 @@
+import { expect, test } from '@playwright/test';
+
+test.describe('epic-027 - "Vincular Telegram" page', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.addInitScript(() => {
+      localStorage.setItem(
+        'stakevault.auth',
+        JSON.stringify({
+          token: 'v4.local.test',
+          userId: 'test-user',
+          role: 'MEMBER',
+          tenantSlug: 'acme',
+          mustChangePassword: false,
+        }),
+      );
+    });
+  });
+
+  test('generates a link code and shows it with its expiration', async ({ page }) => {
+    await page.route('**/api/v1/telegram-links', (route) =>
+      route.fulfill({
+        status: 201,
+        contentType: 'application/json',
+        body: JSON.stringify({ code: 'ABC23XYZ', expiresAt: '2026-09-15T12:15:00Z' }),
+      }),
+    );
+
+    await page.goto('/telegram-link');
+    await page.getByTestId('telegram-link-generate').click();
+
+    await expect(page.getByTestId('telegram-link-code')).toHaveText('ABC23XYZ');
+  });
+
+  test('shows the RFC 7807 detail when generation fails', async ({ page }) => {
+    await page.route('**/api/v1/telegram-links', (route) =>
+      route.fulfill({
+        status: 429,
+        contentType: 'application/json',
+        body: JSON.stringify({ detail: 'Muitas tentativas. Aguarde antes de gerar um novo código.' }),
+      }),
+    );
+
+    await page.goto('/telegram-link');
+    await page.getByTestId('telegram-link-generate').click();
+
+    await expect(page.getByTestId('telegram-link-error')).toContainText('Muitas tentativas');
+  });
+
+  test('side nav links to the telegram-link page', async ({ page }) => {
+    // Only the shell (side-nav) is under test here - stub every API call generically so the
+    // dashboard page underneath doesn't error out while loading its own data (same pattern as
+    // e2e/side-nav.spec.ts).
+    await page.route('**/api/**', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '{}' }),
+    );
+
+    await page.goto('/dashboard');
+    await page.getByTestId('nav-telegram-link').click();
+
+    await expect(page).toHaveURL(/\/telegram-link$/);
+  });
+});

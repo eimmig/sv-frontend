@@ -59,9 +59,6 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
     await page.route('**/api/v1/leagues*', catalogRoute([{ id: 'lg-1', name: 'Brasileirão' }]));
     await page.route('**/api/v1/markets*', catalogRoute([{ id: 'mk-1', name: 'Handicap' }]));
     await page.route('**/api/v1/tipsters*', catalogRoute([{ id: 'tp-1', name: 'Ana' }]));
-    // feat-014: applyFilter()'s forkJoin now also calls bankroll balance (x3: at=from, at=to,
-    // and no at for "now") and settings - unmocked, these would hang the suite waiting on a
-    // real network call (no backend runs under Playwright).
     await page.route('**/api/v1/bankroll/balance*', (route) => {
       const url = new URL(route.request().url());
       const at = url.searchParams.get('at') ?? 'now';
@@ -74,6 +71,9 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
       }
       return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ unitPercent: 0.01 }) });
     });
+    await page.route('**/api/v1/statistics/daily*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) }),
+    );
   });
 
   test('loads overall metrics and a sport breakdown row, defaulting to the "Hoje" period', async ({ page }) => {
@@ -133,8 +133,6 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
     await expect(page.getByTestId('dashboard-by-market-row')).toContainText('Handicap');
   });
 
-  // feat-014: changing the period preset auto-applies (unlike the 5 catalog selects, which
-  // still require the "Aplicar filtro" button) - reloads the bundle with a different from/to.
   test('changing the period preset issues a new statistics request with a different date range', async ({ page }) => {
     const seenRanges: { from: string | null; to: string | null }[] = [];
     await page.route('**/api/v1/statistics*', (route) => {
@@ -189,5 +187,47 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
     await page.getByTestId('dashboard-unit-percent-save').click();
 
     await expect(page.getByTestId('dashboard-unit-percent-success')).toBeVisible();
+  });
+
+  test.describe('epic-020 - monthly drawdown grid', () => {
+    test.beforeEach(async ({ page }) => {
+      await page.route('**/api/v1/statistics*', (route) =>
+        route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(statisticsBundle()) }),
+      );
+    });
+
+    test('renders one mini-chart for the default current-month range', async ({ page }) => {
+      await page.goto('/dashboard');
+      await expect(page.getByTestId('dashboard-total-staked')).toContainText('R$');
+
+      await page.getByRole('tab', { name: 'Monthly drawdown' }).click();
+
+      await expect(page.getByTestId('monthly-drawdown-chart-title')).toHaveCount(1);
+    });
+
+    test('applying a 3-month range renders 3 mini-charts, one per month', async ({ page }) => {
+      await page.goto('/dashboard');
+      await expect(page.getByTestId('dashboard-total-staked')).toContainText('R$');
+      await page.getByRole('tab', { name: 'Monthly drawdown' }).click();
+      await expect(page.getByTestId('monthly-drawdown-chart-title')).toHaveCount(1);
+
+      await page.getByTestId('monthly-drawdown-from').fill('2026-01');
+      await page.getByTestId('monthly-drawdown-to').fill('2026-03');
+      await page.getByTestId('monthly-drawdown-apply').click();
+
+      await expect(page.getByTestId('monthly-drawdown-chart-title')).toHaveCount(3);
+    });
+
+    test('shows the empty-result message when the end month is before the start month', async ({ page }) => {
+      await page.goto('/dashboard');
+      await expect(page.getByTestId('dashboard-total-staked')).toContainText('R$');
+      await page.getByRole('tab', { name: 'Monthly drawdown' }).click();
+
+      await page.getByTestId('monthly-drawdown-from').fill('2026-06');
+      await page.getByTestId('monthly-drawdown-to').fill('2026-01');
+      await page.getByTestId('monthly-drawdown-apply').click();
+
+      await expect(page.getByTestId('monthly-drawdown-empty')).toBeVisible();
+    });
   });
 });

@@ -1,22 +1,8 @@
 import { expect, test } from '@playwright/test';
 
-// Regression coverage for a real bug found via this subtask's own Playwright setup (feat-001.7):
-// app-panel-layout/app-panel (feat-001.4) never set `:host { display: block }` on either
-// component, so the CSS Grid item sizing/percentage-height chain never actually applied - a
-// panel with more content than fits grew the whole page instead of capping its own height and
-// scrolling internally. Unit tests couldn't catch this: jsdom doesn't run real layout, so
-// `max-height: 100%` on an element with no definite ancestor height passes any DOM/CSS-text
-// assertion while still being visually broken.
-//
-// Originally exercised via the dashboard's placeholder Filters panel (30 fake rows, guaranteed
-// overflow). The dashboard became real in feat-006 - its filter panel no longer has enough
-// content to overflow on its own, so this test now mocks a large sport breakdown instead and
-// targets the metrics panel (second panel), whose table is what reliably overflows now.
 test.describe('dashboard panel layout (RNF01, docs/DESIGN-SYSTEM.md "Layout em paineis")', () => {
   test('the page does not scroll - each panel scrolls independently instead', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    // /dashboard is authGuard-protected since feat-002.2 - seed a session before navigating
-    // instead of going through the real login form, which is out of scope for this test.
     await page.addInitScript(() => {
       localStorage.setItem(
         'stakevault.auth',
@@ -64,8 +50,6 @@ test.describe('dashboard panel layout (RNF01, docs/DESIGN-SYSTEM.md "Layout em p
         }),
       }),
     );
-    // feat-014: applyFilter()'s forkJoin also calls bankroll balance (x3) and settings -
-    // unmocked, these hang the suite waiting on a real network call (see dashboard.spec.ts).
     await page.route('**/api/v1/bankroll/balance*', (route) => {
       const url = new URL(route.request().url());
       return route.fulfill({
@@ -91,11 +75,6 @@ test.describe('dashboard panel layout (RNF01, docs/DESIGN-SYSTEM.md "Layout em p
     expect(isPanelScrollable).toBe(true);
   });
 
-  // RNF01 coverage for the dashboard's new content density (feat-014): 6 filter fields (5
-  // catalog selects + the period preset) and 9 KPI cards now share the filters panel at a
-  // narrow viewport, where panel-layout.scss collapses to a single grid column - a real
-  // narrow-viewport render is what proves the wrap/reflow actually holds; jsdom-based unit
-  // tests don't run layout, so this couldn't be caught there.
   test('at mobile width, the page does not overflow horizontally', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.emulateMedia({ reducedMotion: 'reduce' });

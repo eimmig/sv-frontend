@@ -3,65 +3,76 @@
 > Estado atual, não histórico. O diário cronológico é o `progress.md` — este arquivo é reescrito
 > a cada sessão para responder "o que a próxima sessão precisa saber agora".
 
-**Última atualização:** 2026-09-15
+**Última atualização:** 2026-09-16
 
 ## Objetivo atual
 
-`feat-001`..`feat-021`, `feat-025` e `feat-030` `done` (`feat-022`..`024`, `026`..`029` seguem
-`not-started`). `feat-025` (ponte de navegação Casas de Apostas -> Histórico), `feat-030` (CD
-automático, `epic-028`) e `feat-020`+`feat-021` (rótulo "Data do evento" + correção de quebra real
-em `POST /api/v1/bets`, `epic-024`) fecharam nesta sessão.
+`feat-001`..`feat-021`, `feat-023`, `feat-024`, `feat-025`..`feat-030` `done` (`feat-022` segue
+`REVISE`). `epic-020`/`epic-021`/`epic-023`/`epic-027` da raiz fechados por completo;
+`epic-024` segue `in-progress` (falta `feat-022` aqui e `stats-service feat-018`, `BLOCKED`).
 
-## Concluído nesta sessão (2026-09-15)
+## Concluído nesta sessão (2026-09-16)
 
-- [x] `feat-019` fechada (epic-023, sidebar) — ver entrada datada em `progress.md`.
-- [x] `feat-025` fechada (4 subtasks reduzidas a 3 após investigação, story SV-403, PRs #89-91).
-      Escopo real bem menor que o backlog original: formulário de depósito/retirada já existia
-      completo em `History`, só faltava alcançá-lo a partir de `Betting Houses` (ponte de
-      navegação via query param). Achado real corrigido: bug de "grid blowout" em `shared/panel`
-      (`min-width: 0` faltando), exposto pela coluna nova — corrigido no componente
-      compartilhado. Ver `progress.md` para o detalhe completo.
-- [x] **`feat-030` fechada** (CD automático — job `deploy` em `ci.yml`, `kubectl rollout restart
-      deployment/web` contra `KUBE_CONFIG`/`ci-deployer` de `infra/feat-007`). Sexta e última
-      aplicação idêntica do padrão de `epic-028` (fechado por completo nesta sessão nos 6
-      repositórios de aplicação) — único repositório frontend tocado pelo padrão, mas o job em si
-      é agnóstico de stack. Story SV-438, subtasks SV-439/SV-440, PRs #93/#94/#95, CI+SonarCloud
-      verdes. `Delivery Reviewer`: PASS (revisão condensada). Disparo real do job adiado (mesma
-      decisão dos outros 5 repositórios — promoção `develop -> main` é decisão de release mais
-      ampla).
-- [x] **`feat-020` fechada** (rótulo "Data da aposta" -> "Data do evento", 3 locales). Story
-      SV-443, PRs #96/#97/#98.
-- [x] **`feat-021` fechada — corrige quebra real de produção**: `bets-service feat-017` (fechada
-      mais cedo na mesma sessão) trocou `team1`/`team2` (texto livre) por `team1Id`/`team2Id`
-      (UUID) em `POST /api/v1/bets`, e este repositório nunca acompanhou — todo registro manual de
-      aposta pelo site estava recebendo 400. `Plan Reviewer` revisado (substitui o veredito
-      `BLOCKED` anterior, cuja dependência de fundo fechou na mesma sessão): tela nova
-      `shared/team-manager` (catálogo de times vinculado a esporte — `TEAM` não é estruturalmente
-      idêntico aos 4 catálogos de `shared/catalog-manager`, que ficou intocado) + `register-bet`
-      trocando os 2 inputs de texto por selects `team1Id`/`team2Id`. `Delivery Reviewer` (skill
-      completa, não condensada): PASS — verificação independente confirmou o contrato batendo
-      exatamente com `CreateBetRequest.java` e zero referência residual a `team1`/`team2` texto
-      livre. Story SV-446, subtasks SV-447/SV-448, PRs #99/#100/#101, CI+SonarCloud verdes.
+- [x] **`feat-024` fechada** — espaçamento e formulário das 6 telas de formulário (5 cadastros +
+      `/teams`). `Delivery Reviewer`/`Test Suite Auditor` acharam 2 gaps reais (cobertura faltando
+      em `/teams`, asserção de padding fraca via bounding-box) — ambos corrigidos na própria
+      `feature/SV-470` antes do merge pra `develop`. Ver `progress.md` para o detalhe completo.
+- [x] Varredura completa nos 8 repositórios removendo comentários narrativos verbosos
+      ("Real bug (feat-X)"/"Achado real") de código-fonte (TS/SCSS/Java/Python/YAML) — pedido
+      explícito do usuário, reincidência de feedback já registrada em memória. Conteúdo de
+      racional/histórico migrado pra commit message/CHANGELOG/vault, nunca mais em comentário de
+      código-fonte.
+
+## Concluído em sessão anterior (2026-09-15)
+
+- [x] `feat-019`, `feat-025`, `feat-030`, `feat-020`+`feat-021`, `feat-028` fechadas — ver
+      entradas datadas em `progress.md`.
+- [x] Os 6 repositórios de aplicação promovidos `develop -> main`. Achado real de infraestrutura
+      (deploy automático `kubectl` inalcançável do runner GitHub) documentado em
+      `../../docs/services/infra.md` e `../../session-handoff.md`; usuário decidiu deixar como
+      está por agora.
+- [x] `feat-027` + `feat-026` fechadas — fecham `epic-027` da raiz (tela de vínculo Telegram,
+      `betType` alinhado a `mat-select` PRE/LIVE, `byBetType` tipado e exibido).
+- [x] `feat-029` fechada — fecha `epic-021` da raiz (tela "Visão geral" pós-login, `/overview`,
+      login redireciona pra cá em vez de `/dashboard`).
+- [x] **`feat-023` fechada** — corrige a sobreposição real do seletor de idioma reportada pelo
+      usuário no login. Causa raiz real (medida contra o dev server): `display: block` envolvendo
+      um filho `width: 100%` sem largura definida em nenhum ancestral. Ver `progress.md` para o
+      detalhe completo, inclusive o gotcha reutilizável documentado em `docs/CONVENTIONS.md`.
 
 ## Bloqueios / Riscos
 
-Nenhum. **A quebra que bloqueava o deploy de `bets-service` em produção (documentada em
-`services/bets-service/session-handoff.md`) está resolvida** — `apps/web` já não envia mais
-`team1`/`team2` texto livre.
+Nenhum. A imagem `:latest` deste repositório no GHCR está atualizada — o `kubectl rollout
+restart` em produção continua manual (túnel SSH) até a decisão de rede de `infra.md` ser
+revisitada.
 
 ## Próxima sessão — por onde começar
 
 1. Rodar `./init.sh` (deve sair `0`).
-2. Backlog aberto deste harness: `feat-022`..`024`, `026`..`029` (`not-started`), mapeados aos
-   epics `epic-024`/`026`/`027`/`020`/`021` da raiz — `Plan Reviewer` já rodou contra todos numa
-   sessão anterior (ver `plan_review` de cada um em `feature_list.json`). Vereditos variam de
-   `READY` a `BLOCKED` — `feat-026`(parte 2, byBetType)/`feat-029` têm decisão pendente do usuário
-   antes de codificar (ver o texto de cada `plan_review`). `feat-024` (espaçamento dos cadastros)
-   é `READY`, sem bloqueio conhecido. `feat-022` (date picker) tem 2 achados MAJOR do Plan
-   Reviewer já corrigidos no plano (ver seu `plan_review`) — reler antes de codificar.
+2. Backlog aberto restante deste harness: `feat-022` (`REVISE`), mapeado ao `epic-024` da raiz
+   (harness oficial `services/bets-service/`, mas o escopo restante vive todo aqui). Falta
+   decidir/confirmar o `DateAdapter` reativo ao idioma ativo e como tratar `betDate`
+   (datetime-local — `mat-timepicker` vs. 2 controles separados) antes de codificar, ver o
+   `plan_review` completo.
 3. `app-panel` (`shared/panel`) ganhou `min-width: 0` no `:host` numa sessão anterior — qualquer
-   página nova que use `app-panel` com conteúdo largo (tabela, código) já herda a proteção contra
-   "grid blowout" (ver `docs/CONVENTIONS.md`), não precisa repetir o fix.
-4. Quando este repositório promover `develop -> main` pela primeira vez desde `feat-030`:
-   confirmar o job `deploy` rodando de verdade (log do GitHub Actions) e registrar em
-   `../../docs/services/infra.md`.
+   página nova que use `app-panel` com conteúdo largo já herda a proteção contra "grid blowout",
+   não precisa repetir o fix.
+4. Ao adicionar uma chamada HTTP nova a um `forkJoin` já existente numa página, atualizar o mock
+   e2e (`page.route`) daquela página no mesmo commit e rodar `npx playwright test` completo (não
+   só o arquivo tocado) antes de fechar a feature — ver `docs/TESTING.md`.
+5. `page.route()` no Playwright dá prioridade ao handler registrado **por último** (LIFO) — ver
+   `docs/TESTING.md`.
+6. `Object.defineProperty(navigator, 'language', ...)` em spec novo sempre precisa de
+   `delete (navigator as {language?: string}).language` no `afterEach` — sem isso, a sobrescrita
+   vaza pro próximo arquivo de teste no mesmo worker do Vitest, só reproduzível em CI. Ver
+   `docs/TESTING.md`.
+7. **Um componente compartilhado com `width: 100%`/`height: 100%` interno só funciona corretamente
+   se TODO ancestral em que for reusado der a ele uma largura/altura definida** (`display: block`
+   não tem garantia de spec pra medir um filho percentual quando o próprio ancestral também se
+   auto-dimensiona pelo conteúdo — usar `display: flex` no ancestral nesse caso). Achado real de
+   `feat-023.1` (`core/language-selector`). Ver `docs/CONVENTIONS.md`.
+8. `shared/catalog-dashboard` é genérico o bastante pra qualquer segmento futuro de
+   `StatisticsDashboard` com o mesmo formato — só adicionar a chave em `CatalogSegment` e uma
+   rota, sem componente novo.
+9. `monthly` de `GET /api/v1/statistics` não vem escopado ao ano corrente quando a chamada não
+   tem `from`/`to` — ver `docs/API-CONTRACTS.md` e `pages/overview/overview-metrics.ts`.

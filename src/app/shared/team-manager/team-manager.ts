@@ -21,10 +21,9 @@ interface FormOptions {
 const EMPTY_OPTIONS: FormOptions = { sports: [], teams: [] };
 
 /**
- * TEAM (bets-service feat-016/017) isn't structurally identical to sports/leagues/markets/
- * tipsters (required sportId FK, list needs the sport catalog too to render a name instead of a
- * raw id) - a dedicated screen instead of overloading shared/catalog-manager with a conditional
- * second field for only one of its five callers.
+ * TEAM isn't structurally identical to sports/leagues/markets/tipsters (required sportId FK,
+ * list needs the sport catalog too to render a name instead of a raw id) - a dedicated screen
+ * instead of overloading shared/catalog-manager with a conditional second field.
  */
 @Component({
   imports: [

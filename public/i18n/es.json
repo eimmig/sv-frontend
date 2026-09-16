@@ -52,6 +52,14 @@
     "bySportTitle": "Por deporte",
     "byMarketTitle": "Por mercado",
     "byBettingHouseTitle": "Por casa de apuestas",
+    "monthlyDrawdownTitle": "Drawdown mensual",
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
+  },
+  "monthlyDrawdown": {
+    "fromLabel": "Mes inicial",
+    "toLabel": "Mes final",
+    "apply": "Aplicar",
+    "emptyResult": "Ningún mes en el intervalo seleccionado.",
     "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
   },
   "catalogDashboard": {
@@ -66,7 +74,8 @@
     "leagueNameLabel": "Liga",
     "marketNameLabel": "Mercado",
     "tipsterNameLabel": "Tipster",
-    "bettingHouseNameLabel": "Casa de apuestas"
+    "bettingHouseNameLabel": "Casa de apuestas",
+    "betTypeNameLabel": "Tipo de apuesta"
   },
   "searchStatistics": {
     "filtersTitle": "Filtros",
@@ -115,6 +124,24 @@
     "betsLabel": "Apuestas",
     "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
   },
+  "overview": {
+    "summaryTitle": "Visión general",
+    "lucroTotalLabel": "Ganancia Total (U)",
+    "preLiveLabel": "Pre / En vivo (U)",
+    "lucroMedioMensalLabel": "Ganancia Media Mensual (U)",
+    "roiLabel": "ROI",
+    "monthLabel": "Mes",
+    "saldoComecoLabel": "Saldo Inicial",
+    "saldoFinalLabel": "Saldo Final",
+    "entradasLabel": "Entradas",
+    "vitoriasPerdasLabel": "Victorias / Derrotas",
+    "oddMediaLabel": "Odd Media",
+    "winRateLabel": "WR%",
+    "profitReaisLabel": "Ganancia ($)",
+    "profitUnidadesLabel": "Ganancia (U)",
+    "indeterminate": "Indeterminado",
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
+  },
   "login": {
     "title": "Iniciar sesión",
     "tagline": "Gestión de banca",
@@ -125,6 +152,7 @@
     "genericError": "No se pudo iniciar sesión. Inténtalo de nuevo."
   },
   "nav": {
+    "overview": "Visión general",
     "dashboard": "Dashboard",
     "bettingHouses": "Casas de apuestas",
     "newBet": "Registrar apuesta",
@@ -133,6 +161,8 @@
     "dashboardMenuItem": "Dashboard",
     "searchStatistics": "Buscar estadísticas",
     "periodReport": "Informe del período",
+    "betTypeDashboard": "Por tipo de apuesta",
+    "telegramLink": "Vincular Telegram",
     "users": "Usuarios",
     "logout": "Cerrar sesión",
     "collapse": "Contraer menú",
@@ -155,6 +185,15 @@
       "ADMIN": "Administrador",
       "MEMBER": "Miembro"
     }
+  },
+  "telegramLink": {
+    "title": "Vincular cuenta de Telegram",
+    "intro": "Genera un código de corta duración y envíalo al bot de Telegram para vincular tu cuenta y registrar apuestas desde allí.",
+    "generate": "Generar código",
+    "regenerate": "Generar nuevo código",
+    "codeLabel": "Código de vínculo",
+    "expiresAtLabel": "Expira el {{expiresAt}}",
+    "genericError": "No se pudo generar el código. Inténtalo de nuevo."
   },
   "bettingHouses": {
     "createTitle": "Nueva casa de apuestas",
@@ -207,11 +246,15 @@
     "team2Label": "Equipo 2",
     "team2None": "Ninguno",
     "betTypeLabel": "Tipo de apuesta",
+    "betTypeNone": "Sin clasificar",
+    "betTypePre": "Pre-partido",
+    "betTypeLive": "En vivo",
     "playTypeLabel": "Tipo de jugada",
     "descriptionLabel": "Descripción",
     "stakeLabel": "Monto apostado",
     "oddLabel": "Cuota",
     "betDateLabel": "Fecha del evento",
+    "betTimeLabel": "Hora del evento",
     "reset": "Limpiar",
     "submit": "Registrar apuesta",
     "success": "Apuesta registrada con éxito.",

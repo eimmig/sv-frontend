@@ -1,15 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTimepickerModule } from '@angular/material/timepicker';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { forkJoin, map } from 'rxjs';
 
 import { loadInto, submitForm } from '../../core/api-request';
-import { BetsApi } from '../../core/bets-api';
+import { BetType, BetsApi } from '../../core/bets-api';
 import { BettingHouse, BettingHousesApi } from '../../core/betting-houses-api';
 import { CatalogEntry, Team, catalogApi, teamsApi } from '../../core/catalog-api';
 import { formatBrl } from '../../core/currency';
@@ -34,19 +36,26 @@ const EMPTY_OPTIONS: FormOptions = {
   teams: [],
 };
 
-function nowForDatetimeLocal(): string {
-  const now = new Date();
-  const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
-  return local.toISOString().slice(0, 16);
+// betDateOnly/betTimeOnly nunca compartilham valor (mat-datepicker e mat-timepicker, ver
+// docs/services/web.md "Date picker: mat-datepicker + mat-timepicker" - o merge de data/hora do
+// proprio Angular Material e assimetrico: trocar a data zera a hora pra meia-noite, mas trocar
+// a hora preserva a data) - cada um so e tocado pelo seu picker, combinados aqui so no limite
+// do submit.
+function combineDateAndTime(date: Date, time: Date): Date {
+  const combined = new Date(date);
+  combined.setHours(time.getHours(), time.getMinutes(), time.getSeconds(), 0);
+  return combined;
 }
 
 @Component({
   imports: [
     ReactiveFormsModule,
     MatButtonModule,
+    MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatTimepickerModule,
     TranslocoPipe,
     Panel,
     PanelLayout,
@@ -63,6 +72,7 @@ export class RegisterBet implements OnInit {
   private readonly transloco = inject(TranslocoService);
 
   protected readonly formatBrl = formatBrl;
+  protected readonly betTypes: readonly BetType[] = ['pre', 'live'];
   protected readonly options = signal<FormOptions>(EMPTY_OPTIONS);
   protected readonly loadError = signal<string | null>(null);
   protected readonly submitting = signal(false);
@@ -85,7 +95,8 @@ export class RegisterBet implements OnInit {
     playType: [''],
     stake: [0, [Validators.required, Validators.min(0.01)]],
     odd: [1.01, [Validators.required, Validators.min(1.01)]],
-    betDate: [nowForDatetimeLocal(), Validators.required],
+    betDateOnly: new FormControl<Date | null>(new Date(), Validators.required),
+    betTimeOnly: new FormControl<Date | null>(new Date(), Validators.required),
   });
 
   ngOnInit(): void {
@@ -129,7 +140,8 @@ export class RegisterBet implements OnInit {
       playType: '',
       stake: 0,
       odd: 1.01,
-      betDate: nowForDatetimeLocal(),
+      betDateOnly: new Date(),
+      betTimeOnly: new Date(),
     });
     this.idempotencyKey = crypto.randomUUID();
     this.formError.set(null);
@@ -154,11 +166,11 @@ export class RegisterBet implements OnInit {
           team1Id: raw.team1Id || null,
           team2Id: raw.team2Id || null,
           description: raw.description || null,
-          betType: raw.betType || null,
+          betType: (raw.betType || null) as BetType | null,
           playType: raw.playType || null,
           stake: raw.stake,
           odd: raw.odd,
-          betDate: new Date(raw.betDate).toISOString(),
+          betDate: combineDateAndTime(raw.betDateOnly ?? new Date(), raw.betTimeOnly ?? new Date()).toISOString(),
         },
         this.idempotencyKey,
       ),

@@ -39,10 +39,9 @@ function storedSession(): Session | null {
 }
 
 /**
- * PASETO v4.local session, persisted in localStorage (same 'stakevault.*'
- * pattern as Theme/Language) - the token is symmetrically encrypted, so
- * userId/role are returned by the login endpoint itself (auth-service
- * feat-010) rather than decoded client-side.
+ * PASETO v4.local session, persisted in localStorage (same 'stakevault.*' pattern as
+ * Theme/Language) - the token is symmetrically encrypted, so userId/role are returned by the
+ * login endpoint itself rather than decoded client-side.
  */
 @Injectable({ providedIn: 'root' })
 export class Auth {

@@ -25,6 +25,7 @@ import { MonthlyProfitChart } from '../../shared/monthly-profit-chart/monthly-pr
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 import { PeriodPresetFilter, PeriodRange } from '../../shared/period-preset-filter/period-preset-filter';
+import { MonthlyDrawdownGrid } from './monthly-drawdown-grid/monthly-drawdown-grid';
 
 interface Options {
   readonly bettingHouses: BettingHouse[];
@@ -67,6 +68,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
     MatTabsModule,
     KpiCard,
     MonthlyProfitChart,
+    MonthlyDrawdownGrid,
     Panel,
     PanelLayout,
     PeriodPresetFilter,
@@ -99,8 +101,7 @@ export class Dashboard implements OnInit {
   protected readonly dashboardData = signal<DashboardData>(EMPTY_DASHBOARD_DATA);
   protected readonly dashboardError = signal<string | null>(null);
 
-  /** null (rendered as "Indeterminado") when saldoAtual or unitPercent is 0 - not defined by
-   *  docs/STATISTICS.md, decision from feat-014's plan review (no exception thrown/divide-by-zero). */
+  /** null (rendered as "Indeterminado") when saldoAtual or unitPercent is 0. */
   protected readonly unidadesApostadas = computed(() => {
     const data = this.dashboardData();
     const denominator = data.bankrollNow * data.unitPercent;

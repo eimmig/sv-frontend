@@ -9,9 +9,6 @@ import { AppSideNav } from './app-side-nav';
 import { Auth } from '../auth';
 
 describe('AppSideNav', () => {
-  // mat-menu (first CDK overlay used in this app, see feat-016) renders into a pane appended to
-  // document.body, outside the fixture - TestBed teardown doesn't remove it, so a leftover pane
-  // from one test could leak into the next test's DOM queries without this cleanup.
   afterEach(() => {
     TestBed.inject(OverlayContainer).ngOnDestroy();
   });
@@ -26,6 +23,7 @@ describe('AppSideNav', () => {
           langs: {
             'pt-BR': {
               nav: {
+                overview: 'Visão geral',
                 dashboard: 'Dashboard',
                 bettingHouses: 'Casas de apostas',
                 newBet: 'Registrar aposta',
@@ -34,6 +32,8 @@ describe('AppSideNav', () => {
                 dashboardMenuItem: 'Dashboard',
                 searchStatistics: 'Buscar estatísticas',
                 periodReport: 'Relatório do período',
+                betTypeDashboard: 'Por tipo de aposta',
+                telegramLink: 'Vincular Telegram',
                 users: 'Usuários',
                 logout: 'Sair',
                 collapse: 'Retrair menu',
@@ -134,10 +134,6 @@ describe('AppSideNav', () => {
     expect(localStorage.getItem('stakevault.navCollapsed')).toBe('true');
   });
 
-  // Regression guard (feat-019.2): mat-icon-button on this button only does anything when
-  // MatButtonModule is imported - without it, Angular silently treats the attribute as inert and
-  // the button renders as a bare native <button> (no error, no test failure, only visible via a
-  // real browser's computed style or by checking for this class - see docs/CONVENTIONS.md).
   it('applies Material button styling to the collapse toggle', () => {
     session('MEMBER');
     const fixture = TestBed.createComponent(AppSideNav);
@@ -148,12 +144,7 @@ describe('AppSideNav', () => {
     expect(toggle?.classList.contains('mat-mdc-icon-button')).toBe(true);
   });
 
-  // Real bug (feat-018.4 QA): an always-expanded 232px sidebar ate almost the entire mobile
-  // viewport, breaking the "coluna única" responsive rule (RNF01, docs/DESIGN-SYSTEM.md) every
-  // other page already follows below ~600px.
-  // CDK's BreakpointObserver (used internally by mat-menu/mat-tooltip positioning) also calls
-  // matchMedia and expects a real MediaQueryList shape - a bare {matches} stub makes it throw
-  // "mql.addListener is not a function" everywhere else in the component tree.
+  // CDK's BreakpointObserver expects a real MediaQueryList shape - a bare {matches} stub throws.
   function stubMatchMedia(matches: boolean) {
     const mql = {
       matches,

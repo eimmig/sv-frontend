@@ -52,6 +52,14 @@
     "bySportTitle": "By sport",
     "byMarketTitle": "By market",
     "byBettingHouseTitle": "By betting house",
+    "monthlyDrawdownTitle": "Monthly drawdown",
+    "genericError": "Could not complete the operation. Please try again."
+  },
+  "monthlyDrawdown": {
+    "fromLabel": "Start month",
+    "toLabel": "End month",
+    "apply": "Apply",
+    "emptyResult": "No month in the selected range.",
     "genericError": "Could not complete the operation. Please try again."
   },
   "catalogDashboard": {
@@ -66,7 +74,8 @@
     "leagueNameLabel": "League",
     "marketNameLabel": "Market",
     "tipsterNameLabel": "Tipster",
-    "bettingHouseNameLabel": "Betting house"
+    "bettingHouseNameLabel": "Betting house",
+    "betTypeNameLabel": "Bet type"
   },
   "searchStatistics": {
     "filtersTitle": "Filters",
@@ -115,6 +124,24 @@
     "betsLabel": "Bets",
     "genericError": "Could not complete the operation. Please try again."
   },
+  "overview": {
+    "summaryTitle": "Overview",
+    "lucroTotalLabel": "Total Profit (U)",
+    "preLiveLabel": "Pre / Live (U)",
+    "lucroMedioMensalLabel": "Average Monthly Profit (U)",
+    "roiLabel": "ROI",
+    "monthLabel": "Month",
+    "saldoComecoLabel": "Starting Balance",
+    "saldoFinalLabel": "Ending Balance",
+    "entradasLabel": "Entries",
+    "vitoriasPerdasLabel": "Wins / Losses",
+    "oddMediaLabel": "Average Odd",
+    "winRateLabel": "WR%",
+    "profitReaisLabel": "Profit ($)",
+    "profitUnidadesLabel": "Profit (U)",
+    "indeterminate": "Undetermined",
+    "genericError": "Could not complete the operation. Please try again."
+  },
   "login": {
     "title": "Sign in",
     "tagline": "Bankroll management",
@@ -125,6 +152,7 @@
     "genericError": "Could not sign in. Please try again."
   },
   "nav": {
+    "overview": "Overview",
     "dashboard": "Dashboard",
     "bettingHouses": "Betting houses",
     "newBet": "Register bet",
@@ -133,6 +161,8 @@
     "dashboardMenuItem": "Dashboard",
     "searchStatistics": "Search statistics",
     "periodReport": "Period report",
+    "betTypeDashboard": "By bet type",
+    "telegramLink": "Link Telegram",
     "users": "Users",
     "logout": "Log out",
     "collapse": "Collapse menu",
@@ -155,6 +185,15 @@
       "ADMIN": "Admin",
       "MEMBER": "Member"
     }
+  },
+  "telegramLink": {
+    "title": "Link your Telegram account",
+    "intro": "Generate a short-lived code and send it to the Telegram bot to link your account and register bets from there.",
+    "generate": "Generate code",
+    "regenerate": "Generate new code",
+    "codeLabel": "Link code",
+    "expiresAtLabel": "Expires at {{expiresAt}}",
+    "genericError": "Could not generate the code. Please try again."
   },
   "bettingHouses": {
     "createTitle": "New betting house",
@@ -207,11 +246,15 @@
     "team2Label": "Team 2",
     "team2None": "None",
     "betTypeLabel": "Bet type",
+    "betTypeNone": "Unclassified",
+    "betTypePre": "Pre-match",
+    "betTypeLive": "Live",
     "playTypeLabel": "Play type",
     "descriptionLabel": "Description",
     "stakeLabel": "Stake",
     "oddLabel": "Odd",
     "betDateLabel": "Event date",
+    "betTimeLabel": "Event time",
     "reset": "Clear",
     "submit": "Register bet",
     "success": "Bet registered successfully.",
