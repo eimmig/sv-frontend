@@ -1,15 +1,18 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { DateAdapter, provideNativeDateAdapter } from '@angular/material/core';
 import { provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { vi } from 'vitest';
 
 import { App } from './app';
+import { Language } from './core/language';
 
 describe('App', () => {
   beforeEach(async () => {
     localStorage.removeItem('stakevault.auth');
+    localStorage.removeItem('stakevault.language');
     vi.useFakeTimers();
     Object.defineProperty(navigator, 'matchMedia', {
       value: () => ({ matches: false }),
@@ -30,11 +33,17 @@ describe('App', () => {
                 tagline: 'GESTÃO DE BANCA',
               },
             },
+            'en-US': {},
           },
-          translocoConfig: { availableLangs: ['pt-BR'], defaultLang: 'pt-BR' },
+          translocoConfig: { availableLangs: ['pt-BR', 'en-US'], defaultLang: 'pt-BR' },
         }),
       ],
-      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideNativeDateAdapter(),
+      ],
     }).compileComponents();
   });
 
@@ -58,6 +67,26 @@ describe('App', () => {
 
     expect(el.querySelector('app-side-nav')).toBeNull();
     expect(el.querySelector('app-must-change-password-banner')).toBeNull();
+  });
+
+  it('rebinds the DateAdapter locale whenever Language.current changes, not only once at bootstrap', () => {
+    const fixture = TestBed.createComponent(App);
+    const language = TestBed.inject(Language);
+    const dateAdapter = TestBed.inject(DateAdapter);
+    const date = new Date(2026, 8, 16);
+    const format = { year: 'numeric', month: 'long', day: 'numeric' };
+
+    language.set('pt-BR');
+    fixture.detectChanges();
+    const ptBrFormatted = dateAdapter.format(date, format);
+
+    language.set('en-US');
+    fixture.detectChanges();
+    const enUsFormatted = dateAdapter.format(date, format);
+
+    expect(enUsFormatted).not.toBe(ptBrFormatted);
+    expect(enUsFormatted).toContain('September');
+    expect(ptBrFormatted.toLowerCase()).toContain('setembro');
   });
 
   it('shows the splash first and dismisses it once the intro finishes', () => {

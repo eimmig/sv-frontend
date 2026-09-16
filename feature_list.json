@@ -1484,14 +1484,14 @@
         "feat-014",
         "feat-015"
       ],
-      "status": "not-started",
-      "plan_review": "Plan Reviewer 2026-09-15: REVISE. Evidencia: @angular/material 22.1.6 instalado, mas MatDatepicker NUNCA foi usado no app - todos os campos de data hoje sao input nativo type=\"date\" (period-preset-filter.html) ou type=\"datetime-local\" (register-bet.html, betDate com hora+data). core/date-format.ts ja faz formatacao de EXIBICAO por locale via Intl.DateTimeFormat (padrao reaproveitavel), mas isso e ortogonal ao DateAdapter que o MatDatepicker exige para o proprio picker (MAT_DATE_LOCALE/provideNativeDateAdapter ou provideMomentDateAdapter) - nenhum provider desses existe hoje. MAJOR 1: MAT_DATE_LOCALE e um DI token estatico; o app troca idioma em runtime via transloco (language-selector ja existe) - o plano nao tem subtask pra rebind do locale do datepicker quando o usuario troca de idioma sem reload de pagina (sem isso o calendario fica preso no locale do boot). MAJOR 2: betDate e datetime-local (data E hora) - MatDatepicker só cobre a parte de data; description do inventario (022.1) trata 'campos de data e data/hora' como o mesmo problema, mas exige verificar se @angular/material 22 expõe mat-timepicker estavel (adicionado nas versoes recentes do Material, confirmar na documentacao oficial da versao instalada antes de comprometer o design) ou compor date+time separado - decisao de UX que falta no plano. Amendment: adicionar subtask explicita entre 022.1 e 022.2 para (a) escolher/confirmar DateAdapter e prover MAT_DATE_LOCALE reativo ao idioma ativo, (b) decidir tratamento de datetime-local (mat-timepicker vs. 2 controles) antes de tocar em register-bet.",
-      "jira": "",
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer 2026-09-15 (1a rodada): REVISE. MAJOR 1 (rebind reativo de locale) e MAJOR 2 (decisao datetime-local) - ver historico completo na 2a rodada abaixo. Plan Reviewer 2026-09-16 (2a rodada): REVISE, corrigido antes de codificar. MAJOR 1 resolvido sem exigir decisao do usuario: reaproveitar core/language.ts (Language.current signal, ja providedIn root e ja dirige TranslocoService em todo o app) em vez de escutar transloco.langChanges$ direto - effect(() => dateAdapter.setLocale(language.current())) no construtor de App (app.ts), provideNativeDateAdapter() (sem dependencia nova, mesma filosofia Intl de core/date-format.ts). MAJOR 2 resolvido em 2 etapas: primeiro confirmado que @angular/material 22.1.6 expoe mat-timepicker estavel (entry point real no exports map, fonte sem marca de experimental); a hipotese inicial de compartilhar 1 FormControl entre datepicker e timepicker (formControlName duplicado) foi REJEITADA depois de ler o codigo-fonte real (fesm2022/datepicker.mjs/timepicker.mjs, nao so os .d.ts) - o merge de data/hora e ASSIMETRICO por design do proprio Material (MatTimepickerInput preserva a data ao trocar a hora; MatDatepickerInputBase nao preserva a hora ao trocar a data, NativeDateAdapter zera pra meia-noite) - compartilhar valor resetaria a hora silenciosamente ao trocar a data, defeito real de UX numa tela regida pelas 8 regras de ouro de Shneiderman (register-bet, RF04). Corrigido: betDate vira 2 FormControl independentes (betDateOnly/betTimeOnly), nunca compartilham valor, combinados so no submit via setHours/setMinutes - ver feat-022.4. Nenhuma decisao exige o usuario - tudo resolvido lendo o codigo-fonte real da lib instalada.",
+      "jira": "SV-480",
       "subtasks": [
         {
           "id": "feat-022.1",
           "name": "Inventariar campos de data do frontend",
-          "detail": "Mapear todos os campos de data e data/hora nas telas e componentes compartilhados antes de escolher a implementacao comum.",
+          "detail": "Mapear todos os campos de data e data/hora nas telas e componentes compartilhados antes de escolher a implementacao comum. Confirmado por grep: period-preset-filter.html (shared, consumido por dashboard/period-report/catalog-dashboard) com customFrom/customTo string yyyy-MM-dd via ngModel+signal; history.html com 2 pares from/to (aba apostas e aba financeiro) via Reactive Form; search-statistics.html com 1 par from/to via Reactive Form; register-bet.html com betDate unico (datetime-local, string yyyy-MM-ddTHH:mm hoje, convertido pra ISO so no submit via nowForDatetimeLocal()/new Date(raw.betDate).toISOString() - mesmo padrao de conversao no limite ja em uso, so o tipo do valor interno muda de string pra Date).",
           "checklist": [
             "Criar aposta usa date picker e data/hora do evento conforme o dominio.",
             "Filtros de periodo, historico, relatorio e dashboards sao incluidos no inventario.",
@@ -1499,26 +1499,56 @@
           ],
           "validation": "Inventario revisado sem campos de data fora do escopo ou conversoes duplicadas.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-481"
         },
         {
           "id": "feat-022.2",
-          "name": "Adicionar date picker e formatacao por locale",
-          "detail": "Aplicar o componente de selecao de data do design system e configurar exibicao pt-BR/en-US/es sem quebrar datas de filtros ou formularios.",
+          "name": "Providers do DateAdapter com rebind reativo de locale",
+          "detail": "Amendment do Plan Reviewer (2026-09-16), resolvido com evidencia antes de tocar em qualquer campo de data. DateAdapter: provideNativeDateAdapter() (@angular/material/core) em app.config.ts - sem dependencia nova (moment/date-fns/luxon nao instalados), mesma filosofia Intl ja usada em core/date-format.ts. Rebind reativo: MAT_DATE_LOCALE e estatico, mas o app ja tem core/language.ts (Language, providedIn: root) com o signal current() que dirige TranslocoService.setActiveLang - reaproveitar esse mecanismo existente em vez de escutar transloco.langChanges$ direto: injetar DateAdapter + Language em App (app.ts, componente raiz) e registrar effect(() => dateAdapter.setLocale(language.current())) no construtor - roda pelo menos 1x na inicializacao (fixa o locale certo antes do primeiro datepicker abrir) e de novo toda vez que o usuario trocar idioma sem reload. mat-timepicker (novo em @angular/material 22, confirmado instalado - node_modules/@angular/material/timepicker com entry point exportado, MatTimepicker/MatTimepickerInput usam o MESMO DateAdapter do datepicker) tambem se beneficia do mesmo rebind, sem provider separado.",
           "checklist": [
-            "Campos de data exibem date picker com teclado e acessibilidade.",
-            "Formato visivel acompanha o idioma ativo e nao fica preso ao formato americano.",
-            "Campos de data/hora preservam hora e timezone definidos pelo dominio.",
-            "Conversao para yyyy-MM-dd ou ISO ocorre no limite com a API, nao no template."
+            "provideNativeDateAdapter() adicionado a app.config.ts.",
+            "App (app.ts) injeta DateAdapter e Language, effect() chama dateAdapter.setLocale(language.current()).",
+            "Teste de componente prova que trocar Language.current() rebinda o locale do DateAdapter (nao só que o provider existe)."
           ],
-          "validation": "Testes de componente cobrem os tres locales, abertura do date picker e conversao enviada ao backend.",
+          "validation": "Teste prova o rebind reativo fim a fim (mudar locale -> DateAdapter.getLocale() muda), nao so a existencia do provider.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-482"
         },
         {
           "id": "feat-022.3",
+          "name": "Aplicar mat-datepicker aos campos de data (filtros)",
+          "detail": "period-preset-filter (customFrom/customTo), history (2 pares) e search-statistics (1 par): trocar input nativo type=\"date\" por mat-datepicker. Valor interno passa de string (yyyy-MM-dd) pra Date - conversao pra yyyy-MM-dd move pro limite (period-preset-filter: dentro do effect() que hoje ja monta o PeriodRange antes de rangeChange.emit(), reusando toDateOnly() ja existente; history/search-statistics: no metodo que monta o filtro a partir de form.value antes de chamar a API, nao no template). MatDatepickerModule/MatDatepickerToggle importados nos 3 componentes.",
+          "checklist": [
+            "Campos de data exibem date picker com teclado e acessibilidade (mat-datepicker-toggle).",
+            "Formato visivel acompanha o idioma ativo (DateAdapter, feat-022.2) e nao fica preso ao formato americano.",
+            "Conversao pra yyyy-MM-dd ocorre no limite (metodo/effect que monta a chamada a API), nao no template.",
+            "period-preset-filter, history e search-statistics continuam emitindo/enviando exatamente o mesmo contrato yyyy-MM-dd de antes - sem mudanca de query param."
+          ],
+          "validation": "Testes de componente cobrem os tres locales, abertura do date picker e que o valor enviado a API continua yyyy-MM-dd.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-483"
+        },
+        {
+          "id": "feat-022.4",
+          "name": "register-bet: betDate vira mat-datepicker + mat-timepicker (2 controles independentes)",
+          "detail": "Amendment do Plan Reviewer, 2a rodada (2026-09-16): betDate e o unico campo data+hora do app - confirmado @angular/material 22.1.6 expoe mat-timepicker estavel (mesmo DateAdapter do datepicker, entry point real sem marca de experimental). Rejeitado compartilhar 1 FormControl entre os 2 pickers (formControlName duplicado) - leitura direta da fonte real (fesm2022/datepicker.mjs/timepicker.mjs, nao so os .d.ts) confirmou merge ASSIMETRICO por design do proprio Material: MatTimepickerInput._assignUserSelection preserva a data ao trocar a hora (le this.value() antes de aplicar setTime), mas MatDatepickerInputBase._registerModel so repassa a selecao do calendario direto, sem merge - e NativeDateAdapter._createDateWithOverflow zera a hora pra meia-noite. Trocar a data resetaria silenciosamente a hora ja digitada (defeito real de UX numa tela regida pelas 8 regras de ouro de Shneiderman). Correcao: betDate (FormControl unico) vira 2 FormControl independentes - betDateOnly (Date, so data) e betTimeOnly (Date, so hora - leitura restrita a getHours()/getMinutes(), a parte de data do valor do timepicker e sempre descartavel, MatTimepicker.generateOptions ancora as opcoes em adapter.today() por design) - cada um so e tocado pelo seu proprio picker, sem contaminacao cruzada. Combinacao final (setHours/setMinutes nativos sobre betDateOnly) so no submit, mesmo lugar onde hoje ja existe new Date(raw.betDate).toISOString() - mesmo principio de conversao no limite ja usado no resto do app.",
+          "checklist": [
+            "register-bet.html: 2 mat-form-field distintos - input matDatepicker ligado a betDateOnly, input matTimepicker ligado a betTimeOnly.",
+            "register-bet.ts: betDateOnly/betTimeOnly (Date | null) no FormGroup; nowForDatetimeLocal() substituida por defaults Date equivalentes; combinacao setHours/setMinutes(betDateOnly, betTimeOnly.getHours(), betTimeOnly.getMinutes()) so no metodo de submit, produzindo o Date final antes de .toISOString().",
+            "Teste de componente prova que trocar a data nao afeta a hora ja setada e vice-versa (garantido por construcao - controles nunca compartilham valor).",
+            "Teste de componente prova que o Date final combinado no submit bate com data+hora escolhidos separadamente.",
+            "Conversao final pro ISO enviado a bets-service continua identica ao formato de hoje (POST /api/v1/bets, campo betDate)."
+          ],
+          "validation": "Teste de componente prova isolamento data/hora por construcao e o ISO final enviado ao backend inalterado.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-484"
+        },
+        {
+          "id": "feat-022.5",
           "name": "Atualizar testes, QA visual e documentacao",
           "detail": "Validar a experiencia nos fluxos que usam periodo e registrar qualquer convencao nova de locale ou timezone.",
           "checklist": [
@@ -1530,8 +1560,8 @@
           ],
           "validation": "Suite do frontend verde e contratos tecnicos de data preservados.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-485"
         }
       ],
       "evidence": ""

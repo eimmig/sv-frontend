@@ -166,11 +166,27 @@
           <input
             matInput
             id="register-bet-date-input"
-            type="datetime-local"
-            formControlName="betDate"
+            [matDatepicker]="betDatePicker"
+            formControlName="betDateOnly"
             data-testid="register-bet-date"
             [attr.aria-label]="'registerBet.betDateLabel' | transloco"
           />
+          <mat-datepicker-toggle matIconSuffix [for]="betDatePicker" data-testid="register-bet-date-toggle" />
+          <mat-datepicker #betDatePicker />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'registerBet.betTimeLabel' | transloco }}</mat-label>
+          <input
+            matInput
+            id="register-bet-time-input"
+            [matTimepicker]="betTimePicker"
+            formControlName="betTimeOnly"
+            data-testid="register-bet-time"
+            [attr.aria-label]="'registerBet.betTimeLabel' | transloco"
+          />
+          <mat-timepicker-toggle matIconSuffix [for]="betTimePicker" data-testid="register-bet-time-toggle" />
+          <mat-timepicker #betTimePicker />
         </mat-form-field>
 
         <div class="register-bet__actions">
