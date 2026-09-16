@@ -1560,7 +1560,7 @@
           ],
           "validation": "Suite do frontend verde e contratos tecnicos de data preservados.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-485"
         }
       ],
