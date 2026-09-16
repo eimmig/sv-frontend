@@ -37,9 +37,10 @@ const EMPTY_OPTIONS: FormOptions = {
 };
 
 // betDateOnly/betTimeOnly nunca compartilham valor (mat-datepicker e mat-timepicker, ver
-// docs/DECISIONS-LOG.md 2026-09-16 - o merge de data/hora do proprio Angular Material e
-// assimetrico: trocar a data zera a hora pra meia-noite, mas trocar a hora preserva a data) -
-// cada um so e tocado pelo seu picker, combinados aqui so no limite do submit.
+// docs/services/web.md "Date picker: mat-datepicker + mat-timepicker" - o merge de data/hora do
+// proprio Angular Material e assimetrico: trocar a data zera a hora pra meia-noite, mas trocar
+// a hora preserva a data) - cada um so e tocado pelo seu picker, combinados aqui so no limite
+// do submit.
 function combineDateAndTime(date: Date, time: Date): Date {
   const combined = new Date(date);
   combined.setHours(time.getHours(), time.getMinutes(), time.getSeconds(), 0);
