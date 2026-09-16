@@ -3,14 +3,27 @@
 > Estado atual, não histórico. O diário cronológico é o `progress.md` — este arquivo é reescrito
 > a cada sessão para responder "o que a próxima sessão precisa saber agora".
 
-**Última atualização:** 2026-09-15
+**Última atualização:** 2026-09-16
 
 ## Objetivo atual
 
-`feat-001`..`feat-021`, `feat-023`, `feat-025`..`feat-030` `done` (`feat-022`, `feat-024` seguem
-`not-started`). `epic-020`/`epic-021`/`epic-023`/`epic-027` da raiz fechados por completo.
+`feat-001`..`feat-021`, `feat-023`, `feat-024`, `feat-025`..`feat-030` `done` (`feat-022` segue
+`REVISE`). `epic-020`/`epic-021`/`epic-023`/`epic-027` da raiz fechados por completo;
+`epic-024` segue `in-progress` (falta `feat-022` aqui e `stats-service feat-018`, `BLOCKED`).
 
-## Concluído nesta sessão (2026-09-15)
+## Concluído nesta sessão (2026-09-16)
+
+- [x] **`feat-024` fechada** — espaçamento e formulário das 6 telas de formulário (5 cadastros +
+      `/teams`). `Delivery Reviewer`/`Test Suite Auditor` acharam 2 gaps reais (cobertura faltando
+      em `/teams`, asserção de padding fraca via bounding-box) — ambos corrigidos na própria
+      `feature/SV-470` antes do merge pra `develop`. Ver `progress.md` para o detalhe completo.
+- [x] Varredura completa nos 8 repositórios removendo comentários narrativos verbosos
+      ("Real bug (feat-X)"/"Achado real") de código-fonte (TS/SCSS/Java/Python/YAML) — pedido
+      explícito do usuário, reincidência de feedback já registrada em memória. Conteúdo de
+      racional/histórico migrado pra commit message/CHANGELOG/vault, nunca mais em comentário de
+      código-fonte.
+
+## Concluído em sessão anterior (2026-09-15)
 
 - [x] `feat-019`, `feat-025`, `feat-030`, `feat-020`+`feat-021`, `feat-028` fechadas — ver
       entradas datadas em `progress.md`.
@@ -36,12 +49,11 @@ revisitada.
 ## Próxima sessão — por onde começar
 
 1. Rodar `./init.sh` (deve sair `0`).
-2. Backlog aberto restante deste harness: `feat-022` e `feat-024` (`not-started`), ambos mapeados
-   ao `epic-024` da raiz (harness oficial `services/bets-service/`, mas o escopo restante vive
-   todo aqui). `feat-024` (espaçamento dos cadastros) é `READY`, sem bloqueio conhecido — próximo
-   candidato natural. `feat-022` (date picker) está `REVISE`: falta decidir/confirmar o
-   `DateAdapter` reativo ao idioma ativo e como tratar `betDate` (datetime-local — `mat-timepicker`
-   vs. 2 controles separados) antes de codificar, ver o `plan_review` completo.
+2. Backlog aberto restante deste harness: `feat-022` (`REVISE`), mapeado ao `epic-024` da raiz
+   (harness oficial `services/bets-service/`, mas o escopo restante vive todo aqui). Falta
+   decidir/confirmar o `DateAdapter` reativo ao idioma ativo e como tratar `betDate`
+   (datetime-local — `mat-timepicker` vs. 2 controles separados) antes de codificar, ver o
+   `plan_review` completo.
 3. `app-panel` (`shared/panel`) ganhou `min-width: 0` no `:host` numa sessão anterior — qualquer
    página nova que use `app-panel` com conteúdo largo já herda a proteção contra "grid blowout",
    não precisa repetir o fix.
