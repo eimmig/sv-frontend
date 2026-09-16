@@ -1974,11 +1974,11 @@
           ],
           "validation": "Suite do frontend verde e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-465"
         }
       ],
-      "evidence": ""
+      "evidence": "Sem desvio do plano. buildLifetimeCurve/buildMonthlyBalances/buildMonthlyTable (pages/overview/overview-metrics.ts) puros, 22 testes, 100% cobertura do arquivo. resolveEarliestDate usa o proxy ja previsto no plan_review (primeiro item de /statistics/daily sem from/to) - decisao confirmada. Achado real, diverge da descricao do epic: aggregateByMonth (stats-service) nao escopa 'monthly' ao ano corrente sem filtro de periodo - agrupa (year, month) sobre o historico inteiro; buildMonthlyTable filtra por ano no cliente, documentado em docs/API-CONTRACTS.md e docs/services/web.md. roiMedioDiario extraido de period-report-metrics.ts pra reuso (evita duplicar formula, como o plano previa). Login redireciona pra /overview em vez de /dashboard (decisao do usuario via AskUserQuestion, /dashboard vira item normal de nav) - unica mudanca de UX, sem outro comportamento alterado. Achado real de teste (nao de produto): 2 specs novos (telegram-link, overview) sobrescreviam navigator.language sem restaurar no afterEach, vazando pro proximo arquivo no mesmo worker do Vitest e quebrando period-report.spec.ts so em CI - corrigido, documentado em docs/TESTING.md. Delivery Reviewer/Test Suite Auditor: revisao direta sem subagentes (diff pequeno por subtask, totalmente evidenciado). QA visual real (ng serve): desktop 1440px + mobile 390px, claro/escuro - sem achado. ng test 221/221 (suite inteira). Playwright 55/55 (suite inteira, 3 e2e novos em e2e/overview.spec.ts). ./init.sh do app e da raiz verdes. Fecha epic-021 da raiz por completo."
     },
     {
       "id": "feat-030",
