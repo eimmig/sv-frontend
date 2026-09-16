@@ -1,4 +1,4 @@
-import { DailyBetMetrics } from '../../core/statistics-api';
+import { DailyBetMetrics, MonthlyBetMetrics } from '../../core/statistics-api';
 
 /** One point per settled-bet day (docs/STATISTICS.md "Curva de lucro acumulado vitalícia") -
  *  unlike the monthly drawdown grid (epic-020), there is no calendar-day filling and no reset:
@@ -16,6 +16,23 @@ export interface MonthlyBalance {
   readonly month: number;
   readonly saldoComeco: number;
   readonly saldoFinal: number;
+}
+
+export interface OverviewMonthRow {
+  readonly year: number;
+  readonly month: number;
+  readonly saldoComeco: number;
+  readonly saldoFinal: number;
+  readonly entradas: number;
+  readonly vitorias: number;
+  readonly perdas: number;
+  readonly oddMedia: number | null;
+  readonly winRate: number;
+  readonly roi: number;
+  readonly profitReais: number;
+  /** null only when saldoAtual/unitPercent make the denominator 0 - same convention as the
+   *  lifetime cards. */
+  readonly profitUnidades: number | null;
 }
 
 /** `daily` is the full-history, sparse, date-ascending array (docs/API-CONTRACTS.md) - the first
@@ -75,4 +92,41 @@ export function buildMonthlyBalances(
     running = saldoFinal;
   }
   return months;
+}
+
+/**
+ * Jan-Dec rows of `year`, merging `monthly` (already-fetched BetMetrics per month) with the
+ * saldo Começo/Final derived by buildMonthlyBalances. `monthly` is NOT pre-scoped to `year` by
+ * the backend when GET /api/v1/statistics is called without a period filter - unlike what the
+ * epic description assumed, `aggregateByMonth` (stats-service) groups every (year, month) pair
+ * in the tenant's whole history with no date restriction, so this function does the year
+ * filtering client-side. A month with no settled bet gets zeroed metrics, not omitted - the
+ * table always has exactly 12 rows.
+ */
+export function buildMonthlyTable(
+  monthly: readonly MonthlyBetMetrics[],
+  balances: readonly MonthlyBalance[],
+  year: number,
+  saldoAtual: number,
+  unitPercent: number,
+): OverviewMonthRow[] {
+  const denominator = saldoAtual * unitPercent;
+  const metricsByMonth = new Map(monthly.filter((entry) => entry.year === year).map((entry) => [entry.month, entry.metrics]));
+  return balances.map((balance) => {
+    const metrics = metricsByMonth.get(balance.month);
+    return {
+      year: balance.year,
+      month: balance.month,
+      saldoComeco: balance.saldoComeco,
+      saldoFinal: balance.saldoFinal,
+      entradas: metrics?.settledCount ?? 0,
+      vitorias: metrics?.wonCount ?? 0,
+      perdas: metrics?.lostCount ?? 0,
+      oddMedia: metrics?.avgOdd ?? null,
+      winRate: metrics?.winRate ?? 0,
+      roi: metrics?.roi ?? 0,
+      profitReais: metrics?.netProfit ?? 0,
+      profitUnidades: denominator === 0 ? null : (metrics?.netProfit ?? 0) / denominator,
+    };
+  });
 }

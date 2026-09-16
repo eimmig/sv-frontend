@@ -1958,7 +1958,7 @@
           ],
           "validation": "Playwright cobre a tabela completa e a navegacao decidida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-464"
         },
         {

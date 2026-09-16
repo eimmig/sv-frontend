@@ -2,6 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
+import { vi } from 'vitest';
 
 import { Overview } from './overview';
 import { environment } from '../../../environments/environment';
@@ -23,6 +24,15 @@ describe('Overview', () => {
         preLiveLabel: 'Pré / Live (U)',
         lucroMedioMensalLabel: 'Lucro Médio Mensal (U)',
         roiLabel: 'ROI',
+        monthLabel: 'Mês',
+        saldoComecoLabel: 'Saldo Começo',
+        saldoFinalLabel: 'Saldo Final',
+        entradasLabel: 'Entradas',
+        vitoriasPerdasLabel: 'Vitórias / Perdas',
+        oddMediaLabel: 'Odd Média',
+        winRateLabel: 'WR%',
+        profitReaisLabel: 'Profit (R$)',
+        profitUnidadesLabel: 'Profit (U)',
         indeterminate: 'Indeterminado',
         genericError: 'Não foi possível completar a operação. Tente novamente.',
       },
@@ -35,7 +45,7 @@ describe('Overview', () => {
     fixture.detectChanges();
   }
 
-  function flushBase(daily: unknown[], byBetType: unknown[] = []) {
+  function flushBase(daily: unknown[], byBetType: unknown[] = [], monthly: unknown[] = []) {
     httpMock.expectOne((req) => req.url === STATISTICS_URL).flush({
       overall: { totalStaked: 0, netProfit: 0, roi: 0, winRate: 0, settledCount: 0, wonCount: 0, lostCount: 0, voidCount: 0, preCount: 0, liveCount: 0, avgOdd: null },
       bySport: [],
@@ -44,7 +54,7 @@ describe('Overview', () => {
       byLeague: [],
       byTipster: [],
       byBetType,
-      monthly: [],
+      monthly,
     });
     httpMock.expectOne((req) => req.url === DAILY_URL).flush(daily);
     httpMock.expectOne((req) => req.url === BANKROLL_URL && !req.params.has('at')).flush({ at: 'now', balance: 1000 });
@@ -54,6 +64,11 @@ describe('Overview', () => {
   beforeEach(async () => {
     localStorage.removeItem('stakevault.language');
     Object.defineProperty(navigator, 'language', { value: 'pt-BR', configurable: true });
+    // monthlyTable() resolves "the current year" from a real new Date() - freeze the clock so
+    // it always matches the 2026 fixtures below, regardless of which real day the suite runs on
+    // (same fix as pages/period-report/period-report.spec.ts).
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-09-11T12:00:00Z'));
     await TestBed.configureTestingModule({
       imports: [
         Overview,
@@ -68,7 +83,11 @@ describe('Overview', () => {
 
   // ignoreCancelled: true - when the statistics request errors, forkJoin cancels the other 3
   // in-flight requests it was still waiting on; a cancelled request is not a leak to flag.
-  afterEach(() => httpMock.verify({ ignoreCancelled: true }));
+  afterEach(() => {
+    httpMock.verify({ ignoreCancelled: true });
+    vi.useRealTimers();
+    delete (navigator as { language?: string }).language;
+  });
 
   it('fetches saldoInicioHistorico once, at the earliest settled-bet date', () => {
     createComponent();
@@ -121,6 +140,27 @@ describe('Overview', () => {
     // (0.5 + -0.2) / 2 = 0.15 = 15%
     const roi = fixture.nativeElement.querySelector('[data-testid="overview-roi"]');
     expect(roi.textContent).toContain('15');
+  });
+
+  it('renders 12 monthly rows, merging monthly BetMetrics and ignoring a different year', () => {
+    createComponent();
+    flushBase(
+      [{ date: '2026-03-10', totalStaked: 100, netProfit: 50, roi: 0.5, betCount: 1 }],
+      [],
+      [
+        { year: 2026, month: 3, metrics: { totalStaked: 100, netProfit: 50, roi: 0.5, winRate: 0.6, settledCount: 5, wonCount: 3, lostCount: 2, voidCount: 0, preCount: 0, liveCount: 0, avgOdd: 1.8 } },
+        // Same month number (3) but a different year - must not leak into this year's table.
+        { year: 2025, month: 3, metrics: { totalStaked: 999, netProfit: 999, roi: 9, winRate: 1, settledCount: 99, wonCount: 99, lostCount: 0, voidCount: 0, preCount: 0, liveCount: 0, avgOdd: 9 } },
+      ],
+    );
+    httpMock.expectOne((req) => req.url === BANKROLL_URL && req.params.get('at') === '2026-03-10').flush({ at: '2026-03-10', balance: 1000 });
+    fixture.detectChanges();
+
+    const rows: HTMLElement[] = fixture.nativeElement.querySelectorAll('[data-testid="overview-monthly-row"]');
+    expect(rows).toHaveLength(12);
+    expect(rows[2].textContent).toContain('5'); // entradas
+    expect(rows[2].textContent).toContain('3 / 2'); // vitorias / perdas
+    expect(rows[0].textContent).not.toContain('99'); // january must stay zeroed
   });
 
   it('shows the RFC 7807 detail when the statistics request fails', () => {

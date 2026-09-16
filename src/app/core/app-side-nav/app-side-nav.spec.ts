@@ -26,6 +26,7 @@ describe('AppSideNav', () => {
           langs: {
             'pt-BR': {
               nav: {
+                overview: 'Visão geral',
                 dashboard: 'Dashboard',
                 bettingHouses: 'Casas de apostas',
                 newBet: 'Registrar aposta',
