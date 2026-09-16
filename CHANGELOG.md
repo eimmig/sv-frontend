@@ -44,8 +44,10 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
   `.catalog-manager__form` em `display: flex` na horizontal (campo Nome + botão "Adicionar" lado
   a lado) espremia o campo a poucos caracteres em viewports estreitos, chegando a cortar o
   próprio label. Padding lateral adicionado ao `:host` e formulário trocado para `flex-direction:
-  column` (botão em linha própria) — mesmo padrão já usado por `shared/team-manager`, agora
-  compartilhado pelas 5 telas.
+  column` (botão em linha própria). `shared/team-manager` (`/teams`) tinha o mesmo `:host` sem
+  padding lateral (copiado de `catalog-manager` em `feat-021`, antes deste ajuste existir) —
+  mesmo padding aplicado ali também. Layout compartilhado agora cobre as 5 telas de catálogo mais
+  `/teams`, com cobertura Playwright dedicada para as 6.
 - `app-language-selector` (`feat-023.1`): o pill expandido (`.language-selector-host`) usava
   `display: block` envolvendo um filho com `width: 100%` — sem uma largura definida no ancestral
   (como na tela de login, onde os controles flutuam sem largura própria), o cálculo de

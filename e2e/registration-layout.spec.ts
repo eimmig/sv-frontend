@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test.describe('feat-024.3 - shared registration layout across all 5 catalogs', () => {
+test.describe('feat-024.3 - shared registration layout across all catalog + team screens', () => {
   test.beforeEach(async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.addInitScript(() => {
@@ -26,6 +26,7 @@ test.describe('feat-024.3 - shared registration layout across all 5 catalogs', (
     { path: '/markets', nameTestId: 'catalog-manager-name', submitTestId: 'catalog-manager-submit' },
     { path: '/tipsters', nameTestId: 'catalog-manager-name', submitTestId: 'catalog-manager-submit' },
     { path: '/betting-houses', nameTestId: 'betting-houses-name', submitTestId: 'betting-houses-submit' },
+    { path: '/teams', nameTestId: 'team-manager-name', submitTestId: 'team-manager-submit' },
   ];
 
   for (const { path, nameTestId, submitTestId } of ROUTES) {
