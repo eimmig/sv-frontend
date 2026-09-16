@@ -20,30 +20,36 @@ test.describe('feat-024.3 - shared registration layout across all catalog + team
     );
   });
 
-  const ROUTES: { path: string; nameTestId: string; submitTestId: string }[] = [
-    { path: '/sports', nameTestId: 'catalog-manager-name', submitTestId: 'catalog-manager-submit' },
-    { path: '/leagues', nameTestId: 'catalog-manager-name', submitTestId: 'catalog-manager-submit' },
-    { path: '/markets', nameTestId: 'catalog-manager-name', submitTestId: 'catalog-manager-submit' },
-    { path: '/tipsters', nameTestId: 'catalog-manager-name', submitTestId: 'catalog-manager-submit' },
-    { path: '/betting-houses', nameTestId: 'betting-houses-name', submitTestId: 'betting-houses-submit' },
-    { path: '/teams', nameTestId: 'team-manager-name', submitTestId: 'team-manager-submit' },
+  const ROUTES: { path: string; hostTag: string; nameTestId: string; submitTestId: string }[] = [
+    { path: '/sports', hostTag: 'app-catalog-manager', nameTestId: 'catalog-manager-name', submitTestId: 'catalog-manager-submit' },
+    { path: '/leagues', hostTag: 'app-catalog-manager', nameTestId: 'catalog-manager-name', submitTestId: 'catalog-manager-submit' },
+    { path: '/markets', hostTag: 'app-catalog-manager', nameTestId: 'catalog-manager-name', submitTestId: 'catalog-manager-submit' },
+    { path: '/tipsters', hostTag: 'app-catalog-manager', nameTestId: 'catalog-manager-name', submitTestId: 'catalog-manager-submit' },
+    { path: '/betting-houses', hostTag: 'app-betting-houses', nameTestId: 'betting-houses-name', submitTestId: 'betting-houses-submit' },
+    { path: '/teams', hostTag: 'app-team-manager', nameTestId: 'team-manager-name', submitTestId: 'team-manager-submit' },
   ];
 
-  for (const { path, nameTestId, submitTestId } of ROUTES) {
-    test(`${path}: panel has a visible gap from the sidebar and the name field stays full-width on a narrow viewport`, async ({ page }) => {
+  for (const { path, hostTag, nameTestId, submitTestId } of ROUTES) {
+    test(`${path}: host has lateral padding and the name field stays full-width on a narrow viewport`, async ({ page }) => {
       await page.setViewportSize({ width: 320, height: 700 });
       await page.goto(path);
 
-      const nav = page.getByTestId('app-nav');
       const nameField = page.getByTestId(nameTestId);
       const submit = page.getByTestId(submitTestId);
 
-      const [navBox, nameBox, submitBox] = await Promise.all([nav.boundingBox(), nameField.boundingBox(), submit.boundingBox()]);
-      expect(navBox).not.toBeNull();
+      const [nameBox, submitBox, hostPaddingLeft] = await Promise.all([
+        nameField.boundingBox(),
+        submit.boundingBox(),
+        page.locator(hostTag).evaluate((el) => parseFloat(getComputedStyle(el).paddingLeft)),
+      ]);
       expect(nameBox).not.toBeNull();
       expect(submitBox).not.toBeNull();
 
-      expect(nameBox!.x).toBeGreaterThan(navBox!.x + navBox!.width + 8);
+      // Directly proves the component's own :host lateral padding (feat-024.1's fix) rather than
+      // inferring it from a bounding-box gap that ancestors (app-panel, Material chrome) already
+      // provide most of regardless of this padding - that gap stayed well above any reasonable
+      // threshold even with :host padding fully reverted in a mutation check.
+      expect(hostPaddingLeft).toBeGreaterThanOrEqual(24);
       expect(nameBox!.width).toBeGreaterThan(100);
       // The button sits below the field, not beside it.
       expect(submitBox!.y).toBeGreaterThanOrEqual(nameBox!.y + nameBox!.height);
