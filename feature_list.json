@@ -1630,7 +1630,7 @@
           ],
           "validation": "Testes de componente e QA visual confirmam a composicao em desktop, tablet e mobile.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-472"
         },
         {

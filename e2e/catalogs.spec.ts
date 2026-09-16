@@ -90,4 +90,26 @@ test.describe('catalog management (sports/leagues/markets/tipsters)', () => {
 
     await expect(page.getByTestId('catalog-manager-form-error')).toContainText('Já existe um mercado com esse nome.');
   });
+
+  // Real bug (feat-024.2): the Nome field and the Adicionar button used to sit side by side, and
+  // on a narrow viewport the field shrank to a few characters wide, clipping its own label.
+  test('the Nome field keeps its full width and the button sits on its own line on a narrow viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 700 });
+    await page.route('**/api/v1/sports*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ content: [], page: 0, size: 100, totalElements: 0, totalPages: 0 }) }),
+    );
+
+    await page.goto('/sports');
+
+    const nameField = page.getByTestId('catalog-manager-name');
+    const submit = page.getByTestId('catalog-manager-submit');
+    const [nameBox, submitBox] = await Promise.all([nameField.boundingBox(), submit.boundingBox()]);
+
+    expect(nameBox).not.toBeNull();
+    expect(submitBox).not.toBeNull();
+    // The field spans nearly the full panel width (not squeezed to a few characters).
+    expect(nameBox!.width).toBeGreaterThan(100);
+    // The button sits below the field, not beside it.
+    expect(submitBox!.y).toBeGreaterThanOrEqual(nameBox!.y + nameBox!.height);
+  });
 });

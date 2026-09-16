@@ -9,14 +9,18 @@
   box-sizing: border-box;
 }
 
+// Real bug (feat-024.2): a row layout (field + button side by side) squeezed the Nome field
+// down to a few characters' width on narrow viewports (320px), clipping its own label - a
+// column layout (button on its own line, same pattern already used by shared/team-manager)
+// gives the field its full width regardless of viewport.
 .catalog-manager__form {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   gap: 12px;
   margin-bottom: 16px;
 
   mat-form-field {
-    flex: 1 1 auto;
+    width: 100%;
   }
 }
 
