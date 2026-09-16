@@ -17,8 +17,8 @@ export class LanguageSelector {
   protected readonly language = inject(Language);
 
   // Set by app-side-nav so the trigger can shrink to an icon-only button in its collapsed
-  // (72px) state, where the expanded mat-select (min-width 120px, feat-018.2) would either
-  // overflow or get clipped by the sidebar's overflow-x:hidden.
+  // (72px) state, where the expanded mat-select (min-width 120px) would overflow or get
+  // clipped by the sidebar's overflow-x:hidden.
   readonly collapsed = input(false);
   protected readonly locales: ReadonlyArray<{ value: Locale; label: string }> = [
     { value: 'pt-BR', label: 'Português' },

@@ -311,7 +311,6 @@ describe('History', () => {
   });
 });
 
-// feat-025.1: deep link from betting-houses' "move balance" action (?bettingHouseId=<id>).
 // Separate module so the ActivatedRoute override applies before ngOnInit runs - the main
 // describe's fixture is already created (with an empty route) by the time any of its tests run.
 describe('History - deep link from betting houses', () => {

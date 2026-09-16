@@ -96,8 +96,6 @@ test.describe('shared/catalog-dashboard (ranking per segment)', () => {
     await expect(page.getByTestId('catalog-dashboard-error')).toContainText('Filtro inválido.');
   });
 
-  // feat-026: byBetType reuses this same component/route family, just a different segment key -
-  // proves it end to end through the real nav entry, same as the sports-dashboard test above.
   test('opens /bet-type-dashboard from the nav and shows the PRE/LIVE buckets', async ({ page }) => {
     await page.route('**/api/v1/statistics*', (route) =>
       route.fulfill({

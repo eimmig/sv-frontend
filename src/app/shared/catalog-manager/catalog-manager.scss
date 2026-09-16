@@ -1,7 +1,3 @@
-// Real bug (feat-024.1): missing horizontal padding here (was `16px 0`) let this page's panel
-// touch the sidebar directly, with no visual gap - every other routed page already uses
-// `padding: 24px` + `box-sizing: border-box` (see pages/betting-houses/betting-houses.scss),
-// this one was the one inconsistent case.
 :host {
   display: block;
   height: 100%;
@@ -9,10 +5,6 @@
   box-sizing: border-box;
 }
 
-// Real bug (feat-024.2): a row layout (field + button side by side) squeezed the Nome field
-// down to a few characters' width on narrow viewports (320px), clipping its own label - a
-// column layout (button on its own line, same pattern already used by shared/team-manager)
-// gives the field its full width regardless of viewport.
 .catalog-manager__form {
   display: flex;
   flex-direction: column;

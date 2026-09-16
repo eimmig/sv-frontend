@@ -29,10 +29,6 @@ describe('computeSummary', () => {
   });
 
   it('matches the reference spreadsheet: taxaAcertoEntradas = 74/(74+126) = 37.00%, +EV = 37.00% - (1/3.22) ≈ 5.94%', () => {
-    // NOTE: docs/STATISTICS.md states "= 5,98%" for this example, but 37.00% - (1/3.22) computes
-    // to 5.9441...%, not 5.98% - independently re-verified here; the doc's stated result has an
-    // arithmetic typo (to be corrected in feat-015.4), the formula itself (confirmed by the user)
-    // is what this test proves.
     const summary = computeSummary(metrics({ wonCount: 74, lostCount: 126, avgOdd: 3.22 }), [], 1, 1, 0.01);
 
     expect(summary.evPercent).toBeCloseTo(0.0594, 4);

@@ -39,9 +39,6 @@ test.describe('epic-017 - "Relatório do período" page', () => {
         }),
       );
     });
-    // "**/api/v1/statistics*" (single trailing star) does NOT match "/api/v1/statistics/daily" -
-    // Playwright's "*" glob excludes "/", only "**" crosses path segments (real gotcha hit while
-    // QA-testing this feature, see feat-015.4 evidence). One route branches on the sub-path.
     await page.route('**/api/v1/statistics**', (route) => {
       const url = new URL(route.request().url());
       if (url.pathname.endsWith('/daily')) {

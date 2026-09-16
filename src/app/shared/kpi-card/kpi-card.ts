@@ -14,11 +14,7 @@ export function kpiSign(value: number): KpiCardSign {
   return 'neutral';
 }
 
-/**
- * Single stat card (icon + label + value), extracted from the dashboard's
- * inline markup (feat-006) once the "Buscar Estatisticas" screen (feat-012)
- * needed the same shape for a second, larger set of cards.
- */
+/** Single stat card (icon + label + value), reused across every stats screen. */
 @Component({
   imports: [MatIconModule],
   selector: 'app-kpi-card',

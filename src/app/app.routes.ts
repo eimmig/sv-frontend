@@ -3,10 +3,6 @@ import { Route, Routes } from '@angular/router';
 import { adminGuard } from './core/admin-guard';
 import { authGuard } from './core/auth-guard';
 
-// feat-016 ("menu por cadastro"): the 4 "Cadastrar" + 5 "Dashboard" routes below are
-// structurally identical (only resourcePath/segment/labelKey change) - generated from these
-// tables instead of 9 near-identical route literals (SonarCloud flagged the literal form as
-// duplicated code on the PR, same precedent as the component-level dedup in feat-008/016.2).
 const CATALOG_MANAGER_RESOURCES: { path: string; resourcePath: string }[] = [
   { path: 'sports', resourcePath: 'sports' },
   { path: 'leagues', resourcePath: 'leagues' },
@@ -20,9 +16,6 @@ const CATALOG_DASHBOARD_RESOURCES: { path: string; segment: string; labelKey: st
   { path: 'markets-dashboard', segment: 'byMarket', labelKey: 'catalogDashboard.marketNameLabel' },
   { path: 'tipsters-dashboard', segment: 'byTipster', labelKey: 'catalogDashboard.tipsterNameLabel' },
   { path: 'betting-houses-dashboard', segment: 'byBettingHouse', labelKey: 'catalogDashboard.bettingHouseNameLabel' },
-  // feat-026 (web): byBetType is a fixed 2-item segment (PRE/LIVE), not a catalog resource - no
-  // "Cadastrar" counterpart (nothing to manage), so it isn't in CATALOG_MANAGER_RESOURCES, only
-  // here. Structurally identical to the other 5 dashboards otherwise.
   { path: 'bet-type-dashboard', segment: 'byBetType', labelKey: 'catalogDashboard.betTypeNameLabel' },
 ];
 
@@ -73,18 +66,8 @@ export const routes: Routes = [
       import('./pages/register-bet/register-bet').then((m) => m.RegisterBet),
     canActivate: [authGuard],
   },
-  // feat-016 ("menu por cadastro"): pages/catalogs/ (tab group) retired - each resource is now
-  // its own route, reached via app-side-nav's per-resource mat-menu instead of an in-page tab switch.
-  // "Cadastrar X" routes bind straight to shared/catalog-manager, "Dashboard X" to
-  // shared/catalog-dashboard, both via route `data` (withComponentInputBinding, app.config.ts) -
-  // no per-resource wrapper page. Generated above from CATALOG_MANAGER_RESOURCES/
-  // CATALOG_DASHBOARD_RESOURCES to avoid 9 near-identical route literals.
   ...catalogManagerRoutes,
   ...catalogDashboardRoutes,
-  // TEAM (bets-service feat-016/017) isn't structurally identical to the 4 resources above
-  // (required sportId FK) - own route to shared/team-manager instead of a 5th data-driven entry
-  // in CATALOG_MANAGER_RESOURCES, and no dashboard counterpart yet (stats-service byTeam doesn't
-  // exist - epic-024's stats-service feat-018 is BLOCKED).
   {
     path: 'teams',
     loadComponent: () => import('./shared/team-manager/team-manager').then((m) => m.TeamManager),

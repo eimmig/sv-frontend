@@ -1,6 +1,3 @@
-// Same fix as shared/catalog-manager (feat-024.1) - missing horizontal padding let this page's
-// panel touch the sidebar directly, same root cause (this component was copied from
-// catalog-manager in feat-021, inheriting the gap).
 :host {
   display: block;
   height: 100%;
