@@ -106,6 +106,19 @@ describe('AppSideNav', () => {
     expect(link.getAttribute('href')).toBe('/teams');
   });
 
+  it('uses the Symbols Outlined fontSet for nav icons, except "telegram" (no glyph in that font)', () => {
+    session('MEMBER');
+    const fixture = TestBed.createComponent(AppSideNav);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+
+    const telegramIcon = el.querySelector('[data-testid="nav-telegram-link"] mat-icon');
+    const searchStatsIcon = el.querySelector('[data-testid="nav-search-statistics"] mat-icon');
+
+    expect(telegramIcon?.classList.contains('material-symbols-outlined')).toBe(false);
+    expect(searchStatsIcon?.classList.contains('material-symbols-outlined')).toBe(true);
+  });
+
   it('logout() clears the session and navigates to /login', () => {
     session('MEMBER');
     const fixture = TestBed.createComponent(AppSideNav);

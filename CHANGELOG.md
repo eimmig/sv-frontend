@@ -211,3 +211,4 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-491](https://stakevault.atlassian.net/browse/SV-491) - Material Symbols Outlined seletivo na sidebar (fontSet, exceto telegram)
 - [SV-492](https://stakevault.atlassian.net/browse/SV-492) - Scrollbar tematizada de .side-nav (thin + cores claro/escuro)
 - [SV-493](https://stakevault.atlassian.net/browse/SV-493) - CHANGELOG e verificacao final
+- [SV-494](https://stakevault.atlassian.net/browse/SV-494) - Teste de regressao: telegram fica fora do fontSet Symbols Outlined
