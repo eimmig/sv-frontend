@@ -15,6 +15,10 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - Dashboard "Por tipo de aposta" (`feat-026`, rota `/bet-type-dashboard`): ranking PRE/LIVE
   reaproveitando `shared/catalog-dashboard`, consumindo o segmento `byBetType` novo em
   `StatisticsDashboard`.
+- Tela "Visão geral" pós-login (`feat-029`, epic-021, rota `/overview`): curva de lucro
+  acumulado vitalícia, 4 cards (Lucro Total, Pré/Live, Lucro Médio Mensal, ROI) e tabela mensal
+  Jan-Dez do ano corrente. **Login agora redireciona para cá em vez de `/dashboard`** —
+  `/dashboard` continua acessível como item normal de nav.
 
 ### Changed
 
@@ -167,3 +171,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-458](https://stakevault.atlassian.net/browse/SV-458) - Trocar betType por selecao PRE/LIVE
 - [SV-459](https://stakevault.atlassian.net/browse/SV-459) - Consumir byBetType no frontend
 - [SV-460](https://stakevault.atlassian.net/browse/SV-460) - Testes, QA visual e verificacao final
+- [SV-461](https://stakevault.atlassian.net/browse/SV-461) - Tela "Visao geral" pos-login (curva de drawdown vitalicia + resumo mensal)
+- [SV-462](https://stakevault.atlassian.net/browse/SV-462) - Resolver data mais antiga e saldo inicial do historico
+- [SV-463](https://stakevault.atlassian.net/browse/SV-463) - Cards de resumo vitalicios
+- [SV-464](https://stakevault.atlassian.net/browse/SV-464) - Tabela mensal Jan-Dez e decisao de navegacao pos-login
+- [SV-465](https://stakevault.atlassian.net/browse/SV-465) - Testes, QA visual e verificacao final

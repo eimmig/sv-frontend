@@ -124,6 +124,24 @@
     "betsLabel": "Apostas",
     "genericError": "Não foi possível completar a operação. Tente novamente."
   },
+  "overview": {
+    "summaryTitle": "Visão geral",
+    "lucroTotalLabel": "Lucro Total (U)",
+    "preLiveLabel": "Pré / Live (U)",
+    "lucroMedioMensalLabel": "Lucro Médio Mensal (U)",
+    "roiLabel": "ROI",
+    "monthLabel": "Mês",
+    "saldoComecoLabel": "Saldo Começo",
+    "saldoFinalLabel": "Saldo Final",
+    "entradasLabel": "Entradas",
+    "vitoriasPerdasLabel": "Vitórias / Perdas",
+    "oddMediaLabel": "Odd Média",
+    "winRateLabel": "WR%",
+    "profitReaisLabel": "Profit (R$)",
+    "profitUnidadesLabel": "Profit (U)",
+    "indeterminate": "Indeterminado",
+    "genericError": "Não foi possível completar a operação. Tente novamente."
+  },
   "login": {
     "title": "Entrar",
     "tagline": "Gestão de banca",
@@ -134,6 +152,7 @@
     "genericError": "Não foi possível entrar. Tente novamente."
   },
   "nav": {
+    "overview": "Visão geral",
     "dashboard": "Dashboard",
     "bettingHouses": "Casas de apostas",
     "newBet": "Registrar aposta",

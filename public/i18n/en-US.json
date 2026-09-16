@@ -124,6 +124,24 @@
     "betsLabel": "Bets",
     "genericError": "Could not complete the operation. Please try again."
   },
+  "overview": {
+    "summaryTitle": "Overview",
+    "lucroTotalLabel": "Total Profit (U)",
+    "preLiveLabel": "Pre / Live (U)",
+    "lucroMedioMensalLabel": "Average Monthly Profit (U)",
+    "roiLabel": "ROI",
+    "monthLabel": "Month",
+    "saldoComecoLabel": "Starting Balance",
+    "saldoFinalLabel": "Ending Balance",
+    "entradasLabel": "Entries",
+    "vitoriasPerdasLabel": "Wins / Losses",
+    "oddMediaLabel": "Average Odd",
+    "winRateLabel": "WR%",
+    "profitReaisLabel": "Profit ($)",
+    "profitUnidadesLabel": "Profit (U)",
+    "indeterminate": "Undetermined",
+    "genericError": "Could not complete the operation. Please try again."
+  },
   "login": {
     "title": "Sign in",
     "tagline": "Bankroll management",
@@ -134,6 +152,7 @@
     "genericError": "Could not sign in. Please try again."
   },
   "nav": {
+    "overview": "Overview",
     "dashboard": "Dashboard",
     "bettingHouses": "Betting houses",
     "newBet": "Register bet",

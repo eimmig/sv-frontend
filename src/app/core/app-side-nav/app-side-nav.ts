@@ -78,6 +78,9 @@ export class AppSideNav {
   // Data-driven instead of repeating near-identical markup per item (SonarCloud flagged the
   // same shape of duplication in app.routes.ts, feat-016 - see docs/CONVENTIONS.md).
   protected readonly primaryLinks: ReadonlyArray<{ route: string; icon: string; labelKey: string; testid: string }> = [
+    // feat-029 (epic-021): login agora redireciona pra cá em vez de /dashboard (decisao do
+    // usuario, 2026-09-15) - primeiro item da nav pelo mesmo motivo.
+    { route: 'overview', icon: 'insights', labelKey: 'nav.overview', testid: 'nav-overview' },
     { route: 'dashboard', icon: 'space_dashboard', labelKey: 'nav.dashboard', testid: 'nav-dashboard' },
     { route: 'register-bet', icon: 'edit_note', labelKey: 'nav.newBet', testid: 'nav-new-bet' },
     { route: 'history', icon: 'history', labelKey: 'nav.history', testid: 'nav-history' },
