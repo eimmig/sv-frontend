@@ -201,3 +201,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-472](https://stakevault.atlassian.net/browse/SV-472) - Reposicionar botao Adicionar
 - [SV-473](https://stakevault.atlassian.net/browse/SV-473) - Aplicar em todas as telas de cadastro
 - [SV-474](https://stakevault.atlassian.net/browse/SV-474) - Testes, QA visual e verificacao final
+- [SV-480](https://stakevault.atlassian.net/browse/SV-480) - Date picker e formato localizado para campos de data
+- [SV-481](https://stakevault.atlassian.net/browse/SV-481) - Inventariar campos de data do frontend
+- [SV-482](https://stakevault.atlassian.net/browse/SV-482) - Providers do DateAdapter com rebind reativo de locale
+- [SV-483](https://stakevault.atlassian.net/browse/SV-483) - Aplicar mat-datepicker aos campos de data (filtros)
+- [SV-484](https://stakevault.atlassian.net/browse/SV-484) - register-bet: betDate vira mat-datepicker + mat-timepicker (2 controles independentes)
+- [SV-485](https://stakevault.atlassian.net/browse/SV-485) - Atualizar testes, QA visual e documentacao
