@@ -151,10 +151,6 @@ $width-collapsed: 72px;
   flex: 1 1 auto;
 }
 
-::ng-deep .side-nav__resource-menu-panel {
-  min-width: $width-expanded !important;
-}
-
 .side-nav__footer {
   display: flex;
   flex-direction: column;

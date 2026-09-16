@@ -52,7 +52,7 @@
           <span>{{ resource.labelKey | transloco }}</span>
         }
       </button>
-      <mat-menu #resourceMenu="matMenu" xPosition="after" [class]="collapsed() ? '' : 'side-nav__resource-menu-panel'">
+      <mat-menu #resourceMenu="matMenu" xPosition="after">
         <a mat-menu-item [routerLink]="'/' + resource.registerRoute" [attr.data-testid]="'nav-' + resource.id + '-register'">{{
           'nav.registerMenuItem' | transloco
         }}</a>
