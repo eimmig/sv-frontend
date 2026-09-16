@@ -1543,9 +1543,9 @@
       "dependencies": [
         "feat-018"
       ],
-      "status": "not-started",
+      "status": "in-progress",
       "plan_review": "Plan Reviewer 2026-09-15: READY WITH CONCERNS. Evidencia: app-shell__floating-controls (app.scss, position:fixed, left/bottom:16px, z-index:10, sem overflow nem largura fixa) e language-selector.html (mat-icon 'language' 18px + mat-select, sem CSS que corte o icone) nao mostram causa obvia de corte - a suspeita mais provavel e o min-width:120px do mat-select (fix de feat-018.2, comentado no proprio SCSS como resolvendo um bug DIFERENTE: painel de opcoes largo demais/estreito demais, nao o icone) interagindo com o espaco apertado do canto da tela em telas pequenas, ou z-index do app-login-border-trace (animacao autoral de feat-018) sobrepondo o canto se a viewport for pequena o suficiente pro card de login alcancar bottom-left. MINOR: subtask 023.1 ja prve investigar a causa antes de corrigir (correto) - so reforcar que nao deve assumir que o fix de feat-018.2 (min-width do painel) e a mesma causa deste bug (sintoma diferente: icone cortado, nao painel estreito).",
-      "jira": "",
+      "jira": "SV-466",
       "subtasks": [
         {
           "id": "feat-023.1",
@@ -1558,8 +1558,8 @@
           ],
           "validation": "QA visual confirma o seletor inteiro e clicavel em desktop e mobile.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-467"
         },
         {
           "id": "feat-023.2",
@@ -1573,7 +1573,7 @@
           "validation": "Playwright cobre os tres locales e os dois temas na tela de login.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-468"
         },
         {
           "id": "feat-023.3",
@@ -1588,7 +1588,7 @@
           "validation": "Suite do frontend verde, QA visual aprovado e evidence preenchida.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-469"
         }
       ],
       "evidence": ""

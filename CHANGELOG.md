@@ -39,6 +39,13 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ### Fixed
 
+- `app-language-selector` (`feat-023.1`): o pill expandido (`.language-selector-host`) usava
+  `display: block` envolvendo um filho com `width: 100%` — sem uma largura definida no ancestral
+  (como na tela de login, onde os controles flutuam sem largura própria), o cálculo de
+  shrink-to-fit subestimava a largura real do `mat-select`, deixando-o vazar ~13-26px pra fora do
+  próprio pill e sobrepor o botão de tema adjacente. Trocado para `display: flex` (mesmo modo de
+  layout do filho), que tem regra bem definida pra esse caso (CSS Flexbox §9.9). Sem efeito na
+  sidebar (já tinha largura definida, nunca foi afetada).
 - Chave do projeto no SonarCloud corrigida para `eimmig_sv-frontend`. O SonarCloud gera a chave como
   `<org>_<repo>` ao importar um repositório do GitHub; a forma sem prefixo, usada até aqui, faria a
   análise falhar com projeto inexistente.
@@ -176,3 +183,7 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-463](https://stakevault.atlassian.net/browse/SV-463) - Cards de resumo vitalicios
 - [SV-464](https://stakevault.atlassian.net/browse/SV-464) - Tabela mensal Jan-Dez e decisao de navegacao pos-login
 - [SV-465](https://stakevault.atlassian.net/browse/SV-465) - Testes, QA visual e verificacao final
+- [SV-466](https://stakevault.atlassian.net/browse/SV-466) - Corrigir sobreposicao do seletor de idioma no login
+- [SV-467](https://stakevault.atlassian.net/browse/SV-467) - Corrigir layout e area de clique do idioma
+- [SV-468](https://stakevault.atlassian.net/browse/SV-468) - Validar temas, locales e acessibilidade
+- [SV-469](https://stakevault.atlassian.net/browse/SV-469) - Testes, QA visual e verificacao final
