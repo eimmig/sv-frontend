@@ -37,6 +37,43 @@
           testId="overview-roi"
         />
       </div>
+
+      <div class="overview__table-wrap">
+        <table class="overview__table" data-testid="overview-monthly-table">
+          <thead>
+            <tr>
+              <th>{{ 'overview.monthLabel' | transloco }}</th>
+              <th>{{ 'overview.saldoComecoLabel' | transloco }}</th>
+              <th>{{ 'overview.saldoFinalLabel' | transloco }}</th>
+              <th>{{ 'overview.entradasLabel' | transloco }}</th>
+              <th>{{ 'overview.vitoriasPerdasLabel' | transloco }}</th>
+              <th>{{ 'overview.oddMediaLabel' | transloco }}</th>
+              <th>{{ 'overview.winRateLabel' | transloco }}</th>
+              <th>{{ 'overview.roiLabel' | transloco }}</th>
+              <th>{{ 'overview.profitReaisLabel' | transloco }}</th>
+              <th>{{ 'overview.profitUnidadesLabel' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of monthlyTable(); track trackMonthRow($index, row)) {
+              <tr data-testid="overview-monthly-row">
+                <td>{{ formatMonth(row.year, row.month) }}</td>
+                <td>{{ formatBrl(row.saldoComeco) }}</td>
+                <td>{{ formatBrl(row.saldoFinal) }}</td>
+                <td>{{ row.entradas }}</td>
+                <td>{{ row.vitorias }} / {{ row.perdas }}</td>
+                <td>{{ row.oddMedia === null ? ('overview.indeterminate' | transloco) : formatOdd(row.oddMedia) }}</td>
+                <td>{{ formatPercent(row.winRate) }}</td>
+                <td [class]="'overview__value--' + sign(row.roi)">{{ formatPercent(row.roi) }}</td>
+                <td [class]="'overview__value--' + sign(row.profitReais)">{{ formatBrl(row.profitReais) }}</td>
+                <td [class]="row.profitUnidades === null ? '' : 'overview__value--' + sign(row.profitUnidades)">
+                  {{ row.profitUnidades === null ? ('overview.indeterminate' | transloco) : formatOdd(row.profitUnidades) }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     }
   </app-panel>
 </app-panel-layout>

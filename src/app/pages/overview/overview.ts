@@ -4,16 +4,18 @@ import { forkJoin, map, of, switchMap } from 'rxjs';
 
 import { loadInto } from '../../core/api-request';
 import { BankrollApi } from '../../core/bankroll-api';
+import { formatBrl } from '../../core/currency';
+import { formatMonth } from '../../core/date-format';
+import { Language } from '../../core/language';
 import { formatOdd } from '../../core/number-format';
 import { formatPercent } from '../../core/percent';
 import { SettingsApi } from '../../core/settings-api';
 import { DailyBetMetrics, EMPTY_BET_METRICS, BetMetrics, MonthlyBetMetrics, SegmentedBetMetrics, StatisticsApi } from '../../core/statistics-api';
-import { roiMedioDiario } from '../period-report/period-report-metrics';
-import { Language } from '../../core/language';
 import { KpiCard, KpiCardSign, kpiSign } from '../../shared/kpi-card/kpi-card';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
-import { buildLifetimeCurve, resolveEarliestDate } from './overview-metrics';
+import { roiMedioDiario } from '../period-report/period-report-metrics';
+import { buildLifetimeCurve, buildMonthlyBalances, buildMonthlyTable, resolveEarliestDate } from './overview-metrics';
 
 interface OverviewData {
   readonly overall: BetMetrics;
@@ -73,6 +75,17 @@ export class Overview implements OnInit {
 
   protected readonly roi = computed(() => roiMedioDiario(this.data().daily));
 
+  /** Jan-Dec of the current year - docs/STATISTICS.md "Tela 'Visão geral'". `dashboard.monthly`
+   *  is NOT pre-scoped to this year by the backend (see overview-metrics.ts buildMonthlyTable). */
+  protected readonly monthlyTable = computed(() => {
+    const data = this.data();
+    const year = new Date().getFullYear();
+    const balances = buildMonthlyBalances(data.daily, data.saldoInicioHistorico, year);
+    return buildMonthlyTable(data.monthly, balances, year, data.saldoAtual, data.unitPercent);
+  });
+
+  protected readonly formatBrl = formatBrl;
+
   ngOnInit(): void {
     this.reload();
   }
@@ -81,12 +94,20 @@ export class Overview implements OnInit {
     return formatOdd(value, this.language.current());
   }
 
+  protected formatMonth(year: number, month: number): string {
+    return formatMonth(year, month, this.language.current());
+  }
+
   protected formatPercent(value: number): string {
     return formatPercent(value, this.language.current());
   }
 
   protected sign(value: number): KpiCardSign {
     return kpiSign(value);
+  }
+
+  protected trackMonthRow(_index: number, row: { year: number; month: number }): string {
+    return `${row.year}-${row.month}`;
   }
 
   private betTypeUnidades(dimensionId: 'PRE' | 'LIVE'): number | null {

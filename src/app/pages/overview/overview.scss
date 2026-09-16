@@ -18,3 +18,36 @@
   gap: 16px;
   padding: 16px 0;
 }
+
+.overview__value--positive {
+  color: var(--color-positive);
+}
+
+.overview__value--negative {
+  color: var(--color-negative);
+}
+
+.overview__table-wrap {
+  overflow-x: auto;
+  margin-top: 8px;
+}
+
+.overview__table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+
+  th {
+    text-align: left;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    padding: 8px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  td {
+    padding: 8px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 14px;
+  }
+}

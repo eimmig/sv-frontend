@@ -15,6 +15,10 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - Dashboard "Por tipo de aposta" (`feat-026`, rota `/bet-type-dashboard`): ranking PRE/LIVE
   reaproveitando `shared/catalog-dashboard`, consumindo o segmento `byBetType` novo em
   `StatisticsDashboard`.
+- Tela "Visão geral" pós-login (`feat-029`, epic-021, rota `/overview`): curva de lucro
+  acumulado vitalícia, 4 cards (Lucro Total, Pré/Live, Lucro Médio Mensal, ROI) e tabela mensal
+  Jan-Dez do ano corrente. **Login agora redireciona para cá em vez de `/dashboard`** —
+  `/dashboard` continua acessível como item normal de nav.
 
 ### Changed
 

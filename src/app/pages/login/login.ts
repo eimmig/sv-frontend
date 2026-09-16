@@ -44,7 +44,7 @@ export class Login implements OnInit {
 
   ngOnInit(): void {
     if (this.auth.isAuthenticated()) {
-      this.router.navigateByUrl('/dashboard');
+      this.router.navigateByUrl('/overview');
     }
   }
 
@@ -58,7 +58,7 @@ export class Login implements OnInit {
       this.submitting,
       this.errorMessage,
       () => this.transloco.translate('login.genericError'),
-      () => this.router.navigateByUrl('/dashboard'),
+      () => this.router.navigateByUrl('/overview'),
     );
   }
 }
