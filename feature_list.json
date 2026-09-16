@@ -1544,7 +1544,7 @@
           ],
           "validation": "Teste de componente prova isolamento data/hora por construcao e o ISO final enviado ao backend inalterado.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-484"
         },
         {

@@ -254,6 +254,7 @@
     "stakeLabel": "Valor apostado",
     "oddLabel": "Odd",
     "betDateLabel": "Data do evento",
+    "betTimeLabel": "Hora do evento",
     "reset": "Limpar",
     "submit": "Registrar aposta",
     "success": "Aposta registrada com sucesso.",

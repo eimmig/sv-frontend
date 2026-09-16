@@ -254,6 +254,7 @@
     "stakeLabel": "Stake",
     "oddLabel": "Odd",
     "betDateLabel": "Event date",
+    "betTimeLabel": "Event time",
     "reset": "Clear",
     "submit": "Register bet",
     "success": "Bet registered successfully.",
