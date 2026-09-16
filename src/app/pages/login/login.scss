@@ -1,12 +1,3 @@
-// Real bug (feat-023.1, QA visual against short/landscape viewports): min-height:100dvh let this
-// box grow taller than the actual available area (.app-shell__content clips at its own bounds,
-// see app.scss), so on a short viewport the bottom of the form rendered behind the fixed
-// app-shell__floating-controls pill instead of being reachable by scrolling - overflow:hidden
-// upstream meant there was nowhere for the extra height to go. height:100% (not min-height)
-// bounds this box to that real area so its own overflow-y:auto can take over, same pattern
-// already used by every other routed page (see pages/period-report/period-report.scss). The
-// padding-bottom reserves the floating controls' own footprint (40px + 16px offset + a little
-// breathing room) so scrolling to the very end of the form never lands behind them.
 :host {
   display: flex;
   height: 100%;
@@ -22,9 +13,6 @@
 }
 
 .login {
-  // margin: auto 0 (not align-items:center alone) is the flexbug-3 workaround: when content is
-  // taller than the container, this keeps the box's top edge reachable by scrolling instead of
-  // symmetric overflow clipping both ends inaccessibly.
   margin: auto 0;
   width: 100%;
   max-width: 360px;
@@ -38,10 +26,6 @@
   margin-bottom: 32px;
   text-align: center;
 
-  // Landscape phones (~400px tall) are the one realistic case tight enough that even the
-  // scroll+reserved-padding fix above still shows overlap on first paint (before the user
-  // scrolls) - shrinking this margin buys back enough height that the form fits without
-  // scrolling at all on that orientation.
   @media (max-height: 500px) {
     margin-bottom: 12px;
   }
@@ -86,8 +70,6 @@
   font-size: 14px;
 }
 
-// Positioning context for app-login-border-trace, which overlays this box with :host { position:
-// absolute; inset: -2px }.
 .login__card-wrap {
   position: relative;
 }

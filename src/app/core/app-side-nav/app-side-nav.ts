@@ -21,11 +21,6 @@ function prefersNarrowViewport(): boolean {
   );
 }
 
-// Real bug found via QA screenshots (feat-018.4): an expanded 232px sidebar eats almost the
-// entire viewport below the ~600px breakpoint docs/DESIGN-SYSTEM.md already uses for "mobile,
-// coluna única" (RNF01) elsewhere in the app - defaults to collapsed there, same as Theme/
-// Language default to the system preference until the user picks explicitly (a stored choice,
-// from either width, always wins over this default).
 function storedCollapsed(): boolean {
   if (typeof localStorage === 'undefined') {
     return prefersNarrowViewport();
@@ -34,11 +29,6 @@ function storedCollapsed(): boolean {
   return stored === null ? prefersNarrowViewport() : stored === 'true';
 }
 
-/**
- * docs/DESIGN-SYSTEM.md item 1 ("Shell/nav lateral de ícones") always specified a sidebar -
- * feat-002 shipped a horizontal top nav instead, never corrected until feat-018. Collapsed state
- * persists the same way as Theme/Language (signal + localStorage), independent of both.
- */
 @Component({
   imports: [
     RouterLink,
@@ -75,11 +65,7 @@ export class AppSideNav {
 
   protected readonly logoSrc = computed(() => `assets/logo/logo-mark-${this.theme.current()}.svg`);
 
-  // Data-driven instead of repeating near-identical markup per item (SonarCloud flagged the
-  // same shape of duplication in app.routes.ts, feat-016 - see docs/CONVENTIONS.md).
   protected readonly primaryLinks: ReadonlyArray<{ route: string; icon: string; labelKey: string; testid: string }> = [
-    // feat-029 (epic-021): login agora redireciona pra cá em vez de /dashboard (decisao do
-    // usuario, 2026-09-15) - primeiro item da nav pelo mesmo motivo.
     { route: 'overview', icon: 'insights', labelKey: 'nav.overview', testid: 'nav-overview' },
     { route: 'dashboard', icon: 'space_dashboard', labelKey: 'nav.dashboard', testid: 'nav-dashboard' },
     { route: 'register-bet', icon: 'edit_note', labelKey: 'nav.newBet', testid: 'nav-new-bet' },
@@ -109,8 +95,6 @@ export class AppSideNav {
   protected readonly secondaryLinks: ReadonlyArray<{ route: string; icon: string; labelKey: string; testid: string }> = [
     { route: 'search-statistics', icon: 'query_stats', labelKey: 'nav.searchStatistics', testid: 'nav-search-statistics' },
     { route: 'period-report', icon: 'calendar_month', labelKey: 'nav.periodReport', testid: 'nav-period-report' },
-    // feat-026: dashboard-only, no "Cadastrar" pair (byBetType isn't a catalog resource) - same
-    // treatment as catalogLinks' single-link shape, just grouped with the other stats links.
     { route: 'bet-type-dashboard', icon: 'sports_score', labelKey: 'nav.betTypeDashboard', testid: 'nav-bet-type-dashboard' },
     { route: 'telegram-link', icon: 'telegram', labelKey: 'nav.telegramLink', testid: 'nav-telegram-link' },
   ];

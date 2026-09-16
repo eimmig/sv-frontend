@@ -27,7 +27,7 @@ function buildChartOption(
   return buildLineChartOption(labels, cumulativeProfit, brandColor, borderColor);
 }
 
-/** Equity curve (cumulative profit) for the "Buscar Estatisticas" screen (feat-012) - one series over StatisticsSearchResult.timeline. */
+/** Equity curve (cumulative profit) - one series over StatisticsSearchResult.timeline. */
 @Component({
   imports: [NgxEchartsDirective],
   providers: [provideEchartsCore({ echarts })],

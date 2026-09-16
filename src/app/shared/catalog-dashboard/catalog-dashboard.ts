@@ -18,10 +18,7 @@ export type CatalogSegment = 'bySport' | 'byLeague' | 'byMarket' | 'byTipster' |
 /**
  * Reusable ranking view for a single catalog resource (sports, leagues, markets, tipsters,
  * betting houses - all structurally identical segments of StatisticsDashboard). Instantiated
- * once per route (epic-019) instead of 5 near-identical pages - same precedent as
- * shared/catalog-manager (feat-008), avoiding the SonarCloud duplication finding from feat-003.
- * Always requires a period (reuses shared/period-preset-filter, feat-014.2), same as
- * pages/period-report.
+ * once per route instead of one near-identical page per resource.
  */
 @Component({
   imports: [Panel, PanelLayout, PeriodPresetFilter, TranslocoPipe],

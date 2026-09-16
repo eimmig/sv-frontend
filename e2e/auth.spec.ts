@@ -42,8 +42,6 @@ test.describe('RF01/RF02 - authentication and tenant user management', () => {
     await page.getByTestId('login-password').fill('secret');
     await page.getByTestId('login-submit').click();
 
-    // feat-029: login now redirects to /overview (the new "Visão geral" screen) instead of
-    // /dashboard, which stays reachable as a normal nav item.
     await expect(page).toHaveURL(/\/overview$/);
     await expect(page.getByTestId('app-nav')).toBeVisible();
   });

@@ -22,10 +22,6 @@ test.describe('app-side-nav collapsed state', () => {
     );
   });
 
-  // feat-019.3: app-language-selector used to disappear entirely (*ngIf-style) when the sidebar
-  // collapsed, with no other way to change language without expanding it first. theme-toggle's
-  // aria-label (already localized) is the same oracle the smoke suite uses to prove a locale
-  // switch actually re-rendered the UI, not just updated internal state.
   test('language selector stays reachable and switches locale in the collapsed sidebar', async ({ page }) => {
     await page.goto('/dashboard');
     await page.getByTestId('nav-collapse-toggle').click();

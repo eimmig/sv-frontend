@@ -29,9 +29,6 @@ test.describe('RF04 - manual bet registration', () => {
     await page.route('**/api/v1/leagues*', catalogRoute([{ id: 'lg-1', name: 'Brasileirão' }]));
     await page.route('**/api/v1/markets*', catalogRoute([{ id: 'mk-1', name: 'Handicap' }]));
     await page.route('**/api/v1/tipsters*', catalogRoute([{ id: 'tp-1', name: 'Ana' }]));
-    // feat-021: register-bet also loads the team catalog now (team1Id/team2Id selects) -
-    // unmocked, the request never resolves and forkJoin never completes, leaving every select
-    // (not just the team ones) stuck disabled/detached mid-render.
     await page.route('**/api/v1/teams*', catalogRoute([{ id: 'tm-1', name: 'Flamengo' }]));
   });
 

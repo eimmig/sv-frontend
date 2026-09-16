@@ -91,8 +91,6 @@ test.describe('catalog management (sports/leagues/markets/tipsters)', () => {
     await expect(page.getByTestId('catalog-manager-form-error')).toContainText('Já existe um mercado com esse nome.');
   });
 
-  // Real bug (feat-024.2): the Nome field and the Adicionar button used to sit side by side, and
-  // on a narrow viewport the field shrank to a few characters wide, clipping its own label.
   test('the Nome field keeps its full width and the button sits on its own line on a narrow viewport', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 700 });
     await page.route('**/api/v1/sports*', (route) =>
