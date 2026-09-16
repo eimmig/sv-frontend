@@ -1513,7 +1513,7 @@
           ],
           "validation": "Teste prova o rebind reativo fim a fim (mudar locale -> DateAdapter.getLocale() muda), nao so a existencia do provider.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-482"
         },
         {
