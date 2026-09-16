@@ -2035,6 +2035,55 @@
         }
       ],
       "evidence": "Fechada em 2026-09-15 (story SV-438, subtasks SV-439/SV-440, PR #93 subtask->story verde). Sexta e ultima aplicacao identica do padrao ja revisado e fechado nos 5 repositorios anteriores de epic-028 nesta sessao (bets-service feat-018/stats-service feat-019/api-gateway feat-014/auth-service feat-016/telegram-integration feat-010). Unica diferenca real e o nome do Deployment (web), confirmado contra infra/k8s/web.yaml (sem namespace) e infra/k8s/ci-deployer-rbac.yaml (resourceNames ja incluia web). KUBE_CONFIG confirmado presente no repositorio. Delivery Reviewer: PASS (revisao condensada, sem achado). ./init.sh verde (90%+ cobertura). Guard comportou como esperado: deploy/build-and-push-image corretamente 'skipping' no evento de PR (run 35015065401). Disparo real do job adiado (mesma decisao das 5 features anteriores - promocao develop->main e decisao de release mais ampla). **Fecha epic-028 da raiz por completo** - era o ultimo dos 6 repositorios de aplicacao pendentes; infra/feat-007 (lado do servidor) ja estava done, os 6 jobs deploy agora existem (bets-service, stats-service, api-gateway, auth-service, telegram-integration, web)."
+    },
+    {
+      "id": "feat-031",
+      "name": "Selects de filtro pesquisaveis (autocomplete digitavel)",
+      "goal": "Trocar os mat-select simples dos campos de filtro por catalogo (esporte/liga/time/casa de apostas/mercado/tipster) por um combobox digitavel/pesquisavel, nas telas onde esses filtros ja existem - achado do usuario a partir do painel 'Filtros' de search-statistics (feat-012), mesmo padrao visual reaproveitado nas demais telas com filtro de catalogo.",
+      "scope": "shared/searchable-select novo (wrapper sobre mat-autocomplete, mesma API de opcoes id/name e formControlName que os mat-select atuais usam, mesmo padrao de acessibilidade/i18n) substituindo mat-select nos campos de catalogo (nao nos campos de data, que ja sao mat-datepicker desde epic-024) em search-statistics, dashboard, history, register-bet e team-manager/catalog-manager onde aplicavel. Reaproveita o precedente ja estabelecido no backlog de 1 componente parametrizado em vez de duplicar a mesma logica em cada tela (mesma decisao de feat-008/feat-018).",
+      "description": "Usuario reportou (screenshot do painel 'Filtros' de search-statistics) que os campos Esporte/Liga/Time/Casa de apostas/Mercado sao mat-select fechado (so abre lista e clica) e pediu que fiquem digitaveis/pesquisaveis - relevante conforme os catalogos crescem e a lista fica longa pra rolar manualmente. Mesmo componente mat-select se repete, com o mesmo padrao de opcoes vindas de catalogo, em dashboard.html, history.html, register-bet.html e team-manager.html - candidato natural a um shared/searchable-select unico em vez de resolver so na tela do screenshot.",
+      "dependencies": [
+        "feat-004",
+        "feat-005",
+        "feat-006",
+        "feat-008",
+        "feat-012"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-032",
+      "name": "Polish app-side-nav: fontSet Material Symbols Outlined seletivo + scrollbar tematizada",
+      "description": "Sidebar colapsada com icones parecendo desalinhados (glifos diagonais do Material Icons classico, ex.: trending_up/down, sports_score) e scrollbar nativa do SO feia em .side-nav. Corrige com fontSet='material-symbols-outlined' seletivo nos mat-icon da sidebar (exceto o de telegram, que nao existe no Symbols - ver plan_review) mantendo Material Icons como fonte padrao do resto do app, mais scrollbar fina tematizada via --color-border. Escopo restrito a apps/web (app-side-nav + index.html + vault).",
+      "dependencies": [],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (2026-09-16): READY WITH CONCERNS. Plano original pedia trocar a fonte de icone global (index.html) de Material Icons classico para Material Symbols Outlined, para melhorar centralizacao optica dos icones diagonais da sidebar (trending_up/down, send, flag) que estao parecendo desalinhados no nav colapsado. Achado MAJOR verificado contra o codepoints oficial do google/material-design-icons no GitHub: o icone 'telegram' (codepoint ea6b) existe no Material Icons classico mas NAO existe no Material Symbols Outlined (Google nao inclui icones de marca/social no Symbols) - troca global quebraria o item Telegram do nav (app-side-nav.html, telegram-link.html) e tambem afetaria KPI cards de overview/dashboard/period-report/search-statistics fora do escopo pedido, ja que o link de fonte no index.html e global. Os outros 20 nomes de icone usados na sidebar (insights, space_dashboard, edit_note, history, sports_soccer, emoji_events, storefront, groups, account_balance, groups_2, query_stats, calendar_month, sports_score, manage_accounts, logout, chevron_left/right, language, light_mode, dark_mode) foram confirmados presentes em ambas as fontes. Plano corrigido: nao trocar o <link> global - carregar Material Symbols Outlined em ADICAO ao Material Icons existente, aplicar fontSet='material-symbols-outlined' so nos mat-icon da sidebar exceto o de telegram (que fica no fontSet padrao), com uma regra CSS global definindo a classe .material-symbols-outlined (mecanismo padrao do MatIconRegistry, nao gambiarra). Scrollbar de .side-nav (scrollbar-width/color + ::-webkit-scrollbar tematizados com --color-border, ja token claro/escuro em styles/_tokens.scss) aprovada sem ressalva. Unica pendencia MINOR: registrar a decisao de fonte de icone em docs/DESIGN-SYSTEM.md no mesmo commit (nao estava documentada ainda).",
+      "jira": "SV-490",
+      "subtasks": [
+        {
+          "id": "feat-032.1",
+          "name": "Material Symbols Outlined seletivo na sidebar (fontSet, exceto telegram)",
+          "status": "done",
+          "jira": "SV-491"
+        },
+        {
+          "id": "feat-032.2",
+          "name": "Scrollbar tematizada de .side-nav (thin + cores claro/escuro)",
+          "status": "not-started",
+          "jira": "SV-492"
+        },
+        {
+          "id": "feat-032.3",
+          "name": "CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-493"
+        }
+      ],
+      "evidence": ""
     }
   ]
 }

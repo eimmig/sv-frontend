@@ -8,7 +8,7 @@
       [attr.aria-label]="'language.label' | transloco"
       [matMenuTriggerFor]="localeMenu"
     >
-      <mat-icon aria-hidden="true">language</mat-icon>
+      <mat-icon aria-hidden="true" fontSet="material-symbols-outlined">language</mat-icon>
     </button>
     <mat-menu #localeMenu="matMenu">
       @for (locale of locales; track locale.value) {
