@@ -1,5 +1,6 @@
 import { ApplicationConfig, isDevMode, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
 import { provideTransloco } from '@jsverse/transloco';
 
@@ -13,6 +14,9 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
     provideHttpClient(withInterceptors([acceptLanguageInterceptor, authInterceptor])),
+    // Native Date (Intl), mesma filosofia de core/date-format.ts - sem moment/date-fns.
+    // Locale reativo ao idioma ativo (App, app.ts) - MAT_DATE_LOCALE sozinho e estatico.
+    provideNativeDateAdapter(),
     provideTransloco({
       config: {
         availableLangs: ['pt-BR', 'en-US', 'es'],
