@@ -1543,7 +1543,7 @@
       "dependencies": [
         "feat-018"
       ],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "Plan Reviewer 2026-09-15: READY WITH CONCERNS. Evidencia: app-shell__floating-controls (app.scss, position:fixed, left/bottom:16px, z-index:10, sem overflow nem largura fixa) e language-selector.html (mat-icon 'language' 18px + mat-select, sem CSS que corte o icone) nao mostram causa obvia de corte - a suspeita mais provavel e o min-width:120px do mat-select (fix de feat-018.2, comentado no proprio SCSS como resolvendo um bug DIFERENTE: painel de opcoes largo demais/estreito demais, nao o icone) interagindo com o espaco apertado do canto da tela em telas pequenas, ou z-index do app-login-border-trace (animacao autoral de feat-018) sobrepondo o canto se a viewport for pequena o suficiente pro card de login alcancar bottom-left. MINOR: subtask 023.1 ja prve investigar a causa antes de corrigir (correto) - so reforcar que nao deve assumir que o fix de feat-018.2 (min-width do painel) e a mesma causa deste bug (sintoma diferente: icone cortado, nao painel estreito).",
       "jira": "SV-466",
       "subtasks": [
@@ -1591,7 +1591,7 @@
           "jira": "SV-469"
         }
       ],
-      "evidence": ""
+      "evidence": "Achado de usuario confirmado e corrigido: causa raiz real medida contra o dev server (getBoundingClientRect), nao suposta a partir do CSS. .language-selector-host usava display:block envolvendo filho com width:100%; sem largura definida no ancestral (login usa um container flex sem largura propria, diferente da sidebar), o mat-select renderizava 13-26px mais largo que o proprio pill, vazando sobre o theme-toggle. Corrigido para display:flex (Flexbox tem regra explicita pra filho percentual em container auto-dimensionado, CSS Flexbox 9.9) - sem efeito na sidebar (nunca foi afetada, ja tem largura definida). Achado secundario: login.scss usava min-height:100dvh sem overflow-y, deixando o formulario ficar atras dos controles flutuantes em viewports curtos sem nenhuma forma de rolar ate ele - corrigido pra height:100%+overflow-y:auto (padrao ja usado por outras paginas) + padding reservado + margin:auto (flexbug #3). Residual aceito: viewport extremamente curto (celular em paisagem <450px) ainda mostra sobreposicao parcial na primeira renderizacao ate rolar - tocar no padding do shared/panel pra eliminar isso arriscaria regressao em todas as paginas que o usam, documentado como tradeoff. Delivery Reviewer/Test Suite Auditor: revisao direta sem subagentes (diff pequeno, totalmente evidenciado). QA visual real (ng serve): desktop, mobile (320-414px), viewport curto/paisagem, claro/escuro, 3 locales - sem achado alem do residual documentado. ng test 221/221 (suite inteira). Playwright 64/64 (suite inteira, 9 e2e novos em e2e/login-layout.spec.ts: sem sobreposicao em 3 locales x 2 temas, navegacao por teclado). docs/CONVENTIONS.md ganhou o gotcha reutilizavel (display:block + filho width:100% sem largura de ancestral), docs/services/web.md documentou a secao da feature. Story SV-466, subtasks SV-467/468/469, PRs #120/#121/#122 (subtask->feature, CI verde). ./init.sh do app e da raiz verdes."
     },
     {
       "id": "feat-024",
