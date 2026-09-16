@@ -1601,9 +1601,9 @@
         "feat-016",
         "feat-019"
       ],
-      "status": "not-started",
+      "status": "in-progress",
       "plan_review": "Plan Reviewer 2026-09-15: READY. Evidencia: shared/catalog-manager (catalog-manager.html/scss) e de fato o UNICO componente reusado pelos 5 cadastros (confirma a premissa de feat-024.3, sem risco de duplicacao) - .catalog-manager__form usa display:flex/align-items:flex-start/gap:12px com o mat-form-field em flex:1 e o botao Adicionar como irmao direto na mesma linha, confirmando literalmente o bug descrito (botao espremido ao lado do campo Nome em telas estreitas). :host tem padding:16px 0 (sem padding lateral) - o respiro em relacao a sidebar depende do layout do container pai (app-panel-layout), a investigar na subtask 024.1. Nenhum achado bloqueante; ajustar layout dentro deste unico componente compartilhado resolve as 5 telas de uma vez, como o plano ja assume.",
-      "jira": "",
+      "jira": "SV-470",
       "subtasks": [
         {
           "id": "feat-024.1",
@@ -1616,8 +1616,8 @@
           ],
           "validation": "QA visual confirma o respiro entre menu e cards em desktop e mobile.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-471"
         },
         {
           "id": "feat-024.2",
@@ -1631,7 +1631,7 @@
           "validation": "Testes de componente e QA visual confirmam a composicao em desktop, tablet e mobile.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-472"
         },
         {
           "id": "feat-024.3",
@@ -1645,7 +1645,7 @@
           "validation": "Playwright ou testes de rota cobrem os cinco cadastros e confirmam o layout comum.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-473"
         },
         {
           "id": "feat-024.4",
@@ -1660,7 +1660,7 @@
           "validation": "Suite do frontend verde e evidence preenchida.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-474"
         }
       ],
       "evidence": ""

@@ -187,3 +187,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-467](https://stakevault.atlassian.net/browse/SV-467) - Corrigir layout e area de clique do idioma
 - [SV-468](https://stakevault.atlassian.net/browse/SV-468) - Validar temas, locales e acessibilidade
 - [SV-469](https://stakevault.atlassian.net/browse/SV-469) - Testes, QA visual e verificacao final
+- [SV-470](https://stakevault.atlassian.net/browse/SV-470) - Ajustar espacamento e formulario das telas de cadastro
+- [SV-471](https://stakevault.atlassian.net/browse/SV-471) - Criar espacamento entre sidebar e cadastro
+- [SV-472](https://stakevault.atlassian.net/browse/SV-472) - Reposicionar botao Adicionar
+- [SV-473](https://stakevault.atlassian.net/browse/SV-473) - Aplicar em todas as telas de cadastro
+- [SV-474](https://stakevault.atlassian.net/browse/SV-474) - Testes, QA visual e verificacao final
