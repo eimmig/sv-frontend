@@ -14,7 +14,7 @@
       [attr.aria-label]="(collapsed() ? 'nav.expand' : 'nav.collapse') | transloco"
       (click)="toggleCollapsed()"
     >
-      <mat-icon>{{ collapsed() ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+      <mat-icon fontSet="material-symbols-outlined">{{ collapsed() ? 'chevron_right' : 'chevron_left' }}</mat-icon>
     </button>
   </div>
 
@@ -28,7 +28,7 @@
         [matTooltip]="collapsed() ? (link.labelKey | transloco) : ''"
         matTooltipPosition="right"
       >
-        <mat-icon>{{ link.icon }}</mat-icon>
+        <mat-icon fontSet="material-symbols-outlined">{{ link.icon }}</mat-icon>
         @if (!collapsed()) {
           <span>{{ link.labelKey | transloco }}</span>
         }
@@ -47,12 +47,12 @@
         [matTooltip]="collapsed() ? (resource.labelKey | transloco) : ''"
         matTooltipPosition="right"
       >
-        <mat-icon>{{ resource.icon }}</mat-icon>
+        <mat-icon fontSet="material-symbols-outlined">{{ resource.icon }}</mat-icon>
         @if (!collapsed()) {
           <span>{{ resource.labelKey | transloco }}</span>
         }
       </button>
-      <mat-menu #resourceMenu="matMenu" xPosition="after">
+      <mat-menu #resourceMenu="matMenu" xPosition="after" [class]="collapsed() ? '' : 'side-nav__resource-menu-panel'">
         <a mat-menu-item [routerLink]="'/' + resource.registerRoute" [attr.data-testid]="'nav-' + resource.id + '-register'">{{
           'nav.registerMenuItem' | transloco
         }}</a>
@@ -71,7 +71,7 @@
         [matTooltip]="collapsed() ? (link.labelKey | transloco) : ''"
         matTooltipPosition="right"
       >
-        <mat-icon>{{ link.icon }}</mat-icon>
+        <mat-icon fontSet="material-symbols-outlined">{{ link.icon }}</mat-icon>
         @if (!collapsed()) {
           <span>{{ link.labelKey | transloco }}</span>
         }
@@ -89,7 +89,7 @@
         [matTooltip]="collapsed() ? (link.labelKey | transloco) : ''"
         matTooltipPosition="right"
       >
-        <mat-icon>{{ link.icon }}</mat-icon>
+        <mat-icon [fontSet]="link.icon === 'telegram' ? '' : 'material-symbols-outlined'">{{ link.icon }}</mat-icon>
         @if (!collapsed()) {
           <span>{{ link.labelKey | transloco }}</span>
         }
@@ -105,7 +105,7 @@
         [matTooltip]="collapsed() ? ('nav.users' | transloco) : ''"
         matTooltipPosition="right"
       >
-        <mat-icon>manage_accounts</mat-icon>
+        <mat-icon fontSet="material-symbols-outlined">manage_accounts</mat-icon>
         @if (!collapsed()) {
           <span>{{ 'nav.users' | transloco }}</span>
         }
@@ -126,7 +126,7 @@
       matTooltipPosition="right"
       (click)="logout()"
     >
-      <mat-icon>logout</mat-icon>
+      <mat-icon fontSet="material-symbols-outlined">logout</mat-icon>
       @if (!collapsed()) {
         <span>{{ 'nav.logout' | transloco }}</span>
       }
