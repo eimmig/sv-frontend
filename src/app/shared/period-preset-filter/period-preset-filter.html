@@ -26,7 +26,7 @@
         data-testid="period-preset-custom-from"
         [attr.aria-label]="'periodPresetFilter.fromLabel' | transloco"
       />
-      <mat-datepicker-toggle matIconSuffix [for]="fromPicker" />
+      <mat-datepicker-toggle matIconSuffix [for]="fromPicker" data-testid="period-preset-custom-from-toggle" />
       <mat-datepicker #fromPicker />
     </mat-form-field>
 
@@ -40,7 +40,7 @@
         data-testid="period-preset-custom-to"
         [attr.aria-label]="'periodPresetFilter.toLabel' | transloco"
       />
-      <mat-datepicker-toggle matIconSuffix [for]="toPicker" />
+      <mat-datepicker-toggle matIconSuffix [for]="toPicker" data-testid="period-preset-custom-to-toggle" />
       <mat-datepicker #toPicker />
     </mat-form-field>
   }

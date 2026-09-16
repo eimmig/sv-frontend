@@ -171,7 +171,7 @@
             data-testid="register-bet-date"
             [attr.aria-label]="'registerBet.betDateLabel' | transloco"
           />
-          <mat-datepicker-toggle matIconSuffix [for]="betDatePicker" />
+          <mat-datepicker-toggle matIconSuffix [for]="betDatePicker" data-testid="register-bet-date-toggle" />
           <mat-datepicker #betDatePicker />
         </mat-form-field>
 
@@ -185,7 +185,7 @@
             data-testid="register-bet-time"
             [attr.aria-label]="'registerBet.betTimeLabel' | transloco"
           />
-          <mat-timepicker-toggle matIconSuffix [for]="betTimePicker" />
+          <mat-timepicker-toggle matIconSuffix [for]="betTimePicker" data-testid="register-bet-time-toggle" />
           <mat-timepicker #betTimePicker />
         </mat-form-field>
 
