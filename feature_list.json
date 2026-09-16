@@ -2081,6 +2081,12 @@
           "name": "CHANGELOG e verificacao final",
           "status": "done",
           "jira": "SV-493"
+        },
+        {
+          "id": "feat-032.4",
+          "name": "Teste de regressao: telegram fica fora do fontSet Symbols Outlined",
+          "status": "done",
+          "jira": "SV-494"
         }
       ],
       "evidence": ""
