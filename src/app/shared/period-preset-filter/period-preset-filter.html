@@ -20,24 +20,28 @@
       <mat-label>{{ 'periodPresetFilter.fromLabel' | transloco }}</mat-label>
       <input
         matInput
-        type="date"
+        [matDatepicker]="fromPicker"
         [ngModel]="customFrom()"
         (ngModelChange)="setCustomFrom($event)"
         data-testid="period-preset-custom-from"
         [attr.aria-label]="'periodPresetFilter.fromLabel' | transloco"
       />
+      <mat-datepicker-toggle matIconSuffix [for]="fromPicker" />
+      <mat-datepicker #fromPicker />
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>{{ 'periodPresetFilter.toLabel' | transloco }}</mat-label>
       <input
         matInput
-        type="date"
+        [matDatepicker]="toPicker"
         [ngModel]="customTo()"
         (ngModelChange)="setCustomTo($event)"
         data-testid="period-preset-custom-to"
         [attr.aria-label]="'periodPresetFilter.toLabel' | transloco"
       />
+      <mat-datepicker-toggle matIconSuffix [for]="toPicker" />
+      <mat-datepicker #toPicker />
     </mat-form-field>
   }
 </div>

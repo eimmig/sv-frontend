@@ -1,7 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -21,6 +22,7 @@ import { EquityCurveChart } from '../../shared/equity-curve-chart/equity-curve-c
 import { KpiCard, kpiSign } from '../../shared/kpi-card/kpi-card';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
+import { toDateOnly } from '../../shared/period-preset-filter/period-preset-filter';
 
 interface Options {
   readonly bettingHouses: BettingHouse[];
@@ -36,6 +38,7 @@ const EMPTY_OPTIONS: Options = { bettingHouses: [], sports: [], leagues: [], mar
   imports: [
     ReactiveFormsModule,
     MatButtonModule,
+    MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -76,8 +79,8 @@ export class SearchStatistics implements OnInit {
     bettingHouseId: [''],
     marketId: [''],
     tipsterId: [''],
-    from: [''],
-    to: [''],
+    from: new FormControl<Date | null>(null),
+    to: new FormControl<Date | null>(null),
   });
 
   ngOnInit(): void {
@@ -165,8 +168,8 @@ export class SearchStatistics implements OnInit {
         bettingHouseId: raw.bettingHouseId || undefined,
         marketId: raw.marketId || undefined,
         tipsterId: raw.tipsterId || undefined,
-        from: raw.from || undefined,
-        to: raw.to || undefined,
+        from: raw.from ? toDateOnly(raw.from) : undefined,
+        to: raw.to ? toDateOnly(raw.to) : undefined,
       }),
       this.result,
       this.resultError,
