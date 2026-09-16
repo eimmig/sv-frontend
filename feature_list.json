@@ -1572,7 +1572,7 @@
           ],
           "validation": "Playwright cobre os tres locales e os dois temas na tela de login.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-468"
         },
         {
