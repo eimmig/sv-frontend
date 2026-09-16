@@ -1388,3 +1388,52 @@ nota desatualizada de `epic-015` que ainda atribuía `byBetType` a `epic-021`.
 
 Story SV-457, subtasks SV-458/459/460, PRs #111/#112 (subtask→feature, CI verde) + PR de
 `feature/SV-457`→`develop` (gate completo). `./init.sh` do app e da raiz verdes.
+
+## `feat-029` fechada — tela "Visão geral" pós-login, fecha `epic-021` da raiz (2026-09-15, mesmo dia)
+
+Continuação direta do fechamento de `epic-027` (entrada anterior): as 2 dependências que
+bloqueavam `feat-029` (ownership de `byBetType`, roteamento de bankroll/settings no
+`api-gateway`) fecharam na mesma sessão, liberando `epic-021`. Restava 1 decisão de UX marcada
+como "não bloqueante" desde a criação do backlog: se a tela nova substitui o redirect pós-login
+atual (`/dashboard`) ou vira só mais um link na nav. Levada ao usuário via `AskUserQuestion` antes
+de codificar — **escolheu substituir o redirect**: `login.ts` agora navega pra `/overview` em vez
+de `/dashboard` (nos 2 pontos: sessão já autenticada e submit bem-sucedido), `/dashboard` virou
+item normal de `app-side-nav` (perdeu só o status de landing page, nada mais mudou nele).
+
+4 subtasks, sem desvio do `Plan Reviewer` (já `READY` de mais cedo na sessão):
+
+- **`feat-029.1`**: `pages/overview/overview-metrics.ts` (`resolveEarliestDate`,
+  `buildLifetimeCurve`, `buildMonthlyBalances`) — funções puras, 100% cobertura. "Início do
+  histórico" usa o primeiro item do array esparço/ordenado de `GET /api/v1/statistics/daily` sem
+  `from`/`to` como proxy (decisão já prevista no plan review, sem endpoint dedicado).
+- **`feat-029.2`**: componente `Overview` com os 4 cards vitalícios. `roiMedioDiario` extraído de
+  `period-report-metrics.ts` (antes só inline ali) pra reuso sem duplicar fórmula — exatamente o
+  que o plano pedia. Busca `daily`/`statistics`/`bankroll`/`settings` em paralelo
+  (`forkJoin`), depois decide via `switchMap` se busca `saldoInicioHistorico` (pulado inteiramente
+  pra um tenant sem histórico).
+- **`feat-029.3`**: tabela mensal Jan-Dez + troca do redirect pós-login. **Achado real, diverge da
+  descrição do próprio epic**: `aggregateByMonth` (`stats-service`) não escopa `monthly` ao ano
+  corrente quando a chamada não tem `from`/`to` — agrupa `(year, month)` sobre o histórico inteiro
+  do tenant, sem filtro de data nenhum. `buildMonthlyTable` filtra por ano no cliente antes de
+  casar cada mês com seu `BetMetrics` (testado explicitamente: 2 anos diferentes com o mesmo
+  número de mês não se misturam). Documentado em `docs/API-CONTRACTS.md` e
+  `docs/services/web.md`.
+- **`feat-029.4`**: fechamento. QA visual real (`ng serve`): desktop 1440px + mobile 390px,
+  claro/escuro, sem achado.
+
+**Achado real de teste, não de produto** (só apareceu no gate pesado, CI): `telegram-link.spec.ts`
+e `overview.spec.ts` sobrescreviam `navigator.language` sem restaurar no `afterEach` — diferente
+de todo outro spec do app que já faz isso (`core/language.spec.ts`, `history.spec.ts`). A
+sobrescrita vazava pro próximo arquivo de teste que o Vitest escalasse no mesmo worker, quebrando
+uma asserção de formatação numérica em `period-report.spec.ts` sem nenhuma relação óbvia com a
+causa — não reproduzia localmente (depende do sharding, que difere entre a máquina local e o
+runner de CI). Corrigido nos 2 arquivos, documentado em `docs/TESTING.md`. 2 achados de
+SonarCloud no gate pesado (mesma classe já vista antes: teste sem assertion reconhecida;
+`arr[arr.length-1]` -> `arr.at(-1)`) corrigidos antes do merge.
+
+`ng test` 221/221 (suíte inteira), Playwright 55/55 (suíte inteira, 3 e2e novos em
+`e2e/overview.spec.ts`).
+
+Story SV-461, subtasks SV-462/463/464/465, PRs #115/#116/#117/#118 (subtask→feature, CI verde) +
+PR de `feature/SV-461`→`develop` (gate completo, incluindo os 2 achados de SonarCloud). `./init.sh`
+do app e da raiz verdes. **Fecha `epic-021` da raiz por completo.**
