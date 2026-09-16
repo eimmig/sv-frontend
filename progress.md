@@ -1437,3 +1437,37 @@ SonarCloud no gate pesado (mesma classe já vista antes: teste sem assertion rec
 Story SV-461, subtasks SV-462/463/464/465, PRs #115/#116/#117/#118 (subtask→feature, CI verde) +
 PR de `feature/SV-461`→`develop` (gate completo, incluindo os 2 achados de SonarCloud). `./init.sh`
 do app e da raiz verdes. **Fecha `epic-021` da raiz por completo.**
+
+## `feat-023` fechada — corrigir sobreposição do seletor de idioma no login (2026-09-15, mesmo dia)
+
+Achado de usuário (screenshot real): pill do idioma sobreposto ao botão de tema no login,
+cortando parte do ícone. Continua o backlog de `epic-024` da raiz (times/jogadores — este é o
+item de UI que ficou pendente daquela rodada). Investigação real (`getBoundingClientRect()`
+contra o dev server, não suposição a partir do CSS) achou a causa exata em
+`core/language-selector/language-selector.scss`: `.language-selector-host` usava `display:
+block` envolvendo um filho (`.language-selector`) com `width: 100%`. Funciona quando um ancestral
+tem largura definida (a sidebar, onde este componente também é usado, sempre deu certo) — quebra
+quando o container também se auto-dimensiona pelo conteúdo (a tela de login, um `flex` sem
+largura própria). Medido: o `mat-select` renderizava 13–26px mais largo que o próprio pill,
+vazando sobre o `theme-toggle` adjacente. Trocado pra `display: flex` (mesmo modo de layout do
+filho — Flexbox tem regra explícita pra filho percentual em container auto-dimensionado, CSS
+Flexbox §9.9). Sem efeito na sidebar.
+
+**Achado secundário, mesma investigação**: `login.scss` usava `min-height: 100dvh` sem
+`overflow-y`, deixando o formulário ficar atrás dos controles flutuantes em viewports curtos sem
+nenhuma forma de rolar até ele (`.app-shell__content` clipa com `overflow:hidden`). Corrigido pra
+`height: 100%` + `overflow-y: auto` (padrão já usado por outras páginas) + `padding-bottom`
+reservando o espaço dos controles + `margin: auto 0` no lugar de `align-items: center` sozinho
+(técnica "flexbug #3"). Residual aceito, documentado: viewport extremamente curto (celular em
+paisagem <450px) ainda mostra sobreposição parcial até o usuário rolar — tocar no padding do
+`shared/panel` compartilhado eliminaria isso mas arriscaria regressão em toda página que o usa.
+
+QA visual real (`ng serve`): desktop, mobile (320–414px), viewport curto/paisagem, claro/escuro,
+3 locales — sem achado além do residual documentado. `ng test` 221/221 (suíte inteira). Playwright
+64/64 (suíte inteira, 9 e2e novos em `e2e/login-layout.spec.ts`: sem sobreposição em 3 locales x 2
+temas, navegação por teclado). `docs/CONVENTIONS.md` ganhou o gotcha reutilizável (`display: block`
++ filho `width: 100%` sem largura de ancestral), `docs/services/web.md` documentou a seção.
+
+Story SV-466, subtasks SV-467/468/469, PRs #120/#121/#122 (subtask→feature, CI verde) + PR de
+`feature/SV-466`→`develop` (gate completo, incluindo SonarCloud). `./init.sh` do app e da raiz
+verdes.
