@@ -1587,7 +1587,7 @@
           ],
           "validation": "Suite do frontend verde, QA visual aprovado e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-469"
         }
       ],
