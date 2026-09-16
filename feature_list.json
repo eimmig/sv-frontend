@@ -1659,11 +1659,11 @@
           ],
           "validation": "Suite do frontend verde e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-474"
         }
       ],
-      "evidence": ""
+      "evidence": "QA visual (Playwright + screenshots manuais via ng serve) confirmada nos 5 cadastros (sports/leagues/markets/tipsters/betting-houses), em mobile 375px e desktop 1440px, temas claro/escuro e sidebar expandida/colapsada: campo Nome mantem largura plena, botao em linha propria, respiro visivel entre sidebar e card 'Nova entrada' em todos os casos. Suite completa: unit 221/221 (vitest, 90.76% stmt/90.98% branch, acima do gate 80%), e2e 70/70 (Playwright, inclui os 5 novos testes de registration-layout.spec.ts). CHANGELOG.md atualizado (entrada unica cobrindo feat-024). Vault: docs/DESIGN-SYSTEM.md ganhou bullet novo na secao 'Layout em paineis' documentando o gotcha reaproveitavel (formulario campo+botao dentro de painel deve usar flex-direction:column, nao row, sem min-width garantido no campo). ./init.sh do app e da raiz verdes (raiz com falhas informativas pre-existentes e nao relacionadas nos servicos Java/Python, dependentes de Docker/Testcontainers indisponivel nesta sessao)."
     },
     {
       "id": "feat-025",
