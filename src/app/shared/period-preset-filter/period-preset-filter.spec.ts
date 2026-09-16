@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { PeriodPresetFilter, resolvePreset } from './period-preset-filter';
@@ -45,6 +46,7 @@ describe('PeriodPresetFilter', () => {
           translocoConfig: { availableLangs: ['pt-BR'], defaultLang: 'pt-BR' },
         }),
       ],
+      providers: [provideNativeDateAdapter()],
     });
     fixture = TestBed.createComponent(PeriodPresetFilter);
     component = fixture.componentInstance;
@@ -79,11 +81,11 @@ describe('PeriodPresetFilter', () => {
     component['setPreset']('custom');
     component.rangeChange.subscribe((range) => emitted.push(range));
 
-    component['setCustomFrom']('2026-01-01');
+    component['setCustomFrom'](new Date(2026, 0, 1));
     fixture.detectChanges();
     expect(emitted).toHaveLength(0);
 
-    component['setCustomTo']('2026-01-31');
+    component['setCustomTo'](new Date(2026, 0, 31));
     fixture.detectChanges();
     expect(emitted).toEqual([{ from: '2026-01-01', to: '2026-01-31' }]);
   });

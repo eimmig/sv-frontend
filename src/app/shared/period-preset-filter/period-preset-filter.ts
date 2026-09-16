@@ -1,5 +1,6 @@
 import { Component, effect, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -63,7 +64,7 @@ export function resolvePreset(preset: Exclude<PeriodPreset, 'custom'>, today: Da
  * once on construction so the parent doesn't need to duplicate default-preset logic.
  */
 @Component({
-  imports: [FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, TranslocoPipe],
+  imports: [FormsModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatSelectModule, TranslocoPipe],
   selector: 'app-period-preset-filter',
   styleUrl: './period-preset-filter.scss',
   templateUrl: './period-preset-filter.html',
@@ -72,8 +73,8 @@ export class PeriodPresetFilter {
   readonly rangeChange = output<PeriodRange>();
 
   protected readonly preset = signal<PeriodPreset>('today');
-  protected readonly customFrom = signal('');
-  protected readonly customTo = signal('');
+  protected readonly customFrom = signal<Date | null>(null);
+  protected readonly customTo = signal<Date | null>(null);
 
   constructor() {
     effect(() => {
@@ -81,8 +82,10 @@ export class PeriodPresetFilter {
       if (preset === 'custom') {
         const from = this.customFrom();
         const to = this.customTo();
+        // Conversao pro contrato yyyy-MM-dd (StatisticsApi from/to) acontece aqui, no limite -
+        // customFrom/customTo internamente sao Date (mat-datepicker), nunca string no template.
         if (from && to) {
-          this.rangeChange.emit({ from, to });
+          this.rangeChange.emit({ from: toDateOnly(from), to: toDateOnly(to) });
         }
         return;
       }
@@ -94,11 +97,11 @@ export class PeriodPresetFilter {
     this.preset.set(preset);
   }
 
-  protected setCustomFrom(value: string): void {
+  protected setCustomFrom(value: Date | null): void {
     this.customFrom.set(value);
   }
 
-  protected setCustomTo(value: string): void {
+  protected setCustomTo(value: Date | null): void {
     this.customTo.set(value);
   }
 }
