@@ -16,6 +16,22 @@ $width-collapsed: 72px;
   overflow-x: hidden;
   overflow-y: auto;
   transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 3px;
+  }
 }
 
 .side-nav--collapsed {
@@ -133,6 +149,10 @@ $width-collapsed: 72px;
 
 .side-nav__spacer {
   flex: 1 1 auto;
+}
+
+::ng-deep .side-nav__resource-menu-panel {
+  min-width: $width-expanded !important;
 }
 
 .side-nav__footer {

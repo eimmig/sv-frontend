@@ -2073,7 +2073,7 @@
         {
           "id": "feat-032.2",
           "name": "Scrollbar tematizada de .side-nav (thin + cores claro/escuro)",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-492"
         },
         {
