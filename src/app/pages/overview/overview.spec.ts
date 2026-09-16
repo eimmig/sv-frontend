@@ -97,6 +97,7 @@ describe('Overview', () => {
     ]);
 
     const atRequest = httpMock.expectOne((req) => req.url === BANKROLL_URL && req.params.get('at') === '2026-01-10');
+    expect(atRequest.request.method).toBe('GET');
     atRequest.flush({ at: '2026-01-10', balance: 800 });
   });
 

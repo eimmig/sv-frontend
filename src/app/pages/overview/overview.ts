@@ -62,7 +62,7 @@ export class Overview implements OnInit {
    *  defensive convention as buildLifetimeCurve/profitUnidades elsewhere in this app. */
   protected readonly lucroTotalUnidades = computed(() => {
     const curve = buildLifetimeCurve(this.data().daily, this.data().saldoAtual, this.data().unitPercent);
-    return curve.length === 0 ? null : curve[curve.length - 1].accumulated;
+    return curve.at(-1)?.accumulated ?? null;
   });
 
   protected readonly lucroMedioMensal = computed(() => {
