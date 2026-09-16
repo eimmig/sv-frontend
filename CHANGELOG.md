@@ -39,6 +39,15 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ### Fixed
 
+- `shared/catalog-manager` (`feat-024`, telas de cadastro de esporte/liga/mercado/tipster/casa
+  de apostas): `:host` sem padding lateral colava o card de "Nova entrada" no menu lateral;
+  `.catalog-manager__form` em `display: flex` na horizontal (campo Nome + botão "Adicionar" lado
+  a lado) espremia o campo a poucos caracteres em viewports estreitos, chegando a cortar o
+  próprio label. Padding lateral adicionado ao `:host` e formulário trocado para `flex-direction:
+  column` (botão em linha própria). `shared/team-manager` (`/teams`) tinha o mesmo `:host` sem
+  padding lateral (copiado de `catalog-manager` em `feat-021`, antes deste ajuste existir) —
+  mesmo padding aplicado ali também. Layout compartilhado agora cobre as 5 telas de catálogo mais
+  `/teams`, com cobertura Playwright dedicada para as 6.
 - `app-language-selector` (`feat-023.1`): o pill expandido (`.language-selector-host`) usava
   `display: block` envolvendo um filho com `width: 100%` — sem uma largura definida no ancestral
   (como na tela de login, onde os controles flutuam sem largura própria), o cálculo de
@@ -187,3 +196,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-467](https://stakevault.atlassian.net/browse/SV-467) - Corrigir layout e area de clique do idioma
 - [SV-468](https://stakevault.atlassian.net/browse/SV-468) - Validar temas, locales e acessibilidade
 - [SV-469](https://stakevault.atlassian.net/browse/SV-469) - Testes, QA visual e verificacao final
+- [SV-470](https://stakevault.atlassian.net/browse/SV-470) - Ajustar espacamento e formulario das telas de cadastro
+- [SV-471](https://stakevault.atlassian.net/browse/SV-471) - Criar espacamento entre sidebar e cadastro
+- [SV-472](https://stakevault.atlassian.net/browse/SV-472) - Reposicionar botao Adicionar
+- [SV-473](https://stakevault.atlassian.net/browse/SV-473) - Aplicar em todas as telas de cadastro
+- [SV-474](https://stakevault.atlassian.net/browse/SV-474) - Testes, QA visual e verificacao final

@@ -1,17 +1,18 @@
 :host {
   display: block;
   height: 100%;
-  padding: 16px 0;
+  padding: 24px;
+  box-sizing: border-box;
 }
 
 .catalog-manager__form {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   gap: 12px;
   margin-bottom: 16px;
 
   mat-form-field {
-    flex: 1 1 auto;
+    width: 100%;
   }
 }
 

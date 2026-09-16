@@ -2,9 +2,27 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-09-15
-**Estado:** `feat-001` a `feat-021`, `feat-025`, `feat-028` e `feat-030` `done` (`feat-022`..`024`,
-`026`, `027`, `029` seguem `not-started`).
+**Última atualização:** 2026-09-16
+**Estado:** `feat-001` a `feat-021`, `feat-023`, `feat-024`, `feat-025`, `feat-028` e `feat-030`
+`done` (`feat-022` REVISE, `026`, `027`, `029` seguem `not-started`).
+
+## `feat-024` fechada — espacamento e formulario das telas de cadastro (2026-09-16)
+
+`shared/catalog-manager` (sports/leagues/markets/tipsters) e `shared/team-manager` (`/teams`)
+tinham `:host` sem padding lateral (card colava no menu lateral) e `.catalog-manager__form` em
+`flex-direction: row` (campo Nome + botão Adicionar lado a lado), espremendo o campo a poucos
+caracteres em viewports estreitos. Corrigido para `padding: 24px` + `flex-direction: column`
+(botão em linha própria), aplicado às 6 telas de formulário (5 cadastros + times).
+
+**`Delivery Reviewer`/`Test Suite Auditor` acharam 2 gaps reais antes do merge para `develop`**,
+ambos corrigidos na própria `feature/SV-470` antes do gate pesado: (1) `team-manager` recebeu o
+mesmo fix de padding mas ficou sem cobertura Playwright em `/teams` e sem menção no
+`CHANGELOG.md` — corrigido, `/teams` agora é a 6ª rota testada; (2) a asserção original
+("gap até a sidebar" via bounding-box, threshold `8px`) não provava o fix de padding — ancestrais
+(`app-panel`, chrome do Material) já geram 40-64px de gap sozinhos, confirmado revertendo o
+`:host` padding e vendo o teste continuar verde. Trocado por leitura direta de
+`getComputedStyle(host).paddingLeft`, validada por mutação (reverter falha, restaurar passa).
+Ver `docs/DESIGN-SYSTEM.md` seção "Layout em painéis" para os 2 gotchas documentados.
 
 ## `feat-028` fechada — grade mensal de drawdown no dashboard (2026-09-15, mesmo dia)
 

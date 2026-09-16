@@ -19,9 +19,8 @@ import { buildDailyTable, computeSummary } from './period-report-metrics';
 interface PeriodReportData {
   readonly overall: BetMetrics;
   readonly daily: DailyBetMetrics[];
-  /** GET /api/v1/bankroll/balance?at=<from|to> (bets-service epic-013) - only 2 calls, unlike
-   *  the dashboard's 3 (epic-015): this page has no separate "saldoAtual agora" fetch, saldoFinal
-   *  plays that role in every formula here (see period-report-metrics.ts and feat-015's plan_review). */
+  /** This page has no separate "saldoAtual agora" fetch - saldoFinal plays that role in every
+   *  formula here (see period-report-metrics.ts). */
   readonly saldoInicial: number;
   readonly saldoFinal: number;
   readonly unitPercent: number;
@@ -36,10 +35,9 @@ const EMPTY_DATA: PeriodReportData = {
 };
 
 /**
- * "Relatório do período" (epic-017) - closed-form view of performance within a period, always
- * with a mandatory date filter (reuses shared/period-preset-filter from feat-014, which always
- * has a value - defaults to "Hoje" - so this page never has a "no filter" state by construction).
- * Distinct from the consolidated dashboard (epic-006/015) and "Buscar Estatísticas" (epic-012).
+ * "Relatório do período" - closed-form view of performance within a period, always with a
+ * mandatory date filter (reuses shared/period-preset-filter, which always has a value - defaults
+ * to "Hoje" - so this page never has a "no filter" state by construction).
  */
 @Component({
   imports: [KpiCard, Panel, PanelLayout, PeriodPresetFilter, TranslocoPipe],

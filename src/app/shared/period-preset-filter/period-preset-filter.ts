@@ -40,7 +40,7 @@ function endOfMonth(date: Date, monthOffset: number): Date {
  * inject a fixed reference date instead of depending on the real clock (see period-preset-filter.spec.ts).
  * "Ultima semana"/"Ultimos 15 dias" are rolling windows ending today (7/15 days inclusive);
  * "Ultimo mes" is the previous full calendar month; "Este mes" is day 1 of the current month
- * through today - decisions made in feat-014's plan review, not specified further in docs/STATISTICS.md.
+ * through today.
  */
 export function resolvePreset(preset: Exclude<PeriodPreset, 'custom'>, today: Date): PeriodRange {
   switch (preset) {
@@ -58,11 +58,9 @@ export function resolvePreset(preset: Exclude<PeriodPreset, 'custom'>, today: Da
 }
 
 /**
- * Reusable period filter (presets + custom range) - extracted for feat-014 (dashboard) because
- * epic-017 ("Relatorio do periodo") reuses the exact same presets/date-range shape (see
- * docs/services/web.md). Presets resolve client-side to yyyy-MM-dd (StatisticsApi's existing
- * from/to contract, no new query param). Defaults to "Hoje" and emits once on construction so
- * the parent doesn't need to duplicate default-preset logic.
+ * Reusable period filter (presets + custom range). Presets resolve client-side to yyyy-MM-dd
+ * (StatisticsApi's existing from/to contract, no new query param). Defaults to "Hoje" and emits
+ * once on construction so the parent doesn't need to duplicate default-preset logic.
  */
 @Component({
   imports: [FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, TranslocoPipe],

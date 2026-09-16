@@ -11,9 +11,7 @@ export interface BetMetrics {
   readonly roi: number;
   readonly winRate: number;
   readonly settledCount: number;
-  /** wonCount/lostCount/voidCount/preCount/liveCount/avgOdd - stats-service epic-014, only
-   *  consumed here from feat-014 (web) onward. avgOdd is null when no settled bet has an odd
-   *  yet. */
+  /** avgOdd is null when no settled bet has an odd yet. */
   readonly wonCount: number;
   readonly lostCount: number;
   readonly voidCount: number;
@@ -22,9 +20,7 @@ export interface BetMetrics {
   readonly avgOdd: number | null;
 }
 
-/** Shared zero-value default, used by any page/signal whose data hasn't loaded yet
- *  (dashboard.ts, pages/period-report) - kept in one place so a future BetMetrics field
- *  addition doesn't need updating in more than one component. */
+/** Shared zero-value default, used by any page/signal whose data hasn't loaded yet. */
 export const EMPTY_BET_METRICS: BetMetrics = {
   totalStaked: 0,
   netProfit: 0,
@@ -56,19 +52,15 @@ export interface StatisticsDashboard {
   readonly bySport: SegmentedBetMetrics[];
   readonly byMarket: SegmentedBetMetrics[];
   readonly byBettingHouse: SegmentedBetMetrics[];
-  /** stats-service epic-018, only consumed here from feat-016 (web "menu por cadastro") onward -
-   *  same shape as the other segments above. */
   readonly byLeague: SegmentedBetMetrics[];
   readonly byTipster: SegmentedBetMetrics[];
-  /** stats-service epic-014, feat-026 (web) - fixed 2-item segment (dimensionId PRE/LIVE only,
-   *  never a 3rd bucket): same shape as the other segments above, apostas sem betType nao
-   *  entram em nenhum dos 2 (docs/API-CONTRACTS.md). */
+  /** Fixed 2-item segment (dimensionId PRE/LIVE only, never a 3rd bucket) - apostas sem betType
+   *  não entram em nenhum dos 2 (docs/API-CONTRACTS.md). */
   readonly byBetType: SegmentedBetMetrics[];
   readonly monthly: MonthlyBetMetrics[];
 }
 
-/** Shared zero-value default (see EMPTY_BET_METRICS) - dashboard.ts and shared/catalog-dashboard
- *  both need an initial value before the first GET /api/v1/statistics response arrives. */
+/** Shared zero-value default, used before the first GET /api/v1/statistics response arrives. */
 export const EMPTY_STATISTICS_DASHBOARD: StatisticsDashboard = {
   overall: EMPTY_BET_METRICS,
   bySport: [],
@@ -90,8 +82,8 @@ export interface StatisticsFilter {
   readonly to?: string;
 }
 
-/** GET /api/v1/statistics/daily (stats-service epic-016) - sparse array, only days with at
- *  least 1 settled bet; the caller fills the missing days with zero (see pages/period-report). */
+/** GET /api/v1/statistics/daily - sparse array, only days with at least 1 settled bet; the
+ *  caller fills the missing days with zero. */
 export interface DailyBetMetrics {
   readonly date: string;
   readonly totalStaked: number;
@@ -116,8 +108,7 @@ export class StatisticsApi {
     });
   }
 
-  /** feat-015 (web "Relatório do período") - real endpoint existed in stats-service since
-   *  epic-016, never consumed by the frontend until now. Same 7 optional filters as get(). */
+  /** Same 7 optional filters as get(). */
   getDaily(filter: StatisticsFilter): Observable<DailyBetMetrics[]> {
     return this.http.get<DailyBetMetrics[]>(`${environment.apiGatewayUrl}/api/v1/statistics/daily`, {
       params: toHttpParams(filter),

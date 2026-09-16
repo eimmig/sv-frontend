@@ -1,13 +1,11 @@
 import { Component, DestroyRef, ElementRef, computed, inject, signal } from '@angular/core';
 
 /**
- * Decorative focal-moment animation for the login card (feat-018.3, user request; reworked
- * 2026-09-12 per user feedback): a single closed path traces the card's full rounded-rect
- * outline, with a stroke-dasharray of 2 dashes + 2 gaps sized so each dash/gap pair spans
- * exactly half the perimeter - that makes the two dashes always sit opposite each other (roughly
- * diagonal corners on a non-square card), never drifting closer or farther apart. Animating
- * stroke-dashoffset continuously (not a draw/hold/retract loop) spins both dashes around the
- * whole card forever, one chasing the other with a fixed gap between them.
+ * Decorative focal-moment animation for the login card: a single closed path traces the card's
+ * full rounded-rect outline, with a stroke-dasharray of 2 dashes + 2 gaps sized so each dash/gap
+ * pair spans exactly half the perimeter - that makes the two dashes always sit opposite each
+ * other, never drifting closer or farther apart. Animating stroke-dashoffset continuously spins
+ * both dashes around the whole card forever, one chasing the other with a fixed gap between them.
  */
 @Component({
   selector: 'app-login-border-trace',

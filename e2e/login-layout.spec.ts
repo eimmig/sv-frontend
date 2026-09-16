@@ -5,9 +5,6 @@ test.describe('feat-023 - login floating controls do not overlap the form', () =
     await page.emulateMedia({ reducedMotion: 'reduce' });
   });
 
-  // Real bug (feat-023.1): on a short viewport, the login card's rendered height could exceed
-  // the visible area, and the fixed-position language/theme controls (bottom-left corner, see
-  // app.scss) ended up on top of the form's own fields/button instead of below them.
   test('language selector and theme toggle never overlap the login card, even on a short viewport', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 400 });
     await page.goto('/login');
@@ -22,8 +19,6 @@ test.describe('feat-023 - login floating controls do not overlap the form', () =
     const [selectorBox, themeBox] = await Promise.all([languageSelector.boundingBox(), themeToggle.boundingBox()]);
     expect(selectorBox).not.toBeNull();
     expect(themeBox).not.toBeNull();
-    // The 2 floating controls must not overlap each other (flex `gap` between them, feat-018 -
-    // this just proves it stays that way, not a bug this feature is fixing).
     expect(selectorBox!.x + selectorBox!.width).toBeLessThanOrEqual(themeBox!.x);
 
     // The page must be scrollable to the submit button - it must never be permanently hidden

@@ -126,9 +126,9 @@ describe('Dashboard', () => {
    * The period-preset-filter defaults to "Hoje" (from === to), so the bankrollFrom/bankrollTo
    * requests share the same 'at' param and can't be told apart by expectOne - match() returns
    * both and each is flushed the same way. bankrollNow (no 'at') and settings each now have 2
-   * pending requests too (Dashboard's own + app-monthly-drawdown-grid's, feat-028 - the grid is
-   * always instantiated on creation, mat-tab doesn't lazy-load its content), so those also use
-   * match() instead of expectOne.
+   * pending requests too (Dashboard's own + app-monthly-drawdown-grid's - the grid is always
+   * instantiated on creation, mat-tab doesn't lazy-load its content), so those also use match()
+   * instead of expectOne.
    */
   function flushDashboardData(overrides: Record<string, unknown> = {}) {
     httpMock.expectOne((req) => req.url === STATISTICS_URL).flush({

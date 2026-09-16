@@ -1601,9 +1601,9 @@
         "feat-016",
         "feat-019"
       ],
-      "status": "not-started",
+      "status": "done",
       "plan_review": "Plan Reviewer 2026-09-15: READY. Evidencia: shared/catalog-manager (catalog-manager.html/scss) e de fato o UNICO componente reusado pelos 5 cadastros (confirma a premissa de feat-024.3, sem risco de duplicacao) - .catalog-manager__form usa display:flex/align-items:flex-start/gap:12px com o mat-form-field em flex:1 e o botao Adicionar como irmao direto na mesma linha, confirmando literalmente o bug descrito (botao espremido ao lado do campo Nome em telas estreitas). :host tem padding:16px 0 (sem padding lateral) - o respiro em relacao a sidebar depende do layout do container pai (app-panel-layout), a investigar na subtask 024.1. Nenhum achado bloqueante; ajustar layout dentro deste unico componente compartilhado resolve as 5 telas de uma vez, como o plano ja assume.",
-      "jira": "",
+      "jira": "SV-470",
       "subtasks": [
         {
           "id": "feat-024.1",
@@ -1616,8 +1616,8 @@
           ],
           "validation": "QA visual confirma o respiro entre menu e cards em desktop e mobile.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-471"
         },
         {
           "id": "feat-024.2",
@@ -1630,8 +1630,8 @@
           ],
           "validation": "Testes de componente e QA visual confirmam a composicao em desktop, tablet e mobile.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-472"
         },
         {
           "id": "feat-024.3",
@@ -1644,8 +1644,8 @@
           ],
           "validation": "Playwright ou testes de rota cobrem os cinco cadastros e confirmam o layout comum.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-473"
         },
         {
           "id": "feat-024.4",
@@ -1659,11 +1659,11 @@
           ],
           "validation": "Suite do frontend verde e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "done",
+          "jira": "SV-474"
         }
       ],
-      "evidence": ""
+      "evidence": "QA visual (Playwright + screenshots manuais via ng serve) confirmada nos 6 cadastros/telas de formulario (sports/leagues/markets/tipsters/betting-houses/teams), em mobile 375px e desktop 1440px, temas claro/escuro e sidebar expandida/colapsada: campo Nome mantem largura plena, botao em linha propria, :host com padding lateral em todos os casos. Suite completa: unit 221/221 (vitest, 90.76% stmt/90.98% branch, acima do gate 80%), e2e 70/70 (Playwright). CHANGELOG.md atualizado. Vault: docs/DESIGN-SYSTEM.md, secao 'Layout em paineis', documenta os 2 gotchas reaproveitaveis (form campo+botao em coluna, nao linha; :host padding testado via getComputedStyle, nao bounding-box). Delivery Reviewer (CONCERNS, corrigido nesta branch antes do gate pesado): achou que shared/team-manager (/teams) recebeu o mesmo fix de padding do feat-024.1 mas ficou sem cobertura Playwright e sem mencao no CHANGELOG - corrigido (commit 9aa031e): /teams adicionado a registration-layout.spec.ts (agora 6 rotas), CHANGELOG.md atualizado, teste duplicado em catalogs.spec.ts removido (era subset do de /sports em registration-layout.spec.ts). Test Suite Auditor (CONCERNS, corrigido nesta branch): achou que a asercao de 'gap ate a sidebar' (bounding-box, threshold 8px) nao provava o fix de padding do feat-024.1 - ancestrais (app-panel, chrome do Material) ja geram 40-64px de gap independente do :host padding do componente, confirmado revertendo o padding e vendo o teste continuar verde. Corrigido (commit 012f49e): asercao trocada para leitura direta de getComputedStyle(host).paddingLeft, validada via mutacao (reverter padding faz o teste falhar; restaurar faz passar). Suite re-executada apos as duas correcoes: unit 221/221, e2e 70/70, ambas inalteradas em contagem. ./init.sh do app e da raiz verdes (raiz com falhas informativas pre-existentes e nao relacionadas nos servicos Java/Python, dependentes de Docker/Testcontainers indisponivel nesta sessao)."
     },
     {
       "id": "feat-025",

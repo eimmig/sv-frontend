@@ -3,13 +3,6 @@
 // components according to the Material 3 design spec.
 // Learn more about theming and how to use it for your application's
 // custom components at https://material.angular.dev/guide/theming
-//
-// StakeVault: primary = --color-action-neutral (blue), tertiary = --color-brand (green) -
-// never the other way around (docs/DESIGN-SYSTEM.md "Regra semantica de cor"). Real M3 tonal
-// palettes generated from the exact brand hex via
-// `ng generate @angular/material:m3-theme --primary-color "#3E8CC4" --tertiary-color "#3EC46D"`
-// (src/theme-colors.scss) - not one of Material's built-in named palettes (azure/violet/etc.),
-// which would drift from the StakeVault palette.
 @use '@angular/material' as mat;
 @use './theme-colors' as stakevault;
 @use './styles/tokens' as tokens;
@@ -33,14 +26,6 @@ html {
   );
 }
 
-// A single light-only mat.theme() call bakes every Material component token (select panel
-// background, menu/dialog surfaces, etc.) as light-mode values - our app-owned --color-*
-// tokens below only override the 4 generic --mat-sys-* aliases, not the hundreds of
-// component-specific --mat-*/--mdc-* tokens Material actually reads from (e.g. a mat-select's
-// dropdown panel), so those stayed light even in dark mode (real bug: white panel, near-white
-// text - feat-011.1). Regenerating the M3 tokens with theme-type: dark under the same selectors
-// as tokens.dark-tokens (official Angular Material pattern for scoped/multiple themes) fixes
-// every Material overlay app-wide, not just this one component.
 :root[data-theme='dark'] {
   @include mat.theme(
     (
@@ -89,15 +74,10 @@ body {
   color: var(--color-text-primary);
   font: var(--mat-sys-body-medium);
 
-  // Reset the user agent margin.
   margin: 0;
   height: 100%;
 }
 
-// Tonal result badge (docs/DESIGN-SYSTEM.md item 16, "Badge de resultado de aposta") - fundo
-// tonal + texto na mesma cor, nunca fundo solido + texto branco. Global utility since several
-// screens show a won/lost/pending or gain/loss signal (history status, betting house balance
-// delta, dashboard breakdown - feat-011.2/.3).
 .badge {
   display: inline-flex;
   align-items: center;
@@ -123,10 +103,6 @@ body {
   color: var(--color-text-secondary);
 }
 
-// withViewTransitions() (feat-018.3, app.config.ts) drives a native browser View Transition on
-// every route change. prefers-reduced-motion zeroes it here instead of disabling the router
-// feature - same convention as the splash and the sidebar collapse transition (both jump to the
-// final frame directly rather than pausing an animation mid-flight).
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*),
   ::view-transition-old(*),
@@ -135,26 +111,11 @@ body {
   }
 }
 
-// Real bug found in feat-018 (sidebar nav narrowed the 3-column grid on register-bet, which
-// moved a mat-select's horizontal center under decorative label content Material keeps in the
-// DOM at that position): the actual visually-floated label (`label.mdc-floating-label`, moved
-// up via `transform`, not layout) keeps `pointer-events: all` in this Material version instead
-// of the `none` the MDC spec normally gives it, and the raw projected `<mat-label>` plus the
-// notched-outline's own label mirror (`.mdc-notched-outline`, sizes the outline's notch gap)
-// have the same problem. All three geometrically overlap the field regardless of layout width -
-// only surfacing when a field is narrow enough for a click's center point to land on one of
-// them instead of past it. Latent bug, not new: a real user clicking that same pixel range
-// would already have failed to open the dropdown before this feature narrowed the field enough
-// to make it likely. mat-select forwards label clicks itself via aria-owns, not a native
-// <label for>, so none of the three has a legitimate interactive role.
 mat-label,
 .mdc-notched-outline {
   pointer-events: none;
 }
 
-// Needs !important: Angular Material's own compiled component styles set a competing
-// pointer-events declaration on .mdc-floating-label at equal specificity, injected into the
-// document after this global stylesheet - a plain override here loses that cascade tie.
 .mdc-floating-label {
   pointer-events: none !important;
 }

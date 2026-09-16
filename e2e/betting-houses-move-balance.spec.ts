@@ -18,11 +18,6 @@ function emptyPage() {
     });
 }
 
-// feat-025.1/.2: the deposit/withdrawal form already lived in History, not reachable from
-// Betting Houses (where the per-house balance is shown) - and betting-houses.ts recreates on
-// every navigation to that route (Angular's default, no custom route reuse strategy), so the
-// balance should already resync without any new state-sharing code. This proves both in one
-// real navigation cycle instead of assuming either from reading the source.
 test.describe('feat-025 - betting houses balance movement bridge', () => {
   test.beforeEach(async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });

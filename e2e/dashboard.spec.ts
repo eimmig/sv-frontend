@@ -59,9 +59,6 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
     await page.route('**/api/v1/leagues*', catalogRoute([{ id: 'lg-1', name: 'Brasileirão' }]));
     await page.route('**/api/v1/markets*', catalogRoute([{ id: 'mk-1', name: 'Handicap' }]));
     await page.route('**/api/v1/tipsters*', catalogRoute([{ id: 'tp-1', name: 'Ana' }]));
-    // feat-014: applyFilter()'s forkJoin now also calls bankroll balance (x3: at=from, at=to,
-    // and no at for "now") and settings - unmocked, these would hang the suite waiting on a
-    // real network call (no backend runs under Playwright).
     await page.route('**/api/v1/bankroll/balance*', (route) => {
       const url = new URL(route.request().url());
       const at = url.searchParams.get('at') ?? 'now';
@@ -74,9 +71,6 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
       }
       return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ unitPercent: 0.01 }) });
     });
-    // feat-028: app-monthly-drawdown-grid is always instantiated on dashboard load (mat-tab
-    // doesn't lazy-render), so its own daily-statistics call needs a route too - unmocked, this
-    // would hang every test in this file the same way bankroll/settings did for feat-014.
     await page.route('**/api/v1/statistics/daily*', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) }),
     );
@@ -139,8 +133,6 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
     await expect(page.getByTestId('dashboard-by-market-row')).toContainText('Handicap');
   });
 
-  // feat-014: changing the period preset auto-applies (unlike the 5 catalog selects, which
-  // still require the "Aplicar filtro" button) - reloads the bundle with a different from/to.
   test('changing the period preset issues a new statistics request with a different date range', async ({ page }) => {
     const seenRanges: { from: string | null; to: string | null }[] = [];
     await page.route('**/api/v1/statistics*', (route) => {

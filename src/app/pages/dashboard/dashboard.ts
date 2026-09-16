@@ -101,8 +101,7 @@ export class Dashboard implements OnInit {
   protected readonly dashboardData = signal<DashboardData>(EMPTY_DASHBOARD_DATA);
   protected readonly dashboardError = signal<string | null>(null);
 
-  /** null (rendered as "Indeterminado") when saldoAtual or unitPercent is 0 - not defined by
-   *  docs/STATISTICS.md, decision from feat-014's plan review (no exception thrown/divide-by-zero). */
+  /** null (rendered as "Indeterminado") when saldoAtual or unitPercent is 0. */
   protected readonly unidadesApostadas = computed(() => {
     const data = this.dashboardData();
     const denominator = data.bankrollNow * data.unitPercent;

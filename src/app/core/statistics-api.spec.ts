@@ -37,9 +37,6 @@ describe('StatisticsApi', () => {
     request.flush({ overall: { totalStaked: 0, netProfit: 0, roi: 0, winRate: 0, settledCount: 0 }, bySport: [], byMarket: [], byBettingHouse: [], monthly: [] });
   });
 
-  // feat-014: wonCount/lostCount/voidCount/preCount/liveCount/avgOdd (stats-service epic-014)
-  // flow through the response unchanged - the extended BetMetrics fields are consumed by the
-  // dashboard's new cards (feat-014.3), not transformed here.
   it('passes through the extended BetMetrics fields (wonCount/lostCount/voidCount/preCount/liveCount/avgOdd)', () => {
     let result: unknown;
     api.get({}).subscribe((dashboard) => (result = dashboard.overall));
@@ -80,8 +77,6 @@ describe('StatisticsApi', () => {
     });
   });
 
-  // feat-026 (web): byBetType is a fixed 2-item segment (PRE/LIVE), same shape as the other
-  // segments - passed through unchanged, same rationale as the test above.
   it('passes through the byBetType segment (PRE/LIVE buckets)', () => {
     let result: unknown;
     api.get({}).subscribe((dashboard) => (result = dashboard.byBetType));
@@ -103,8 +98,6 @@ describe('StatisticsApi', () => {
     expect(result).toEqual(byBetType);
   });
 
-  // feat-015 ("Relatório do período"): real endpoint since stats-service epic-016, never
-  // consumed by the frontend until now.
   it('getDaily() GETs /api/v1/statistics/daily with the same filter params as get()', () => {
     let result: unknown;
     api.getDaily({ from: '2026-01-01', to: '2026-01-31' }).subscribe((daily) => (result = daily));
