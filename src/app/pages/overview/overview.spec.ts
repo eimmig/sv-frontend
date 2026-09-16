@@ -86,6 +86,7 @@ describe('Overview', () => {
   afterEach(() => {
     httpMock.verify({ ignoreCancelled: true });
     vi.useRealTimers();
+    delete (navigator as { language?: string }).language;
   });
 
   it('fetches saldoInicioHistorico once, at the earliest settled-bet date', () => {

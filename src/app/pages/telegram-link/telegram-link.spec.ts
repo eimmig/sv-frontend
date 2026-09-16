@@ -46,7 +46,10 @@ describe('TelegramLinkPage', () => {
     }).compileComponents();
   });
 
-  afterEach(() => httpMock.verify());
+  afterEach(() => {
+    httpMock.verify();
+    delete (navigator as { language?: string }).language;
+  });
 
   it('does not call the API until the user clicks generate', () => {
     createComponent();
