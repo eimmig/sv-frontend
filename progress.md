@@ -3,8 +3,46 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-16
-**Estado:** `feat-001` a `feat-021`, `feat-023`, `feat-024`, `feat-025`, `feat-028` e `feat-030`
-`done` (`feat-022` REVISE, `026`, `027`, `029` seguem `not-started`).
+**Estado:** `feat-001` a `feat-030` `done` — backlog deste app esgotado. Nota: a linha anterior
+deste arquivo listava `feat-026`/`027`/`029` como `not-started`, desatualizada em relação ao
+`feature_list.json` (já `done` há mais tempo) — corrigido aqui.
+
+## `feat-022` fechada — date picker e formato localizado para campos de data (2026-09-16)
+
+Fecha `epic-024` da raiz por completo (era o último item pendente daquele epic). 5 subtasks
+(story SV-480, subtasks SV-481..485, PRs #129-133 subtask→feature + #134 feature→develop):
+
+- **`feat-022.1`**: inventário confirmado por `grep` — `period-preset-filter` (compartilhado por
+  dashboard/period-report/catalog-dashboard), `history` (2 pares from/to), `search-statistics`
+  (1 par), `register-bet` (`betDate` único, `datetime-local`).
+- **`feat-022.2`**: `provideNativeDateAdapter()` (sem dependência nova — sem `moment`/`date-fns`/
+  `luxon`, mesma filosofia `Intl` de `core/date-format.ts`) + rebind reativo de locale —
+  `MAT_DATE_LOCALE` sozinho é um DI token estático, então `App` (`app.ts`) registra
+  `effect(() => dateAdapter.setLocale(language.current()))` no construtor, reaproveitando o
+  signal `Language.current` já existente (já dirige `TranslocoService` em todo o app) em vez de
+  escutar `transloco.langChanges$` direto.
+- **`feat-022.3`**: os 3 filtros trocam `input type="date"` por `mat-datepicker` — valor interno
+  passa de `string` pra `Date`, conversão pro contrato `yyyy-MM-dd` move pro limite (reaproveita
+  `toDateOnly()` já existente), sem mudança de query param.
+- **`feat-022.4`** (achado real do Plan Reviewer, corrigido antes de codificar): a ideia inicial
+  de compartilhar 1 `FormControl` entre `mat-datepicker` e `mat-timepicker` foi **rejeitada**
+  depois de ler o código-fonte real do Material instalado (não só os `.d.ts`) — o merge de
+  data/hora é **assimétrico por design**: `MatTimepickerInput` preserva a data ao trocar a hora,
+  mas `MatDatepickerInputBase` não preserva a hora ao trocar a data (`NativeDateAdapter` zera pra
+  meia-noite). Corrigido: `betDate` vira 2 `FormControl` independentes (`betDateOnly`/
+  `betTimeOnly`, nunca compartilham valor), combinados via `setHours`/`setMinutes` só no submit —
+  mesmo princípio de conversão no limite já usado nos filtros.
+- **`feat-022.5`**: testes Playwright reais dos 2 widgets (clique no calendário, hora digitada em
+  formato 24h), QA visual manual (3 locales × 2 temas × 2 viewports — confirmado `dd/mm/yyyy`
+  pt-BR, `d/m/yyyy` es, `m/d/yyyy` en-US, sem problema de layout mobile), 2 achados reais
+  documentados no vault (`docs/TESTING.md`: `getByRole('gridcell', {name: 'N'})` nunca localiza
+  um dia do calendário, o nome acessível vem do `aria-label` do botão interno, não do número
+  visível; `docs/services/web.md`: o gotcha do merge assimétrico, pra reaproveitar se outro campo
+  data+hora aparecer).
+
+`Delivery Reviewer`/`Test Suite Auditor` rodados contra o diff completo (22 arquivos): `PASS`,
+sem achado bloqueante. `./init.sh` verde (cobertura ~91% mantida) nas 5 subtasks. 1 flake do
+Playwright confirmado não-recorrente via `--retries=1` (teste pré-existente não relacionado).
 
 ## `feat-024` fechada — espacamento e formulario das telas de cadastro (2026-09-16)
 
