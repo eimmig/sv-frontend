@@ -3,10 +3,18 @@
 }
 
 .language-selector-host {
-  display: block;
+  // Real bug (feat-023.1): `display: block` here, wrapping a `width: 100%` flex child
+  // (`.language-selector`), let this box's shrink-to-fit measurement (used when an ancestor -
+  // here, the login page's floating-controls row - gives it no definite width) under-count the
+  // pill's real rendered width. Block-level shrink-to-fit has no spec-guaranteed handling for a
+  // percentage-width child; flex's shrink-to-fit does (a flex item's percentage main size is
+  // treated as `auto` for the container's own intrinsic sizing, CSS Flexbox §9.9) - `display:
+  // flex` here (matching its single child's own layout mode) measures correctly, verified
+  // against the real dev server. app-side-nav's sidebar footer was never affected (it already
+  // gives this component a definite width), so it never surfaced there.
+  display: flex;
 
   &--collapsed {
-    display: flex;
     justify-content: center;
   }
 }
