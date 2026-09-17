@@ -5,6 +5,16 @@
   display: contents;
 }
 
+// mat-form-field defaults to display:inline-block (Material's own base theme) - a caller's
+// `mat-form-field { display: block }` rule (e.g. register-bet.scss) can never reach this
+// element: Angular's emulated ViewEncapsulation tags it with THIS component's content
+// attribute, not the caller's, so a caller-scoped selector never matches it regardless of DOM
+// position. This is the only stylesheet that can actually reach the real element.
+mat-form-field {
+  display: block;
+  width: 100%;
+}
+
 .searchable-select__error {
   margin: 0;
   color: var(--color-negative);

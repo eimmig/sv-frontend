@@ -11,7 +11,21 @@
 
   mat-form-field {
     flex: 1 1 140px;
+    // flex-basis alone isn't a floor - flex-shrink:1 (default) still lets the item shrink
+    // below it in a narrow container (min-width defaults to `auto`, i.e. content-size).
+    min-width: 140px;
     max-width: 200px;
+  }
+
+  // input[type="month"] computes line-height:16px (its own UA default), not the 24px a normal
+  // matInput text field gets from Material's own `.mat-mdc-input-element{line-height:1.5}` rule
+  // - measured via getComputedStyle, confirmed against a plain matInput on the same page
+  // (register-bet ticket-number: 24px). That 8px shortfall is exactly why the outline's
+  // floating label doesn't clear the value: Material sizes the notch/label position assuming
+  // 24px of content line-height, but only 16px is really there.
+  input[type='month'] {
+    height: 24px;
+    line-height: 24px;
   }
 
   button {
