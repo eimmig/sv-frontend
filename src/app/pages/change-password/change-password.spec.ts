@@ -71,6 +71,7 @@ describe('ChangePassword', () => {
 
   it('does not call the API until the user submits', () => {
     createComponent();
+    expect(fixture.componentInstance['success']()).toBe(false);
     httpMock.expectNone(`${environment.apiGatewayUrl}/api/v1/auth/change-password`);
   });
 

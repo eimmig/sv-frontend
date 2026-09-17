@@ -83,7 +83,7 @@ export class Auth {
    */
   clearMustChangePassword(): void {
     const current = this.session();
-    if (!current || !current.mustChangePassword) {
+    if (!current?.mustChangePassword) {
       return;
     }
     const updated: Session = { ...current, mustChangePassword: false };
