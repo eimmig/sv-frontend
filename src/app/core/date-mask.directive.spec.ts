@@ -72,37 +72,22 @@ describe('DateMaskDirective', () => {
     expect(input.placeholder).toBe('mm/dd/aaaa');
   });
 
-  it('inserts "/" in month/day/year order regardless of the active locale - Date.parse() (NativeDateAdapter.parse) is locale-independent and always reads M/D/Y for a slash-separated string, confirmed against a real browser', async () => {
-    localStorage.setItem('stakevault.language', 'pt-BR');
-    await createComponent('pt-BR');
-
-    typeDigits('09172026');
-
-    expect(input.value).toBe('09/17/2026');
-  });
-
-  it('formats the same way under en-US too - the mask order never varies by locale', async () => {
-    localStorage.setItem('stakevault.language', 'en-US');
-    await createComponent('en-US');
-
-    typeDigits('09172026');
-
-    expect(input.value).toBe('09/17/2026');
-  });
-
   // The Date ultimately bound through MatDatepickerInput's own parsing (not this directive's
-  // formatting, already proven above) is verified against a real browser in
+  // formatting, already proven below) is verified against a real browser in
   // e2e/period-report.spec.ts, not here - a minimal JSDOM harness for input+matDatepicker+ngModel
   // never resolves a Date even for a complete, correctly-formatted value set directly (bypassing
   // this directive entirely). That real-browser test is also what caught the M/D/Y-only
   // requirement in the first place (an earlier locale-ordered design silently swapped day/month).
+  it.each([
+    { locale: 'pt-BR' as const, typed: '09172026', expected: '09/17/2026', label: 'month/day/year order regardless of locale' },
+    { locale: 'en-US' as const, typed: '09172026', expected: '09/17/2026', label: 'the same order under en-US - never varies by locale' },
+    { locale: 'pt-BR' as const, typed: '09172026999', expected: '09/17/2026', label: 'ignoring non-digit characters and capping at 8 digits' },
+  ])('inserts "/" in $label', async ({ locale, typed, expected }) => {
+    localStorage.setItem('stakevault.language', locale);
+    await createComponent(locale);
 
-  it('ignores non-digit characters and caps at 8 digits', async () => {
-    localStorage.setItem('stakevault.language', 'pt-BR');
-    await createComponent('pt-BR');
+    typeDigits(typed);
 
-    typeDigits('09172026999');
-
-    expect(input.value).toBe('09/17/2026');
+    expect(input.value).toBe(expected);
   });
 });
