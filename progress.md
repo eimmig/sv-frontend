@@ -2,8 +2,65 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-09-16
-**Estado:** `feat-001` a `feat-033` `done` — backlog deste app esgotado.
+**Última atualização:** 2026-09-17
+**Estado:** `feat-001` a `feat-033` `done` — backlog deste app esgotado. (Correção: a entrada
+anterior já afirmava isso em 2026-09-16, mas `feat-031` ainda estava `not-started` naquele
+momento — fechada agora, nesta sessão, ver seção abaixo.)
+
+## `feat-031` fechada — selects de filtro pesquisáveis (autocomplete digitável) (2026-09-17)
+
+Achado do usuário a partir do painel "Filtros" de `search-statistics` (feat-012) — campos de
+catálogo `mat-select` (esporte/liga/time/casa de apostas/mercado/tipster) inviáveis de rolar
+manualmente conforme o catálogo do tenant cresce. Story SV-505, subtasks SV-506..509, PRs
+#143-147 (4 subtask→feature + feature→develop, todos CI+SonarCloud verdes).
+
+`shared/searchable-select` novo: `ControlValueAccessor` sobre `mat-autocomplete`, mesma API de
+`formControlName` que o `mat-select` anterior — filtro case+acento-insensível
+(`normalizeForSearch`), opção sentinela (`allOptionLabel`), `disabled` state, mensagem de erro
+própria (`role="alert"`+`aria-describedby`, não `mat-error` — ver achado abaixo). Substituiu
+`mat-select` em ~20 campos de 5 telas (`register-bet`, `team-manager`, `search-statistics`,
+`dashboard`, `history`); `catalog-manager`/`period-preset-filter` confirmados sem mudança
+(nenhum tem select de catálogo).
+
+**Zero e2e por página precisou de edição**: todo teste já interagia via
+`getByTestId(...).click()` + `getByRole('option', {name}).click()`, e `mat-autocomplete` também
+renderiza `mat-option` com `role="option"` — só o alvo do `testId` mudou (do `<mat-select>` pro
+`<input>` interno). Única exceção real, achada rodando a suíte inteira (não só os arquivos
+tocados): `betting-houses-move-balance.spec.ts` usava `toContainText` pro valor pré-selecionado
+— `toContainText` só lê `textContent`, sempre vazio num `<input>` (diferente do `mat-select`, que
+renderiza o nome escolhido como texto de verdade); corrigido pra `toHaveValue`.
+
+**4 gotchas reais documentados em `docs/TESTING.md`/`docs/services/web.md`** (repositório raiz):
+(1) `mat-error` nunca ativa sem um `ngControl` real (`MatInput#ngDoCheck` só chama
+`updateErrorState()` quando ele existe) — tentativas de forçar via `ErrorStateMatcher` custom +
+`viewChild(MatInput)`/`effect()`, e depois via `Renderer2` direto, não venceram de forma
+confiável o próprio host binding do `MatInput`; resolvido com um `<p role="alert">` fora do
+`mat-form-field`, que anuncia a mensagem proativamente (região *live*), cobertura de
+acessibilidade equivalente sem depender do mecanismo do Material. (2) `:host { display: contents
+}` necessário no componente — sem isso, `<app-searchable-select>` (sem estilo próprio) vira o
+item real do flex/grid da linha de filtros no lugar do `mat-form-field` interno. (3)
+`toContainText` vs `toHaveValue` (acima). (4) duplo de teste (host component) com propriedade
+mutável simples, não `signal()`, não repropaga pra um `input()` do filho num segundo
+`detectChanges()` sob CD zoneless — página real nunca teria esse bug (todo estado assíncrono do
+app já usa `signal()`), mas um duplo descuidado mascara a reatividade real do componente sob
+teste.
+
+Plan Reviewer (READY WITH CONCERNS, 2 MAJOR corrigidos no plano antes de codificar): convenção
+`id`+`aria-label` (docs/CONVENTIONS.md) nunca exercitada por `mat-select`, ia disparar
+`Web:InputWithoutLabelCheck` do SonarCloud pela primeira vez nas ~20 instâncias — corrigido
+gerando `id` a partir do próprio `testId`; separação entre texto digitado (livre) e id commitado
+(só muda via seleção real), com reversão no blur sem seleção. Delivery Reviewer (CONCERNS →
+corrigido): achado de `aria-invalid` não setável sem reimplementar `MatFormFieldControl`
+completo — aceito com `role=alert`+`aria-describedby` como cobertura equivalente, documentado
+acima. Test Suite Auditor (CONCERNS → corrigido): faltava e2e provando a combinação
+disabled+sentinela+cascata (`register-bet` `team1Id`/`team2Id`, desabilitados até escolher
+esporte) — adicionado.
+
+`./init.sh` verde (242 testes, 91%+ cobertura). Suíte e2e completa verde (77 testes), rodada 2x
+incluindo `--workers=1` pra descartar interleaving de console entre workers paralelos — um erro
+de console transitório (`optionsWithSentinel` recebendo `options()` momentaneamente não-array,
+timing de teardown do Playwright) foi endurecido com um `?? []` defensivo; mesma classe de erro
+já pré-existente, sem relação com esta feature, em `dashboard.ts#unidadesApostadas`.
 
 ## `feat-033` fechada — autofill, time filtrado por esporte, menu de recursos (2026-09-16)
 
