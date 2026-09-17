@@ -48,6 +48,24 @@ describe('LanguageSelector', () => {
     expect(el.querySelector('[data-testid="language-selector-collapsed"]')).toBeNull();
   });
 
+  // Regression: a mat-icon rendering "language" as a ligature needs the Material Symbols
+  // fontSet - without it the browser falls back to a generic font and shows raw clipped text
+  // instead of the glyph (feat-036, real bug found in production).
+  it('uses the Material Symbols Outlined fontSet for the globe icon in both trigger variants', () => {
+    const expanded = TestBed.createComponent(LanguageSelector);
+    expanded.detectChanges();
+    expect(expanded.nativeElement.querySelector('.language-selector mat-icon')?.getAttribute('fontSet')).toBe(
+      'material-symbols-outlined',
+    );
+
+    const collapsed = TestBed.createComponent(LanguageSelector);
+    collapsed.componentRef.setInput('collapsed', true);
+    collapsed.detectChanges();
+    expect(
+      collapsed.nativeElement.querySelector('.language-selector__collapsed-trigger mat-icon')?.getAttribute('fontSet'),
+    ).toBe('material-symbols-outlined');
+  });
+
   it('renders an icon-button trigger instead of the mat-select when collapsed', () => {
     const fixture = TestBed.createComponent(LanguageSelector);
     fixture.componentRef.setInput('collapsed', true);
