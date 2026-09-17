@@ -63,6 +63,7 @@ test.describe('feat-035 - "Change password" page', () => {
     );
 
     await page.goto('/dashboard');
+    await page.getByTestId('nav-settings-menu').click();
     await page.getByTestId('nav-change-password').click();
     await expect(page).toHaveURL(/\/change-password$/);
 

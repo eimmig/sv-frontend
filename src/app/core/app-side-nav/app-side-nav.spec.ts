@@ -35,6 +35,7 @@ describe('AppSideNav', () => {
                 betTypeDashboard: 'Por tipo de aposta',
                 telegramLink: 'Vincular Telegram',
                 users: 'Usuários',
+                settings: 'Configurações',
                 changePassword: 'Trocar senha',
                 logout: 'Sair',
                 collapse: 'Retrair menu',
@@ -120,24 +121,66 @@ describe('AppSideNav', () => {
     expect(searchStatsIcon?.classList.contains('material-symbols-outlined')).toBe(true);
   });
 
-  it('links to /change-password in the footer, available to every role', () => {
+  function openSettingsMenu(fixture: ReturnType<typeof TestBed.createComponent<AppSideNav>>): void {
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('[data-testid="nav-settings-menu"]')?.click();
+    fixture.detectChanges();
+  }
+
+  it('opens the settings menu and links to /change-password, available to every role', async () => {
     session('MEMBER');
     const fixture = TestBed.createComponent(AppSideNav);
     fixture.detectChanges();
 
-    const link = fixture.nativeElement.querySelector('[data-testid="nav-change-password"]');
+    openSettingsMenu(fixture);
+    await fixture.whenStable();
+
+    const link = document.querySelector('[data-testid="nav-change-password"]');
     expect(link).toBeTruthy();
-    expect(link.getAttribute('href')).toBe('/change-password');
+    expect(link?.getAttribute('href')).toBe('/change-password');
   });
 
-  it('logout() clears the session and navigates to /login', () => {
+  it('settings menu groups language options and the theme toggle alongside change password/logout', async () => {
+    session('MEMBER');
+    const fixture = TestBed.createComponent(AppSideNav);
+    fixture.detectChanges();
+
+    openSettingsMenu(fixture);
+    await fixture.whenStable();
+
+    expect(document.querySelector('[data-testid="nav-settings-language-pt-BR"]')).toBeTruthy();
+    expect(document.querySelector('[data-testid="nav-settings-language-en-US"]')).toBeTruthy();
+    expect(document.querySelector('[data-testid="nav-settings-language-es"]')).toBeTruthy();
+    expect(document.querySelector('[data-testid="nav-settings-theme"]')).toBeTruthy();
+  });
+
+  it('language options start collapsed and expand when the "Idioma" row is toggled', async () => {
+    session('MEMBER');
+    const fixture = TestBed.createComponent(AppSideNav);
+    fixture.detectChanges();
+
+    openSettingsMenu(fixture);
+    await fixture.whenStable();
+
+    const list = document.querySelector('.side-nav__settings-language-list');
+    expect(list?.classList.contains('side-nav__settings-language-list--open')).toBe(false);
+
+    document.querySelector<HTMLButtonElement>('[data-testid="nav-settings-language-toggle"]')?.click();
+    fixture.detectChanges();
+
+    expect(list?.classList.contains('side-nav__settings-language-list--open')).toBe(true);
+  });
+
+  it('logout() clears the session and navigates to /login', async () => {
     session('MEMBER');
     const fixture = TestBed.createComponent(AppSideNav);
     fixture.detectChanges();
     const router = TestBed.inject(Router);
     vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
 
-    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('[data-testid="nav-logout"]')?.click();
+    openSettingsMenu(fixture);
+    await fixture.whenStable();
+
+    document.querySelector<HTMLButtonElement>('[data-testid="nav-logout"]')?.click();
 
     expect(TestBed.inject(Auth).isAuthenticated()).toBe(false);
     expect(router.navigateByUrl).toHaveBeenCalledWith('/login');

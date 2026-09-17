@@ -9,9 +9,8 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { filter, map } from 'rxjs';
 
 import { Auth } from '../auth';
-import { LanguageSelector } from '../language-selector/language-selector';
+import { Language, Locale } from '../language';
 import { Theme } from '../theme';
-import { ThemeToggle } from '../theme-toggle/theme-toggle';
 
 const STORAGE_KEY = 'stakevault.navCollapsed';
 
@@ -38,8 +37,6 @@ function storedCollapsed(): boolean {
     MatMenuModule,
     MatTooltipModule,
     TranslocoPipe,
-    LanguageSelector,
-    ThemeToggle,
   ],
   selector: 'app-side-nav',
   styleUrl: './app-side-nav.scss',
@@ -48,7 +45,16 @@ function storedCollapsed(): boolean {
 export class AppSideNav {
   protected readonly auth = inject(Auth);
   protected readonly theme = inject(Theme);
+  protected readonly language = inject(Language);
   private readonly router = inject(Router);
+
+  protected readonly locales: ReadonlyArray<{ value: Locale; label: string }> = [
+    { value: 'pt-BR', label: 'Português' },
+    { value: 'en-US', label: 'English' },
+    { value: 'es', label: 'Español' },
+  ];
+
+  protected readonly languageExpanded = signal(false);
 
   protected readonly collapsed = signal(storedCollapsed());
 
@@ -119,5 +125,16 @@ export class AppSideNav {
   protected logout(): void {
     this.auth.logout();
     this.router.navigateByUrl('/login');
+  }
+
+  protected setLocale(locale: Locale): void {
+    this.language.set(locale);
+  }
+
+  // stopPropagation: without it the click bubbles out of the mat-menu panel and CDK's
+  // outside-click detector closes the whole settings menu instead of just expanding the list.
+  protected toggleLanguageExpanded(event: MouseEvent): void {
+    event.stopPropagation();
+    this.languageExpanded.set(!this.languageExpanded());
   }
 }
