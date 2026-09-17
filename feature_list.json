@@ -2106,7 +2106,7 @@
         "feat-008",
         "feat-011"
       ],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "Plan Reviewer (2026-09-16), passe proprio sem subagentes (baixo risco - UI pura, sem contrato/dado/seguranca): READY, sem achado. Approach dos itens 1-2 (filtragem client-side via computed sobre catalogo ja carregado, reuso do padrao disable/reset de search-statistics.ts) confirmado correto - Team.sportId ja e a FK documentada (docs/services/web.md, decisao do team-manager dedicado), sem necessidade de endpoint por esporte como o de stats-service/search-statistics (aquele existe porque search-statistics so lista times com estatistica, nao o catalogo inteiro). Reforca diretamente a regra 5 de Shneiderman (prevenir erros) ja documentada para RF04. Item 3 (menu de recursos) reusa exatamente o padrao de panelClass+::ng-deep ja estabelecido por language-selector.scss (feat-011) - mesmo mecanismo, sem novidade arquitetural; achado durante o proprio trabalho desta feature: um rascunho anterior deste ajuste foi absorvido por engano em 2 commits de feat-032 (5c1747d/99832db) por um 'git add' amplo de outra sessao, revertido pelo Delivery Reviewer daquela feature (commit 59ae268) e devolvido como edicao local - reaplicado aqui, na feature correta.",
       "jira": "SV-500",
       "subtasks": [
@@ -2166,7 +2166,7 @@
           "jira": "SV-504"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-16 (story SV-500, subtasks SV-501/502/503/504, merges locais subtask->feature --no-ff verdes). 3 achados do usuario em uso real corrigidos: (1) autocomplete=off em catalog-manager.html/team-manager.html - Chrome/Edge parava de sugerir autofill de Contact Info sobre o campo Nome; (2) register-bet.ts: team1Id/team2Id nascem {value:'',disabled:true}, teamOptions (computed) filtra options().teams por sportId (toSignal), subscribe em sportId.valueChanges reseta+habilita/desabilita os 2 controls - reusa o padrao ja estabelecido em search-statistics.ts (feat-012), reforca a regra 5 de Shneiderman (prevenir erros) de docs/services/web.md; (3) app-side-nav: mat-menu de recursos ganha panelClass condicional (min-width=$width-expanded quando a nav esta expandida) - mesmo padrao panelClass+::ng-deep de language-selector.scss, documentado como mecanismo reaproveitavel em docs/services/web.md (commit 9d77e9c, repo raiz). Achado real durante o proprio trabalho: um rascunho anterior do item 3 tinha sido absorvido por engano em 2 commits de feat-032 por um 'git add' amplo de outra sessao rodando em paralelo na mesma working directory; o Delivery Reviewer daquela feature reverteu e devolveu como edicao local - reaplicado aqui, na feature correta, depois de isolar o trabalho numa worktree Git dedicada para evitar nova colisao. Delivery Reviewer: PASS (1 achado P3 nao-bloqueante: teste de transicao esporte-A->esporte-B ausente, mesmo branch de codigo das transicoes ja testadas). Test Suite Auditor: PASS (mesmo achado P3, classificado ADD nao-bloqueante). 2 testes novos em register-bet.spec.ts cobrindo o disable/filtro/reset. ./init.sh verde (230+2 testes, 90%+ cobertura, mesmo patamar de antes). Branches: feature/SV-500 com as 4 subtasks mescladas (--no-ff); nao pushado/mergeado em develop nesta sessao - decisao pendente do usuario."
     }
   ]
 }
