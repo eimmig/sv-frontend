@@ -2256,7 +2256,7 @@
         {
           "id": "feat-034.1",
           "name": "Fix CSS confirmado: searchable-select display block + monthly-drawdown-grid min-width",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-519",
           "detail": "Os 2 achados ja confirmados por medicao real na investigacao do plan review - fix direto, sem ambiguidade.",
           "checklist": [
