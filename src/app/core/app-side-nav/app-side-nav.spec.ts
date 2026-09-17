@@ -35,6 +35,7 @@ describe('AppSideNav', () => {
                 betTypeDashboard: 'Por tipo de aposta',
                 telegramLink: 'Vincular Telegram',
                 users: 'Usuários',
+                changePassword: 'Trocar senha',
                 logout: 'Sair',
                 collapse: 'Retrair menu',
                 expand: 'Expandir menu',
@@ -117,6 +118,16 @@ describe('AppSideNav', () => {
 
     expect(telegramIcon?.classList.contains('material-symbols-outlined')).toBe(false);
     expect(searchStatsIcon?.classList.contains('material-symbols-outlined')).toBe(true);
+  });
+
+  it('links to /change-password in the footer, available to every role', () => {
+    session('MEMBER');
+    const fixture = TestBed.createComponent(AppSideNav);
+    fixture.detectChanges();
+
+    const link = fixture.nativeElement.querySelector('[data-testid="nav-change-password"]');
+    expect(link).toBeTruthy();
+    expect(link.getAttribute('href')).toBe('/change-password');
   });
 
   it('logout() clears the session and navigates to /login', () => {

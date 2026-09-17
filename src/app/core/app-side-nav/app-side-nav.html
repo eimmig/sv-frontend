@@ -118,6 +118,19 @@
   <div class="side-nav__footer">
     <app-language-selector [collapsed]="collapsed()" />
     <app-theme-toggle />
+    <a
+      routerLink="/change-password"
+      routerLinkActive="side-nav__link--active"
+      class="side-nav__link"
+      data-testid="nav-change-password"
+      [matTooltip]="collapsed() ? ('nav.changePassword' | transloco) : ''"
+      matTooltipPosition="right"
+    >
+      <mat-icon fontSet="material-symbols-outlined">lock_reset</mat-icon>
+      @if (!collapsed()) {
+        <span>{{ 'nav.changePassword' | transloco }}</span>
+      }
+    </a>
     <button
       type="button"
       class="side-nav__link"

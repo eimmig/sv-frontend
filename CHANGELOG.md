@@ -222,3 +222,7 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-507](https://stakevault.atlassian.net/browse/SV-507) - Aplicar searchable-select em register-bet.html + team-manager.html
 - [SV-508](https://stakevault.atlassian.net/browse/SV-508) - Aplicar searchable-select em search-statistics.html + dashboard.html
 - [SV-509](https://stakevault.atlassian.net/browse/SV-509) - Aplicar em history.html, Playwright novo, CHANGELOG e verificacao final
+- [SV-514](https://stakevault.atlassian.net/browse/SV-514) - Tela de troca de senha
+- [SV-515](https://stakevault.atlassian.net/browse/SV-515) - change-password-api + pagina change-password (form, submit, sucesso/erro)
+- [SV-516](https://stakevault.atlassian.net/browse/SV-516) - Nav (side-nav footer) + MustChangePasswordBanner + Playwright + docs
+- [SV-517](https://stakevault.atlassian.net/browse/SV-517) - CHANGELOG e verificacao final
