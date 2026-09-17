@@ -95,4 +95,31 @@ test.describe('feat-031 - searchable-select (typing filters the catalog list)', 
 
     await expect(sport).toHaveValue('Futebol');
   });
+
+  test('team1/team2 stay disabled showing "None" until a sport is chosen, then enable and filter by that sport', async ({
+    page,
+  }) => {
+    await page.route(
+      '**/api/v1/teams*',
+      catalogRoute([
+        { id: 'tm-1', name: 'Flamengo', sportId: 'sp-1' },
+        { id: 'tm-2', name: 'Lakers', sportId: 'sp-2' },
+      ]),
+    );
+
+    await page.goto('/register-bet');
+    const team1 = page.getByTestId('register-bet-team1');
+
+    await expect(team1).toBeDisabled();
+    await expect(team1).toHaveValue('None');
+
+    await page.getByTestId('register-bet-sport').click();
+    await page.getByRole('option', { name: 'Futebol' }).click();
+
+    await expect(team1).toBeEnabled();
+    await team1.click();
+    await expect(page.getByRole('option')).toHaveCount(2); // None + Flamengo, Lakers scoped out by sportId
+    await page.getByRole('option', { name: 'Flamengo' }).click();
+    await expect(team1).toHaveValue('Flamengo');
+  });
 });
