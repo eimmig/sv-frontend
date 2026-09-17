@@ -2148,7 +2148,7 @@
           ],
           "validation": "QA visual (desktop): abrir o menu de um recurso com a nav expandida (menu = 232px) e com a nav colapsada (menu = tamanho padrao do Material).",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-503"
         },
         {
