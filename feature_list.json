@@ -2249,7 +2249,7 @@
         "feat-018",
         "feat-022"
       ],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "2026-09-17, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado contra o plano antes de qualquer codigo. Veredito: READY WITH CONCERNS, 1 amendment MINOR (preservar posicao do cursor apos reformatar, ver abaixo). Investigacao real feita antes do plan review (dev server + Playwright, nao so leitura de codigo) confirmou/descartou cada um dos 4 itens: (1) CONFIRMADO por medicao real - getComputedStyle no mat-form-field de shared/searchable-select retorna display:inline-flex (default Material), nunca block, porque Angular ViewEncapsulation emulado tageia o elemento com o hash de searchable-select (quem renderiza), nao o de register-bet.scss (que so tem a regra CSS) - reproduzido visualmente em 1920px (nao em 1280/700/500, painel estreito demais nessas larguras mesmo com o display errado). Fix: mat-form-field{display:block;width:100%} DENTRO de searchable-select.scss. (2) CONFIRMADO por medicao real, so em largura estreita (390px) - flex item sem min-width explicito encolhe bem abaixo do flex-basis(140px) em container estreito, input type=month (UI nativa mais alta) fica sem espaco vertical pro rotulo flutuante, rotulo aparece sobreposto ao valor. Fix: min-width:140px na mesma regra de monthly-drawdown-grid.scss. (3) NAO reproduzido em nenhuma condicao testada (4 larguras, 2 niveis de zoom, screenshot no meio da transicao) - aplicado mesmo assim por decisao do usuario via AskUserQuestion (esconder tambem o img do logo quando colapsada, hoje so o wordmark e condicional). (4) diretiva nova appDateMask, aplicada nos 4 usos de matDatepicker por decisao do usuario via AskUserQuestion (nao so period-preset-filter). Risco levantado na investigacao - conflito de listener 'input' entre a diretiva nova e MatDatepickerInput no mesmo elemento - resolvido com evidencia real: lido node_modules/@angular/material/fesm2022/datepicker.mjs (_onInput, linha ~3337) - MatDatepickerInput le event.target.value AO VIVO (propriedade DOM, nao uma copia cacheada), entao independente da ordem de registro entre minha diretiva e a do Material, o valor final apos o usuario terminar de digitar converge certo (estados intermediarios podem parsear como null transitoriamente - esperado, nao-destrutivo, comportamento padrao de qualquer campo mascarado). Amendment MINOR aceito: reescrever input.value dentro do handler de input reseta a posicao do cursor pro final na maioria dos browsers - adicionar input.setSelectionRange(pos,pos) apos reformatar (posicao calculada pelos digitos ja digitados), pratica padrao de input mascarado, sem risco novo. Confirmado sem biblioteca de mascara no package.json (grep) - diretiva OK como primeira do tipo no codebase, mesma filosofia Intl-based de core/date-format.ts (Intl.DateTimeFormat(locale).formatToParts pra derivar ordem dia/mes/ano sem hardcode). Teste obrigatorio antes de done: digitar digitos crus no campo e confirmar que o Date final (customFrom/customTo signal ou formControl equivalente) resolve correto nos 4 usos, nao so que a mascara aparece visualmente.",
       "jira": "SV-518",
       "subtasks": [
@@ -2314,7 +2314,45 @@
           "owner": "agente"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechada em 2026-09-17 (story SV-518, subtasks SV-519/520/521/522). 4 achados ad-hoc de UX pos-deploy corrigidos: (1) shared/searchable-select grudado (ViewEncapsulation bloqueando CSS cross-component), (2) rotulo cortado no drawdown mensal (input type=month com line-height/height nativos menores que um matInput comum), (3) logo escondido na sidebar colapsada (decisao do usuario, sem bug confirmado), (4) mascara de digitacao __/__/____ nos 4 campos matDatepicker (achado critico: NativeDateAdapter.parse() e Date.parse() puro, sempre M/D/Y, independente do locale ativo - uma primeira versao locale-ordenada trocava dia/mes em silencio).",
+        "secoes": [
+          {
+            "titulo": "Verificacao real executada",
+            "itens": [
+              "./init.sh (ng build + ng test, gate 80%) verde - 57 arquivos de teste, 256 testes.",
+              "npx playwright test (suite completa) verde - 81/81, sem regressao em nenhum componente compartilhado tocado (searchable-select, app-side-nav, period-preset-filter).",
+              "validate-i18n-keys.py: 255 chaves em sincronia entre pt-BR/en-US/es (1 nova secao dateMask.placeholder).",
+              "2 arquivos novos de producao (core/date-mask.directive.ts + spec), 11 arquivos tocados (2 CSS-only, 1 template, 8 para aplicar a diretiva nos 4 usos de matDatepicker + fix de isolamento de teste)."
+            ]
+          },
+          {
+            "titulo": "Divergencia do plano original",
+            "itens": [
+              "Plano original (item 4) propunha ordem de mascara derivada do locale via Intl - CORRIGIDO DURANTE A IMPLEMENTACAO (nao no plan review) apos um teste e2e real expor que NativeDateAdapter.parse() (Date.parse() puro) sempre le M/D/Y independente de locale - uma mascara D/M/Y para pt-BR/es trocaria dia e mes em silencio no parse. Mudanca de escopo: mascara agora e sempre M/D/Y, so o placeholder continua traduzido."
+            ]
+          },
+          {
+            "titulo": "Defeitos encontrados antes de causar dano",
+            "itens": [
+              "Plan Reviewer (antes do codigo): READY WITH CONCERNS, 1 amendment MINOR (preservar posicao do cursor ao reformatar) - a analise de risco do listener 'input' concorrente com MatDatepickerInput foi resolvida com evidencia real do codigo-fonte do Material (event.target.value lido ao vivo).",
+              "Bug real critico encontrado so por teste e2e contra um browser real (nao pego por nenhum unitario, que nunca resolve um Date atraves de input+matDatepicker+ngModel em JSDOM): a primeira versao da mascara, locale-ordenada, trocava dia e mes em silencio no Date.parse() sempre que o dia fosse <=12 - corrigido para M/D/Y sempre, documentado em detalhe em docs/CONVENTIONS.md.",
+              "2 gaps de isolamento de teste expostos pela diretiva nova (primeira coisa a injetar Language em RegisterBet): locale nunca fixado em register-bet.spec.ts (navigator.language do Vitest/jsdom e en-US, nao pt-BR) e preloadLangs:true ausente em TranslocoTestingModule para .translate() em construtor de diretiva resolver sincrono em teste - ambos corrigidos.",
+              "Delivery Reviewer (self-review, risco medio): PASS. Confirmado, via grep, que os 4 usos de matDatepicker sao os UNICOS no app, e que todo outro new Date(...) usa construtor numerico ou string ISO do backend (nunca texto livre ambiguo) - nenhum outro caminho de data compartilha o defeito do achado critico.",
+              "Test Suite Auditor (self-review): PASS. Prova do Date final correto movida pro e2e (unico nivel que realmente resolve um Date nesse caminho, confirmado); unitario prova a formatacao da string, isolada e deterministica."
+            ]
+          },
+          {
+            "titulo": "Skills e ferramentas",
+            "itens": [
+              "Plan Reviewer rodado antes de codificar. Delivery Reviewer/Test Suite Auditor rodados como self-review de passe unico - sem achado bloqueante em nenhum.",
+              "QA visual real (Impeccable/screenshots contra o dev server real) confirmou os 4 fixes visualmente, incluindo reproducao real do item 1 em 1920px (nao reproduzia em larguras menores) e comparacao lado a lado que revelou o achado real do item 2 (line-height/height do input nativo).",
+              "2 decisoes do usuario via AskUserQuestion antes do plan review: item 3 (aplicar mesmo sem bug reproduzido) e item 4 (escopo nos 4 usos de matDatepicker, nao so period-preset-filter).",
+              "tools/jira_story.py: story + 4 subtasks criadas, --sync-status rodado a cada transicao real."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-035",
