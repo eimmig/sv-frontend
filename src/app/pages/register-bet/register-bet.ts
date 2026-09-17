@@ -18,6 +18,7 @@ import { CatalogEntry, Team, catalogApi, teamsApi } from '../../core/catalog-api
 import { formatBrl } from '../../core/currency';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
+import { SearchableSelect } from '../../shared/searchable-select/searchable-select';
 
 interface FormOptions {
   readonly bettingHouses: BettingHouse[];
@@ -60,6 +61,7 @@ function combineDateAndTime(date: Date, time: Date): Date {
     TranslocoPipe,
     Panel,
     PanelLayout,
+    SearchableSelect,
   ],
   selector: 'app-register-bet',
   styleUrl: './register-bet.scss',

@@ -2074,7 +2074,7 @@
         {
           "id": "feat-031.2",
           "name": "Aplicar searchable-select em register-bet.html + team-manager.html",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-507",
           "detail": "Primeira aplicacao real do componente, inclui o caso mais complexo de disabled state (team1Id/team2Id habilitados so apos escolher esporte, feat-033.2) - prova o contrato de setDisabledState antes das telas mais simples.",
           "checklist": [

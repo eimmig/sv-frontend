@@ -11,51 +11,41 @@
 
     <app-panel-layout columns="1fr 1fr 1fr">
       <app-panel [title]="'registerBet.eventTitle' | transloco">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'registerBet.bettingHouseLabel' | transloco }}</mat-label>
-          <mat-select formControlName="bettingHouseId" data-testid="register-bet-betting-house">
-            @for (house of options().bettingHouses; track house.id) {
-              <mat-option [value]="house.id">{{ house.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <app-searchable-select
+          formControlName="bettingHouseId"
+          [options]="options().bettingHouses"
+          [label]="'registerBet.bettingHouseLabel' | transloco"
+          testId="register-bet-betting-house"
+        />
 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'registerBet.sportLabel' | transloco }}</mat-label>
-          <mat-select formControlName="sportId" data-testid="register-bet-sport">
-            @for (sport of options().sports; track sport.id) {
-              <mat-option [value]="sport.id">{{ sport.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <app-searchable-select
+          formControlName="sportId"
+          [options]="options().sports"
+          [label]="'registerBet.sportLabel' | transloco"
+          testId="register-bet-sport"
+        />
 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'registerBet.leagueLabel' | transloco }}</mat-label>
-          <mat-select formControlName="leagueId" data-testid="register-bet-league">
-            @for (league of options().leagues; track league.id) {
-              <mat-option [value]="league.id">{{ league.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <app-searchable-select
+          formControlName="leagueId"
+          [options]="options().leagues"
+          [label]="'registerBet.leagueLabel' | transloco"
+          testId="register-bet-league"
+        />
 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'registerBet.marketLabel' | transloco }}</mat-label>
-          <mat-select formControlName="marketId" data-testid="register-bet-market">
-            @for (market of options().markets; track market.id) {
-              <mat-option [value]="market.id">{{ market.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <app-searchable-select
+          formControlName="marketId"
+          [options]="options().markets"
+          [label]="'registerBet.marketLabel' | transloco"
+          testId="register-bet-market"
+        />
 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'registerBet.tipsterLabel' | transloco }}</mat-label>
-          <mat-select formControlName="tipsterId" data-testid="register-bet-tipster">
-            <mat-option value="">{{ 'registerBet.tipsterNone' | transloco }}</mat-option>
-            @for (tipster of options().tipsters; track tipster.id) {
-              <mat-option [value]="tipster.id">{{ tipster.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <app-searchable-select
+          formControlName="tipsterId"
+          [options]="options().tipsters"
+          [label]="'registerBet.tipsterLabel' | transloco"
+          testId="register-bet-tipster"
+          [allOptionLabel]="'registerBet.tipsterNone' | transloco"
+        />
       </app-panel>
 
       <app-panel [title]="'registerBet.detailsTitle' | transloco">
@@ -71,25 +61,21 @@
           />
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'registerBet.team1Label' | transloco }}</mat-label>
-          <mat-select formControlName="team1Id" data-testid="register-bet-team1">
-            <mat-option value="">{{ 'registerBet.team1None' | transloco }}</mat-option>
-            @for (team of teamOptions(); track team.id) {
-              <mat-option [value]="team.id">{{ team.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <app-searchable-select
+          formControlName="team1Id"
+          [options]="teamOptions()"
+          [label]="'registerBet.team1Label' | transloco"
+          testId="register-bet-team1"
+          [allOptionLabel]="'registerBet.team1None' | transloco"
+        />
 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'registerBet.team2Label' | transloco }}</mat-label>
-          <mat-select formControlName="team2Id" data-testid="register-bet-team2">
-            <mat-option value="">{{ 'registerBet.team2None' | transloco }}</mat-option>
-            @for (team of teamOptions(); track team.id) {
-              <mat-option [value]="team.id">{{ team.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <app-searchable-select
+          formControlName="team2Id"
+          [options]="teamOptions()"
+          [label]="'registerBet.team2Label' | transloco"
+          testId="register-bet-team2"
+          [allOptionLabel]="'registerBet.team2None' | transloco"
+        />
 
         <mat-form-field appearance="outline">
           <mat-label>{{ 'registerBet.betTypeLabel' | transloco }}</mat-label>
