@@ -96,7 +96,7 @@ describe('SearchableSelect', () => {
     await fixture.whenStable();
 
     const rendered = document.querySelectorAll('[role="option"]');
-    expect(rendered.length).toBe(1);
+    expect(rendered).toHaveLength(1);
     expect(rendered[0].textContent?.trim()).toBe('Brasileirão');
   });
 
