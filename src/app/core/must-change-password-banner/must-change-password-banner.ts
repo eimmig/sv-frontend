@@ -1,17 +1,17 @@
 import { Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 import { Auth } from '../auth';
 
 /**
- * Non-blocking, session-only dismissible notice - auth-service explicitly
- * returns mustChangePassword without blocking login and without a change-
- * password endpoint in its backlog yet (see docs/services/auth-service.md),
- * so there is no action to link to here.
+ * Non-blocking, session-only dismissible notice - auth-service explicitly returns
+ * mustChangePassword without blocking login (see docs/services/auth-service.md), so the
+ * dismiss button stays even though /change-password (feat-035) now exists.
  */
 @Component({
-  imports: [MatButtonModule, TranslocoPipe],
+  imports: [MatButtonModule, RouterLink, TranslocoPipe],
   selector: 'app-must-change-password-banner',
   styleUrl: './must-change-password-banner.scss',
   templateUrl: './must-change-password-banner.html',

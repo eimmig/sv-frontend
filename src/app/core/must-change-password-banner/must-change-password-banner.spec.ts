@@ -1,5 +1,6 @@
 import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { MustChangePasswordBanner } from './must-change-password-banner';
@@ -13,12 +14,14 @@ describe('MustChangePasswordBanner', () => {
         MustChangePasswordBanner,
         TranslocoTestingModule.forRoot({
           langs: {
-            'pt-BR': { mustChangePassword: { message: 'Troque sua senha', dismiss: 'Entendi' } },
+            'pt-BR': {
+              mustChangePassword: { message: 'Troque sua senha', action: 'Trocar senha', dismiss: 'Entendi' },
+            },
           },
           translocoConfig: { availableLangs: ['pt-BR'], defaultLang: 'pt-BR' },
         }),
       ],
-      providers: [provideHttpClient()],
+      providers: [provideHttpClient(), provideRouter([])],
     });
   });
 
@@ -38,6 +41,15 @@ describe('MustChangePasswordBanner', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('[data-testid="must-change-password-banner"]')).toBeNull();
+  });
+
+  it('links its action button to the change-password page', () => {
+    session(true);
+    const fixture = TestBed.createComponent(MustChangePasswordBanner);
+    fixture.detectChanges();
+
+    const action: HTMLAnchorElement = fixture.nativeElement.querySelector('[data-testid="must-change-password-action"]');
+    expect(action.getAttribute('href')).toBe('/change-password');
   });
 
   it('shows and can be dismissed for the session when mustChangePassword is true', () => {
