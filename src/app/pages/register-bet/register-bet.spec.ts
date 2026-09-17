@@ -129,6 +129,29 @@ describe('RegisterBet', () => {
     expect(fixture.componentInstance['form'].value.bettingHouseId).toBe('');
   });
 
+  it('keeps team1/team2 disabled and empty until a sport is chosen, then only lists that sport\'s teams', () => {
+    expect(fixture.componentInstance['form'].controls.team1Id.disabled).toBe(true);
+    expect(fixture.componentInstance['form'].controls.team2Id.disabled).toBe(true);
+    expect(fixture.componentInstance['teamOptions']()).toEqual([]);
+
+    fixture.componentInstance['form'].controls.sportId.setValue('sp-1');
+
+    expect(fixture.componentInstance['form'].controls.team1Id.disabled).toBe(false);
+    expect(fixture.componentInstance['form'].controls.team2Id.disabled).toBe(false);
+    expect(fixture.componentInstance['teamOptions']()).toEqual([{ id: 'tm-1', name: 'Flamengo', sportId: 'sp-1' }]);
+  });
+
+  it('clears the previously chosen teams and re-disables both selects when the sport changes away', () => {
+    fixture.componentInstance['form'].controls.sportId.setValue('sp-1');
+    fixture.componentInstance['form'].patchValue({ team1Id: 'tm-1' });
+
+    fixture.componentInstance['form'].controls.sportId.setValue('');
+
+    expect(fixture.componentInstance['form'].controls.team1Id.disabled).toBe(true);
+    expect(fixture.componentInstance['form'].controls.team1Id.value).toBe('');
+    expect(fixture.componentInstance['teamOptions']()).toEqual([]);
+  });
+
   it('sends the selected team ids, not free text, when both teams are chosen', () => {
     fillRequiredFields();
     fixture.componentInstance['form'].patchValue({ team1Id: 'tm-1', team2Id: '' });
