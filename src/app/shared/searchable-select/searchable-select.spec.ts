@@ -2,6 +2,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { vi } from 'vitest';
 
 import { SearchableSelect, SearchableSelectOption, normalizeForSearch } from './searchable-select';
 
@@ -135,6 +136,18 @@ describe('SearchableSelect', () => {
 
     expect(input(fixture).value).toBe('Futebol');
     expect(fixture.componentInstance.form.controls.sportId.value).toBe('sp-1');
+  });
+
+  it('selects the whole text on focus so the first keystroke replaces it instead of appending', () => {
+    const fixture = TestBed.createComponent(HostComponent);
+    fixture.componentInstance.allOptionLabel.set('Todas');
+    fixture.detectChanges();
+
+    const field = input(fixture);
+    const selectSpy = vi.spyOn(field, 'select');
+    field.dispatchEvent(new Event('focus'));
+
+    expect(selectSpy).toHaveBeenCalled();
   });
 
   it('renders the error message when set, linked via aria-describedby and role=alert', () => {

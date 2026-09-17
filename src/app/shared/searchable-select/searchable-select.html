@@ -12,6 +12,7 @@
     [matAutocomplete]="auto"
     [attr.aria-describedby]="errorMessage() ? testId() + '-error' : null"
     (input)="onQueryInput($event)"
+    (focus)="onFocus($event)"
     (blur)="onBlur()"
   />
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
