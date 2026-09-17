@@ -80,7 +80,6 @@
         <mat-form-field appearance="outline">
           <mat-label>{{ 'registerBet.betTypeLabel' | transloco }}</mat-label>
           <mat-select formControlName="betType" data-testid="register-bet-bet-type">
-            <mat-option value="">{{ 'registerBet.betTypeNone' | transloco }}</mat-option>
             @for (betType of betTypes; track betType) {
               <mat-option [value]="betType">{{ ('registerBet.betType' + (betType === 'pre' ? 'Pre' : 'Live')) | transloco }}</mat-option>
             }
