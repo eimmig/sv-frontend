@@ -23,7 +23,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 ### Changed
 
 - `register-bet` (`feat-026`): campo "Tipo de aposta" trocado de texto livre para `mat-select`
-  com 2 opções fixas (`pre`/`live`) + "não classificado", alinhado ao enum do backend.
+  com 2 opções fixas (`pre`/`live`), alinhado ao enum do backend. A opção "não classificado"
+  proposta originalmente foi removida em `feat-036` — toda aposta cadastrada por este formulário
+  passa a ser sempre `pre` ou `live` (default `pre`), nunca nula.
 
 - `app-login-border-trace` (`feat-018.3`) reformulada: 1 caminho fechado único (contorno completo
   do card) com 2 traços opostos girando continuamente (`stroke-dashoffset`), em vez de 2 metades
@@ -231,3 +233,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-520](https://stakevault.atlassian.net/browse/SV-520) - Sidebar colapsada: esconder logo (so o botao de expandir fica)
 - [SV-521](https://stakevault.atlassian.net/browse/SV-521) - Diretiva appDateMask (locale-aware) + aplicar nos 4 usos de matDatepicker
 - [SV-522](https://stakevault.atlassian.net/browse/SV-522) - CHANGELOG e verificacao final
+- [SV-523](https://stakevault.atlassian.net/browse/SV-523) - 6 achados de UX em uso real: betType obrigatorio, busca limpa ao digitar, menu de configuracoes consolidado, icone de idioma no login
+- [SV-524](https://stakevault.atlassian.net/browse/SV-524) - register-bet: Tipo de aposta obrigatorio (sem 'nao classificado') + doc/CHANGELOG
+- [SV-525](https://stakevault.atlassian.net/browse/SV-525) - searchable-select: limpar 'Todas' ao comecar a digitar (select-on-focus)
+- [SV-526](https://stakevault.atlassian.net/browse/SV-526) - side-nav: menu de configuracoes consolidado (idioma/tema/trocar senha/sair) + acordeao de idioma
+- [SV-527](https://stakevault.atlassian.net/browse/SV-527) - language-selector: fontSet do icone (fix real do corte no login)
+- [SV-528](https://stakevault.atlassian.net/browse/SV-528) - CHANGELOG e verificacao final
