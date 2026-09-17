@@ -2106,7 +2106,7 @@
         {
           "id": "feat-031.4",
           "name": "Aplicar em history.html, Playwright novo, CHANGELOG e verificacao final",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-509",
           "detail": "Fecha a feature - ultima tela (3 instancias do mesmo campo bettingHouseId em formularios distintos) e o unico teste realmente novo desta feature (digitar filtra a lista - as outras subtasks so provam que o clique direto continua igual).",
           "checklist": [

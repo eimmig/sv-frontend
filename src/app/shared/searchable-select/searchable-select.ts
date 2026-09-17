@@ -54,7 +54,8 @@ export class SearchableSelect implements ControlValueAccessor {
 
   private readonly optionsWithSentinel = computed(() => {
     const sentinelLabel = this.allOptionLabel();
-    return sentinelLabel !== null ? [{ id: '', name: sentinelLabel }, ...this.options()] : this.options();
+    const base = this.options() ?? [];
+    return sentinelLabel !== null ? [{ id: '', name: sentinelLabel }, ...base] : base;
   });
 
   protected readonly displayValue = computed(() => this.typedQuery() ?? this.resolveName(this.committedId()));
