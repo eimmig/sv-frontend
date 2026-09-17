@@ -2270,7 +2270,7 @@
         {
           "id": "feat-034.2",
           "name": "Sidebar colapsada: esconder logo (so o botao de expandir fica)",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-520",
           "detail": "Decisao do usuario - aplicar mesmo sem bug reproduzido.",
           "checklist": [
