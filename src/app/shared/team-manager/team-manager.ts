@@ -4,7 +4,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { forkJoin } from 'rxjs';
 
@@ -12,6 +11,7 @@ import { loadInto, submitForm } from '../../core/api-request';
 import { CatalogEntry, Team, catalogApi, teamsApi } from '../../core/catalog-api';
 import { Panel } from '../panel/panel';
 import { PanelLayout } from '../panel-layout/panel-layout';
+import { SearchableSelect } from '../searchable-select/searchable-select';
 
 interface FormOptions {
   readonly sports: CatalogEntry[];
@@ -31,10 +31,10 @@ const EMPTY_OPTIONS: FormOptions = { sports: [], teams: [] };
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
     TranslocoPipe,
     Panel,
     PanelLayout,
+    SearchableSelect,
   ],
   selector: 'app-team-manager',
   styleUrl: './team-manager.scss',

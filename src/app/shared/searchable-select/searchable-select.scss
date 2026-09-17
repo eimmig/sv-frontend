@@ -1,0 +1,12 @@
+// Host must not be a box of its own - callers style/size the mat-form-field directly (flex/grid
+// item rules targeting `mat-form-field` in the parent page would otherwise apply to this host
+// element instead, since it sits between the layout container and the actual form field).
+:host {
+  display: contents;
+}
+
+.searchable-select__error {
+  margin: 0;
+  color: var(--color-negative);
+  font-size: 12px;
+}
