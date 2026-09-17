@@ -137,12 +137,22 @@ describe('SearchableSelect', () => {
     expect(fixture.componentInstance.form.controls.sportId.value).toBe('sp-1');
   });
 
-  it('renders the error message when set', () => {
+  it('renders the error message when set, linked via aria-describedby and role=alert', () => {
     const fixture = TestBed.createComponent(HostComponent);
     fixture.componentInstance.errorMessage.set('Campo obrigatorio');
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('.searchable-select__error')?.textContent?.trim()).toBe('Campo obrigatorio');
+    const error = fixture.nativeElement.querySelector('.searchable-select__error');
+    expect(error?.textContent?.trim()).toBe('Campo obrigatorio');
+    expect(error?.getAttribute('role')).toBe('alert');
+    expect(input(fixture).getAttribute('aria-describedby')).toBe(error?.id);
+  });
+
+  it('does not link aria-describedby when there is no error', () => {
+    const fixture = TestBed.createComponent(HostComponent);
+    fixture.detectChanges();
+
+    expect(input(fixture).getAttribute('aria-describedby')).toBeNull();
   });
 
   it('renders no error message by default', () => {
