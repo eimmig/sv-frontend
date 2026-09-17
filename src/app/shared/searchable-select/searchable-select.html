@@ -10,6 +10,7 @@
     [value]="displayValue()"
     [disabled]="disabled()"
     [matAutocomplete]="auto"
+    [attr.aria-describedby]="errorMessage() ? testId() + '-error' : null"
     (input)="onQueryInput($event)"
     (blur)="onBlur()"
   />
@@ -19,3 +20,6 @@
     }
   </mat-autocomplete>
 </mat-form-field>
+@if (errorMessage(); as message) {
+  <p class="searchable-select__error" role="alert" [id]="testId() + '-error'">{{ message }}</p>
+}
