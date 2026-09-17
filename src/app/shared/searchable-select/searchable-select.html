@@ -1,0 +1,21 @@
+<mat-form-field appearance="outline">
+  @if (label()) {
+    <mat-label>{{ label() }}</mat-label>
+  }
+  <input
+    matInput
+    [id]="testId() + '-input'"
+    [attr.data-testid]="testId()"
+    [attr.aria-label]="label()"
+    [value]="displayValue()"
+    [disabled]="disabled()"
+    [matAutocomplete]="auto"
+    (input)="onQueryInput($event)"
+    (blur)="onBlur()"
+  />
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+    @for (option of filteredOptions(); track option.id) {
+      <mat-option [value]="option.id">{{ option.name }}</mat-option>
+    }
+  </mat-autocomplete>
+</mat-form-field>

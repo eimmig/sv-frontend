@@ -2049,10 +2049,81 @@
         "feat-008",
         "feat-012"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer, 2026-09-16) - passe proprio, sem subagentes (risco medio, escopo contido a 1 componente novo, sem cross-service). Veredito: READY WITH CONCERNS. Confirmado contra o codigo real (grep + leitura direta, nao so a descricao da feature): todos os campos de catalogo mapeados em register-bet.html (bettingHouseId/sportId/leagueId/marketId/tipsterId/team1Id/team2Id - betType fica mat-select, enum fixo), history.html (bettingHouseId x3 instancias + sportId - campo type fica mat-select), search-statistics.html (sportId/leagueId/teamId + loop optionalCatalogFilters), dashboard.html (bettingHouseId/sportId/leagueId/marketId/tipsterId) e team-manager.html (sportId); catalog-manager.html e period-preset-filter.html confirmados SEM mudanca (nenhum tem select de catalogo). 2 achados MAJOR corrigidos no plano antes de codificar: (1) todo <input matInput> sem id/aria-label explicitos dispara Web:InputWithoutLabelCheck do SonarCloud (docs/CONVENTIONS.md) - nunca disparou pros mat-select atuais (regra e especifica de matInput), vai disparar pela primeira vez nas ~20 instancias do componente novo; corrigido gerando id interno a partir do proprio testId (`{{ testId() }}-input`) + aria-label ligado ao label, sem input novo na API. (2) plano nao separava texto digitado (livre) do id efetivamente commitado no FormControl - blur sem selecionar uma opcao podia deixar o campo com texto solto sem id valido; corrigido com 2 sinais internos (query local vs. valor commitado, so muda via optionSelected) e reversao do texto exibido no blur pro nome do id commitado. 3 pontos que o proprio pedido levantava, decididos aqui (nao exigem usuario): sem mensagem de 'nenhum resultado' (evita chave i18n nova, painel vazio e suficiente, KISS); filtro por nome case+acento-insensivel (normalize NFD, sem dependencia nova - catalogos reais tem acento, ex. Brasileirao, e o proprio objetivo da feature e achar mais facil); cascata de sportId->teamOptions (search-statistics.ts/register-bet.ts) confirmada intacta, searchable-select so reage a options() mudando, sem duplicar logica de cascata. Achado MINOR adicional: mat-autocomplete e outro overlay do CDK (docs/TESTING.md, mesmo gotcha ja documentado de mat-menu/feat-016.5) - searchable-select.spec.ts precisa do mesmo afterEach(() => TestBed.inject(OverlayContainer).ngOnDestroy()). Nenhuma quebra esperada nos e2e existentes (register-bet/dashboard/history/search-statistics.spec.ts): todos usam getByTestId(...).click() + getByRole('option', {name}).click(), e mat-autocomplete tambem renderiza mat-option com role=option - so o testId muda de alvo (do mat-select pro input interno), sem mudar a asserção.",
+      "jira": "SV-505",
+      "subtasks": [
+        {
+          "id": "feat-031.1",
+          "name": "shared/searchable-select (componente novo, CVA completo)",
+          "status": "done",
+          "jira": "SV-506",
+          "detail": "Componente base que todas as outras subtasks vao instanciar - precisa fechar sozinho o contrato de acessibilidade/CVA antes de qualquer tela trocar de mat-select, senao os achados do plan review se repetem ~20 vezes.",
+          "checklist": [
+            "src/app/shared/searchable-select/searchable-select.ts: standalone, implementa ControlValueAccessor (NG_VALUE_ACCESSOR) - writeValue/registerOnChange/registerOnTouched/setDisabledState.",
+            "Inputs: options (Array<{id,name}>), label (string ja resolvida via transloco pelo chamador), testId (aplica id=`${testId()}-input` + data-testid no <input> interno), allOptionLabel (string opcional ja traduzida - sentinela id='' no topo da lista).",
+            "2 sinais internos separados: query (texto exibido/filtro, livre) vs. valor commitado do FormControl (so muda via (optionSelected), nunca por digitacao). (blur) sem selecao nova reverte query pro nome do id commitado (ou allOptionLabel/'' se nao houver).",
+            "Filtro por nome: lowercase + remocao de diacriticos (normalize('NFD') + regex), funcao pura testavel isoladamente.",
+            "Reagir a options() mudando depois de um writeValue anterior (forkJoin assincrono) - recalcula o nome exibido para o id ja commitado sem exigir novo writeValue.",
+            "[attr.aria-label]=\"label()\" no <input matInput> interno (convencao docs/CONVENTIONS.md, nunca antes exercitada por estes campos porque mat-select nao e matInput).",
+            "Testes unitarios: filtro case+acento-insensivel, sentinela allOptionLabel, disabled state, blur sem selecao reverte texto, options() mudando apos writeValue. afterEach(() => TestBed.inject(OverlayContainer).ngOnDestroy()) (gotcha de overlay do CDK, docs/TESTING.md)."
+          ],
+          "validation": "ng test do componente isolado, cobertura >=80%. Nenhuma dependencia nova no package.json (so MatAutocompleteModule, ja disponivel via @angular/material).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-031.2",
+          "name": "Aplicar searchable-select em register-bet.html + team-manager.html",
+          "status": "not-started",
+          "jira": "SV-507",
+          "detail": "Primeira aplicacao real do componente, inclui o caso mais complexo de disabled state (team1Id/team2Id habilitados so apos escolher esporte, feat-033.2) - prova o contrato de setDisabledState antes das telas mais simples.",
+          "checklist": [
+            "register-bet.html: bettingHouseId/sportId/leagueId/marketId/tipsterId/team1Id/team2Id trocam de mat-select pra app-searchable-select (betType continua mat-select, enum fixo pre/live).",
+            "team-manager.html: sportId troca de mat-select pra app-searchable-select.",
+            "Confirmar que a cascata sportId -> team1Id/team2Id (enable/disable + reset, register-bet.ts) continua funcionando sem alteracao na logica da pagina - searchable-select so reflete o disabled/value, nao reimplementa a cascata.",
+            "register-bet.spec.ts: sem quebra (testes setam form.controls.X.setValue() direto, nao tocam DOM do mat-select) - rodar e confirmar.",
+            "e2e/register-bet.spec.ts existente: sem mudanca de asserção (getByTestId+getByRole('option') continuam validos)."
+          ],
+          "validation": "./init.sh verde. npx playwright test register-bet.spec.ts verde sem editar o arquivo.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-031.3",
+          "name": "Aplicar searchable-select em search-statistics.html + dashboard.html",
+          "status": "not-started",
+          "jira": "SV-508",
+          "detail": "Segundo caso de cascata (sportId -> teamOptions em search-statistics, mesmo padrao de 031.2) e o loop dinamico optionalCatalogFilters() - prova que o componente funciona tambem quando instanciado via @for com testId/label variaveis.",
+          "checklist": [
+            "search-statistics.html: sportId/leagueId/teamId + o loop optionalCatalogFilters() (bettingHouseId/marketId/tipsterId) trocam pra app-searchable-select.",
+            "dashboard.html: bettingHouseId/sportId/leagueId/marketId/tipsterId trocam pra app-searchable-select.",
+            "Confirmar cascata sportId -> teamOptions (search-statistics.ts) intacta.",
+            "mat-error de obrigatoriedade (sportId/leagueId required em search-statistics) continua disparando - validators ficam na pagina, sem mudanca.",
+            "e2e/search-statistics.spec.ts e e2e/dashboard.spec.ts existentes: sem mudanca de asserção."
+          ],
+          "validation": "./init.sh verde. npx playwright test search-statistics.spec.ts dashboard.spec.ts verde sem editar os arquivos.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-031.4",
+          "name": "Aplicar em history.html, Playwright novo, CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-509",
+          "detail": "Fecha a feature - ultima tela (3 instancias do mesmo campo bettingHouseId em formularios distintos) e o unico teste realmente novo desta feature (digitar filtra a lista - as outras subtasks so provam que o clique direto continua igual).",
+          "checklist": [
+            "history.html: bettingHouseId (filtro de apostas, criar-movimentacao, filtro de movimentacoes - 3 instancias) + sportId (filtro de apostas) trocam pra app-searchable-select (campo type deposit/withdrawal continua mat-select).",
+            "e2e/history.spec.ts existente: sem mudanca de asserção nos fluxos ja cobertos.",
+            "Teste Playwright NOVO: digitar texto parcial (com e sem acento) filtra a lista de opcoes, selecionar uma aplica o filtro/valor esperado - unico comportamento desta feature ainda sem cobertura e2e depois de 031.2/031.3.",
+            "i18n: nenhuma chave nova (componente nao introduz string propria - label/allOptionLabel vem do chamador). validate-i18n-keys.py roda sem diferenca.",
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh (ng build + ng test com cobertura 80% + Playwright) verde.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done.",
+            "Testado em pelo menos uma resolucao mobile e uma desktop, nos dois temas.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit."
+          ],
+          "validation": "init.sh sai 0; feature_list.json (deste app) atualizado com evidence.",
+          "owner": "agente"
+        }
+      ],
       "evidence": ""
     },
     {

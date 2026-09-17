@@ -217,3 +217,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-502](https://stakevault.atlassian.net/browse/SV-502) - register-bet: team1Id/team2Id desabilitados e filtrados por esporte
 - [SV-503](https://stakevault.atlassian.net/browse/SV-503) - app-side-nav: menu de recursos acompanha a largura da nav expandida
 - [SV-504](https://stakevault.atlassian.net/browse/SV-504) - CHANGELOG e verificacao final
+- [SV-505](https://stakevault.atlassian.net/browse/SV-505) - Selects de filtro pesquisaveis (autocomplete digitavel)
+- [SV-506](https://stakevault.atlassian.net/browse/SV-506) - shared/searchable-select (componente novo, CVA completo)
+- [SV-507](https://stakevault.atlassian.net/browse/SV-507) - Aplicar searchable-select em register-bet.html + team-manager.html
+- [SV-508](https://stakevault.atlassian.net/browse/SV-508) - Aplicar searchable-select em search-statistics.html + dashboard.html
+- [SV-509](https://stakevault.atlassian.net/browse/SV-509) - Aplicar em history.html, Playwright novo, CHANGELOG e verificacao final
