@@ -207,3 +207,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-483](https://stakevault.atlassian.net/browse/SV-483) - Aplicar mat-datepicker aos campos de data (filtros)
 - [SV-484](https://stakevault.atlassian.net/browse/SV-484) - register-bet: betDate vira mat-datepicker + mat-timepicker (2 controles independentes)
 - [SV-485](https://stakevault.atlassian.net/browse/SV-485) - Atualizar testes, QA visual e documentacao
+- [SV-490](https://stakevault.atlassian.net/browse/SV-490) - Polish app-side-nav: fontSet Material Symbols Outlined seletivo + scrollbar tematizada
+- [SV-491](https://stakevault.atlassian.net/browse/SV-491) - Material Symbols Outlined seletivo na sidebar (fontSet, exceto telegram)
+- [SV-492](https://stakevault.atlassian.net/browse/SV-492) - Scrollbar tematizada de .side-nav (thin + cores claro/escuro)
+- [SV-493](https://stakevault.atlassian.net/browse/SV-493) - CHANGELOG e verificacao final
+- [SV-494](https://stakevault.atlassian.net/browse/SV-494) - Teste de regressao: telegram fica fora do fontSet Symbols Outlined
