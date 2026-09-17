@@ -2106,7 +2106,7 @@
         "feat-008",
         "feat-011"
       ],
-      "status": "not-started",
+      "status": "in-progress",
       "plan_review": "Plan Reviewer (2026-09-16), passe proprio sem subagentes (baixo risco - UI pura, sem contrato/dado/seguranca): READY, sem achado. Approach dos itens 1-2 (filtragem client-side via computed sobre catalogo ja carregado, reuso do padrao disable/reset de search-statistics.ts) confirmado correto - Team.sportId ja e a FK documentada (docs/services/web.md, decisao do team-manager dedicado), sem necessidade de endpoint por esporte como o de stats-service/search-statistics (aquele existe porque search-statistics so lista times com estatistica, nao o catalogo inteiro). Reforca diretamente a regra 5 de Shneiderman (prevenir erros) ja documentada para RF04. Item 3 (menu de recursos) reusa exatamente o padrao de panelClass+::ng-deep ja estabelecido por language-selector.scss (feat-011) - mesmo mecanismo, sem novidade arquitetural; achado durante o proprio trabalho desta feature: um rascunho anterior deste ajuste foi absorvido por engano em 2 commits de feat-032 (5c1747d/99832db) por um 'git add' amplo de outra sessao, revertido pelo Delivery Reviewer daquela feature (commit 59ae268) e devolvido como edicao local - reaplicado aqui, na feature correta.",
       "jira": "SV-500",
       "subtasks": [
@@ -2120,7 +2120,7 @@
           ],
           "validation": "QA visual: autofill do browser nao aparece mais sobre o campo Nome em nenhum dos 2 formularios.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-501"
         },
         {
