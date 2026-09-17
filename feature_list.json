@@ -2162,7 +2162,7 @@
           ],
           "validation": "Suite do frontend verde e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-504"
         }
       ],
