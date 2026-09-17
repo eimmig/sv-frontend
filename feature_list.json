@@ -2249,10 +2249,71 @@
         "feat-018",
         "feat-022"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "2026-09-17, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado contra o plano antes de qualquer codigo. Veredito: READY WITH CONCERNS, 1 amendment MINOR (preservar posicao do cursor apos reformatar, ver abaixo). Investigacao real feita antes do plan review (dev server + Playwright, nao so leitura de codigo) confirmou/descartou cada um dos 4 itens: (1) CONFIRMADO por medicao real - getComputedStyle no mat-form-field de shared/searchable-select retorna display:inline-flex (default Material), nunca block, porque Angular ViewEncapsulation emulado tageia o elemento com o hash de searchable-select (quem renderiza), nao o de register-bet.scss (que so tem a regra CSS) - reproduzido visualmente em 1920px (nao em 1280/700/500, painel estreito demais nessas larguras mesmo com o display errado). Fix: mat-form-field{display:block;width:100%} DENTRO de searchable-select.scss. (2) CONFIRMADO por medicao real, so em largura estreita (390px) - flex item sem min-width explicito encolhe bem abaixo do flex-basis(140px) em container estreito, input type=month (UI nativa mais alta) fica sem espaco vertical pro rotulo flutuante, rotulo aparece sobreposto ao valor. Fix: min-width:140px na mesma regra de monthly-drawdown-grid.scss. (3) NAO reproduzido em nenhuma condicao testada (4 larguras, 2 niveis de zoom, screenshot no meio da transicao) - aplicado mesmo assim por decisao do usuario via AskUserQuestion (esconder tambem o img do logo quando colapsada, hoje so o wordmark e condicional). (4) diretiva nova appDateMask, aplicada nos 4 usos de matDatepicker por decisao do usuario via AskUserQuestion (nao so period-preset-filter). Risco levantado na investigacao - conflito de listener 'input' entre a diretiva nova e MatDatepickerInput no mesmo elemento - resolvido com evidencia real: lido node_modules/@angular/material/fesm2022/datepicker.mjs (_onInput, linha ~3337) - MatDatepickerInput le event.target.value AO VIVO (propriedade DOM, nao uma copia cacheada), entao independente da ordem de registro entre minha diretiva e a do Material, o valor final apos o usuario terminar de digitar converge certo (estados intermediarios podem parsear como null transitoriamente - esperado, nao-destrutivo, comportamento padrao de qualquer campo mascarado). Amendment MINOR aceito: reescrever input.value dentro do handler de input reseta a posicao do cursor pro final na maioria dos browsers - adicionar input.setSelectionRange(pos,pos) apos reformatar (posicao calculada pelos digitos ja digitados), pratica padrao de input mascarado, sem risco novo. Confirmado sem biblioteca de mascara no package.json (grep) - diretiva OK como primeira do tipo no codebase, mesma filosofia Intl-based de core/date-format.ts (Intl.DateTimeFormat(locale).formatToParts pra derivar ordem dia/mes/ano sem hardcode). Teste obrigatorio antes de done: digitar digitos crus no campo e confirmar que o Date final (customFrom/customTo signal ou formControl equivalente) resolve correto nos 4 usos, nao so que a mascara aparece visualmente.",
+      "jira": "SV-518",
+      "subtasks": [
+        {
+          "id": "feat-034.1",
+          "name": "Fix CSS confirmado: searchable-select display block + monthly-drawdown-grid min-width",
+          "status": "not-started",
+          "jira": "SV-519",
+          "detail": "Os 2 achados ja confirmados por medicao real na investigacao do plan review - fix direto, sem ambiguidade.",
+          "checklist": [
+            "shared/searchable-select/searchable-select.scss: mat-form-field { display: block; width: 100%; } (a UNICA folha que alcanca o elemento real, ver plan_review).",
+            "pages/dashboard/monthly-drawdown-grid/monthly-drawdown-grid.scss: min-width: 140px; na regra .monthly-drawdown-grid__filter mat-form-field (ja tem flex: 1 1 140px; max-width: 200px;).",
+            "Confirmar visualmente (QA real, dev server) que register-bet Evento panel em 1920px nao glua mais os campos, e monthly-drawdown em 390px nao corta mais o rotulo."
+          ],
+          "validation": "npx playwright test (suite completa) verde, sem regressao visual nos 2 componentes tocados.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-034.2",
+          "name": "Sidebar colapsada: esconder logo (so o botao de expandir fica)",
+          "status": "not-started",
+          "jira": "SV-520",
+          "detail": "Decisao do usuario - aplicar mesmo sem bug reproduzido.",
+          "checklist": [
+            "app-side-nav.html: envolver o <img class=\"side-nav__logo\"> em @if (!collapsed()) (mesma condicao ja usada pro wordmark).",
+            "Confirmar visualmente que a coluna colapsada mostra so o botao de expandir, centralizado, sem espaco vazio estranho onde o logo estava."
+          ],
+          "validation": "app-side-nav.spec.ts atualizado (novo caso: logo ausente quando collapsed=true) + QA visual (desktop/mobile, claro/escuro, colapsada/expandida).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-034.3",
+          "name": "Diretiva appDateMask (locale-aware) + aplicar nos 4 usos de matDatepicker",
+          "status": "not-started",
+          "jira": "SV-521",
+          "detail": "Primeira diretiva de mascara do codebase. Ver plan_review para a analise de risco do listener 'input' concorrente com MatDatepickerInput (resolvida com evidencia do codigo-fonte do Material) e o amendment de setSelectionRange.",
+          "checklist": [
+            "shared/date-mask.directive.ts (ou core/, a decidir pelo padrao de pasta mais consistente - grep outras diretivas standalone do projeto primeiro) novo: selector [appDateMask], injeta Language (core/language.ts).",
+            "Deriva ordem de segmentos (dia/mes/ano vs mes/dia/ano) e separador via Intl.DateTimeFormat(language.current()).formatToParts(new Date()) - sem hardcode de locale->formato.",
+            "@HostListener('input'): extrai digitos crus (regex \\D), limita a 8, reconstroi string com separador nas posicoes certas conforme a ordem do locale, reescreve input.value, e chama input.setSelectionRange(pos,pos) com pos calculado a partir da contagem de digitos+separadores ja inseridos ate a posicao do cursor original (amendment MINOR do plan review).",
+            "placeholder do locale (ex. dd/mm/aaaa ou mm/dd/aaaa, traduzido) setado via @HostBinding ou Renderer2, reativo a Language.current().",
+            "Aplicar [appDateMask] nos 4 <input matInput [matDatepicker]>: shared/period-preset-filter (2 campos), pages/history.html (4 campos - apostas + transacoes, from/to cada), pages/search-statistics.html (2 campos), pages/register-bet.html (1 campo, betDate).",
+            "i18n: nenhuma chave nova de texto de UI (placeholder e derivado de Intl, nao de transloco) - conferir que nao quebra nenhum teste i18n existente."
+          ],
+          "validation": "Teste unitario da diretiva isolada (fakes/TestBed) provando a reformatacao em pt-BR (DD/MM/AAAA) e en-US (MM/DD/AAAA). Teste de integracao/e2e em PELO MENOS 1 dos 4 usos digitando digitos crus e confirmando que o Date final vinculado (ngModel/formControl) resolve certo - nao so que a mascara aparece visualmente (achado do plan review: nenhum teste ainda provava isso). QA visual (placeholder guia visivel campo vazio, mascara formando ao digitar) nos 2 temas.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-034.4",
+          "name": "CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-522",
+          "detail": "Fecha a feature com o gate real do harness. Ultima subtask - carrega o item fixo de revisao do vault (docs/) alem do checklist padrao.",
+          "checklist": [
+            "Entrada em CHANGELOG.md (automatica, via tools/jira_story.py na criacao da issue).",
+            "./init.sh verde.",
+            "npx playwright test (suite completa) verde.",
+            "Delivery Reviewer e Test Suite Auditor rodados antes de done.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit. Candidatos ja identificados na investigacao: gotcha de ViewEncapsulation bloqueando CSS cross-component (mat-form-field display), gotcha de flex-basis sem min-width nao sendo respeitado como piso, e o mecanismo de mascara de data (primeiro do tipo) como padrao reaproveitavel."
+          ],
+          "validation": "./init.sh sai 0; feature_list.json (deste app) atualizado com evidence.",
+          "owner": "agente"
+        }
+      ],
       "evidence": ""
     },
     {
