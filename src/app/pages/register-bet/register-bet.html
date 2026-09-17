@@ -151,6 +151,7 @@
           <mat-label>{{ 'registerBet.betDateLabel' | transloco }}</mat-label>
           <input
             matInput
+            appDateMask
             id="register-bet-date-input"
             [matDatepicker]="betDatePicker"
             formControlName="betDateOnly"
