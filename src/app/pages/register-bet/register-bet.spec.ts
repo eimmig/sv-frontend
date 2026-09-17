@@ -133,7 +133,7 @@ describe('RegisterBet', () => {
     const request = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/bets`);
     expect(request.request.headers.get('Idempotency-Key')).toBeTruthy();
     expect(request.request.body.bettingHouseId).toBe('bh-1');
-    expect(request.request.body.betType).toBeNull();
+    expect(request.request.body.betType).toBe('pre');
     request.flush({ id: '1', status: 'pending' });
 
     expect(fixture.componentInstance['successMessage']()).toBe('Aposta registrada com sucesso.');
