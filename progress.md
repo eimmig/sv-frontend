@@ -3,9 +3,35 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-17
-**Estado:** `feat-001` a `feat-033` e `feat-035` `done`. `feat-034` (4 achados ad-hoc de UX em
-produção — campos grudados, mês cortado, logo quebrando em 2 linhas colapsado, máscara de data
-ausente) segue `not-started`, sem `plan_review` ainda — backlog deste app **não** está esgotado.
+**Estado:** `feat-001` a `feat-035` `done` — backlog deste app esgotado.
+
+## `feat-034` fechada — 4 achados ad-hoc de UX pós-deploy (2026-09-17)
+
+Sem epic próprio na raiz (mesmo precedente de `feat-032`/`033`), investigados contra o dev server
+(screenshots reais) antes de codificar. **(1)** `shared/searchable-select` grudado 2-por-linha:
+confirmado por medição real (`getComputedStyle` — `display: inline-flex`, nunca `block`, mesmo
+com `register-bet.scss` tendo a regra — ViewEncapsulation emulado tageia o elemento com o hash de
+`searchable-select`, não o do caller). Só reproduzia em janelas largas (~1920px), por isso a
+sessão anterior não confirmou em 1280/700/500px. Fix: `mat-form-field { display: block; width:
+100% }` dentro de `searchable-select.scss`. **(2)** Rótulo cortado em "Mês inicial"/"Mês final"
+(`monthly-drawdown-grid`, `<input type="month">`): `min-width` ausente (flex encolhia abaixo do
+`flex-basis`) + `input[type="month"]` computando `line-height`/`height` de 16px contra os 24px de
+um `matInput` comum (medido e comparado diretamente) — Material posiciona o rótulo assumindo 24px.
+**(3)** Logo da sidebar colapsada: não reproduzido em nenhuma condição testada (4 larguras, 2
+zooms, meio da transição) — aplicado mesmo assim por decisão do usuário (esconder também o
+`<img>`, não só o wordmark). **(4)** Máscara `__/__/____` ausente (regressão da `feat-022`):
+`core/date-mask.directive.ts` novo, aplicada nos 4 usos de `matDatepicker` (decisão do usuário:
+todos, não só `period-preset-filter`). **Achado crítico só revelado por um teste e2e real**:
+`NativeDateAdapter.parse()` é `Date.parse()` puro, sempre M/D/Y, independente do locale — uma
+primeira versão da máscara ordenada pelo locale (D/M/Y para pt-BR/es) trocava dia e mês **em
+silêncio** sempre que o dia fosse ≤12. Corrigido para M/D/Y sempre. Detalhe completo (incluindo os
+2 gaps de isolamento de teste que a diretiva expôs em `register-bet.spec.ts`) em
+`docs/CONVENTIONS.md` (raiz) e `docs/services/web.md`.
+
+Story SV-518 (subtasks SV-519..522), PRs #152-156, CI+SonarCloud verdes (1 achado real do
+SonarCloud — 3 testes quase idênticos, `typescript:S5976` — corrigido parametrizando com
+`it.each`). `Delivery Reviewer`/`Test Suite Auditor` (self-review): `PASS`. `./init.sh` e
+`npx playwright test` completos verdes (57 arquivos/256 testes, 81 e2e).
 
 ## `feat-035` fechada — tela de troca de senha (2026-09-17)
 
