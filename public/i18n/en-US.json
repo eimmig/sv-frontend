@@ -6,6 +6,9 @@
   "language": {
     "label": "Language"
   },
+  "dateMask": {
+    "placeholder": "mm/dd/yyyy"
+  },
   "splash": {
     "ariaLabel": "Loading animation that forms the StakeVault logo",
     "title": "StakeVault animated splash",

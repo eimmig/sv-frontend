@@ -2283,7 +2283,7 @@
         {
           "id": "feat-034.3",
           "name": "Diretiva appDateMask (locale-aware) + aplicar nos 4 usos de matDatepicker",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-521",
           "detail": "Primeira diretiva de mascara do codebase. Ver plan_review para a analise de risco do listener 'input' concorrente com MatDatepickerInput (resolvida com evidencia do codigo-fonte do Material) e o amendment de setSelectionRange.",
           "checklist": [
