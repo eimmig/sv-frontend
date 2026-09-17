@@ -116,33 +116,67 @@
   <div class="side-nav__spacer"></div>
 
   <div class="side-nav__footer">
-    <app-language-selector [collapsed]="collapsed()" />
-    <app-theme-toggle />
-    <a
-      routerLink="/change-password"
-      routerLinkActive="side-nav__link--active"
-      class="side-nav__link"
-      data-testid="nav-change-password"
-      [matTooltip]="collapsed() ? ('nav.changePassword' | transloco) : ''"
-      matTooltipPosition="right"
-    >
-      <mat-icon fontSet="material-symbols-outlined">lock_reset</mat-icon>
-      @if (!collapsed()) {
-        <span>{{ 'nav.changePassword' | transloco }}</span>
-      }
-    </a>
     <button
       type="button"
       class="side-nav__link"
-      data-testid="nav-logout"
-      [matTooltip]="collapsed() ? ('nav.logout' | transloco) : ''"
+      [class.side-nav__link--active]="isResourceActive(['change-password'])"
+      [matMenuTriggerFor]="settingsMenu"
+      data-testid="nav-settings-menu"
+      [matTooltip]="collapsed() ? ('nav.settings' | transloco) : ''"
       matTooltipPosition="right"
-      (click)="logout()"
     >
-      <mat-icon fontSet="material-symbols-outlined">logout</mat-icon>
+      <mat-icon fontSet="material-symbols-outlined">settings</mat-icon>
       @if (!collapsed()) {
-        <span>{{ 'nav.logout' | transloco }}</span>
+        <span>{{ 'nav.settings' | transloco }}</span>
       }
     </button>
+    <mat-menu #settingsMenu="matMenu" xPosition="after" (closed)="languageExpanded.set(false)">
+      <button
+        type="button"
+        class="side-nav__settings-language-toggle"
+        data-testid="nav-settings-language-toggle"
+        [attr.aria-expanded]="languageExpanded()"
+        aria-controls="side-nav-settings-language-list"
+        (click)="toggleLanguageExpanded($event)"
+      >
+        <mat-icon fontSet="material-symbols-outlined">language</mat-icon>
+        <span>{{ 'language.label' | transloco }}</span>
+        <mat-icon
+          fontSet="material-symbols-outlined"
+          class="side-nav__settings-language-chevron"
+          [class.side-nav__settings-language-chevron--open]="languageExpanded()"
+          >expand_more</mat-icon
+        >
+      </button>
+      <div
+        id="side-nav-settings-language-list"
+        class="side-nav__settings-language-list"
+        [class.side-nav__settings-language-list--open]="languageExpanded()"
+      >
+        @for (locale of locales; track locale.value) {
+          <button
+            mat-menu-item
+            type="button"
+            [attr.data-testid]="'nav-settings-language-' + locale.value"
+            (click)="setLocale(locale.value)"
+          >
+            <mat-icon fontSet="material-symbols-outlined">{{ language.current() === locale.value ? 'check' : '' }}</mat-icon>
+            <span>{{ locale.label }}</span>
+          </button>
+        }
+      </div>
+      <button mat-menu-item type="button" data-testid="nav-settings-theme" (click)="theme.toggle()">
+        <mat-icon fontSet="material-symbols-outlined">{{ theme.current() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        <span>{{ (theme.current() === 'dark' ? 'theme.switchToLight' : 'theme.switchToDark') | transloco }}</span>
+      </button>
+      <a mat-menu-item routerLink="/change-password" data-testid="nav-change-password">
+        <mat-icon fontSet="material-symbols-outlined">lock_reset</mat-icon>
+        <span>{{ 'nav.changePassword' | transloco }}</span>
+      </a>
+      <button mat-menu-item type="button" data-testid="nav-logout" (click)="logout()">
+        <mat-icon fontSet="material-symbols-outlined">logout</mat-icon>
+        <span>{{ 'nav.logout' | transloco }}</span>
+      </button>
+    </mat-menu>
   </div>
 </nav>

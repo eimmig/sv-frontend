@@ -111,7 +111,6 @@ $width-collapsed: 72px;
   background: transparent;
   border: none;
   cursor: pointer;
-  width: 100%;
   text-align: left;
   transition:
     background-color 0.15s ease,
@@ -161,9 +160,58 @@ $width-collapsed: 72px;
   gap: 4px;
   padding: 8px;
   border-top: 1px solid var(--color-border);
+}
 
-  app-language-selector,
-  app-theme-toggle {
-    width: 100%;
+.side-nav__settings-language-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 0 16px;
+  height: 48px;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  span {
+    flex: 1 1 auto;
+  }
+
+  &:hover {
+    background: var(--color-surface-elevated);
+  }
+}
+
+.side-nav__settings-language-chevron {
+  transition: transform 0.15s ease;
+
+  &--open {
+    transform: rotate(180deg);
+  }
+}
+
+.side-nav__settings-language-list {
+  display: flex;
+  flex-direction: column;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease;
+
+  &--open {
+    max-height: 160px;
+  }
+
+  .mat-mdc-menu-item {
+    padding-left: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .side-nav__settings-language-chevron,
+  .side-nav__settings-language-list {
+    transition: none;
   }
 }
