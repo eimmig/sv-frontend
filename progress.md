@@ -3,9 +3,50 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-16
-**Estado:** `feat-001` a `feat-032` `done` — backlog deste app esgotado. Nota: a linha anterior
-deste arquivo listava `feat-026`/`027`/`029` como `not-started`, desatualizada em relação ao
-`feature_list.json` (já `done` há mais tempo) — corrigido aqui.
+**Estado:** `feat-001` a `feat-033` `done` — backlog deste app esgotado.
+
+## `feat-033` fechada — autofill, time filtrado por esporte, menu de recursos (2026-09-16)
+
+3 achados do usuário em uso real, sem epic próprio na raiz (feature ad-hoc de UX, mesmo
+precedente de `feat-032`). Story SV-500, subtasks SV-501..504, PR #141 feature→develop (gate
+completo: `./init.sh`, `Delivery Reviewer` PASS, `Test Suite Auditor` PASS, CI+SonarCloud+
+GitGuardian verdes).
+
+- **`feat-033.1`**: `catalog-manager.html`/`team-manager.html` ganham `autocomplete="off"` no
+  campo Nome — Chrome/Edge sugeria autofill de "Contact Info" salvo sobre um campo de texto
+  genérico.
+- **`feat-033.2`**: `register-bet.ts` — `team1Id`/`team2Id` nasciam habilitados e sem filtro,
+  permitindo escolher time antes/sem relação ao esporte. Agora nascem `{value:'',disabled:true}`,
+  `teamOptions` (computed) filtra `options().teams` por `sportId` (via `toSignal`), e um
+  `subscribe` em `sportId.valueChanges` reseta + habilita/desabilita os 2 controls a cada troca —
+  mesmo padrão de `search-statistics.ts` (`feat-012`), reforça a regra 5 de Shneiderman
+  (prevenir erros) já documentada para RF04.
+- **`feat-033.3`**: `app-side-nav` — o `mat-menu` de Cadastrar/Dashboard de cada recurso abria no
+  tamanho padrão minúsculo do Material em vez de acompanhar a largura da nav expandida. Corrigido
+  com `panelClass` condicional (`[class]`) + `::ng-deep` (mesmo padrão de `language-selector.scss`)
+  — **este era exatamente o trecho que `feat-032` tinha absorvido por engano e revertido** (ver
+  seção `feat-032` abaixo); documentado como mecanismo reaproveitável em `docs/services/web.md`
+  (repo raiz, commit `9d77e9c`).
+
+**Achado real de ambiente, não de código**: esta sessão colidiu com outra rodando `feat-032` na
+mesma working directory ao mesmo tempo (branch trocando sozinha, `git add` de uma sessão varrendo
+edição não commitada da outra 2x). Isolado numa **worktree Git dedicada**
+(`.claude/worktrees/register-bet-team-filter/`) a partir daí — todo o trabalho de `feat-033`
+(commits, `Plan Reviewer`, `Delivery Reviewer`, `jira_story.py`) rodou isolado, sem tocar o
+checkout principal. **Lição pra sessões futuras trabalhando em paralelo no mesmo serviço**: se
+outra sessão pode estar ativa na mesma pasta, isolar em worktree *antes* de escrever qualquer
+diff, não depois de descobrir a colisão.
+
+**Gotcha real de `tools/jira_story.py`**: rodar o script fora do checkout real (ex.: cópia
+isolada/`ROOT` sintético) só funciona se `tools/.jira.env` também existir fisicamente naquele
+`ROOT` — `load_env()` só lê overrides opcionais (`JIRA_SUBTASK_TYPE` etc.) do arquivo, nunca do
+`os.environ` do processo, mesmo que as 4 credenciais obrigatórias venham do ambiente. Sem o
+arquivo, `JIRA_SUBTASK_TYPE` cai no default `"Sub-task"` (hífen) em vez do valor real do projeto
+(`"Subtask"`, sem hífen) — Jira aceita a *story* (usa só as 4 credenciais + default de tipo que
+por coincidência bate) e rejeita toda *subtask* com `"issuetype":"Specify a valid issue type"`,
+erro que não denuncia a causa real. Story órfã sem subtasks fica gravada no `feature_list.json`
+alvo — se isso acontecer, apagar as issues criadas no Jira e limpar o campo `jira` antes de
+tentar de novo, não só re-rodar.
 
 ## `feat-032` fechada — fontSet Symbols Outlined seletivo na sidebar + scrollbar tematizada (2026-09-16)
 
