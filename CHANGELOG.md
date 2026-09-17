@@ -222,3 +222,12 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-507](https://stakevault.atlassian.net/browse/SV-507) - Aplicar searchable-select em register-bet.html + team-manager.html
 - [SV-508](https://stakevault.atlassian.net/browse/SV-508) - Aplicar searchable-select em search-statistics.html + dashboard.html
 - [SV-509](https://stakevault.atlassian.net/browse/SV-509) - Aplicar em history.html, Playwright novo, CHANGELOG e verificacao final
+- [SV-514](https://stakevault.atlassian.net/browse/SV-514) - Tela de troca de senha
+- [SV-515](https://stakevault.atlassian.net/browse/SV-515) - change-password-api + pagina change-password (form, submit, sucesso/erro)
+- [SV-516](https://stakevault.atlassian.net/browse/SV-516) - Nav (side-nav footer) + MustChangePasswordBanner + Playwright + docs
+- [SV-517](https://stakevault.atlassian.net/browse/SV-517) - CHANGELOG e verificacao final
+- [SV-518](https://stakevault.atlassian.net/browse/SV-518) - Corrigir campos grudados (searchable-select), campo de mes cortado (drawdown mensal), logo quebrando em 2 linhas na sidebar colapsada e mascara de data ausente (De/Ate)
+- [SV-519](https://stakevault.atlassian.net/browse/SV-519) - Fix CSS confirmado: searchable-select display block + monthly-drawdown-grid min-width
+- [SV-520](https://stakevault.atlassian.net/browse/SV-520) - Sidebar colapsada: esconder logo (so o botao de expandir fica)
+- [SV-521](https://stakevault.atlassian.net/browse/SV-521) - Diretiva appDateMask (locale-aware) + aplicar nos 4 usos de matDatepicker
+- [SV-522](https://stakevault.atlassian.net/browse/SV-522) - CHANGELOG e verificacao final

@@ -6,6 +6,9 @@
   "language": {
     "label": "Idioma"
   },
+  "dateMask": {
+    "placeholder": "mm/dd/aaaa"
+  },
   "splash": {
     "ariaLabel": "Animación de carga que forma el logo de StakeVault",
     "title": "Splash animado de StakeVault",
@@ -164,13 +167,25 @@
     "betTypeDashboard": "Por tipo de apuesta",
     "telegramLink": "Vincular Telegram",
     "users": "Usuarios",
+    "changePassword": "Cambiar contraseña",
     "logout": "Cerrar sesión",
     "collapse": "Contraer menú",
     "expand": "Expandir menú"
   },
   "mustChangePassword": {
     "message": "Estás usando una contraseña temporal. Cámbiala lo antes posible.",
+    "action": "Cambiar contraseña",
     "dismiss": "Entendido"
+  },
+  "changePassword": {
+    "title": "Cambiar contraseña",
+    "currentPasswordLabel": "Contraseña actual",
+    "newPasswordLabel": "Nueva contraseña",
+    "confirmPasswordLabel": "Confirmar nueva contraseña",
+    "passwordMismatchError": "Las contraseñas no coinciden.",
+    "submit": "Cambiar contraseña",
+    "genericError": "No se pudo cambiar la contraseña. Inténtalo de nuevo.",
+    "successMessage": "Contraseña cambiada con éxito."
   },
   "users": {
     "createTitle": "Nuevo usuario",

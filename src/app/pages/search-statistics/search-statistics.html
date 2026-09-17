@@ -53,6 +53,7 @@
           <mat-label>{{ 'searchStatistics.fromLabel' | transloco }}</mat-label>
           <input
             matInput
+            appDateMask
             id="search-statistics-from-input"
             [matDatepicker]="fromPicker"
             formControlName="from"
@@ -67,6 +68,7 @@
           <mat-label>{{ 'searchStatistics.toLabel' | transloco }}</mat-label>
           <input
             matInput
+            appDateMask
             id="search-statistics-to-input"
             [matDatepicker]="toPicker"
             formControlName="to"

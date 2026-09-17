@@ -64,6 +64,35 @@ describe('Auth', () => {
     expect(fresh.mustChangePassword()).toBe(true);
   });
 
+  it('clearMustChangePassword() flips the flag in the signal and localStorage without a new login', () => {
+    localStorage.setItem(
+      'stakevault.auth',
+      JSON.stringify({
+        token: 't',
+        userId: 'u',
+        role: 'MEMBER',
+        tenantSlug: 'acme',
+        mustChangePassword: true,
+      }),
+    );
+    const auth = TestBed.inject(Auth);
+
+    auth.clearMustChangePassword();
+
+    expect(auth.mustChangePassword()).toBe(false);
+    expect(auth.session()?.token).toBe('t');
+    expect(JSON.parse(localStorage.getItem('stakevault.auth') ?? '{}').mustChangePassword).toBe(false);
+  });
+
+  it('clearMustChangePassword() is a no-op when there is no session', () => {
+    const auth = TestBed.inject(Auth);
+
+    auth.clearMustChangePassword();
+
+    expect(auth.session()).toBeNull();
+    expect(localStorage.getItem('stakevault.auth')).toBeNull();
+  });
+
   it('logout() clears the session and localStorage', () => {
     const auth = TestBed.inject(Auth);
     const httpMock = TestBed.inject(HttpTestingController);

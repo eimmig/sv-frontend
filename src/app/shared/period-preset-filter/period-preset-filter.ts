@@ -6,6 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslocoPipe } from '@jsverse/transloco';
 
+import { DateMaskDirective } from '../../core/date-mask.directive';
+
 export type PeriodPreset = 'today' | 'lastWeek' | 'last15Days' | 'lastMonth' | 'thisMonth' | 'custom';
 
 export interface PeriodRange {
@@ -64,7 +66,15 @@ export function resolvePreset(preset: Exclude<PeriodPreset, 'custom'>, today: Da
  * once on construction so the parent doesn't need to duplicate default-preset logic.
  */
 @Component({
-  imports: [FormsModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatSelectModule, TranslocoPipe],
+  imports: [
+    DateMaskDirective,
+    FormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    TranslocoPipe,
+  ],
   selector: 'app-period-preset-filter',
   styleUrl: './period-preset-filter.scss',
   templateUrl: './period-preset-filter.html',

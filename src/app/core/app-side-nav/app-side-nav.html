@@ -1,7 +1,7 @@
 <nav class="side-nav" [class.side-nav--collapsed]="collapsed()" data-testid="app-nav">
   <div class="side-nav__brand">
-    <img class="side-nav__logo" [src]="logoSrc()" alt="" aria-hidden="true" width="28" height="28" />
     @if (!collapsed()) {
+      <img class="side-nav__logo" [src]="logoSrc()" alt="" aria-hidden="true" width="28" height="28" />
       <span class="side-nav__wordmark"
         ><span class="side-nav__wordmark-stake">Stake</span><span class="side-nav__wordmark-vault">Vault</span></span
       >
@@ -118,6 +118,19 @@
   <div class="side-nav__footer">
     <app-language-selector [collapsed]="collapsed()" />
     <app-theme-toggle />
+    <a
+      routerLink="/change-password"
+      routerLinkActive="side-nav__link--active"
+      class="side-nav__link"
+      data-testid="nav-change-password"
+      [matTooltip]="collapsed() ? ('nav.changePassword' | transloco) : ''"
+      matTooltipPosition="right"
+    >
+      <mat-icon fontSet="material-symbols-outlined">lock_reset</mat-icon>
+      @if (!collapsed()) {
+        <span>{{ 'nav.changePassword' | transloco }}</span>
+      }
+    </a>
     <button
       type="button"
       class="side-nav__link"

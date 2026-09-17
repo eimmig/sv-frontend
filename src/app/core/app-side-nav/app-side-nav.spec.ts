@@ -35,6 +35,7 @@ describe('AppSideNav', () => {
                 betTypeDashboard: 'Por tipo de aposta',
                 telegramLink: 'Vincular Telegram',
                 users: 'Usuários',
+                changePassword: 'Trocar senha',
                 logout: 'Sair',
                 collapse: 'Retrair menu',
                 expand: 'Expandir menu',
@@ -119,6 +120,16 @@ describe('AppSideNav', () => {
     expect(searchStatsIcon?.classList.contains('material-symbols-outlined')).toBe(true);
   });
 
+  it('links to /change-password in the footer, available to every role', () => {
+    session('MEMBER');
+    const fixture = TestBed.createComponent(AppSideNav);
+    fixture.detectChanges();
+
+    const link = fixture.nativeElement.querySelector('[data-testid="nav-change-password"]');
+    expect(link).toBeTruthy();
+    expect(link.getAttribute('href')).toBe('/change-password');
+  });
+
   it('logout() clears the session and navigates to /login', () => {
     session('MEMBER');
     const fixture = TestBed.createComponent(AppSideNav);
@@ -130,6 +141,21 @@ describe('AppSideNav', () => {
 
     expect(TestBed.inject(Auth).isAuthenticated()).toBe(false);
     expect(router.navigateByUrl).toHaveBeenCalledWith('/login');
+  });
+
+  it('hides the logo when collapsed (feat-034.2), keeping only the expand button', () => {
+    session('MEMBER');
+    const fixture = TestBed.createComponent(AppSideNav);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+
+    expect(el.querySelector('.side-nav__logo')).toBeTruthy();
+
+    el.querySelector<HTMLButtonElement>('[data-testid="nav-collapse-toggle"]')?.click();
+    fixture.detectChanges();
+
+    expect(el.querySelector('.side-nav__logo')).toBeNull();
+    expect(el.querySelector('[data-testid="nav-collapse-toggle"]')).toBeTruthy();
   });
 
   it('starts expanded and toggles to collapsed, persisting the choice', () => {
