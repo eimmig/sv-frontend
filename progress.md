@@ -3,9 +3,54 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-17
-**Estado:** `feat-001` a `feat-033` `done` — backlog deste app esgotado. (Correção: a entrada
-anterior já afirmava isso em 2026-09-16, mas `feat-031` ainda estava `not-started` naquele
-momento — fechada agora, nesta sessão, ver seção abaixo.)
+**Estado:** `feat-001` a `feat-033` e `feat-035` `done`. `feat-034` (4 achados ad-hoc de UX em
+produção — campos grudados, mês cortado, logo quebrando em 2 linhas colapsado, máscara de data
+ausente) segue `not-started`, sem `plan_review` ainda — backlog deste app **não** está esgotado.
+
+## `feat-035` fechada — tela de troca de senha (2026-09-17)
+
+Achado do usuário em uso real: nunca existiu forma de trocar a própria senha no app —
+`MustChangePasswordBanner` (`feat-002.2`) era só informativo, sem link de ação, porque o endpoint
+nunca existiu (`auth-service feat-005`). Fecha `epic-030` da raiz, consumindo `POST
+/api/v1/auth/change-password` (`auth-service feat-018`, já fechado nesta mesma sessão).
+
+`Plan Reviewer`: `REVISE`, 2 achados MAJOR corrigidos no plano antes de codificar — (1) a
+mensagem de sucesso ia usar `--color-positive` (verde), reservado a ganho financeiro no design
+system, corrigida para estilo neutro (mesma caixa com borda de `.telegram-link__result`); (2) o
+Playwright proposto (login→trocar→logout→login de novo, contra o backend real) contradizia a
+convenção real da suíte — **todo** e2e deste app mocka a API via `page.route()`, nunca bate
+contra um backend real — corrigido para mock, mesmo padrão de `telegram-link.spec.ts`.
+
+Tela nova (`pages/change-password`, rota `/change-password`, só `authGuard`), link novo no
+rodapé do `app-side-nav` (ícone `lock_reset`, disponível a qualquer usuário — não é recurso
+admin-only) e ação real no `MustChangePasswordBanner`. `Auth.clearMustChangePassword()` novo
+sincroniza a sessão client-side sem exigir novo login (o token PASETO nunca carregou
+`mustChangePassword` nas claims).
+
+**Bug real de produção encontrado só por QA visual real** (screenshot contra o dev server, não
+por nenhum teste unitário/e2e mockado): `FormGroup.reset()` não limpa a flag `submitted` da
+`FormGroupDirective` — o `ErrorStateMatcher` padrão do Material considera um campo inválido
+quando `control.invalid && (control.touched || form.submitted)`, então os 3 campos de senha
+apareciam com borda vermelha de erro bem ao lado da mensagem "senha trocada com sucesso".
+Corrigido com `@ViewChild(FormGroupDirective) formDirective` + `formDirective.resetForm()`.
+Gotcha documentado em `docs/CONVENTIONS.md` (raiz) para qualquer formulário futuro deste app que
+se limpe na mesma tela após um submit bem-sucedido.
+
+**Achado colateral durante o commit**: `git add -A` varreu `.claude/worktrees/register-bet-team-filter`
+(worktree isolado de agente, leftover de `feat-033`) como um gitlink de submódulo órfão —
+corrigido no mesmo PR (`git rm --cached` + `.claude/worktrees/` no `.gitignore`), antes do merge
+`story→develop`. Lição: `git add -A` dentro deste repositório varre `.claude/worktrees/` se
+algum ficar para trás sem `.gitignore` — sempre conferir `git status` antes de um `add -A` amplo,
+mesmo quando as mudanças pretendidas parecem óbvias.
+
+`Delivery Reviewer`/`Test Suite Auditor` (self-review, risco médio): ambos `PASS`. Gate
+`story→develop` reprovou o SonarCloud na primeira tentativa (3 achados reais: import não usado,
+teste sem assertion, campo `@ViewChild` sem `readonly`) — corrigidos no mesmo PR, segunda rodada
+verde. Story SV-514 (subtasks SV-515/516/517 — `035.1`+`035.2` bundladas no mesmo commit,
+nav/banner precisavam existir para a QA visual real da descoberta da página), PRs #149/#150
+(subtask→story) + #151 (story→develop), CI+SonarCloud verdes. `./init.sh` verde (56 arquivos,
+250 testes). `npx playwright test` (suíte completa) verde: 80/80, sem regressão. Fecha `epic-030`
+— com isso, todos os 30 epics do `feature_list.json` da raiz estão `done`.
 
 ## `feat-031` fechada — selects de filtro pesquisáveis (autocomplete digitável) (2026-09-17)
 
