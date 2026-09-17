@@ -96,4 +96,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/users/users').then((m) => m.Users),
     canActivate: [authGuard, adminGuard],
   },
+  {
+    path: 'change-password',
+    loadComponent: () =>
+      import('./pages/change-password/change-password').then((m) => m.ChangePassword),
+    canActivate: [authGuard],
+  },
 ];

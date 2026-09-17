@@ -76,6 +76,23 @@ export class Auth {
       );
   }
 
+  /**
+   * Called after a successful POST /api/v1/auth/change-password - the token itself is not
+   * reissued (its claims never carried mustChangePassword), so the session flag is cleared
+   * locally instead of requiring a fresh login.
+   */
+  clearMustChangePassword(): void {
+    const current = this.session();
+    if (!current || !current.mustChangePassword) {
+      return;
+    }
+    const updated: Session = { ...current, mustChangePassword: false };
+    this.session.set(updated);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    }
+  }
+
   logout(): void {
     this.session.set(null);
     if (typeof localStorage !== 'undefined') {
