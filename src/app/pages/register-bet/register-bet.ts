@@ -16,6 +16,7 @@ import { BetType, BetsApi } from '../../core/bets-api';
 import { BettingHouse, BettingHousesApi } from '../../core/betting-houses-api';
 import { CatalogEntry, Team, catalogApi, teamsApi } from '../../core/catalog-api';
 import { formatBrl } from '../../core/currency';
+import { DateMaskDirective } from '../../core/date-mask.directive';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 import { SearchableSelect } from '../../shared/searchable-select/searchable-select';
@@ -52,6 +53,7 @@ function combineDateAndTime(date: Date, time: Date): Date {
 @Component({
   imports: [
     ReactiveFormsModule,
+    DateMaskDirective,
     MatButtonModule,
     MatDatepickerModule,
     MatFormFieldModule,

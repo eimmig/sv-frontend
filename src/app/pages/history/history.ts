@@ -17,6 +17,7 @@ import { BettingHouse, BettingHousesApi } from '../../core/betting-houses-api';
 import { CatalogEntry, catalogApi } from '../../core/catalog-api';
 import { formatBrl } from '../../core/currency';
 import { formatDateTime } from '../../core/date-format';
+import { DateMaskDirective } from '../../core/date-mask.directive';
 import { Language } from '../../core/language';
 import { PagedResponse } from '../../core/paged-response';
 import { toProblemDetail } from '../../core/problem-detail';
@@ -60,6 +61,7 @@ const TRANSACTIONS_TAB = 1;
 @Component({
   imports: [
     ReactiveFormsModule,
+    DateMaskDirective,
     MatButtonModule,
     MatDatepickerModule,
     MatFormFieldModule,

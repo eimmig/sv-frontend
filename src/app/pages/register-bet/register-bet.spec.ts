@@ -13,6 +13,9 @@ describe('RegisterBet', () => {
 
   const langs = {
     'pt-BR': {
+      dateMask: {
+        placeholder: 'mm/dd/aaaa',
+      },
       registerBet: {
         eventTitle: 'Evento',
         detailsTitle: 'Detalhes',
@@ -82,12 +85,20 @@ describe('RegisterBet', () => {
   }
 
   beforeEach(async () => {
+    // RegisterBet now injects Language (via DateMaskDirective on betDateOnly, feat-034) for the
+    // first time in this file's lifecycle. Without this, Language.current() falls back to
+    // browserLocale() - and this Vitest/jsdom environment's navigator.language is 'en-US', not
+    // 'pt-BR' - so it would pick 'en-US', which isn't in this suite's `langs`/`availableLangs`
+    // ('pt-BR' only), and every translate() call in the component (not just this directive's)
+    // would silently resolve against an unregistered active lang instead of the langs mock below.
+    localStorage.setItem('stakevault.language', 'pt-BR');
     await TestBed.configureTestingModule({
       imports: [
         RegisterBet,
         TranslocoTestingModule.forRoot({
           langs,
           translocoConfig: { availableLangs: ['pt-BR'], defaultLang: 'pt-BR' },
+          preloadLangs: true,
         }),
       ],
       providers: [provideHttpClient(), provideHttpClientTesting(), provideNativeDateAdapter()],

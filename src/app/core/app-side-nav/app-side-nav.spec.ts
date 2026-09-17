@@ -143,6 +143,21 @@ describe('AppSideNav', () => {
     expect(router.navigateByUrl).toHaveBeenCalledWith('/login');
   });
 
+  it('hides the logo when collapsed (feat-034.2), keeping only the expand button', () => {
+    session('MEMBER');
+    const fixture = TestBed.createComponent(AppSideNav);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+
+    expect(el.querySelector('.side-nav__logo')).toBeTruthy();
+
+    el.querySelector<HTMLButtonElement>('[data-testid="nav-collapse-toggle"]')?.click();
+    fixture.detectChanges();
+
+    expect(el.querySelector('.side-nav__logo')).toBeNull();
+    expect(el.querySelector('[data-testid="nav-collapse-toggle"]')).toBeTruthy();
+  });
+
   it('starts expanded and toggles to collapsed, persisting the choice', () => {
     session('MEMBER');
     const fixture = TestBed.createComponent(AppSideNav);

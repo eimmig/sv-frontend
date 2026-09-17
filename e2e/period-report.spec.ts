@@ -123,6 +123,38 @@ test.describe('epic-017 - "Relatório do período" page', () => {
     await expect.poll(() => lastTo).toBe('2026-09-10');
   });
 
+  // feat-034: the appDateMask directive formats input.value as the user types raw digits -
+  // MatDatepickerInput's own (input) listener on the same element reads that live value and
+  // parses it. Proves the two aren't just visually compatible (unit-tested already) but that the
+  // final Date actually reaches the query params, against a real browser (JSDOM never resolves
+  // this - see date-mask.directive.spec.ts).
+  test('typing a raw digit sequence into the custom date fields drives the from/to query params', async ({ page }) => {
+    let lastFrom: string | null = null;
+    let lastTo: string | null = null;
+    await page.route('**/api/v1/statistics**', (route) => {
+      const url = new URL(route.request().url());
+      if (url.pathname.endsWith('/daily')) {
+        return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) });
+      }
+      lastFrom = url.searchParams.get('from');
+      lastTo = url.searchParams.get('to');
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(statisticsBundle()) });
+    });
+
+    await page.goto('/period-report');
+    await expect(page.getByTestId('period-report-roi-bankroll')).toBeVisible();
+
+    await page.getByTestId('period-preset-select').click();
+    await page.getByRole('option', { name: 'Custom' }).click();
+
+    await page.getByTestId('period-preset-custom-from').pressSequentially('09052026');
+    await page.getByTestId('period-preset-custom-to').pressSequentially('09102026');
+    await page.getByTestId('period-preset-custom-to').blur();
+
+    await expect.poll(() => lastFrom).toBe('2026-09-05');
+    await expect.poll(() => lastTo).toBe('2026-09-10');
+  });
+
   test('shows the RFC 7807 detail when the statistics request fails', async ({ page }) => {
     await page.route('**/api/v1/statistics**', (route) => {
       const url = new URL(route.request().url());

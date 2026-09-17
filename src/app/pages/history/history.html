@@ -30,6 +30,7 @@
           <input
             matInput
             id="history-bets-from-input"
+            appDateMask
             [matDatepicker]="betsFromPicker"
             formControlName="from"
             data-testid="history-bets-filter-from"
@@ -44,6 +45,7 @@
           <input
             matInput
             id="history-bets-to-input"
+            appDateMask
             [matDatepicker]="betsToPicker"
             formControlName="to"
             data-testid="history-bets-filter-to"
@@ -219,6 +221,7 @@
               <input
                 matInput
                 id="history-transactions-from-input"
+                appDateMask
                 [matDatepicker]="transactionsFromPicker"
                 formControlName="from"
                 data-testid="history-transactions-filter-from"
@@ -233,6 +236,7 @@
               <input
                 matInput
                 id="history-transactions-to-input"
+                appDateMask
                 [matDatepicker]="transactionsToPicker"
                 formControlName="to"
                 data-testid="history-transactions-filter-to"
