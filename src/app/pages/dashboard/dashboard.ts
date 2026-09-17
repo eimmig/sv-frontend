@@ -4,7 +4,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { forkJoin, map } from 'rxjs';
@@ -25,6 +24,7 @@ import { MonthlyProfitChart } from '../../shared/monthly-profit-chart/monthly-pr
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 import { PeriodPresetFilter, PeriodRange } from '../../shared/period-preset-filter/period-preset-filter';
+import { SearchableSelect } from '../../shared/searchable-select/searchable-select';
 import { MonthlyDrawdownGrid } from './monthly-drawdown-grid/monthly-drawdown-grid';
 
 interface Options {
@@ -64,7 +64,6 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
     MatTabsModule,
     KpiCard,
     MonthlyProfitChart,
@@ -72,6 +71,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
     Panel,
     PanelLayout,
     PeriodPresetFilter,
+    SearchableSelect,
     TranslocoPipe,
   ],
   selector: 'app-dashboard',

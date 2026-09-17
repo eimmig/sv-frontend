@@ -6,5 +6,5 @@
   [attr.aria-label]="(theme.current() === 'dark' ? 'theme.switchToLight' : 'theme.switchToDark') | transloco"
   (click)="theme.toggle()"
 >
-  <mat-icon>{{ theme.current() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  <mat-icon fontSet="material-symbols-outlined">{{ theme.current() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
 </button>

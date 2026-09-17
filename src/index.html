@@ -13,6 +13,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <!-- Symbols Outlined, so far only used selectively (fontSet="material-symbols-outlined" on
+         individual mat-icon) in app-side-nav - better optical centering for diagonal glyphs
+         (trending_up/down, sports_score) than the classic set above. Not a global default: the
+         classic set stays for icons Symbols doesn't ship (e.g. brand icons like "telegram") and
+         for the rest of the app, so nothing else here needs auditing. See docs/DESIGN-SYSTEM.md. -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <app-root></app-root>

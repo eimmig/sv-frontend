@@ -207,3 +207,18 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-483](https://stakevault.atlassian.net/browse/SV-483) - Aplicar mat-datepicker aos campos de data (filtros)
 - [SV-484](https://stakevault.atlassian.net/browse/SV-484) - register-bet: betDate vira mat-datepicker + mat-timepicker (2 controles independentes)
 - [SV-485](https://stakevault.atlassian.net/browse/SV-485) - Atualizar testes, QA visual e documentacao
+- [SV-490](https://stakevault.atlassian.net/browse/SV-490) - Polish app-side-nav: fontSet Material Symbols Outlined seletivo + scrollbar tematizada
+- [SV-491](https://stakevault.atlassian.net/browse/SV-491) - Material Symbols Outlined seletivo na sidebar (fontSet, exceto telegram)
+- [SV-492](https://stakevault.atlassian.net/browse/SV-492) - Scrollbar tematizada de .side-nav (thin + cores claro/escuro)
+- [SV-493](https://stakevault.atlassian.net/browse/SV-493) - CHANGELOG e verificacao final
+- [SV-494](https://stakevault.atlassian.net/browse/SV-494) - Teste de regressao: telegram fica fora do fontSet Symbols Outlined
+- [SV-500](https://stakevault.atlassian.net/browse/SV-500) - Ajustes de UX em formularios/navegacao (autofill, time filtrado por esporte, menu de recursos)
+- [SV-501](https://stakevault.atlassian.net/browse/SV-501) - autocomplete=off no campo Nome (catalog-manager/team-manager)
+- [SV-502](https://stakevault.atlassian.net/browse/SV-502) - register-bet: team1Id/team2Id desabilitados e filtrados por esporte
+- [SV-503](https://stakevault.atlassian.net/browse/SV-503) - app-side-nav: menu de recursos acompanha a largura da nav expandida
+- [SV-504](https://stakevault.atlassian.net/browse/SV-504) - CHANGELOG e verificacao final
+- [SV-505](https://stakevault.atlassian.net/browse/SV-505) - Selects de filtro pesquisaveis (autocomplete digitavel)
+- [SV-506](https://stakevault.atlassian.net/browse/SV-506) - shared/searchable-select (componente novo, CVA completo)
+- [SV-507](https://stakevault.atlassian.net/browse/SV-507) - Aplicar searchable-select em register-bet.html + team-manager.html
+- [SV-508](https://stakevault.atlassian.net/browse/SV-508) - Aplicar searchable-select em search-statistics.html + dashboard.html
+- [SV-509](https://stakevault.atlassian.net/browse/SV-509) - Aplicar em history.html, Playwright novo, CHANGELOG e verificacao final

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -17,6 +18,7 @@ import { CatalogEntry, Team, catalogApi, teamsApi } from '../../core/catalog-api
 import { formatBrl } from '../../core/currency';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
+import { SearchableSelect } from '../../shared/searchable-select/searchable-select';
 
 interface FormOptions {
   readonly bettingHouses: BettingHouse[];
@@ -59,6 +61,7 @@ function combineDateAndTime(date: Date, time: Date): Date {
     TranslocoPipe,
     Panel,
     PanelLayout,
+    SearchableSelect,
   ],
   selector: 'app-register-bet',
   styleUrl: './register-bet.scss',
@@ -88,8 +91,8 @@ export class RegisterBet implements OnInit {
     marketId: ['', Validators.required],
     tipsterId: [''],
     ticketNumber: [''],
-    team1Id: [''],
-    team2Id: [''],
+    team1Id: [{ value: '', disabled: true }],
+    team2Id: [{ value: '', disabled: true }],
     description: [''],
     betType: [''],
     playType: [''],
@@ -99,8 +102,26 @@ export class RegisterBet implements OnInit {
     betTimeOnly: new FormControl<Date | null>(new Date(), Validators.required),
   });
 
+  private readonly sportId = toSignal(this.form.controls.sportId.valueChanges, { initialValue: '' });
+  protected readonly teamOptions = computed(() => {
+    const sportId = this.sportId();
+    return sportId ? this.options().teams.filter((team) => team.sportId === sportId) : [];
+  });
+
   ngOnInit(): void {
     this.reload();
+
+    this.form.controls.sportId.valueChanges.subscribe((sportId) => {
+      this.form.controls.team1Id.setValue('');
+      this.form.controls.team2Id.setValue('');
+      if (sportId) {
+        this.form.controls.team1Id.enable();
+        this.form.controls.team2Id.enable();
+      } else {
+        this.form.controls.team1Id.disable();
+        this.form.controls.team2Id.disable();
+      }
+    });
   }
 
   private reload(): void {

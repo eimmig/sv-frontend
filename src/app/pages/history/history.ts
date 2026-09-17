@@ -24,6 +24,7 @@ import { Transaction, TransactionsApi, TransactionType } from '../../core/transa
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 import { toDateOnly } from '../../shared/period-preset-filter/period-preset-filter';
+import { SearchableSelect } from '../../shared/searchable-select/searchable-select';
 
 type SettledBetStatus = 'won' | 'lost' | 'void';
 
@@ -68,6 +69,7 @@ const TRANSACTIONS_TAB = 1;
     TranslocoPipe,
     Panel,
     PanelLayout,
+    SearchableSelect,
   ],
   selector: 'app-history',
   styleUrl: './history.scss',

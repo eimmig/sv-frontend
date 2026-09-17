@@ -4,53 +4,49 @@
       <p class="search-statistics__error" role="alert" data-testid="search-statistics-options-error">{{ message }}</p>
     } @else {
       <form [formGroup]="filterForm" (ngSubmit)="search()" class="search-statistics__filters">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'searchStatistics.sportLabel' | transloco }}</mat-label>
-          <mat-select formControlName="sportId" data-testid="search-statistics-filter-sport">
-            @for (sport of options().sports; track sport.id) {
-              <mat-option [value]="sport.id">{{ sport.name }}</mat-option>
-            }
-          </mat-select>
-          @if (filterForm.controls.sportId.invalid && filterForm.controls.sportId.touched) {
-            <mat-error>{{ 'searchStatistics.requiredError' | transloco }}</mat-error>
-          }
-        </mat-form-field>
+        <app-searchable-select
+          formControlName="sportId"
+          [options]="options().sports"
+          [label]="'searchStatistics.sportLabel' | transloco"
+          testId="search-statistics-filter-sport"
+          [errorMessage]="
+            filterForm.controls.sportId.invalid && filterForm.controls.sportId.touched
+              ? ('searchStatistics.requiredError' | transloco)
+              : null
+          "
+        />
 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'searchStatistics.leagueLabel' | transloco }}</mat-label>
-          <mat-select formControlName="leagueId" data-testid="search-statistics-filter-league">
-            @for (league of options().leagues; track league.id) {
-              <mat-option [value]="league.id">{{ league.name }}</mat-option>
-            }
-          </mat-select>
-          @if (filterForm.controls.leagueId.invalid && filterForm.controls.leagueId.touched) {
-            <mat-error>{{ 'searchStatistics.requiredError' | transloco }}</mat-error>
-          }
-        </mat-form-field>
+        <app-searchable-select
+          formControlName="leagueId"
+          [options]="options().leagues"
+          [label]="'searchStatistics.leagueLabel' | transloco"
+          testId="search-statistics-filter-league"
+          [errorMessage]="
+            filterForm.controls.leagueId.invalid && filterForm.controls.leagueId.touched
+              ? ('searchStatistics.requiredError' | transloco)
+              : null
+          "
+        />
 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'searchStatistics.teamLabel' | transloco }}</mat-label>
-          <mat-select formControlName="teamId" data-testid="search-statistics-filter-team">
-            <mat-option value="">{{ 'searchStatistics.filterAll' | transloco }}</mat-option>
-            @for (team of teamOptions(); track team.id) {
-              <mat-option [value]="team.id">{{ team.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <app-searchable-select
+          formControlName="teamId"
+          [options]="teamOptions()"
+          [label]="'searchStatistics.teamLabel' | transloco"
+          testId="search-statistics-filter-team"
+          [allOptionLabel]="'searchStatistics.filterAll' | transloco"
+        />
         @if (teamsError(); as message) {
           <p class="search-statistics__error" role="alert" data-testid="search-statistics-teams-error">{{ message }}</p>
         }
 
         @for (filter of optionalCatalogFilters(); track filter.controlName) {
-          <mat-form-field appearance="outline">
-            <mat-label>{{ filter.labelKey | transloco }}</mat-label>
-            <mat-select [formControlName]="filter.controlName" [attr.data-testid]="filter.testId">
-              <mat-option value="">{{ 'searchStatistics.filterAll' | transloco }}</mat-option>
-              @for (item of filter.items; track item.id) {
-                <mat-option [value]="item.id">{{ item.name }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
+          <app-searchable-select
+            [formControlName]="filter.controlName"
+            [options]="filter.items"
+            [label]="filter.labelKey | transloco"
+            [testId]="filter.testId"
+            [allOptionLabel]="'searchStatistics.filterAll' | transloco"
+          />
         }
 
         <mat-form-field appearance="outline">

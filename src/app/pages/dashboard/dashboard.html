@@ -6,55 +6,45 @@
       <app-period-preset-filter (rangeChange)="onPeriodChange($event)" />
 
       <form [formGroup]="filterForm" (ngSubmit)="applyFilter()" class="dashboard__filters">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'dashboard.bettingHouseLabel' | transloco }}</mat-label>
-          <mat-select formControlName="bettingHouseId" data-testid="dashboard-filter-betting-house">
-            <mat-option value="">{{ 'dashboard.filterAll' | transloco }}</mat-option>
-            @for (house of options().bettingHouses; track house.id) {
-              <mat-option [value]="house.id">{{ house.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <app-searchable-select
+          formControlName="bettingHouseId"
+          [options]="options().bettingHouses"
+          [label]="'dashboard.bettingHouseLabel' | transloco"
+          testId="dashboard-filter-betting-house"
+          [allOptionLabel]="'dashboard.filterAll' | transloco"
+        />
 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'dashboard.sportLabel' | transloco }}</mat-label>
-          <mat-select formControlName="sportId" data-testid="dashboard-filter-sport">
-            <mat-option value="">{{ 'dashboard.filterAll' | transloco }}</mat-option>
-            @for (sport of options().sports; track sport.id) {
-              <mat-option [value]="sport.id">{{ sport.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <app-searchable-select
+          formControlName="sportId"
+          [options]="options().sports"
+          [label]="'dashboard.sportLabel' | transloco"
+          testId="dashboard-filter-sport"
+          [allOptionLabel]="'dashboard.filterAll' | transloco"
+        />
 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'dashboard.leagueLabel' | transloco }}</mat-label>
-          <mat-select formControlName="leagueId" data-testid="dashboard-filter-league">
-            <mat-option value="">{{ 'dashboard.filterAll' | transloco }}</mat-option>
-            @for (league of options().leagues; track league.id) {
-              <mat-option [value]="league.id">{{ league.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <app-searchable-select
+          formControlName="leagueId"
+          [options]="options().leagues"
+          [label]="'dashboard.leagueLabel' | transloco"
+          testId="dashboard-filter-league"
+          [allOptionLabel]="'dashboard.filterAll' | transloco"
+        />
 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'dashboard.marketLabel' | transloco }}</mat-label>
-          <mat-select formControlName="marketId" data-testid="dashboard-filter-market">
-            <mat-option value="">{{ 'dashboard.filterAll' | transloco }}</mat-option>
-            @for (market of options().markets; track market.id) {
-              <mat-option [value]="market.id">{{ market.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <app-searchable-select
+          formControlName="marketId"
+          [options]="options().markets"
+          [label]="'dashboard.marketLabel' | transloco"
+          testId="dashboard-filter-market"
+          [allOptionLabel]="'dashboard.filterAll' | transloco"
+        />
 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'dashboard.tipsterLabel' | transloco }}</mat-label>
-          <mat-select formControlName="tipsterId" data-testid="dashboard-filter-tipster">
-            <mat-option value="">{{ 'dashboard.filterAll' | transloco }}</mat-option>
-            @for (tipster of options().tipsters; track tipster.id) {
-              <mat-option [value]="tipster.id">{{ tipster.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <app-searchable-select
+          formControlName="tipsterId"
+          [options]="options().tipsters"
+          [label]="'dashboard.tipsterLabel' | transloco"
+          testId="dashboard-filter-tipster"
+          [allOptionLabel]="'dashboard.filterAll' | transloco"
+        />
 
         <button mat-flat-button type="submit" data-testid="dashboard-filter-apply">
           {{ 'dashboard.applyFilter' | transloco }}
