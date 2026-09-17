@@ -2090,6 +2090,83 @@
         }
       ],
       "evidence": "Fechada em 2026-09-16 (story SV-490, subtasks SV-491/492/493/494, PRs #136-#139 subtask->story, todos com CI verde). Implementado: (1) Material Symbols Outlined carregado em ADICAO ao Material Icons classico (index.html), aplicado via fontSet seletivo nos mat-icon de app-side-nav/language-selector/theme-toggle, exceto o icone telegram (nao existe no Symbols - confirmado contra o codepoints oficial do google/material-design-icons no GitHub durante o Plan Reviewer); (2) scrollbar tematizada (thin, --color-border) em .side-nav; (3) decisao documentada em docs/DESIGN-SYSTEM.md (commit 155fadb, repo raiz sv-harness). Delivery Reviewer: PASS, com 1 achado real corrigido durante a propria revisao - os commits 5c1747d/99832db haviam absorvido por engano um hunk alheio (ajuste de largura do menu de recursos, WIP nao commitado de outra sessao/feature nos mesmos arquivos) porque o git add pegou o arquivo inteiro; revertido no commit 59ae268 e restaurado como edicao local nao commitada (stash/pop) para nao perder o trabalho de quem quer que seja o dono - net diff contra develop confirmado limpo. Test Suite Auditor: CONCERNS -> endereçado - adicionado 1 teste de regressao (subtask feat-032.4, descoberta durante a auditoria) cobrindo a unica logica condicional da feature (fontSet do telegram); validado que a asserção certa e classList.contains (o fontSet dinamico via [fontSet] nao reflete como atributo DOM, so como classe). ./init.sh verde (230 testes -> 231 com o teste novo, 90%+ cobertura). Nenhum outro servico ou pagina fora do escopo tocado (KPI cards e telegram-link mantidos no Material Icons classico)."
+    },
+    {
+      "id": "feat-033",
+      "name": "Ajustes de UX em formularios/navegacao (autofill, time filtrado por esporte, menu de recursos)",
+      "goal": "3 achados do usuario em uso real do app: campo Nome de catalog-manager/team-manager sugere autofill de 'Contact Info' do browser por falta de autocomplete=off; os selects de time (team1Id/team2Id) do formulario de registro de aposta ficam habilitados e sem filtro antes mesmo de escolher o esporte, permitindo uma combinacao esporte/time sem sentido; e o mat-menu de Cadastrar/Dashboard de cada recurso (sports/leagues/markets/tipsters/betting-houses) no app-side-nav abre no tamanho padrao minusculo do Material em vez de acompanhar a largura da nav quando ela esta expandida.",
+      "scope": [
+        "shared/catalog-manager.html e shared/team-manager.html ganham autocomplete=off no input de nome.",
+        "register-bet.ts/.html: team1Id/team2Id nascem desabilitados, habilitam e passam a listar so os times do esporte escolhido (Team.sportId, filtragem client-side via computed signal sobre o catalogo ja carregado por teamsApi(http).list() - sem endpoint novo), resetando ao trocar/limpar o esporte. Reusa o padrao de disable/reset por valueChanges ja usado em search-statistics.ts (feat-012) e reforca a regra 5 de Shneiderman (prevenir erros) documentada para RF04 em docs/services/web.md.",
+        "app-side-nav: mat-menu do botao de recurso (resourceMenu) ganha panelClass condicional ([class]) - min-width igual a $width-expanded (232px, a mesma variavel do CSS da nav) quando a nav esta expandida, tamanho padrao do Material quando colapsada. ::ng-deep + panelClass e o mesmo padrao ja usado por language-selector.scss (overlay do CDK renderiza fora do :host, precisa do ::ng-deep para estilizar)."
+      ],
+      "description": "Sem RN/RF novo - correcao de UX descoberta em uso real (screenshots do usuario), nao gap de especificacao.",
+      "dependencies": [
+        "feat-004",
+        "feat-008",
+        "feat-011"
+      ],
+      "status": "done",
+      "plan_review": "Plan Reviewer (2026-09-16), passe proprio sem subagentes (baixo risco - UI pura, sem contrato/dado/seguranca): READY, sem achado. Approach dos itens 1-2 (filtragem client-side via computed sobre catalogo ja carregado, reuso do padrao disable/reset de search-statistics.ts) confirmado correto - Team.sportId ja e a FK documentada (docs/services/web.md, decisao do team-manager dedicado), sem necessidade de endpoint por esporte como o de stats-service/search-statistics (aquele existe porque search-statistics so lista times com estatistica, nao o catalogo inteiro). Reforca diretamente a regra 5 de Shneiderman (prevenir erros) ja documentada para RF04. Item 3 (menu de recursos) reusa exatamente o padrao de panelClass+::ng-deep ja estabelecido por language-selector.scss (feat-011) - mesmo mecanismo, sem novidade arquitetural; achado durante o proprio trabalho desta feature: um rascunho anterior deste ajuste foi absorvido por engano em 2 commits de feat-032 (5c1747d/99832db) por um 'git add' amplo de outra sessao, revertido pelo Delivery Reviewer daquela feature (commit 59ae268) e devolvido como edicao local - reaplicado aqui, na feature correta.",
+      "jira": "SV-500",
+      "subtasks": [
+        {
+          "id": "feat-033.1",
+          "name": "autocomplete=off no campo Nome (catalog-manager/team-manager)",
+          "detail": "Browser (Chrome/Edge) sugere autofill de Contact Info salvo sobre o campo generico Nome, sem relacao com o cadastro de catalogo.",
+          "checklist": [
+            "autocomplete=\"off\" no input de shared/catalog-manager/catalog-manager.html",
+            "autocomplete=\"off\" no input de shared/team-manager/team-manager.html"
+          ],
+          "validation": "QA visual: autofill do browser nao aparece mais sobre o campo Nome em nenhum dos 2 formularios.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-501"
+        },
+        {
+          "id": "feat-033.2",
+          "name": "register-bet: team1Id/team2Id desabilitados e filtrados por esporte",
+          "detail": "team1Id/team2Id nascem {value:'',disabled:true}; sportId (toSignal) + teamOptions (computed filtrando options().teams por sportId); subscribe em sportId.valueChanges reseta e habilita/desabilita os 2 controls.",
+          "checklist": [
+            "register-bet.ts: sportId signal + teamOptions computed + subscribe de habilitar/desabilitar/resetar team1Id/team2Id",
+            "register-bet.html: os 2 @for de team1/team2 usam teamOptions() em vez de options().teams",
+            "register-bet.spec.ts: teste cobrindo desabilitado+vazio antes do esporte e filtragem por esporte escolhido",
+            "register-bet.spec.ts: teste cobrindo reset+desabilita ao trocar/limpar o esporte"
+          ],
+          "validation": "ng test verde (suite completa), QA visual (desktop+mobile, claro+escuro): time bloqueado ate escolher esporte, lista so os times daquele esporte.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-502"
+        },
+        {
+          "id": "feat-033.3",
+          "name": "app-side-nav: menu de recursos acompanha a largura da nav expandida",
+          "detail": "mat-menu de Cadastrar/Dashboard (resourceMenu) abre no min-width padrao do Material (~112px) em vez de acompanhar a largura da nav (232px) quando expandida - inconsistencia visual, menu minusculo colado numa nav larga.",
+          "checklist": [
+            "app-side-nav.html: [class] no mat-menu #resourceMenu alterna entre '' (colapsada, tamanho padrao) e 'side-nav__resource-menu-panel' (expandida)",
+            "app-side-nav.scss: ::ng-deep .side-nav__resource-menu-panel { min-width: $width-expanded !important; } (mesmo padrao de language-selector.scss)"
+          ],
+          "validation": "QA visual (desktop): abrir o menu de um recurso com a nav expandida (menu = 232px) e com a nav colapsada (menu = tamanho padrao do Material).",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-503"
+        },
+        {
+          "id": "feat-033.4",
+          "name": "CHANGELOG e verificacao final",
+          "checklist": [
+            "Entrada em CHANGELOG.md.",
+            "./init.sh do app e da raiz verdes.",
+            "Delivery Reviewer + Test Suite Auditor rodados contra o diff.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "Suite do frontend verde e evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-504"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-16 (story SV-500, subtasks SV-501/502/503/504, merges locais subtask->feature --no-ff verdes). 3 achados do usuario em uso real corrigidos: (1) autocomplete=off em catalog-manager.html/team-manager.html - Chrome/Edge parava de sugerir autofill de Contact Info sobre o campo Nome; (2) register-bet.ts: team1Id/team2Id nascem {value:'',disabled:true}, teamOptions (computed) filtra options().teams por sportId (toSignal), subscribe em sportId.valueChanges reseta+habilita/desabilita os 2 controls - reusa o padrao ja estabelecido em search-statistics.ts (feat-012), reforca a regra 5 de Shneiderman (prevenir erros) de docs/services/web.md; (3) app-side-nav: mat-menu de recursos ganha panelClass condicional (min-width=$width-expanded quando a nav esta expandida) - mesmo padrao panelClass+::ng-deep de language-selector.scss, documentado como mecanismo reaproveitavel em docs/services/web.md (commit 9d77e9c, repo raiz). Achado real durante o proprio trabalho: um rascunho anterior do item 3 tinha sido absorvido por engano em 2 commits de feat-032 por um 'git add' amplo de outra sessao rodando em paralelo na mesma working directory; o Delivery Reviewer daquela feature reverteu e devolveu como edicao local - reaplicado aqui, na feature correta, depois de isolar o trabalho numa worktree Git dedicada para evitar nova colisao. Delivery Reviewer: PASS (1 achado P3 nao-bloqueante: teste de transicao esporte-A->esporte-B ausente, mesmo branch de codigo das transicoes ja testadas). Test Suite Auditor: PASS (mesmo achado P3, classificado ADD nao-bloqueante). 2 testes novos em register-bet.spec.ts cobrindo o disable/filtro/reset. ./init.sh verde (230+2 testes, 90%+ cobertura, mesmo patamar de antes). Branches: feature/SV-500 com as 4 subtasks mescladas (--no-ff); nao pushado/mergeado em develop nesta sessao - decisao pendente do usuario."
     }
   ]
 }

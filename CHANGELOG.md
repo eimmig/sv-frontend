@@ -212,3 +212,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-492](https://stakevault.atlassian.net/browse/SV-492) - Scrollbar tematizada de .side-nav (thin + cores claro/escuro)
 - [SV-493](https://stakevault.atlassian.net/browse/SV-493) - CHANGELOG e verificacao final
 - [SV-494](https://stakevault.atlassian.net/browse/SV-494) - Teste de regressao: telegram fica fora do fontSet Symbols Outlined
+- [SV-500](https://stakevault.atlassian.net/browse/SV-500) - Ajustes de UX em formularios/navegacao (autofill, time filtrado por esporte, menu de recursos)
+- [SV-501](https://stakevault.atlassian.net/browse/SV-501) - autocomplete=off no campo Nome (catalog-manager/team-manager)
+- [SV-502](https://stakevault.atlassian.net/browse/SV-502) - register-bet: team1Id/team2Id desabilitados e filtrados por esporte
+- [SV-503](https://stakevault.atlassian.net/browse/SV-503) - app-side-nav: menu de recursos acompanha a largura da nav expandida
+- [SV-504](https://stakevault.atlassian.net/browse/SV-504) - CHANGELOG e verificacao final
