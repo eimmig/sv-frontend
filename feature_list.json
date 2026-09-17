@@ -2452,6 +2452,135 @@
           }
         ]
       }
+    },
+    {
+      "id": "feat-036",
+      "name": "6 achados de UX em uso real: betType obrigatorio, busca limpa ao digitar, menu de configuracoes consolidado, icone de idioma no login",
+      "goal": "Corrigir 6 problemas de UX encontrados pelo usuario em uso real do app ja em producao, sem epic proprio na raiz (mesmo precedente ad-hoc de feat-032/033/034).",
+      "scope": "apps/web apenas: register-bet (campo Tipo de aposta), shared/searchable-select (select-on-focus), app-side-nav (menu de configuracoes consolidado + submenu de idioma em acordeao), language-selector (icone cortado no login). Sem mudanca de contrato entre servicos, sem RN01-09 envolvida.",
+      "description": "6 achados do usuario em uso real (2026-09-17), sem epic proprio na raiz (mesmo precedente ad-hoc de feat-032/033/034), implementados em sessao de chat casual e formalizados retroativamente (ver plan_review). (1) register-bet: campo 'Tipo de aposta' tinha opcao 'Nao classificado' (valor vazio) que nao deveria existir - toda aposta cadastrada por aqui deve ser PRE-jogo ou Ao vivo, nunca nula. Campo virou Validators.required, default 'pre', opcao removida do mat-select e da chave i18n registerBet.betTypeNone (3 locales). Reverte uma decisao documentada de feat-026 - doc/CHANGELOG atualizados no mesmo commit (ver plan_review). (2) shared/searchable-select (componente ja existente desde feat-034, usado em dashboard/history): campo mostra 'Todas' por padrao; ao focar e comecar a digitar, o texto ficava concatenado depois do 'Todas' em vez de substituir. Fix: (focus) chama input.select() nativo, selecionando todo o texto ao focar. (3) app-side-nav (rodape, autenticado): 4 controles soltos (idioma/tema/trocar senha/sair) viraram 1 botao de engrenagem com mat-menu, contendo tema/trocar senha/sair e uma sub-secao 'Idioma' em acordeao (expande/colapsa in-place, nao menu lateral) com os 3 idiomas. (4) Bug descoberto na implementacao do item 3: clique no toggle 'Idioma' (button comum, nao mat-menu-item) borbulhava e o CDK Overlay interpretava como clique-fora, fechando o mat-menu inteiro - corrigido com $event.stopPropagation(). (5) Bug relacionado: estado do acordeao (signal languageExpanded) sobrevivia entre reaberturas do menu (componente nao destruido), causando toggle fantasma na segunda abertura - corrigido resetando no (closed) do <mat-menu>. (6) language-selector (icone de idioma na tela de login, floating-controls nao-autenticado): icone 'language' cortado/pouco espaco lateral. Causa raiz real: mat-icon sem fontSet='material-symbols-outlined' na variante expandida (caia em fonte padrao, renderizava texto cru 'language' cortado pela box) - nao era problema de width como uma correcao inicial errada presumiu. Fix: fontSet + line-height:18px.",
+      "dependencies": [
+        "feat-026",
+        "feat-031",
+        "feat-034"
+      ],
+      "status": "done",
+      "plan_review": "2026-09-17, Plan Reviewer (review-suite:ln-11-plan-reviewer) rodado RETROATIVO - codigo ja implementado nesta sessao (6 achados de usuario em chat casual, sem passar pelo harness na hora - desvio reconhecido, formalizado a pedido do usuario). Veredito: REVISE, 1 MAJOR corrigido antes de marcar done (2 MINOR tambem corrigidos). (MAJOR) docs/services/web.md secao 'Paridade betType/byBetType' (feat-026) e o CHANGELOG.md 'Changed' de feat-026 documentavam a opcao 'nao classificado' do campo Tipo de aposta como decisao deliberada (3 opcoes) - o achado 1 desta sessao reverte essa decisao (campo vira obrigatorio, default 'pre', sem opcao vazia) sem atualizar nenhum dos dois, indo contra a regra deste CLAUDE.md de 'contratos/documentacao mudam junto com o codigo'. Corrigido: nota nova em docs/services/web.md explicando a revisao (byBetType/bet-type-dashboard continuam tratando betType nulo normalmente para o que ja existe na base - so o formulario de cadastro para de produzir esse estado) e CHANGELOG.md editado in-place (ainda em [Unreleased], nunca chegou a ser lancado com o comportamento antigo). (MINOR) nenhum teste unitario provava fontSet=\"material-symbols-outlined\" no icone de idioma da tela de login (achado 6) - risco real de regressao silenciosa (a causa raiz do bug original era exatamente a ausencia desse atributo). Corrigido: teste novo em language-selector.spec.ts cobrindo as 2 variantes (expandida/colapsada). (MINOR) toggle 'Idioma' do menu de configuracoes (acordeao, achados 3-5) sem aria-expanded/aria-controls - leitor de tela nao informava o estado aberto/fechado. Corrigido: aria-expanded reativo + aria-controls apontando pro id da lista. Verificacao real executada (nao so leitura): npx ng test (suite completa, 260/260) e npx playwright test nos e2e tocados (register-bet, dashboard, history, side-nav, change-password - 24/24), alem de .github/scripts/validate-i18n-keys.py (255 chaves em sincronia). Nenhuma RN01-09 envolvida, nenhuma mudanca de contrato entre servicos (so apps/web). Achado de processo do proprio agente, registrado para nao se repetir: shared/searchable-select (achado 2) ja existia desde feat-034 - uma sessao anterior deste mesmo agente recriou um componente duplicado do zero num worktree sem verificar antes se ja existia (violacao de 'preferir editar arquivo existente'); o duplicado foi descartado antes de fechar esta feature, so o fix real (select-on-focus) foi aplicado ao componente existente. Risco git tambem encontrado e corrigido: os achados 1 e 6 tinham sido implementados por engano dentro do worktree register-bet-team-filter (branch chore/progress-feat-033, sem relacao com esses fixes - violacao de 'stay in scope') - revertidos de la e reaplicados em main antes de fechar esta feature. Desvio de processo aceito e registrado (nao corrigido retroativamente): todo o trabalho foi commitado direto em main, sem branch feature/subtask por issue nem PRs intermediarios (CLAUDE.md pede feature/<chave-jira> -> subtask/<chave> com merge --no-ff em cada nivel) - decisao do usuario ao escolher 'so formalizar a papelada, codigo ja escrito nao muda' em vez de refazer do zero seguindo o fluxo completo.",
+      "jira": "SV-523",
+      "subtasks": [
+        {
+          "id": "feat-036.1",
+          "name": "register-bet: Tipo de aposta obrigatorio (sem 'nao classificado') + doc/CHANGELOG",
+          "status": "done",
+          "jira": "SV-524",
+          "detail": "Reverte uma decisao documentada de feat-026 - doc e CHANGELOG precisam mudar junto (achado MAJOR do plan review).",
+          "checklist": [
+            "pages/register-bet/register-bet.ts: control betType vira ['pre' as BetType, Validators.required] (era ['']), reset() usa default 'pre', submit() envia raw.betType direto (sem fallback || null).",
+            "pages/register-bet/register-bet.html: remove <mat-option value=\"\"> (registerBet.betTypeNone).",
+            "public/i18n/{pt-BR,en-US,es}.json: remove a chave registerBet.betTypeNone (confirmado sem outro uso no app).",
+            "register-bet.spec.ts: teste de submit default agora espera betType 'pre' (era null).",
+            "docs/services/web.md secao 'Paridade betType/byBetType' (feat-026) ganha paragrafo novo explicando a revisao. CHANGELOG.md 'Changed' de feat-026 editado in-place (ainda em [Unreleased])."
+          ],
+          "validation": "ng test (register-bet.spec.ts) + playwright test register-bet.spec.ts verdes. validate-i18n-keys.py sem chave orfa.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-036.2",
+          "name": "searchable-select: limpar 'Todas' ao comecar a digitar (select-on-focus)",
+          "status": "done",
+          "jira": "SV-525",
+          "detail": "Componente ja existia desde feat-034 - so o handler de foco faltava. (Achado de processo: uma tentativa anterior desta sessao recriou o componente do zero num worktree antes de perceber que ja existia - descartado.)",
+          "checklist": [
+            "shared/searchable-select/searchable-select.ts: novo metodo onFocus(event) chamando (event.target as HTMLInputElement).select().",
+            "searchable-select.html: (focus)=\"onFocus($event)\" no input.",
+            "searchable-select.spec.ts: teste novo (spy em HTMLInputElement.select, confirma chamada no evento focus)."
+          ],
+          "validation": "ng test (searchable-select.spec.ts) verde, 24 testes no arquivo.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-036.3",
+          "name": "side-nav: menu de configuracoes consolidado (idioma/tema/trocar senha/sair) + acordeao de idioma",
+          "status": "done",
+          "jira": "SV-526",
+          "detail": "Substitui os 4 controles soltos do rodape por 1 botao de engrenagem + mat-menu. Inclui os 2 bugs de CDK Overlay encontrados e corrigidos durante a implementacao (stopPropagation no toggle, reset do acordeao ao fechar o menu).",
+          "checklist": [
+            "app-side-nav.ts: injeta Language, expoe locales (copiado de language-selector), signal languageExpanded, metodos setLocale/toggleLanguageExpanded (com event.stopPropagation() - CDK fecha o mat-menu se o clique borbulhar).",
+            "app-side-nav.html: remove <app-language-selector>/<app-theme-toggle> do rodape; 1 botao settings + mat-menu com toggle 'Idioma' (acordeao, aria-expanded/aria-controls) + 3 opcoes de locale + tema + trocar senha + sair. <mat-menu (closed)=\"languageExpanded.set(false)\">.",
+            "app-side-nav.scss: estilos do toggle/chevron/lista do acordeao, @media (prefers-reduced-motion: reduce) zera as transicoes.",
+            "i18n: nav.userMenu renomeado para nav.settings (3 locales) - unica chave nova, resto reusa chaves ja existentes (nav.changePassword, nav.logout, language.label, theme.switchTo*).",
+            "app-side-nav.spec.ts + e2e/side-nav.spec.ts + e2e/change-password.spec.ts atualizados pros novos testids (nav-settings-menu, nav-settings-language-toggle, nav-settings-language-<locale>, nav-settings-theme)."
+          ],
+          "validation": "ng test (app-side-nav.spec.ts) + playwright test side-nav.spec.ts + change-password.spec.ts verdes. QA visual real (screenshot contra dev server): acordeao fechado so mostra 'Idioma' com seta; aberto mostra os 3 idiomas empurrando tema/trocar-senha/sair pra baixo; reabrir o menu depois de selecionar um idioma nao deixa o acordeao 'fantasma'.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-036.4",
+          "name": "language-selector: fontSet do icone (fix real do corte no login)",
+          "status": "done",
+          "jira": "SV-527",
+          "detail": "Causa raiz real (fontSet ausente, nao width) achada so depois de uma correcao inicial errada (so mexeu em width) nao resolver - registrado como achado MINOR do plan review a falta de teste de regressao pra isso.",
+          "checklist": [
+            "language-selector.html: mat-icon da variante expandida ganha fontSet=\"material-symbols-outlined\" (a colapsada ja tinha).",
+            "language-selector.scss: mat-icon ganha line-height: 18px (evita corte vertical por line-height padrao do navegador maior que a altura da box).",
+            "language-selector.spec.ts: teste novo cobrindo fontSet nas 2 variantes (expandida e colapsada) - regressao MINOR do plan review."
+          ],
+          "validation": "ng test (language-selector.spec.ts) verde. QA visual real (screenshot contra dev server): icone de globo aparece inteiro no floating-controls da tela de login, sem corte.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-036.5",
+          "name": "CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-528",
+          "detail": "Fecha a feature com o gate real do harness.",
+          "checklist": [
+            "Entrada em CHANGELOG.md (Fixed: os 4 achados de UX; Changed: entrada de feat-026 editada pelo achado 1).",
+            "ng test (suite completa) verde.",
+            "playwright test (suite completa ou pelo menos todos os arquivos tocados) verde.",
+            "Vault (docs/) revisado: docs/services/web.md atualizado (achado 1). Nenhuma outra lacuna de documentacao encontrada nesta revisao."
+          ],
+          "validation": "ng test sai 0 (260/260); feature_list.json (deste app) atualizado com evidence.",
+          "owner": "agente"
+        }
+      ],
+      "evidence": {
+        "resumo": "Fechada em 2026-09-17. 6 achados de usuario em uso real corrigidos: campo Tipo de aposta sempre PRE/LIVE (nunca nao-classificado), campo de busca (searchable-select) limpa o 'Todas' ao comecar a digitar, os 4 controles soltos do rodape do side-nav (idioma/tema/trocar senha/sair) viraram 1 menu de configuracoes com submenu de idioma em acordeao, 2 bugs de CDK Overlay descobertos e corrigidos no caminho (menu fechando sozinho ao clicar no toggle do acordeao, estado do acordeao vazando entre aberturas), e o icone de idioma da tela de login parou de aparecer cortado (fontSet ausente, nao era problema de largura).",
+        "secoes": [
+          {
+            "titulo": "Verificacao real executada",
+            "itens": [
+              "npx ng test (suite completa, apps/web): 57 arquivos, 260 testes, 0 falhas.",
+              "npx playwright test nos e2e tocados (register-bet, dashboard, history, side-nav, change-password): 24/24 verdes.",
+              ".github/scripts/validate-i18n-keys.py: 255 chaves em sincronia entre pt-BR/en-US/es.",
+              "QA visual real (Playwright + screenshot contra dev server real, nao so o teste automatizado): campo de busca limpando 'Todas' ao digitar, acordeao expandindo/colapsando empurrando os itens abaixo, icone de idioma sem corte no login."
+            ]
+          },
+          {
+            "titulo": "Divergencia do plano/processo",
+            "itens": [
+              "Feature inteira implementada em chat casual, achado por achado, sem Plan Reviewer nem feature_list.json ANTES do codigo - corrigido retroativamente nesta entrada (ver plan_review) a pedido explicito do usuario, que tambem escolheu nao desfazer o codigo ja escrito nem reconstruir branches por issue.",
+              "1 achado (2, searchable-select) descoberto ja existir desde feat-034 - o agente havia recriado um componente duplicado num worktree errado antes de perceber; duplicado descartado, so o fix real (select-on-focus) chegou ao componente existente.",
+              "Achados 1 e 6 foram implementados por engano dentro do worktree register-bet-team-filter (branch de outra feature, chore/progress-feat-033) - revertidos de la e reaplicados em main antes de fechar esta feature."
+            ]
+          },
+          {
+            "titulo": "Defeitos encontrados antes de causar dano",
+            "itens": [
+              "Plan Reviewer (retroativo): 1 MAJOR - docs/services/web.md e CHANGELOG.md documentavam a opcao 'nao classificado' do Tipo de aposta como decisao deliberada de feat-026; o achado 1 revertia isso sem atualizar nenhum dos dois. Corrigido no mesmo commit (nota nova em web.md + CHANGELOG editado in-place, ainda em [Unreleased]).",
+              "2 MINOR do Plan Reviewer: falta de teste de regressao para o fontSet do icone de idioma (a causa raiz do bug original), e falta de aria-expanded/aria-controls no toggle do acordeao. Ambos corrigidos.",
+              "2 bugs reais de CDK Overlay descobertos durante a implementacao do menu de configuracoes (nao no plan review - via investigacao empirica com Playwright contra o dev server real, nao so leitura de codigo): clique no toggle 'Idioma' (um <button> comum, nao mat-menu-item) borbulhava e o CDK interpretava como clique-fora, fechando o menu inteiro - corrigido com $event.stopPropagation(); estado do acordeao (signal) sobrevivia entre reaberturas do menu (componente nao e destruido), causando toggle fantasma na segunda abertura - corrigido resetando no (closed) do mat-menu."
+            ]
+          },
+          {
+            "titulo": "Skills e ferramentas",
+            "itens": [
+              "Plan Reviewer rodado retroativamente (1 MAJOR + 2 MINOR corrigidos antes de done) - unico passo do harness executado nesta feature; os demais (branch por issue, WIP formal durante o desenvolvimento) nao foram seguidos na hora, registrado como desvio aceito acima.",
+              "Depuracao dos 2 bugs de CDK Overlay feita com scripts Playwright ad-hoc (nao comitados) contra o dev server real, nao so leitura de codigo/documentacao do Angular Material."
+            ]
+          }
+        ]
+      }
     }
   ]
 }

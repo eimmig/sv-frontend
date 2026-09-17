@@ -69,6 +69,12 @@ export class SearchableSelect implements ControlValueAccessor {
     this.typedQuery.set((event.target as HTMLInputElement).value);
   }
 
+  // Selects the whole displayed text on focus, so the first keystroke replaces it instead of
+  // being appended after the current value (e.g. "Todas" + typed letters).
+  protected onFocus(event: FocusEvent): void {
+    (event.target as HTMLInputElement).select();
+  }
+
   protected onOptionSelected(event: MatAutocompleteSelectedEvent): void {
     const id = event.option.value as string;
     this.committedId.set(id);
