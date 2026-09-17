@@ -2269,7 +2269,7 @@
         {
           "id": "feat-035.1",
           "name": "change-password-api + pagina change-password (form, submit, sucesso/erro)",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-515",
           "detail": "Camada de dados + UI principal, sem nav/banner ainda. Inclui a correcao do achado MAJOR de cor (confirmacao neutra, nao --color-positive/verde).",
           "checklist": [
@@ -2286,7 +2286,7 @@
         {
           "id": "feat-035.2",
           "name": "Nav (side-nav footer) + MustChangePasswordBanner + Playwright + docs",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-516",
           "detail": "Fecha o fluxo de descoberta da tela nova (nav + banner) e prova via e2e mockado (correcao do 2o achado MAJOR - sem logout/re-login contra backend real).",
           "checklist": [
