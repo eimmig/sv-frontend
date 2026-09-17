@@ -3,9 +3,58 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-16
-**Estado:** `feat-001` a `feat-030` `done` — backlog deste app esgotado. Nota: a linha anterior
+**Estado:** `feat-001` a `feat-032` `done` — backlog deste app esgotado. Nota: a linha anterior
 deste arquivo listava `feat-026`/`027`/`029` como `not-started`, desatualizada em relação ao
 `feature_list.json` (já `done` há mais tempo) — corrigido aqui.
+
+## `feat-032` fechada — fontSet Symbols Outlined seletivo na sidebar + scrollbar tematizada (2026-09-16)
+
+Pedido do usuário via chat (icones da sidebar colapsada "desalinhados", scrollbar "feia") — não
+tinha epic próprio na raiz; `epic-023` ("corrigir alinhamento, tema e acesso ao idioma na
+sidebar") já estava `done` desde antes, então isto é *follow-up*, não reabertura. 4 subtasks
+(story SV-490, subtasks SV-491..494, PRs #136-139 subtask→story + #140 story→develop):
+
+- **`feat-032.1`**: raiz real do "desalinhamento" não é bug de CSS — a matemática de centralização
+  já é idêntica em toda a sidebar (36px do topo, sempre). É a fonte **Material Icons** clássica:
+  glifos diagonais (`trending_up`/`trending_down`, `sports_score`, chevrons) não são opticamente
+  centrados no quadrado 24x24 dessa fonte. Corrigido com **Material Symbols Outlined** carregado
+  em adição (não substituindo) o link clássico, aplicado via `fontSet` seletivo em cada
+  `mat-icon` da sidebar/rodapé — **exceto** o ícone `telegram`, que **não existe** no Symbols
+  (confirmado contra o `codepoints` oficial do `google/material-design-icons` no GitHub durante o
+  `Plan Reviewer` — Google não inclui ícones de marca/social nesse conjunto). Documentado em
+  `docs/DESIGN-SYSTEM.md` (repo raiz, commit separado — `docs/` não pertence a este repositório).
+- **`feat-032.2`**: scrollbar nativa do SO (feia, não temática) em `.side-nav` trocada por
+  `scrollbar-width: thin` + `scrollbar-color`/`::-webkit-scrollbar*` usando `--color-border`
+  (já token claro/escuro existente).
+- **`feat-032.3`**: fechamento — CHANGELOG (automático via `jira_story.py` na criação da story) +
+  verificação final.
+- **`feat-032.4`** (descoberta pelo `Test Suite Auditor`, não estava no plano original): a única
+  lógica condicional introduzida pela feature (`link.icon === 'telegram' ? '' : 'material-symbols-outlined'`)
+  não tinha teste algum — um teste novo cobre isso. **Gotcha real descoberto ao escrever o
+  teste**: `[fontSet]` como *property binding* dinâmico do Angular **não reflete como atributo
+  DOM** (só `fontSet="valor"` estático vira atributo real) — a asserção certa é
+  `classList.contains('material-symbols-outlined')`, não `getAttribute('fontSet')` (a primeira
+  tentativa falhou exatamente por isso, prova de que a asserção certa realmente exercita o
+  comportamento).
+
+**`Delivery Reviewer` achou 1 problema real durante a própria revisão**: os commits das subtasks
+1 e 2 (`git add <arquivo>` pegando o arquivo inteiro) absorveram por engano um trecho alheio —
+um ajuste de largura do menu de recursos (`::ng-deep .side-nav__resource-menu-panel`) que estava
+como edição **não commitada** de outra sessão/feature (provavelmente ligada a
+`register-bet`/`catalog-manager`/`team-manager`, possivelmente o trabalho por trás de
+`.claude/worktrees/register-bet-team-filter/` visto no mesmo diretório) — nos mesmos 2 arquivos
+que esta feature também mexe (`app-side-nav.html`/`.scss`). Revertido num commit corretivo
+próprio antes do merge pra `develop`; o trecho revertido foi restaurado como edição local não
+commitada (via `git stash`/`pop` na troca de branch) pra não apagar o trabalho de quem quer que
+seja o dono. **Lição pra próxima sessão**: ao dar `git add` num arquivo que outra sessão/trabalho
+pode estar tocando ao mesmo tempo, conferir o diff staged antes de commitar, não só o `git status`.
+
+SonarCloud barrou o PR story→develop uma vez: `css:S4649` (falta generic font family) na regra
+nova `.material-symbols-outlined` — corrigido com `, sans-serif` no fallback.
+
+`Delivery Reviewer`/`Test Suite Auditor` rodados: `PASS`/achado endereçado. `./init.sh` verde
+(231 testes, cobertura ~91%). Nenhum outro serviço ou tela fora do escopo tocado (KPI cards e
+`telegram-link` continuam no Material Icons clássico).
 
 ## `feat-022` fechada — date picker e formato localizado para campos de data (2026-09-16)
 
