@@ -2135,7 +2135,7 @@
           ],
           "validation": "ng test verde (suite completa), QA visual (desktop+mobile, claro+escuro): time bloqueado ate escolher esporte, lista so os times daquele esporte.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-502"
         },
         {
