@@ -5,7 +5,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
 
@@ -21,6 +20,7 @@ import { StatisticsSearchApi, StatisticsSearchResult, StatisticsTeam } from '../
 import { EquityCurveChart } from '../../shared/equity-curve-chart/equity-curve-chart';
 import { KpiCard, kpiSign } from '../../shared/kpi-card/kpi-card';
 import { Panel } from '../../shared/panel/panel';
+import { SearchableSelect } from '../../shared/searchable-select/searchable-select';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 import { toDateOnly } from '../../shared/period-preset-filter/period-preset-filter';
 
@@ -41,11 +41,11 @@ const EMPTY_OPTIONS: Options = { bettingHouses: [], sports: [], leagues: [], mar
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
     EquityCurveChart,
     KpiCard,
     Panel,
     PanelLayout,
+    SearchableSelect,
     TranslocoPipe,
   ],
   selector: 'app-search-statistics',

@@ -15,6 +15,7 @@ import { SearchableSelect, SearchableSelectOption, normalizeForSearch } from './
         label="Esporte"
         testId="test-sport"
         [allOptionLabel]="allOptionLabel()"
+        [errorMessage]="errorMessage()"
       />
     </form>
   `,
@@ -26,6 +27,7 @@ class HostComponent {
     { id: 'sp-2', name: 'Basquete' },
   ]);
   readonly allOptionLabel = signal<string | null>(null);
+  readonly errorMessage = signal<string | null>(null);
   readonly form = this.formBuilder.nonNullable.group({ sportId: [''] });
 }
 
@@ -133,6 +135,21 @@ describe('SearchableSelect', () => {
 
     expect(input(fixture).value).toBe('Futebol');
     expect(fixture.componentInstance.form.controls.sportId.value).toBe('sp-1');
+  });
+
+  it('renders the error message when set', () => {
+    const fixture = TestBed.createComponent(HostComponent);
+    fixture.componentInstance.errorMessage.set('Campo obrigatorio');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.searchable-select__error')?.textContent?.trim()).toBe('Campo obrigatorio');
+  });
+
+  it('renders no error message by default', () => {
+    const fixture = TestBed.createComponent(HostComponent);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.searchable-select__error')).toBeNull();
   });
 
   it('disables the input when the form control is disabled', () => {

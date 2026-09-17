@@ -41,6 +41,8 @@ export class SearchableSelect implements ControlValueAccessor {
   readonly testId = input<string>('');
   /** Sentinel option (id '') rendered first, e.g. "Todos"/"Nenhum" - omit to require a real selection. */
   readonly allOptionLabel = input<string | null>(null);
+  /** Already-resolved (transloco'd) validation message - rendered as mat-error inside this field's own mat-form-field. */
+  readonly errorMessage = input<string | null>(null);
 
   protected readonly disabled = signal(false);
   private readonly committedId = signal('');

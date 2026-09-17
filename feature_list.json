@@ -2090,7 +2090,7 @@
         {
           "id": "feat-031.3",
           "name": "Aplicar searchable-select em search-statistics.html + dashboard.html",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-508",
           "detail": "Segundo caso de cascata (sportId -> teamOptions em search-statistics, mesmo padrao de 031.2) e o loop dinamico optionalCatalogFilters() - prova que o componente funciona tambem quando instanciado via @for com testId/label variaveis.",
           "checklist": [
