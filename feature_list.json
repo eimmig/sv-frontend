@@ -2303,7 +2303,7 @@
         {
           "id": "feat-035.3",
           "name": "CHANGELOG e verificacao final",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-517",
           "detail": "Fecha a feature com o gate real do harness. Ultima subtask - carrega o item fixo de revisao do vault (docs/) alem do checklist padrao.",
           "checklist": [
