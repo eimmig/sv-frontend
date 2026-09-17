@@ -9,25 +9,21 @@
   >
     <mat-tab [label]="'history.betsTitle' | transloco">
       <form [formGroup]="betFilterForm" (ngSubmit)="applyBetFilter()" class="history__filters">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'history.bettingHouseLabel' | transloco }}</mat-label>
-          <mat-select formControlName="bettingHouseId" data-testid="history-bets-filter-betting-house">
-            <mat-option value="">{{ 'history.filterAll' | transloco }}</mat-option>
-            @for (house of options().bettingHouses; track house.id) {
-              <mat-option [value]="house.id">{{ house.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <app-searchable-select
+          formControlName="bettingHouseId"
+          [options]="options().bettingHouses"
+          [label]="'history.bettingHouseLabel' | transloco"
+          testId="history-bets-filter-betting-house"
+          [allOptionLabel]="'history.filterAll' | transloco"
+        />
 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'history.sportLabel' | transloco }}</mat-label>
-          <mat-select formControlName="sportId" data-testid="history-bets-filter-sport">
-            <mat-option value="">{{ 'history.filterAll' | transloco }}</mat-option>
-            @for (sport of options().sports; track sport.id) {
-              <mat-option [value]="sport.id">{{ sport.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <app-searchable-select
+          formControlName="sportId"
+          [options]="options().sports"
+          [label]="'history.sportLabel' | transloco"
+          testId="history-bets-filter-sport"
+          [allOptionLabel]="'history.filterAll' | transloco"
+        />
 
         <mat-form-field appearance="outline">
           <mat-label>{{ 'history.fromLabel' | transloco }}</mat-label>
@@ -168,14 +164,12 @@
               <p class="history__error" role="alert" data-testid="history-create-transaction-error">{{ message }}</p>
             }
 
-            <mat-form-field appearance="outline">
-              <mat-label>{{ 'history.bettingHouseLabel' | transloco }}</mat-label>
-              <mat-select formControlName="bettingHouseId" data-testid="history-create-transaction-betting-house">
-                @for (house of options().bettingHouses; track house.id) {
-                  <mat-option [value]="house.id">{{ house.name }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
+            <app-searchable-select
+              formControlName="bettingHouseId"
+              [options]="options().bettingHouses"
+              [label]="'history.bettingHouseLabel' | transloco"
+              testId="history-create-transaction-betting-house"
+            />
 
             <mat-form-field appearance="outline">
               <mat-label>{{ 'history.typeLabel' | transloco }}</mat-label>
@@ -212,15 +206,13 @@
 
         <app-panel [title]="'history.transactionsTitle' | transloco">
           <form [formGroup]="transactionFilterForm" (ngSubmit)="applyTransactionFilter()" class="history__filters">
-            <mat-form-field appearance="outline">
-              <mat-label>{{ 'history.bettingHouseLabel' | transloco }}</mat-label>
-              <mat-select formControlName="bettingHouseId" data-testid="history-transactions-filter-betting-house">
-                <mat-option value="">{{ 'history.filterAll' | transloco }}</mat-option>
-                @for (house of options().bettingHouses; track house.id) {
-                  <mat-option [value]="house.id">{{ house.name }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
+            <app-searchable-select
+              formControlName="bettingHouseId"
+              [options]="options().bettingHouses"
+              [label]="'history.bettingHouseLabel' | transloco"
+              testId="history-transactions-filter-betting-house"
+              [allOptionLabel]="'history.filterAll' | transloco"
+            />
 
             <mat-form-field appearance="outline">
               <mat-label>{{ 'history.fromLabel' | transloco }}</mat-label>

@@ -48,7 +48,7 @@ test.describe('feat-025 - betting houses balance movement bridge', () => {
     await page.getByTestId('betting-houses-move-balance').click();
 
     await expect(page).toHaveURL(/\/history\?bettingHouseId=bh-1/);
-    await expect(page.getByTestId('history-create-transaction-betting-house')).toContainText('Bet365');
+    await expect(page.getByTestId('history-create-transaction-betting-house')).toHaveValue('Bet365');
   });
 
   test('a deposit made from the bridge is reflected back on the betting houses list', async ({ page }) => {
