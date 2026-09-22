@@ -43,7 +43,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
   escondido nessa largura), deixando números soltos sem indicar o que era o quê;
   `comparison-metric-row` ganhou auto-rotulação via `::before`/`data-mobile-label` só nessa
   faixa. 284 chaves i18n em sincronia (pt-BR/en-US/es), sem chave nova (reaproveita namespaces
-  existentes).
+  existentes). Fechamento (`feat-037.7`): `Delivery Reviewer`/`Test Suite Auditor` (self-review)
+  `PASS`/`PASS` contra o diff completo, `./init.sh` do app e da raiz verdes.
 
 ### Changed
 
