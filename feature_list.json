@@ -2650,7 +2650,7 @@
         {
           "id": "feat-037.4",
           "name": "Grafico de comparacao (2 series sobrepostas, chart-theme.ts estendido)",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-533",
           "detail": "chart-theme.ts hoje so tem buildLineChartOption (1 serie) - extensao, nao duplicacao de arquivo novo.",
           "checklist": [

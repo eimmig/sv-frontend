@@ -7,6 +7,41 @@ import { vi } from 'vitest';
 import { PeriodComparison } from './period-comparison';
 import { environment } from '../../../environments/environment';
 
+class ResizeObserverStub {
+  observe(): void {}
+  unobserve(): void {}
+  disconnect(): void {}
+}
+
+/** Same jsdom canvas gap as shared/monthly-profit-chart - app-comparison-equity-chart (echarts)
+ *  is always instantiated by this page now (feat-037.4). See that spec for the full rationale. */
+function stubCanvasContext(): void {
+  const noop = () => {};
+  const context: Record<string, unknown> = {};
+  const proxy = new Proxy(context, {
+    get: (target, prop) => {
+      if (prop === 'canvas' || prop in target) {
+        return target[prop as string];
+      }
+      if (prop === 'createLinearGradient' || prop === 'createRadialGradient') {
+        return () => ({ addColorStop: noop });
+      }
+      if (prop === 'measureText') {
+        return () => ({ width: 0 });
+      }
+      return noop;
+    },
+    set: (target, prop, value) => {
+      target[prop as string] = value;
+      return true;
+    },
+  });
+  HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement) {
+    context['canvas'] = this;
+    return proxy;
+  } as unknown as typeof HTMLCanvasElement.prototype.getContext;
+}
+
 const BANKROLL_URL = `${environment.apiGatewayUrl}/api/v1/bankroll/balance`;
 const SETTINGS_URL = `${environment.apiGatewayUrl}/api/v1/settings`;
 const STATISTICS_URL = `${environment.apiGatewayUrl}/api/v1/statistics`;
@@ -115,6 +150,8 @@ describe('PeriodComparison', () => {
   }
 
   function createComponent(): void {
+    (globalThis as { ResizeObserver?: unknown }).ResizeObserver = ResizeObserverStub;
+    stubCanvasContext();
     fixture = TestBed.createComponent(PeriodComparison);
     httpMock = TestBed.inject(HttpTestingController);
     fixture.detectChanges();

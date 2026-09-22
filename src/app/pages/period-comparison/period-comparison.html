@@ -82,7 +82,10 @@
             [testId]="row.testId"
           />
         }
-        <!-- Gráfico e tabelas de segmento chegam nas próximas subtasks (feat-037.4/.5). -->
+
+        <app-comparison-equity-chart [seriesA]="chartSeries().seriesA" [seriesB]="chartSeries().seriesB" />
+
+        <!-- Tabelas de segmento chegam na próxima subtask (feat-037.5). -->
       </div>
     }
   </app-panel>
