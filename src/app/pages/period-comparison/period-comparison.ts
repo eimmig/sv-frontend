@@ -29,6 +29,7 @@ import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 import { PeriodPresetFilter, PeriodRange, resolvePreset } from '../../shared/period-preset-filter/period-preset-filter';
 import { SearchableSelect } from '../../shared/searchable-select/searchable-select';
 import { ComparisonDelta, ComparisonSeries, buildComparisonSeries, computeDelta } from './period-comparison-metrics';
+import { SegmentComparisonTable } from './segment-comparison-table/segment-comparison-table';
 
 interface Options {
   readonly bettingHouses: BettingHouse[];
@@ -99,6 +100,7 @@ function signedInt(value: number): string {
     PeriodPresetFilter,
     ReactiveFormsModule,
     SearchableSelect,
+    SegmentComparisonTable,
     TranslocoPipe,
   ],
   selector: 'app-period-comparison',

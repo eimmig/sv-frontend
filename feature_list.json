@@ -2663,7 +2663,7 @@
         {
           "id": "feat-037.5",
           "name": "Tabela de comparacao de segmentos (componente novo, nao adaptar catalog-dashboard)",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-534",
           "detail": "Achado MAJOR 2 do plan review - catalog-dashboard.ts e usado por 5 rotas hoje, adaptar pra 2 datasets arrisca regressao la.",
           "checklist": [
