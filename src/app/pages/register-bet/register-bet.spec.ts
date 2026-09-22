@@ -112,6 +112,13 @@ describe('RegisterBet', () => {
 
   afterEach(() => {
     httpMock.verify();
+    // The beforeEach above sets this explicitly (see its comment) and never had a matching
+    // cleanup - it leaked into whichever spec file happened to run after this one in the same
+    // worker (localStorage persists across files within a worker), silently switching that
+    // other file's Language.current() to 'pt-BR' if it never sets this key itself. Caught via a
+    // CI-only flake in an unrelated file (period-report.spec.ts) whose own locale-formatting
+    // assertion assumed the jsdom default ('en-US'), not this file's leftover override.
+    localStorage.removeItem('stakevault.language');
   });
 
   it('loads betting houses, the 4 catalogs and the team catalog into the dropdown options', () => {
