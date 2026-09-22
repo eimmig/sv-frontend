@@ -2692,7 +2692,7 @@
         {
           "id": "feat-037.7",
           "name": "CHANGELOG e verificacao final",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-536",
           "detail": "Fecha a feature com o gate real do harness.",
           "checklist": [
