@@ -19,6 +19,11 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
   acumulado vitalícia, 4 cards (Lucro Total, Pré/Live, Lucro Médio Mensal, ROI) e tabela mensal
   Jan-Dez do ano corrente. **Login agora redireciona para cá em vez de `/dashboard`** —
   `/dashboard` continua acessível como item normal de nav.
+- Tela "Comparativo de períodos" (`feat-037`, epic-031, rota `/period-comparison`, em
+  desenvolvimento): rota + shell da página com 2 seletores de período independentes (Período
+  A/B, `shared/period-preset-filter`) e o bloco de filtros comuns já usado em `dashboard.ts`
+  (esporte/liga/mercado/casa de apostas/tipster), aplicados igualmente aos dois lados
+  (`feat-037.1`). KPIs comparados, gráfico e tabelas de segmento chegam nas próximas subtasks.
 
 ### Changed
 
@@ -239,3 +244,11 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-526](https://stakevault.atlassian.net/browse/SV-526) - side-nav: menu de configuracoes consolidado (idioma/tema/trocar senha/sair) + acordeao de idioma
 - [SV-527](https://stakevault.atlassian.net/browse/SV-527) - language-selector: fontSet do icone (fix real do corte no login)
 - [SV-528](https://stakevault.atlassian.net/browse/SV-528) - CHANGELOG e verificacao final
+- [SV-529](https://stakevault.atlassian.net/browse/SV-529) - Tela dedicada de comparativo entre dois periodos
+- [SV-530](https://stakevault.atlassian.net/browse/SV-530) - Rota /period-comparison + shell da pagina + carregamento de dados (2 periodos + filtros comuns)
+- [SV-531](https://stakevault.atlassian.net/browse/SV-531) - Modulo puro period-comparison-metrics.ts (deltas + serie normalizada por indice de dia)
+- [SV-532](https://stakevault.atlassian.net/browse/SV-532) - Linha de comparacao de KPIs (valor A | valor B | delta) - padrao documentado, nao kpi-card triplicado
+- [SV-533](https://stakevault.atlassian.net/browse/SV-533) - Grafico de comparacao (2 series sobrepostas, chart-theme.ts estendido)
+- [SV-534](https://stakevault.atlassian.net/browse/SV-534) - Tabela de comparacao de segmentos (componente novo, nao adaptar catalog-dashboard)
+- [SV-535](https://stakevault.atlassian.net/browse/SV-535) - i18n (3 locales) + QA visual (2 temas x mobile/desktop) + testes Playwright
+- [SV-536](https://stakevault.atlassian.net/browse/SV-536) - CHANGELOG e verificacao final
