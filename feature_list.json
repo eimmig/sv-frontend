@@ -2677,7 +2677,7 @@
         {
           "id": "feat-037.6",
           "name": "i18n (3 locales) + QA visual (2 temas x mobile/desktop) + testes Playwright",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-535",
           "detail": "Definicao de pronto deste app - nenhuma string hardcoded, nenhum tema/resolucao pulado.",
           "checklist": [

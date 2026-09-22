@@ -37,7 +37,13 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
   (`feat-037.5`): `segment-comparison-table` novo (componente dedicado, `shared/catalog-dashboard`
   não é tocado - achado MAJOR do plan review), 6 instâncias (esporte/liga/mercado/tipster/casa de
   apostas/tipo de aposta) com ROI e lucro líquido dos 2 períodos lado a lado - união dos itens
-  presentes em A OU B, lado ausente mostra "Indeterminado" em vez de 0.
+  presentes em A OU B, lado ausente mostra "Indeterminado" em vez de 0. QA visual + Playwright
+  (`feat-037.6`, `e2e/period-comparison.spec.ts`): achado real corrigido - abaixo de 600px as
+  linhas de comparação perdiam os rótulos "Período A/B/Diferença" (cabeçalho da tabela
+  escondido nessa largura), deixando números soltos sem indicar o que era o quê;
+  `comparison-metric-row` ganhou auto-rotulação via `::before`/`data-mobile-label` só nessa
+  faixa. 284 chaves i18n em sincronia (pt-BR/en-US/es), sem chave nova (reaproveita namespaces
+  existentes).
 
 ### Changed
 
