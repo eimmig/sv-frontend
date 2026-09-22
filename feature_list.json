@@ -2581,6 +2581,132 @@
           }
         ]
       }
+    },
+    {
+      "id": "feat-037",
+      "name": "Tela dedicada de comparativo entre dois periodos",
+      "goal": "Tela nova (rota propria) que compara metricas de 2 periodos escolhidos pelo usuario (ex.: 1o semestre de 2026 vs 1o semestre de 2025), lado a lado, com filtros adicionais opcionais (esporte/liga/mercado/casa de apostas/tipster) aplicados igualmente aos dois periodos.",
+      "scope": [
+        "apps/web apenas (epic-031 na raiz) - sem mudanca de contrato entre servicos, sem RN01-09 envolvida diretamente (consome dados ja existentes)",
+        "Zero endpoint novo: reusa GET /api/v1/statistics, GET /api/v1/statistics/daily (epic-016), GET /api/v1/bankroll/balance?at= e GET /api/v1/settings (epic-013), 2x cada (uma chamada por periodo, forkJoin), mesmo conjunto de filtros (esporte/liga/mercado/casa de apostas/tipster) aplicado aos dois periodos",
+        "pages/period-comparison/ novo: rota /period-comparison, 2 instancias de shared/period-preset-filter (Periodo A/B) semeadas ja resolvidas (nao {from:'',to:''} - achado MAJOR do plan review)",
+        "period-comparison-metrics.ts (modulo puro): delta absoluto/percentual por KPI, serie de curva acumulada normalizada por indice de dia (nao data calendario), mesmo algoritmo de carry-forward de shared/monthly-drawdown-chart/monthly-drawdown-metrics.ts",
+        "core/chart-theme.ts ganha buildComparisonLineChartOption (2 series) por extensao; shared/comparison-equity-chart novo consumindo",
+        "pages/period-comparison/segment-comparison-table/ novo (componente dedicado, catalog-dashboard.ts NAO e tocado - achado MAJOR do plan review) para bySport/byLeague/byMarket/byTipster/byBettingHouse/byBetType",
+        "i18n 3 locales (periodComparison.*), QA visual (2 temas x mobile/desktop), testes unitarios + Playwright"
+      ],
+      "description": "Pedido do usuario em 2026-09-22 ('comparativo entre dois periodos distintos, ex.: 6 primeiros meses de 2026 com o mesmo periodo de 2025'). Ver epic-031 (raiz) para o racional completo e as 3 decisoes tomadas via AskUserQuestion: (1) tela nova dedicada, nao um modo dentro de Relatorio do periodo (epic-017) nem secao no dashboard (epic-015); (2) escopo de visualizacao amplo ('filtrar pelo que quiser, visualizar da maneira que quiser') - layout exato fica pro plan review, mas cobre no minimo KPIs lado a lado com delta absoluto/percentual, curva de lucro acumulado das 2 periodos sobreposta (normalizada por indice de dia dentro do periodo, ja que os 2 periodos tem datas calendario diferentes) e comparacao dos segmentos ja existentes (bySport/byMarket/byBettingHouse/byLeague/byTipster/byBetType); (3) zero backend novo, tudo client-side reaproveitando os endpoints ja entregues por epic-013/014/016/018. Dois seletores de periodo independentes (Periodo A / Periodo B, reusando shared/period-preset-filter de epic-015 - presets + range customizado cada um) mais o bloco de filtros comuns (esporte/liga/mercado/casa de apostas/tipster, todos opcionais, mesmo padrao de GET /api/v1/statistics) aplicado aos dois periodos ao mesmo tempo. Decisoes de layout/composicao exata dos paineis, nomenclatura dos deltas e tratamento de periodos de tamanho diferente (ex.: 6 meses vs 31 dias) ficam para o Plan Reviewer confirmar/registrar antes do codigo.",
+      "dependencies": [
+        "feat-014",
+        "feat-015",
+        "feat-016",
+        "feat-025"
+      ],
+      "status": "in-progress",
+      "plan_review": "2026-09-22, Plan Reviewer (review-suite:ln-11-plan-reviewer). Veredito: REVISE, 3 MAJOR corrigidos no plano antes de codificar (nenhum ainda implementado). (1) As 2 instancias de shared/period-preset-filter emitem de forma independente (nao atomica) - com os 2 signals de periodo semeados em {from:'',to:''}, o 1o applyFilter() (disparado pelo periodo A) roda com periodo B ainda vazio, que StatisticsFilter interpreta como 'sem filtro' (todo o historico) - flash real de numero errado antes do 2o load corrigir. Corrigido: os 2 signals nascem ja resolvidos via resolvePreset('today', new Date()) (funcao pura ja exportada por period-preset-filter.ts), nao {from:'',to:''}. (2) shared/catalog-dashboard nao da pra reaproveitar como estava planejado - tem seu proprio period-preset-filter interno e busca 1 dataset so, usado por 5 rotas hoje; adaptar pra aceitar 2 datasets de fora arrisca regressao desproporcional. Corrigido: componente novo e pequeno segment-comparison-table (input de 2 arrays SegmentedBetMetrics[], uniao dos dimensionId presentes em A OU B), catalog-dashboard.ts nao e tocado. (3) kpi-card triplicado (A+B+delta) por metrica (~11 metricas = ~33 cards) foge do padrao ja documentado em docs/sistema-de-design.md (item 4 'Linha de lista'/item 5 'Texto de valor + variacao' - 1 linha com valor + variacao percentual colorida, nao 3 cards). Corrigido: linha de comparacao dedicada (rotulo | valor A | valor B | delta com kpiSign), kpi-card.ts so contribui a funcao kpiSign, nao o componente inteiro. Resto do plano confirmado certo por precedente: normalizacao da curva por indice de dia (nao data calendario) acumulando sem reset, igual shared/monthly-drawdown-chart/monthly-drawdown-metrics.ts (+= 0 nos dias sem aposta, sem caso especial); serie mais curta preenchida com null alem do proprio comprimento (buildLineChartOption nao seta connectNulls, ECharts quebra a linha no null por padrao); chart-theme.ts ganha buildComparisonLineChartOption (2 series) por extensao, nao duplicacao; 4 chamadas de bankroll (2 por periodo) sem atalho disponivel, mesmo padrao ja tolerado em dashboard.ts (3 chamadas). Achado colateral fora de escopo (nao desta feature): docs/API-CONTRACTS.md/ARCHITECTURE.md/CONVENTIONS.md/DATA-MODEL.md/Index.md/REQUIREMENTS.md/STATISTICS.md existem como copias em ingles nao rastreadas (git status), identicas as versoes em portugues ja commitadas (contratos-de-api.md etc.) exceto wikilinks internos - sobra do rename de docs em f39582a, CLAUDE.md ainda referencia os nomes antigos. Nao corrigido aqui - fora do escopo desta feature, sinalizado ao usuario.",
+      "jira": "SV-529",
+      "subtasks": [
+        {
+          "id": "feat-037.1",
+          "name": "Rota /period-comparison + shell da pagina + carregamento de dados (2 periodos + filtros comuns)",
+          "status": "in-progress",
+          "jira": "SV-530",
+          "detail": "Base de dados da tela - sem isso nenhuma das visualizacoes tem o que consumir. Inclui a correcao MAJOR 1 do plan review (sementes dos 2 period-preset-filter).",
+          "checklist": [
+            "app.routes.ts: rota 'period-comparison' lazy, canActivate: [authGuard], mesmo padrao de 'period-report'.",
+            "pages/period-comparison/period-comparison.ts: signals periodA/periodB semeados com resolvePreset('today', new Date()) (NAO {from:'',to:''} - achado MAJOR 1), 2x <app-period-preset-filter> (onPeriodAChange/onPeriodBChange chamando applyFilter()).",
+            "Form comum (sportId/leagueId/marketId/bettingHouseId/tipsterId, todos opcionais) - mesmo padrao de pages/dashboard/dashboard.ts (SearchableSelect + catalogApi/BettingHousesApi), ngOnInit carrega as options.",
+            "applyFilter(): 1 forkJoin (dashboardA/dashboardB via StatisticsApi.get, dailyA/dailyB via StatisticsApi.getDaily, bankrollFromA/bankrollToA/bankrollFromB/bankrollToB via BankrollApi.getBalance, unitPercent via SettingsApi.get 1x so) usando loadInto (mesmo padrao de todas as outras paginas)."
+          ],
+          "validation": "ng test period-comparison.spec.ts verde - teste especifico provando que o 1o forkJoin apos a inicializacao ja usa periodo A e B validos (nao {from:'',to:''}), nao so o estado final.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-037.2",
+          "name": "Modulo puro period-comparison-metrics.ts (deltas + serie normalizada por indice de dia)",
+          "status": "not-started",
+          "jira": "SV-531",
+          "detail": "Logica de calculo isolada e testavel sem Angular, mesmo precedente de period-report-metrics.ts/monthly-drawdown-metrics.ts.",
+          "checklist": [
+            "computeDelta(a: number, b: number): {absolute: number; percent: number | null} - percent null quando a===0.",
+            "buildComparisonSeries(dailyA, fromA, toA, saldoFinalA, dailyB, fromB, toB, saldoFinalB, unitPercent): {categories: string[]; seriesA: (number|null)[]; seriesB: (number|null)[]} - acumula dia a dia sem reset (mesmo algoritmo de monthly-drawdown-metrics.ts, += 0 nos dias sem aposta), categorias 'Dia 1'..'Dia N' (N = max(lenA, lenB)), serie mais curta com null alem do proprio comprimento (nao repete o ultimo valor)."
+          ],
+          "validation": "period-comparison-metrics.spec.ts cobrindo: a===0 (percent null), periodos de tamanho diferente (padding null, nao flatline), periodo sem nenhuma aposta liquidada (todos os dias 0/acumulado 0).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-037.3",
+          "name": "Linha de comparacao de KPIs (valor A | valor B | delta) - padrao documentado, nao kpi-card triplicado",
+          "status": "not-started",
+          "jira": "SV-532",
+          "detail": "Achado MAJOR 3 do plan review - docs/sistema-de-design.md item 4/5 ja documenta o padrao certo (1 linha, valor + variacao colorida), kpi-card.ts so contribui kpiSign.",
+          "checklist": [
+            "Componente/markup de linha de comparacao (netProfit/roi/settledCount/winRate/avgOdd/wonCount/lostCount/voidCount/preCount/liveCount/totalStaked/saldoInicial/saldoFinal/unidadesApostadas) - rotulo | valor A | valor B | delta (kpiSign do valor B-A).",
+            "unidadesApostadas por periodo: mesma formula totalStaked/(saldoFinal x unitPercent) ja usada em dashboard.ts/period-report-metrics.ts, aplicada a cada periodo com seu proprio saldoFinal."
+          ],
+          "validation": "ng test verde. QA visual real: linha de comparacao segue o padrao de docs/sistema-de-design.md (nao 3 kpi-card por metrica).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-037.4",
+          "name": "Grafico de comparacao (2 series sobrepostas, chart-theme.ts estendido)",
+          "status": "not-started",
+          "jira": "SV-533",
+          "detail": "chart-theme.ts hoje so tem buildLineChartOption (1 serie) - extensao, nao duplicacao de arquivo novo.",
+          "checklist": [
+            "core/chart-theme.ts: buildComparisonLineChartOption(categories, seriesA, seriesB, colorA, colorB) reusando o grid/eixo ja existente.",
+            "shared/comparison-equity-chart/ novo (input dataA/dataB do tipo retornado por buildComparisonSeries), cor B = token neutro ja definido em docs/sistema-de-design.md (nao inventar cor nova - decisao de implementacao, ver plan_review 'Open decisions')."
+          ],
+          "validation": "ng test verde. QA visual real (2 temas): as 2 series sao visualmente distinguiveis, gap (null) quebra a linha da serie mais curta em vez de flatline.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-037.5",
+          "name": "Tabela de comparacao de segmentos (componente novo, nao adaptar catalog-dashboard)",
+          "status": "not-started",
+          "jira": "SV-534",
+          "detail": "Achado MAJOR 2 do plan review - catalog-dashboard.ts e usado por 5 rotas hoje, adaptar pra 2 datasets arrisca regressao la.",
+          "checklist": [
+            "pages/period-comparison/segment-comparison-table/ novo: input.required<SegmentedBetMetrics[]>() x2 (A/B) + segment: CatalogSegment (reusa o type ja exportado por catalog-dashboard.ts), uniao dos dimensionId presentes em A OU B (nao interseccao).",
+            "6 instancias na pagina: bySport/byLeague/byMarket/byTipster/byBettingHouse/byBetType.",
+            "catalog-dashboard.ts inalterado - confirmar com teste de regressao (suite completa) que as 5 rotas existentes continuam passando."
+          ],
+          "validation": "ng test verde (suite completa, incluindo os specs das 5 rotas de catalog-dashboard existentes - confirmam zero regressao).",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-037.6",
+          "name": "i18n (3 locales) + QA visual (2 temas x mobile/desktop) + testes Playwright",
+          "status": "not-started",
+          "jira": "SV-535",
+          "detail": "Definicao de pronto deste app - nenhuma string hardcoded, nenhum tema/resolucao pulado.",
+          "checklist": [
+            "public/i18n/{pt-BR,en-US,es}.json: chaves periodComparison.* (titulo, labels dos 2 seletores de periodo, labels dos filtros comuns, rotulos das linhas de KPI, erro generico).",
+            "validate-i18n-keys.py sem chave orfa.",
+            "QA visual real (Impeccable/taste-skill, screenshot contra dev server): 2 temas x desktop/mobile, layout em paineis (nao pagina de rolagem unica).",
+            "e2e/period-comparison.spec.ts: fluxo critico (escolher periodo A custom + periodo B custom + 1 filtro comum, confirmar KPIs/grafico/segmentos atualizando)."
+          ],
+          "validation": "npx ng test + npx playwright test period-comparison.spec.ts verdes, screenshots dos 2 temas revisados.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-037.7",
+          "name": "CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-536",
+          "detail": "Fecha a feature com o gate real do harness.",
+          "checklist": [
+            "Entrada em CHANGELOG.md (Added: tela /period-comparison).",
+            "Delivery Reviewer + Test Suite Auditor rodados contra o diff completo.",
+            "ng test (suite completa) + playwright test (suite completa ou pelo menos arquivos tocados) verdes.",
+            "./init.sh deste app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit."
+          ],
+          "validation": "feature_list.json (deste app e da raiz) atualizado com status done e evidence.",
+          "owner": "agente"
+        }
+      ],
+      "evidence": ""
     }
   ]
 }
