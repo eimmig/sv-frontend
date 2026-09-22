@@ -72,6 +72,27 @@ export function buildLineChartOption(
   };
 }
 
+/** One overlay series for buildComparisonLineChartOption - groups name/color/data instead of 3
+ *  separate positional params per side (SonarCloud typescript:S107, max 7 params/function). */
+export interface ComparisonSeriesStyle {
+  readonly name: string;
+  readonly color: string;
+  readonly data: (number | null)[];
+}
+
+function comparisonSeriesOption(style: ComparisonSeriesStyle) {
+  return {
+    name: style.name,
+    type: 'line',
+    data: style.data,
+    symbol: 'circle',
+    symbolSize: 6,
+    smooth: true,
+    itemStyle: { color: style.color },
+    lineStyle: { color: style.color, width: 2 },
+  };
+}
+
 /**
  * 2-series overlay on a shared category axis (period-comparison's equity curves, one per side) -
  * extends the same grid/axis visual encoding as buildLineChartOption instead of a parallel
@@ -81,12 +102,8 @@ export function buildLineChartOption(
  */
 export function buildComparisonLineChartOption(
   categories: string[],
-  seriesA: (number | null)[],
-  seriesB: (number | null)[],
-  labelA: string,
-  labelB: string,
-  colorA: string,
-  colorB: string,
+  seriesA: ComparisonSeriesStyle,
+  seriesB: ComparisonSeriesStyle,
   borderColor: string,
 ): EChartsCoreOption {
   return {
@@ -106,27 +123,6 @@ export function buildComparisonLineChartOption(
       axisLabel: { color: borderColor },
       splitLine: { lineStyle: { color: borderColor, width: 1 } },
     },
-    series: [
-      {
-        name: labelA,
-        type: 'line',
-        data: seriesA,
-        symbol: 'circle',
-        symbolSize: 6,
-        smooth: true,
-        itemStyle: { color: colorA },
-        lineStyle: { color: colorA, width: 2 },
-      },
-      {
-        name: labelB,
-        type: 'line',
-        data: seriesB,
-        symbol: 'circle',
-        symbolSize: 6,
-        smooth: true,
-        itemStyle: { color: colorB },
-        lineStyle: { color: colorB, width: 2 },
-      },
-    ],
+    series: [comparisonSeriesOption(seriesA), comparisonSeriesOption(seriesB)],
   };
 }

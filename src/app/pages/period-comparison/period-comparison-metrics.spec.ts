@@ -26,37 +26,44 @@ describe('computeDelta', () => {
 
 describe('buildComparisonSeries', () => {
   it('accumulates each period independently by day-offset, never resetting', () => {
-    const dailyA = [day('2026-01-01', 100), day('2026-01-02', -50)];
-    const dailyB = [day('2025-01-01', 20), day('2025-01-02', 20)];
+    const a = { daily: [day('2026-01-01', 100), day('2026-01-02', -50)], from: '2026-01-01', to: '2026-01-02', saldoFinal: 1000 };
+    const b = { daily: [day('2025-01-01', 20), day('2025-01-02', 20)], from: '2025-01-01', to: '2025-01-02', saldoFinal: 1000 };
 
-    const result = buildComparisonSeries(dailyA, '2026-01-01', '2026-01-02', 1000, dailyB, '2025-01-01', '2025-01-02', 1000, 0.01);
+    const result = buildComparisonSeries(a, b, 0.01);
 
     expect(result.seriesA).toEqual([10, 5]); // 100/10=10, then 10 + (-50/10)
     expect(result.seriesB).toEqual([2, 4]); // 20/10=2, then 2 + 20/10
   });
 
   it('a day without a settled bet carries the previous accumulated value forward', () => {
-    const dailyA = [day('2026-01-01', 100)];
+    const a = { daily: [day('2026-01-01', 100)], from: '2026-01-01', to: '2026-01-03', saldoFinal: 1000 };
+    const b = { daily: [], from: '2025-01-01', to: '2025-01-01', saldoFinal: 1000 };
 
-    const result = buildComparisonSeries(dailyA, '2026-01-01', '2026-01-03', 1000, [], '2025-01-01', '2025-01-01', 1000, 0.01);
+    const result = buildComparisonSeries(a, b, 0.01);
 
     expect(result.seriesA).toEqual([10, 10, 10]);
   });
 
   it('pads the shorter period with null past its own length instead of repeating the last value', () => {
-    const dailyA = [day('2026-01-01', 100)]; // 1-day period
-    const dailyB = [day('2025-01-01', 10), day('2025-01-02', 10), day('2025-01-03', 10)]; // 3-day period
+    const a = { daily: [day('2026-01-01', 100)], from: '2026-01-01', to: '2026-01-01', saldoFinal: 1000 }; // 1-day period
+    const b = {
+      daily: [day('2025-01-01', 10), day('2025-01-02', 10), day('2025-01-03', 10)],
+      from: '2025-01-01',
+      to: '2025-01-03',
+      saldoFinal: 1000,
+    }; // 3-day period
 
-    const result = buildComparisonSeries(dailyA, '2026-01-01', '2026-01-01', 1000, dailyB, '2025-01-01', '2025-01-03', 1000, 0.01);
+    const result = buildComparisonSeries(a, b, 0.01);
 
     expect(result.seriesA).toEqual([10, null, null]);
     expect(result.seriesB).toEqual([1, 2, 3]);
   });
 
   it('returns null for every day of a period when its denominator is 0', () => {
-    const dailyA = [day('2026-01-01', 100)];
+    const a = { daily: [day('2026-01-01', 100)], from: '2026-01-01', to: '2026-01-01', saldoFinal: 0 };
+    const b = { daily: [], from: '2025-01-01', to: '2025-01-01', saldoFinal: 1000 };
 
-    const result = buildComparisonSeries(dailyA, '2026-01-01', '2026-01-01', 0, [], '2025-01-01', '2025-01-01', 1000, 0.01);
+    const result = buildComparisonSeries(a, b, 0.01);
 
     expect(result.seriesA).toEqual([null]);
     expect(result.seriesB).toEqual([0]);

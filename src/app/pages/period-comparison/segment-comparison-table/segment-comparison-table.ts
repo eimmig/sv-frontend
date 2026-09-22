@@ -21,6 +21,33 @@ export interface SegmentComparisonRow {
   readonly netProfitSign: KpiCardSign;
 }
 
+interface ComparedField {
+  readonly a: string;
+  readonly b: string;
+  readonly delta: string;
+  readonly sign: KpiCardSign;
+}
+
+/** Collapses the 2 near-identical roi/netProfit blocks that used to live inline in `rows` (each
+ *  with its own "both sides present?" ternary chain) into 1 reusable helper - cuts the cognitive
+ *  complexity SonarCloud flagged (typescript:S3776, 23 > 15 allowed) by moving the branching out
+ *  of the loop body into a small, separately-testable function. */
+function compareMetric(
+  valueA: number | undefined,
+  valueB: number | undefined,
+  dash: string,
+  format: (value: number) => string,
+  formatDelta: (value: number) => string,
+): ComparedField {
+  const delta = valueA !== undefined && valueB !== undefined ? computeDelta(valueA, valueB) : null;
+  return {
+    a: valueA === undefined ? dash : format(valueA),
+    b: valueB === undefined ? dash : format(valueB),
+    delta: delta === null ? dash : formatDelta(delta.absolute),
+    sign: delta === null ? 'neutral' : kpiSign(delta.absolute),
+  };
+}
+
 /**
  * ROI/netProfit comparados por item de um segmento (esporte/liga/mercado/tipster/casa de
  * apostas/tipo de aposta) entre os 2 períodos - componente NOVO e dedicado, não uma adaptação de
@@ -58,19 +85,21 @@ export class SegmentComparisonTable {
     for (const id of ids) {
       const entryA = byIdA.get(id);
       const entryB = byIdB.get(id);
-      const roiDelta = entryA && entryB ? computeDelta(entryA.metrics.roi, entryB.metrics.roi) : null;
-      const netProfitDelta = entryA && entryB ? computeDelta(entryA.metrics.netProfit, entryB.metrics.netProfit) : null;
+      const roi = compareMetric(entryA?.metrics.roi, entryB?.metrics.roi, dash, (value) => formatPercent(value, locale), (value) =>
+        formatPercentDelta(value, locale),
+      );
+      const netProfit = compareMetric(entryA?.metrics.netProfit, entryB?.metrics.netProfit, dash, formatBrl, formatBrlDelta);
       rows.push({
         dimensionId: id,
         dimensionName: (entryA ?? entryB)!.dimensionName,
-        roiA: entryA ? formatPercent(entryA.metrics.roi, locale) : dash,
-        roiB: entryB ? formatPercent(entryB.metrics.roi, locale) : dash,
-        roiDelta: roiDelta ? formatPercentDelta(roiDelta.absolute, locale) : dash,
-        roiSign: roiDelta ? kpiSign(roiDelta.absolute) : 'neutral',
-        netProfitA: entryA ? formatBrl(entryA.metrics.netProfit) : dash,
-        netProfitB: entryB ? formatBrl(entryB.metrics.netProfit) : dash,
-        netProfitDelta: netProfitDelta ? formatBrlDelta(netProfitDelta.absolute) : dash,
-        netProfitSign: netProfitDelta ? kpiSign(netProfitDelta.absolute) : 'neutral',
+        roiA: roi.a,
+        roiB: roi.b,
+        roiDelta: roi.delta,
+        roiSign: roi.sign,
+        netProfitA: netProfit.a,
+        netProfitB: netProfit.b,
+        netProfitDelta: netProfit.delta,
+        netProfitSign: netProfit.sign,
       });
     }
     return rows.sort((a, b) => a.dimensionName.localeCompare(b.dimensionName));

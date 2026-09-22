@@ -272,7 +272,7 @@ describe('PeriodComparison', () => {
     // 2 real HTTP requests (one per period side) - both periods happen to be "Hoje" at this
     // point, but each side still fires its own GET, never deduplicated by HttpClient.
     const requests = httpMock.match((req) => req.url === STATISTICS_URL);
-    expect(requests.length).toBe(2);
+    expect(requests).toHaveLength(2);
     for (const request of requests) {
       expect(request.request.params.get('sportId')).toBe('sport-1');
       request.flush(EMPTY_DASHBOARD);

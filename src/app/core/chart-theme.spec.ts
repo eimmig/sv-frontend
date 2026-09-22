@@ -22,12 +22,8 @@ describe('buildComparisonLineChartOption', () => {
   it('builds 2 named, colored series sharing the same category axis, with no area fill or connectNulls', () => {
     const option = buildComparisonLineChartOption(
       ['1', '2', '3'],
-      [10, 20, null],
-      [5, null, null],
-      'Período A',
-      'Período B',
-      '#2fa85c',
-      '#2e70a0',
+      { name: 'Período A', color: '#2fa85c', data: [10, 20, null] },
+      { name: 'Período B', color: '#2e70a0', data: [5, null, null] },
       '#dce3e0',
     );
 

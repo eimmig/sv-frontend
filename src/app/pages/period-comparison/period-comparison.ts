@@ -209,14 +209,8 @@ export class PeriodComparison implements OnInit {
     const periodA = this.periodA();
     const periodB = this.periodB();
     return buildComparisonSeries(
-      a.daily,
-      periodA.from,
-      periodA.to,
-      a.bankrollTo,
-      b.daily,
-      periodB.from,
-      periodB.to,
-      b.bankrollTo,
+      { daily: a.daily, from: periodA.from, to: periodA.to, saldoFinal: a.bankrollTo },
+      { daily: b.daily, from: periodB.from, to: periodB.to, saldoFinal: b.bankrollTo },
       unitPercent,
     );
   });

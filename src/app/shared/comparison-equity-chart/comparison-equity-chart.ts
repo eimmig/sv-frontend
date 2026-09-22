@@ -42,12 +42,8 @@ export class ComparisonEquityChart {
     const categories = Array.from({ length: Math.max(seriesA.length, seriesB.length) }, (_, index) => String(index + 1));
     return buildComparisonLineChartOption(
       categories,
-      seriesA,
-      seriesB,
-      this.transloco.translate('periodComparison.periodALabel'),
-      this.transloco.translate('periodComparison.periodBLabel'),
-      readCssColor('--color-brand'),
-      readCssColor('--color-action-neutral'),
+      { name: this.transloco.translate('periodComparison.periodALabel'), color: readCssColor('--color-brand'), data: seriesA },
+      { name: this.transloco.translate('periodComparison.periodBLabel'), color: readCssColor('--color-action-neutral'), data: seriesB },
       readCssColor('--color-border'),
     );
   });

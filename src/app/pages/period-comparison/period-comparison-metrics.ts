@@ -51,25 +51,24 @@ export interface ComparisonSeries {
   readonly seriesB: (number | null)[];
 }
 
+/** One side's inputs for buildComparisonSeries - groups daily/from/to/saldoFinal instead of 4
+ *  separate positional params per side (SonarCloud typescript:S107, max 7 params/function). */
+export interface ComparisonSeriesInput {
+  readonly daily: readonly DailyBetMetrics[];
+  readonly from: string;
+  readonly to: string;
+  readonly saldoFinal: number;
+}
+
 /**
  * Overlays the 2 periods' equity curves on a shared day-index axis (not calendar date, since A
  * and B cover different date ranges by definition). The shorter period's array is padded with
  * null past its own length (not the last value repeated) - shared/comparison-equity-chart's
  * chart option doesn't set connectNulls, so ECharts breaks the line there instead of flatlining.
  */
-export function buildComparisonSeries(
-  dailyA: readonly DailyBetMetrics[],
-  fromA: string,
-  toA: string,
-  saldoFinalA: number,
-  dailyB: readonly DailyBetMetrics[],
-  fromB: string,
-  toB: string,
-  saldoFinalB: number,
-  unitPercent: number,
-): ComparisonSeries {
-  const seriesA = accumulateDaily(dailyA, fromA, toA, saldoFinalA, unitPercent);
-  const seriesB = accumulateDaily(dailyB, fromB, toB, saldoFinalB, unitPercent);
+export function buildComparisonSeries(a: ComparisonSeriesInput, b: ComparisonSeriesInput, unitPercent: number): ComparisonSeries {
+  const seriesA = accumulateDaily(a.daily, a.from, a.to, a.saldoFinal, unitPercent);
+  const seriesB = accumulateDaily(b.daily, b.from, b.to, b.saldoFinal, unitPercent);
   const length = Math.max(seriesA.length, seriesB.length);
   return { seriesA: padTo(seriesA, length), seriesB: padTo(seriesB, length) };
 }
