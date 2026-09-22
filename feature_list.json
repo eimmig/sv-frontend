@@ -2637,7 +2637,7 @@
         {
           "id": "feat-037.3",
           "name": "Linha de comparacao de KPIs (valor A | valor B | delta) - padrao documentado, nao kpi-card triplicado",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-532",
           "detail": "Achado MAJOR 3 do plan review - docs/sistema-de-design.md item 4/5 ja documenta o padrao certo (1 linha, valor + variacao colorida), kpi-card.ts so contribui kpiSign.",
           "checklist": [

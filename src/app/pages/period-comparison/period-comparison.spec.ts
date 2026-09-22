@@ -52,6 +52,22 @@ describe('PeriodComparison', () => {
         filterAll: 'Todas',
         applyFilter: 'Aplicar filtro',
         resultsTitle: 'Comparativo',
+        deltaLabel: 'Diferença',
+        netProfitLabel: 'Lucro líquido',
+        roiLabel: 'ROI',
+        settledCountLabel: 'Apostas liquidadas',
+        winRateLabel: 'Taxa de acerto',
+        avgOddLabel: 'Odd média',
+        wonCountLabel: 'Vitórias',
+        lostCountLabel: 'Derrotas',
+        voidCountLabel: 'Anuladas',
+        preCountLabel: 'Pré-jogo',
+        liveCountLabel: 'Ao vivo',
+        totalStakedLabel: 'Total apostado',
+        balanceFromLabel: 'Saldo inicial',
+        balanceToLabel: 'Saldo final',
+        unitsStakedLabel: 'Unidades apostadas',
+        indeterminate: 'Indeterminado',
         genericError: 'Não foi possível completar a operação. Tente novamente.',
       },
     },
@@ -109,6 +125,12 @@ describe('PeriodComparison', () => {
     // clock so assertions on the emitted from/to don't depend on which day the suite runs on.
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-09-22T12:00:00Z'));
+    // Language.current() (core/language.ts) falls back to navigator.language when nothing is
+    // pinned - this suite's `langs`/`availableLangs` only register 'pt-BR', so an unpinned
+    // 'en-US' jsdom default would resolve translate() calls (e.g. periodComparison.indeterminate)
+    // against a lang transloco never loaded. Same fix already applied to period-report.spec.ts.
+    localStorage.removeItem('stakevault.language');
+    Object.defineProperty(navigator, 'language', { value: 'pt-BR', configurable: true });
     await TestBed.configureTestingModule({
       imports: [
         PeriodComparison,
@@ -124,6 +146,7 @@ describe('PeriodComparison', () => {
   afterEach(() => {
     httpMock.verify();
     vi.useRealTimers();
+    delete (navigator as { language?: string }).language;
   });
 
   it('seeds both periods already resolved to "Hoje" - no request is ever sent with an empty from/to', () => {
@@ -135,6 +158,50 @@ describe('PeriodComparison', () => {
     expect(fixture.componentInstance['periodA']()).toEqual({ from: '2026-09-22', to: '2026-09-22' });
     expect(fixture.componentInstance['periodB']()).toEqual({ from: '2026-09-22', to: '2026-09-22' });
     expect(fixture.nativeElement.querySelector('[data-testid="period-comparison-results-error"]')).toBeNull();
+  });
+
+  it('renders one comparison row per KPI, with the net profit delta colored positive when B improves on A', () => {
+    createComponent();
+    flushOptions();
+    drainComparisonRequests();
+    fixture.detectChanges();
+
+    // Distinguishable periods (A=January, B stays "Hoje") so each side's statistics request can
+    // be flushed with a different payload.
+    fixture.componentInstance['onPeriodAChange']({ from: '2026-01-01', to: '2026-01-31' });
+
+    for (const request of httpMock.match((req) => req.url === STATISTICS_URL)) {
+      const isA = request.request.params.get('from') === '2026-01-01';
+      request.flush({
+        ...EMPTY_DASHBOARD,
+        overall: { ...EMPTY_DASHBOARD.overall, netProfit: isA ? 100 : 150, roi: isA ? 0.1 : 0.15, settledCount: isA ? 10 : 12 },
+      });
+    }
+    drainComparisonRequests();
+    fixture.detectChanges();
+
+    const netProfitRow = fixture.nativeElement.querySelector('[data-testid="period-comparison-row-net-profit"]');
+    expect(netProfitRow.querySelector('[data-testid="comparison-metric-row-value-a"]').textContent).toContain('100');
+    expect(netProfitRow.querySelector('[data-testid="comparison-metric-row-value-b"]').textContent).toContain('150');
+    expect(netProfitRow.querySelector('.comparison-metric-row__delta--positive')).toBeTruthy();
+
+    const settledCountRow = fixture.nativeElement.querySelector('[data-testid="period-comparison-row-settled-count"]');
+    expect(settledCountRow.querySelector('[data-testid="comparison-metric-row-value-a"]').textContent).toContain('10');
+    expect(settledCountRow.querySelector('[data-testid="comparison-metric-row-value-b"]').textContent).toContain('12');
+    // Plain counts never get a colored delta (only netProfit/roi do, same restraint as kpi-card elsewhere).
+    expect(settledCountRow.querySelector('.comparison-metric-row__delta--positive')).toBeNull();
+  });
+
+  it('renders "Indeterminado" for avgOdd/unidadesApostadas when a side has no settled bet or zero balance', () => {
+    createComponent();
+    flushOptions();
+    drainComparisonRequests(0); // balance=0 on both sides
+    fixture.detectChanges();
+
+    const avgOddRow = fixture.nativeElement.querySelector('[data-testid="period-comparison-row-avg-odd"]');
+    expect(avgOddRow.querySelector('[data-testid="comparison-metric-row-value-a"]').textContent).toContain('Indeterminado');
+    const unitsRow = fixture.nativeElement.querySelector('[data-testid="period-comparison-row-units-staked"]');
+    expect(unitsRow.querySelector('[data-testid="comparison-metric-row-value-a"]').textContent).toContain('Indeterminado');
   });
 
   it('changing period A alone re-fetches with the new range for A while period B stays put', () => {
