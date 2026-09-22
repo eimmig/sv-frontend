@@ -66,7 +66,23 @@
       <p class="period-comparison__error" role="alert" data-testid="period-comparison-results-error">{{ message }}</p>
     } @else {
       <div data-testid="period-comparison-results">
-        <!-- KPIs, gráfico e tabelas de segmento chegam nas próximas subtasks (feat-037.3/.4/.5). -->
+        <div class="period-comparison__rows-header" data-testid="period-comparison-rows-header">
+          <span></span>
+          <span>{{ 'periodComparison.periodALabel' | transloco }}</span>
+          <span>{{ 'periodComparison.periodBLabel' | transloco }}</span>
+          <span>{{ 'periodComparison.deltaLabel' | transloco }}</span>
+        </div>
+        @for (row of rows(); track row.testId) {
+          <app-comparison-metric-row
+            [label]="row.label"
+            [valueA]="row.valueA"
+            [valueB]="row.valueB"
+            [deltaLabel]="row.deltaLabel"
+            [sign]="row.sign"
+            [testId]="row.testId"
+          />
+        }
+        <!-- Gráfico e tabelas de segmento chegam nas próximas subtasks (feat-037.4/.5). -->
       </div>
     }
   </app-panel>

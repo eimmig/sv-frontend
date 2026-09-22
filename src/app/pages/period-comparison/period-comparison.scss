@@ -23,6 +23,24 @@
   }
 }
 
+.period-comparison__rows-header {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+  gap: 8px;
+  padding: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+
+  span:not(:first-child) {
+    text-align: right;
+  }
+
+  @media (max-width: 599px) {
+    display: none;
+  }
+}
+
 .period-comparison__filters {
   display: flex;
   flex-wrap: wrap;

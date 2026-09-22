@@ -26,8 +26,11 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
   (`feat-037.1`). Módulo puro `period-comparison-metrics.ts` (`feat-037.2`): delta absoluto/
   percentual entre os 2 lados e a curva de lucro acumulado de cada período normalizada por
   índice de dia (não data calendário), sem reset, mesmo algoritmo de carry-forward de
-  `shared/monthly-drawdown-chart`. KPIs comparados, gráfico e tabelas de segmento chegam nas
-  próximas subtasks.
+  `shared/monthly-drawdown-chart`. 14 KPIs comparados lado a lado (`feat-037.3`) via
+  `shared/comparison-metric-row` novo (rótulo/valor A/valor B/delta - padrão "linha de lista"
+  já documentado em `docs/sistema-de-design.md`, não 3 `kpi-card` por métrica); `netProfit`/`roi`
+  coloridos por sinal do delta, os demais neutros (mesma discrição já usada pelo `kpi-card`
+  alhures). Gráfico e tabelas de segmento chegam nas próximas subtasks.
 
 ### Changed
 
