@@ -85,7 +85,48 @@
 
         <app-comparison-equity-chart [seriesA]="chartSeries().seriesA" [seriesB]="chartSeries().seriesB" />
 
-        <!-- Tabelas de segmento chegam na próxima subtask (feat-037.5). -->
+        <app-segment-comparison-table
+          [title]="'catalogs.sports.title' | transloco"
+          [nameLabel]="'catalogDashboard.sportNameLabel' | transloco"
+          testId="period-comparison-segment-sport"
+          [segmentA]="data().a.dashboard.bySport"
+          [segmentB]="data().b.dashboard.bySport"
+        />
+        <app-segment-comparison-table
+          [title]="'catalogs.leagues.title' | transloco"
+          [nameLabel]="'catalogDashboard.leagueNameLabel' | transloco"
+          testId="period-comparison-segment-league"
+          [segmentA]="data().a.dashboard.byLeague"
+          [segmentB]="data().b.dashboard.byLeague"
+        />
+        <app-segment-comparison-table
+          [title]="'catalogs.markets.title' | transloco"
+          [nameLabel]="'catalogDashboard.marketNameLabel' | transloco"
+          testId="period-comparison-segment-market"
+          [segmentA]="data().a.dashboard.byMarket"
+          [segmentB]="data().b.dashboard.byMarket"
+        />
+        <app-segment-comparison-table
+          [title]="'catalogs.tipsters.title' | transloco"
+          [nameLabel]="'catalogDashboard.tipsterNameLabel' | transloco"
+          testId="period-comparison-segment-tipster"
+          [segmentA]="data().a.dashboard.byTipster"
+          [segmentB]="data().b.dashboard.byTipster"
+        />
+        <app-segment-comparison-table
+          [title]="'nav.bettingHouses' | transloco"
+          [nameLabel]="'catalogDashboard.bettingHouseNameLabel' | transloco"
+          testId="period-comparison-segment-betting-house"
+          [segmentA]="data().a.dashboard.byBettingHouse"
+          [segmentB]="data().b.dashboard.byBettingHouse"
+        />
+        <app-segment-comparison-table
+          [title]="'nav.betTypeDashboard' | transloco"
+          [nameLabel]="'catalogDashboard.betTypeNameLabel' | transloco"
+          testId="period-comparison-segment-bet-type"
+          [segmentA]="data().a.dashboard.byBetType"
+          [segmentB]="data().b.dashboard.byBetType"
+        />
       </div>
     }
   </app-panel>

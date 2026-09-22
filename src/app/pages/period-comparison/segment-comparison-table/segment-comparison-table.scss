@@ -1,0 +1,43 @@
+:host {
+  display: block;
+  margin-top: 16px;
+}
+
+.segment-comparison-table__title {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.segment-comparison-table__wrap {
+  overflow-x: auto;
+}
+
+.segment-comparison-table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+
+  th {
+    text-align: left;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    padding: 8px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  td {
+    padding: 8px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 14px;
+  }
+}
+
+.segment-comparison-table__delta--positive {
+  color: var(--color-positive);
+}
+
+.segment-comparison-table__delta--negative {
+  color: var(--color-negative);
+}

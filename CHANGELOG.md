@@ -33,8 +33,11 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
   alhures). Gráfico de comparação (`feat-037.4`): `shared/comparison-equity-chart` novo (2
   séries sobrepostas - Período A em `--color-brand`, Período B em `--color-action-neutral`,
   eixo por índice de dia), `chart-theme.ts` ganha `buildComparisonLineChartOption` (extensão do
-  `buildLineChartOption` existente, não duplicação). Tabelas de segmento chegam na próxima
-  subtask.
+  `buildLineChartOption` existente, não duplicação). Tabelas de comparação por segmento
+  (`feat-037.5`): `segment-comparison-table` novo (componente dedicado, `shared/catalog-dashboard`
+  não é tocado - achado MAJOR do plan review), 6 instâncias (esporte/liga/mercado/tipster/casa de
+  apostas/tipo de aposta) com ROI e lucro líquido dos 2 períodos lado a lado - união dos itens
+  presentes em A OU B, lado ausente mostra "Indeterminado" em vez de 0.
 
 ### Changed
 
