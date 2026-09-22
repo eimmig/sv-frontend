@@ -23,4 +23,11 @@ export class ComparisonMetricRow {
    *  count going up/down isn't inherently "good" or "bad"). */
   readonly sign = input<KpiCardSign>();
   readonly testId = input<string>();
+  /** Column headers (Período A/B/Diferença), translated by the caller - only rendered (via CSS
+   *  ::before, see .scss) below 600px, where the shared header row above the row list is hidden
+   *  and the grid collapses to 1 column. Without this, achado real de QA visual: a mobile user
+   *  saw 2 bare numbers with nothing indicating which was which. */
+  readonly columnALabel = input<string>('');
+  readonly columnBLabel = input<string>('');
+  readonly columnDeltaLabel = input<string>('');
 }

@@ -13,6 +13,9 @@ import { KpiCardSign } from '../kpi-card/kpi-card';
     [deltaLabel]="deltaLabel"
     [sign]="sign"
     [testId]="testId"
+    [columnALabel]="columnALabel"
+    [columnBLabel]="columnBLabel"
+    [columnDeltaLabel]="columnDeltaLabel"
   />`,
 })
 class HostComponent {
@@ -22,6 +25,9 @@ class HostComponent {
   deltaLabel = '+R$ 50,00 (+50.0%)';
   sign: KpiCardSign | undefined;
   testId: string | undefined;
+  columnALabel = 'Período A';
+  columnBLabel = 'Período B';
+  columnDeltaLabel = 'Diferença';
 }
 
 describe('ComparisonMetricRow', () => {
@@ -65,5 +71,15 @@ describe('ComparisonMetricRow', () => {
     const el = fixture.nativeElement as HTMLElement;
 
     expect(el.querySelector('[data-testid="row-net-profit"]')).toBeTruthy();
+  });
+
+  it('carries the column labels as data-mobile-label attributes (self-labeling below 600px)', () => {
+    const fixture = TestBed.createComponent(HostComponent);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+
+    expect(el.querySelector('[data-testid="comparison-metric-row-value-a"]')?.getAttribute('data-mobile-label')).toBe('Período A');
+    expect(el.querySelector('[data-testid="comparison-metric-row-value-b"]')?.getAttribute('data-mobile-label')).toBe('Período B');
+    expect(el.querySelector('[data-testid="comparison-metric-row-delta"]')?.getAttribute('data-mobile-label')).toBe('Diferença');
   });
 });
