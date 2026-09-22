@@ -2624,7 +2624,7 @@
         {
           "id": "feat-037.2",
           "name": "Modulo puro period-comparison-metrics.ts (deltas + serie normalizada por indice de dia)",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-531",
           "detail": "Logica de calculo isolada e testavel sem Angular, mesmo precedente de period-report-metrics.ts/monthly-drawdown-metrics.ts.",
           "checklist": [

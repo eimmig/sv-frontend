@@ -23,7 +23,11 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
   desenvolvimento): rota + shell da página com 2 seletores de período independentes (Período
   A/B, `shared/period-preset-filter`) e o bloco de filtros comuns já usado em `dashboard.ts`
   (esporte/liga/mercado/casa de apostas/tipster), aplicados igualmente aos dois lados
-  (`feat-037.1`). KPIs comparados, gráfico e tabelas de segmento chegam nas próximas subtasks.
+  (`feat-037.1`). Módulo puro `period-comparison-metrics.ts` (`feat-037.2`): delta absoluto/
+  percentual entre os 2 lados e a curva de lucro acumulado de cada período normalizada por
+  índice de dia (não data calendário), sem reset, mesmo algoritmo de carry-forward de
+  `shared/monthly-drawdown-chart`. KPIs comparados, gráfico e tabelas de segmento chegam nas
+  próximas subtasks.
 
 ### Changed
 
