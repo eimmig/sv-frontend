@@ -21,13 +21,14 @@ import {
   StatisticsApi,
   StatisticsDashboard,
 } from '../../core/statistics-api';
+import { ComparisonEquityChart } from '../../shared/comparison-equity-chart/comparison-equity-chart';
 import { ComparisonMetricRow } from '../../shared/comparison-metric-row/comparison-metric-row';
 import { KpiCardSign, kpiSign } from '../../shared/kpi-card/kpi-card';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 import { PeriodPresetFilter, PeriodRange, resolvePreset } from '../../shared/period-preset-filter/period-preset-filter';
 import { SearchableSelect } from '../../shared/searchable-select/searchable-select';
-import { ComparisonDelta, computeDelta } from './period-comparison-metrics';
+import { ComparisonDelta, ComparisonSeries, buildComparisonSeries, computeDelta } from './period-comparison-metrics';
 
 interface Options {
   readonly bettingHouses: BettingHouse[];
@@ -90,6 +91,7 @@ function signedInt(value: number): string {
  */
 @Component({
   imports: [
+    ComparisonEquityChart,
     ComparisonMetricRow,
     MatButtonModule,
     Panel,
@@ -198,6 +200,23 @@ export class PeriodComparison implements OnInit {
         unidadesApostadas(overallB, b.bankrollTo, unitPercent),
       ),
     ];
+  });
+
+  protected readonly chartSeries = computed<ComparisonSeries>(() => {
+    const { a, b, unitPercent } = this.data();
+    const periodA = this.periodA();
+    const periodB = this.periodB();
+    return buildComparisonSeries(
+      a.daily,
+      periodA.from,
+      periodA.to,
+      a.bankrollTo,
+      b.daily,
+      periodB.from,
+      periodB.to,
+      b.bankrollTo,
+      unitPercent,
+    );
   });
 
   protected readonly filterForm = this.formBuilder.nonNullable.group({

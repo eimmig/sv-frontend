@@ -30,7 +30,11 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
   `shared/comparison-metric-row` novo (rótulo/valor A/valor B/delta - padrão "linha de lista"
   já documentado em `docs/sistema-de-design.md`, não 3 `kpi-card` por métrica); `netProfit`/`roi`
   coloridos por sinal do delta, os demais neutros (mesma discrição já usada pelo `kpi-card`
-  alhures). Gráfico e tabelas de segmento chegam nas próximas subtasks.
+  alhures). Gráfico de comparação (`feat-037.4`): `shared/comparison-equity-chart` novo (2
+  séries sobrepostas - Período A em `--color-brand`, Período B em `--color-action-neutral`,
+  eixo por índice de dia), `chart-theme.ts` ganha `buildComparisonLineChartOption` (extensão do
+  `buildLineChartOption` existente, não duplicação). Tabelas de segmento chegam na próxima
+  subtask.
 
 ### Changed
 
