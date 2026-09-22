@@ -19,6 +19,32 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
   acumulado vitalícia, 4 cards (Lucro Total, Pré/Live, Lucro Médio Mensal, ROI) e tabela mensal
   Jan-Dez do ano corrente. **Login agora redireciona para cá em vez de `/dashboard`** —
   `/dashboard` continua acessível como item normal de nav.
+- Tela "Comparativo de períodos" (`feat-037`, epic-031, rota `/period-comparison`, em
+  desenvolvimento): rota + shell da página com 2 seletores de período independentes (Período
+  A/B, `shared/period-preset-filter`) e o bloco de filtros comuns já usado em `dashboard.ts`
+  (esporte/liga/mercado/casa de apostas/tipster), aplicados igualmente aos dois lados
+  (`feat-037.1`). Módulo puro `period-comparison-metrics.ts` (`feat-037.2`): delta absoluto/
+  percentual entre os 2 lados e a curva de lucro acumulado de cada período normalizada por
+  índice de dia (não data calendário), sem reset, mesmo algoritmo de carry-forward de
+  `shared/monthly-drawdown-chart`. 14 KPIs comparados lado a lado (`feat-037.3`) via
+  `shared/comparison-metric-row` novo (rótulo/valor A/valor B/delta - padrão "linha de lista"
+  já documentado em `docs/sistema-de-design.md`, não 3 `kpi-card` por métrica); `netProfit`/`roi`
+  coloridos por sinal do delta, os demais neutros (mesma discrição já usada pelo `kpi-card`
+  alhures). Gráfico de comparação (`feat-037.4`): `shared/comparison-equity-chart` novo (2
+  séries sobrepostas - Período A em `--color-brand`, Período B em `--color-action-neutral`,
+  eixo por índice de dia), `chart-theme.ts` ganha `buildComparisonLineChartOption` (extensão do
+  `buildLineChartOption` existente, não duplicação). Tabelas de comparação por segmento
+  (`feat-037.5`): `segment-comparison-table` novo (componente dedicado, `shared/catalog-dashboard`
+  não é tocado - achado MAJOR do plan review), 6 instâncias (esporte/liga/mercado/tipster/casa de
+  apostas/tipo de aposta) com ROI e lucro líquido dos 2 períodos lado a lado - união dos itens
+  presentes em A OU B, lado ausente mostra "Indeterminado" em vez de 0. QA visual + Playwright
+  (`feat-037.6`, `e2e/period-comparison.spec.ts`): achado real corrigido - abaixo de 600px as
+  linhas de comparação perdiam os rótulos "Período A/B/Diferença" (cabeçalho da tabela
+  escondido nessa largura), deixando números soltos sem indicar o que era o quê;
+  `comparison-metric-row` ganhou auto-rotulação via `::before`/`data-mobile-label` só nessa
+  faixa. 284 chaves i18n em sincronia (pt-BR/en-US/es), sem chave nova (reaproveita namespaces
+  existentes). Fechamento (`feat-037.7`): `Delivery Reviewer`/`Test Suite Auditor` (self-review)
+  `PASS`/`PASS` contra o diff completo, `./init.sh` do app e da raiz verdes.
 
 ### Changed
 
@@ -239,3 +265,11 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-526](https://stakevault.atlassian.net/browse/SV-526) - side-nav: menu de configuracoes consolidado (idioma/tema/trocar senha/sair) + acordeao de idioma
 - [SV-527](https://stakevault.atlassian.net/browse/SV-527) - language-selector: fontSet do icone (fix real do corte no login)
 - [SV-528](https://stakevault.atlassian.net/browse/SV-528) - CHANGELOG e verificacao final
+- [SV-529](https://stakevault.atlassian.net/browse/SV-529) - Tela dedicada de comparativo entre dois periodos
+- [SV-530](https://stakevault.atlassian.net/browse/SV-530) - Rota /period-comparison + shell da pagina + carregamento de dados (2 periodos + filtros comuns)
+- [SV-531](https://stakevault.atlassian.net/browse/SV-531) - Modulo puro period-comparison-metrics.ts (deltas + serie normalizada por indice de dia)
+- [SV-532](https://stakevault.atlassian.net/browse/SV-532) - Linha de comparacao de KPIs (valor A | valor B | delta) - padrao documentado, nao kpi-card triplicado
+- [SV-533](https://stakevault.atlassian.net/browse/SV-533) - Grafico de comparacao (2 series sobrepostas, chart-theme.ts estendido)
+- [SV-534](https://stakevault.atlassian.net/browse/SV-534) - Tabela de comparacao de segmentos (componente novo, nao adaptar catalog-dashboard)
+- [SV-535](https://stakevault.atlassian.net/browse/SV-535) - i18n (3 locales) + QA visual (2 temas x mobile/desktop) + testes Playwright
+- [SV-536](https://stakevault.atlassian.net/browse/SV-536) - CHANGELOG e verificacao final

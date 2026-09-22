@@ -71,3 +71,58 @@ export function buildLineChartOption(
     ],
   };
 }
+
+/** One overlay series for buildComparisonLineChartOption - groups name/color/data instead of 3
+ *  separate positional params per side (SonarCloud typescript:S107, max 7 params/function). */
+export interface ComparisonSeriesStyle {
+  readonly name: string;
+  readonly color: string;
+  readonly data: (number | null)[];
+}
+
+function comparisonSeriesOption(style: ComparisonSeriesStyle) {
+  return {
+    name: style.name,
+    type: 'line',
+    data: style.data,
+    symbol: 'circle',
+    symbolSize: 6,
+    smooth: true,
+    itemStyle: { color: style.color },
+    lineStyle: { color: style.color, width: 2 },
+  };
+}
+
+/**
+ * 2-series overlay on a shared category axis (period-comparison's equity curves, one per side) -
+ * extends the same grid/axis visual encoding as buildLineChartOption instead of a parallel
+ * implementation. No area fill (2 overlapping gradients would obscure each other) and no
+ * connectNulls, so a period shorter than its counterpart's line simply stops instead of
+ * flatlining (see pages/period-comparison/period-comparison-metrics.ts).
+ */
+export function buildComparisonLineChartOption(
+  categories: string[],
+  seriesA: ComparisonSeriesStyle,
+  seriesB: ComparisonSeriesStyle,
+  borderColor: string,
+): EChartsCoreOption {
+  return {
+    grid: { top: 32, right: 16, bottom: 24, left: 48 },
+    tooltip: { trigger: 'axis' },
+    legend: { top: 0, textStyle: { color: borderColor } },
+    xAxis: {
+      type: 'category',
+      data: categories,
+      axisLine: { show: false },
+      axisTick: { show: false },
+      axisLabel: { color: borderColor },
+    },
+    yAxis: {
+      type: 'value',
+      splitNumber: 2,
+      axisLabel: { color: borderColor },
+      splitLine: { lineStyle: { color: borderColor, width: 1 } },
+    },
+    series: [comparisonSeriesOption(seriesA), comparisonSeriesOption(seriesB)],
+  };
+}

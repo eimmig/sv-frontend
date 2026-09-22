@@ -86,6 +86,12 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'period-comparison',
+    loadComponent: () =>
+      import('./pages/period-comparison/period-comparison').then((m) => m.PeriodComparison),
+    canActivate: [authGuard],
+  },
+  {
     path: 'telegram-link',
     loadComponent: () =>
       import('./pages/telegram-link/telegram-link').then((m) => m.TelegramLinkPage),

@@ -2,8 +2,27 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-09-17
-**Estado:** `feat-001` a `feat-035` `done` — backlog deste app esgotado.
+**Última atualização:** 2026-09-22
+**Estado:** `feat-001` a `feat-037` `done` — backlog deste app esgotado.
+
+## `feat-037` fechada — tela "Comparativo de períodos" (2026-09-22)
+
+Pedido do usuário, fecha `epic-031` da raiz. Detalhe completo (arquitetura, decisões do plan
+review, achados de QA visual) em `docs/services/web.md` seção "Comparativo de períodos". Story
+SV-529 (subtasks SV-530..536), PRs #157-162, CI verde em todos (1 flake de CI pré-existente
+encontrado e corrigido no caminho — ver `docs/testes.md`, achado de `feat-029.3` confirmado na
+prática). `Delivery Reviewer`/`Test Suite Auditor` (self-review): `PASS`/`PASS`. `./init.sh` (app
+e raiz) verde, 286 testes unitários + 3 e2e novos.
+
+**Risco não resolvido, registrado para sessão futura**: `e2e/search-statistics.spec.ts` (teste
+"screen text follows the active language") está quebrado desde `feat-036` (2026-09-17) — aquela
+feature substituiu o componente `language-selector` standalone pelo menu de configurações do
+side-nav em páginas autenticadas, mas não atualizou esse spec, que ainda procura
+`getByTestId('language-selector')` (não existe mais fora da tela de login). Não bloqueia CI
+(Playwright não roda no pipeline do GitHub, só localmente) e é completamente não relacionado a
+`feat-037` — descoberto ao rodar a suíte Playwright completa como parte da verificação de
+regressão desta feature. Fix provável: apontar o teste pro fluxo real (menu de configurações do
+side-nav, `nav-settings-language-*`), não reintroduzir o componente antigo.
 
 ## `feat-034` fechada — 4 achados ad-hoc de UX pós-deploy (2026-09-17)
 

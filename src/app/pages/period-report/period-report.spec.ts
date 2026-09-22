@@ -94,6 +94,15 @@ describe('PeriodReport', () => {
     // the fixture, regardless of which real day the suite runs on.
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-09-11T12:00:00Z'));
+    // formatPercent/formatOdd read Language.current() (core/language.ts), which is independent
+    // of TranslocoTestingModule's langs/translocoConfig below (that only drives translated UI
+    // text) - it falls back to navigator.language/localStorage when neither is pinned. The '22.1'
+    // assertion below assumes en-US number formatting; pin it explicitly instead of relying on
+    // jsdom's default, which isn't guaranteed across environments and can also be left over from
+    // another spec file's localStorage.setItem('stakevault.language', ...) in the same worker
+    // (achado real: flake intermitente no CI, feat-037 2026-09-22 - visto falhar com '22,1%').
+    localStorage.removeItem('stakevault.language');
+    Object.defineProperty(navigator, 'language', { value: 'en-US', configurable: true });
     await TestBed.configureTestingModule({
       imports: [
         PeriodReport,
@@ -109,6 +118,7 @@ describe('PeriodReport', () => {
   afterEach(() => {
     httpMock.verify();
     vi.useRealTimers();
+    delete (navigator as { language?: string }).language;
   });
 
   it('loads with the period-preset-filter default ("Hoje") and renders the summary cards', () => {
