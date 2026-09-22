@@ -127,6 +127,20 @@
     "betsLabel": "Apuestas",
     "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
   },
+  "periodComparison": {
+    "filtersTitle": "Filtros",
+    "periodALabel": "Período A",
+    "periodBLabel": "Período B",
+    "bettingHouseLabel": "Casa de apuestas",
+    "sportLabel": "Deporte",
+    "leagueLabel": "Liga",
+    "marketLabel": "Mercado",
+    "tipsterLabel": "Tipster",
+    "filterAll": "Todas",
+    "applyFilter": "Aplicar filtro",
+    "resultsTitle": "Comparativa",
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
+  },
   "overview": {
     "summaryTitle": "Visión general",
     "lucroTotalLabel": "Ganancia Total (U)",
@@ -164,6 +178,7 @@
     "dashboardMenuItem": "Dashboard",
     "searchStatistics": "Buscar estadísticas",
     "periodReport": "Informe del período",
+    "periodComparison": "Comparativa de períodos",
     "betTypeDashboard": "Por tipo de apuesta",
     "telegramLink": "Vincular Telegram",
     "users": "Usuarios",

@@ -2609,7 +2609,7 @@
         {
           "id": "feat-037.1",
           "name": "Rota /period-comparison + shell da pagina + carregamento de dados (2 periodos + filtros comuns)",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-530",
           "detail": "Base de dados da tela - sem isso nenhuma das visualizacoes tem o que consumir. Inclui a correcao MAJOR 1 do plan review (sementes dos 2 period-preset-filter).",
           "checklist": [

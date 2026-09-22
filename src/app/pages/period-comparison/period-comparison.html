@@ -1,0 +1,73 @@
+<app-panel-layout columns="320px 1fr">
+  <app-panel [title]="'periodComparison.filtersTitle' | transloco">
+    @if (optionsError(); as message) {
+      <p class="period-comparison__error" role="alert" data-testid="period-comparison-options-error">{{ message }}</p>
+    } @else {
+      <div class="period-comparison__period" data-testid="period-comparison-period-a">
+        <h3>{{ 'periodComparison.periodALabel' | transloco }}</h3>
+        <app-period-preset-filter (rangeChange)="onPeriodAChange($event)" />
+      </div>
+
+      <div class="period-comparison__period" data-testid="period-comparison-period-b">
+        <h3>{{ 'periodComparison.periodBLabel' | transloco }}</h3>
+        <app-period-preset-filter (rangeChange)="onPeriodBChange($event)" />
+      </div>
+
+      <form [formGroup]="filterForm" (ngSubmit)="applyFilter()" class="period-comparison__filters">
+        <app-searchable-select
+          formControlName="bettingHouseId"
+          [options]="options().bettingHouses"
+          [label]="'periodComparison.bettingHouseLabel' | transloco"
+          testId="period-comparison-filter-betting-house"
+          [allOptionLabel]="'periodComparison.filterAll' | transloco"
+        />
+
+        <app-searchable-select
+          formControlName="sportId"
+          [options]="options().sports"
+          [label]="'periodComparison.sportLabel' | transloco"
+          testId="period-comparison-filter-sport"
+          [allOptionLabel]="'periodComparison.filterAll' | transloco"
+        />
+
+        <app-searchable-select
+          formControlName="leagueId"
+          [options]="options().leagues"
+          [label]="'periodComparison.leagueLabel' | transloco"
+          testId="period-comparison-filter-league"
+          [allOptionLabel]="'periodComparison.filterAll' | transloco"
+        />
+
+        <app-searchable-select
+          formControlName="marketId"
+          [options]="options().markets"
+          [label]="'periodComparison.marketLabel' | transloco"
+          testId="period-comparison-filter-market"
+          [allOptionLabel]="'periodComparison.filterAll' | transloco"
+        />
+
+        <app-searchable-select
+          formControlName="tipsterId"
+          [options]="options().tipsters"
+          [label]="'periodComparison.tipsterLabel' | transloco"
+          testId="period-comparison-filter-tipster"
+          [allOptionLabel]="'periodComparison.filterAll' | transloco"
+        />
+
+        <button mat-flat-button type="submit" data-testid="period-comparison-filter-apply">
+          {{ 'periodComparison.applyFilter' | transloco }}
+        </button>
+      </form>
+    }
+  </app-panel>
+
+  <app-panel [title]="'periodComparison.resultsTitle' | transloco">
+    @if (error(); as message) {
+      <p class="period-comparison__error" role="alert" data-testid="period-comparison-results-error">{{ message }}</p>
+    } @else {
+      <div data-testid="period-comparison-results">
+        <!-- KPIs, gráfico e tabelas de segmento chegam nas próximas subtasks (feat-037.3/.4/.5). -->
+      </div>
+    }
+  </app-panel>
+</app-panel-layout>

@@ -19,6 +19,11 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
   acumulado vitalícia, 4 cards (Lucro Total, Pré/Live, Lucro Médio Mensal, ROI) e tabela mensal
   Jan-Dez do ano corrente. **Login agora redireciona para cá em vez de `/dashboard`** —
   `/dashboard` continua acessível como item normal de nav.
+- Tela "Comparativo de períodos" (`feat-037`, epic-031, rota `/period-comparison`, em
+  desenvolvimento): rota + shell da página com 2 seletores de período independentes (Período
+  A/B, `shared/period-preset-filter`) e o bloco de filtros comuns já usado em `dashboard.ts`
+  (esporte/liga/mercado/casa de apostas/tipster), aplicados igualmente aos dois lados
+  (`feat-037.1`). KPIs comparados, gráfico e tabelas de segmento chegam nas próximas subtasks.
 
 ### Changed
 
