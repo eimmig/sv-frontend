@@ -2861,7 +2861,7 @@
         {
           "id": "feat-042.5",
           "name": "Specs: so os que asseram texto visivel",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-542",
           "detail": "Specs que testam localStorage stakevault.* ficam intocados (fora de escopo, decisao ja registrada em DECISIONS-LOG).",
           "checklist": [
