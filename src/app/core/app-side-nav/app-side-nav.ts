@@ -69,7 +69,7 @@ export class AppSideNav {
     { initialValue: this.router.url },
   );
 
-  protected readonly logoSrc = computed(() => `assets/logo/logo-mark-${this.theme.current()}.svg`);
+  protected readonly logoSrc = computed(() => `assets/logo/arka-mark-${this.theme.current()}.svg`);
 
   protected readonly primaryLinks: ReadonlyArray<{ route: string; icon: string; labelKey: string; testid: string }> = [
     { route: 'overview', icon: 'insights', labelKey: 'nav.overview', testid: 'nav-overview' },
