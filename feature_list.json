@@ -2819,7 +2819,7 @@
         {
           "id": "feat-042.2",
           "name": "Nome/asset em UI real (index.html, app-side-nav)",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-539",
           "detail": "Achado MINOR (a) do plan review - menor diff seguro, sem adotar o lockup horizontal novo.",
           "checklist": [
