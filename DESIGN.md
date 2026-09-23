@@ -1,5 +1,5 @@
 ---
-name: StakeVault
+name: Arka
 description: Plataforma de gestão de bankroll e análise estatística de apostas esportivas.
 tokens:
   color:
@@ -24,10 +24,10 @@ tokens:
       surfaceElevated: "#E7EEEB"
       border: "#DCE3E0"
       textPrimary: "#0B1622"
-      textSecondary: "#5C6B72"
-      brand: "#2FA85C"
+      textSecondary: "#5A6B75"
+      brand: "#26A65B"
       brandStrong: "#22803F"
-      positive: "#2FA85C"
+      positive: "#26A65B"
       negative: "#C73E3D"
       actionNeutral: "#2E70A0"
       actionNeutralStrong: "#215680"
@@ -53,9 +53,9 @@ tokens:
     dark: none
 ---
 
-# StakeVault — DESIGN.md
+# Arka — DESIGN.md
 
-Fonte da verdade normativa: `docs/DESIGN-SYSTEM.md` (raiz do harness multinível). Este arquivo é
+Fonte da verdade normativa: `docs/sistema-de-design.md` (raiz do harness multinível). Este arquivo é
 um resumo estruturado pra ferramentas de QA visual (Impeccable, taste-skill, huashu-design) — em
 caso de divergência, `docs/DESIGN-SYSTEM.md` vence, não este arquivo. Pré-escrito na `feat-001.8`
 antes de qualquer comando `impeccable document`/`new-work`, pra esses comandos perguntarem antes
@@ -63,14 +63,14 @@ de sobrescrever em vez de gerar uma versão divergente.
 
 ## Overview
 
-StakeVault é uma plataforma de gestão de bankroll (banca) para apostadores esportivos —
+Arka é uma plataforma de gestão de bankroll (banca) para apostadores esportivos —
 cadastro de casas de apostas, registro manual de apostas, histórico de operações e dashboards
 com métricas (ROI, taxa de acerto, evolução da banca). Identidade visual derivada do produto
 Uphold (layout em painéis, KPIs, gráfico de linha) com paleta e marca próprias.
 
 Logo: anel (o "cofre") com quatro raios diagonais nos cantos e três barras verticais ascendentes
-dentro (elemento de crescimento/gráfico). Wordmark "Stake" (peso 400) + "Vault" (peso 500, cor de
-marca) na mesma família tipográfica — nunca traduzido, nome de marca. Tagline "GESTÃO DE BANCA" é
+dentro (elemento de crescimento/gráfico). Wordmark "Arka" (peso 500, cor de marca) na mesma
+família tipográfica — nunca traduzido, nome de marca. Tagline "GESTÃO DE BANCA" é
 string de UI comum (localizada: `en-US` "BANKROLL MANAGEMENT", `es` "GESTIÓN DE BANCA").
 
 Suporta claro **e** escuro com toggle (não é dark-mode-only) — default segue
@@ -88,7 +88,7 @@ Três papéis semânticos **estritamente segregados** (regra normativa, não dec
 - **Vermelho (`negative`)** — exclusivamente prejuízo (perda, aposta `lost`, variação negativa),
   erro de validação e ação destrutiva.
 
-Modo escuro é citação direta dos mockups StakeVault (alta confiança); modo claro é derivado pela
+Modo escuro é citação direta dos mockups originais da marca (alta confiança); modo claro é derivado pela
 mesma regra de construção (fundo↔texto invertidos, mesmo verde) — sem mockup claro real do
 produto ainda, revisitar se um aparecer.
 
