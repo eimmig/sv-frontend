@@ -23,12 +23,19 @@ export function withAlpha(hexColor: string, alpha: number): string {
  * their own `categories`/`values` arrays; the visual encoding (grid, axis style, area gradient)
  * stays identical across charts by construction, not by copy-paste.
  */
+export interface LineChartStyleOptions {
+  readonly smooth?: boolean;
+  readonly splitNumber?: number;
+}
+
 export function buildLineChartOption(
   categories: string[],
   values: (number | null)[],
   brandColor: string,
   borderColor: string,
+  style: LineChartStyleOptions = {},
 ): EChartsCoreOption {
+  const { smooth = true, splitNumber = 2 } = style;
   return {
     grid: { top: 16, right: 16, bottom: 24, left: 48 },
     tooltip: { trigger: 'axis' },
@@ -41,7 +48,7 @@ export function buildLineChartOption(
     },
     yAxis: {
       type: 'value',
-      splitNumber: 2,
+      splitNumber,
       axisLabel: { color: borderColor },
       splitLine: { lineStyle: { color: borderColor, width: 1 } },
     },
@@ -51,7 +58,7 @@ export function buildLineChartOption(
         data: values,
         symbol: 'circle',
         symbolSize: 6,
-        smooth: true,
+        smooth,
         itemStyle: { color: brandColor },
         lineStyle: { color: brandColor, width: 2 },
         areaStyle: {

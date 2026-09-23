@@ -67,6 +67,14 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ### Fixed
 
+- `shared/monthly-drawdown-chart`/`pages/dashboard/monthly-drawdown-grid` (`feat-039`): curva de
+  drawdown mensal "só subia e saturava" - duas causas reais, não uma: (1) o mês corrente plotava
+  até o último dia do mês inteiro mesmo para dias ainda no futuro, virando um platô artificial;
+  corrigido para parar em "hoje"; (2) `smooth: true` + `yAxis.splitNumber: 2` (herdados de
+  `core/chart-theme.ts`) escondiam reversões reais por suavização bezier e grade grosseira;
+  `buildLineChartOption` ganhou um parâmetro opcional de estilo, este gráfico usa linha reta e
+  grade mais fina. Filtro "Mês inicial"/"Mês final" trocado de `<input type="month">` nativo para
+  `MatDatepicker` em modo mês/ano, consistente com o resto do app.
 - `shared/catalog-manager` (`feat-024`, telas de cadastro de esporte/liga/mercado/tipster/casa
   de apostas): `:host` sem padding lateral colava o card de "Nova entrada" no menu lateral;
   `.catalog-manager__form` em `display: flex` na horizontal (campo Nome + botão "Adicionar" lado

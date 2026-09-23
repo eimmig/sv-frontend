@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { MonthlyDrawdownGrid } from './monthly-drawdown-grid';
@@ -77,7 +78,7 @@ describe('MonthlyDrawdownGrid', () => {
           translocoConfig: { availableLangs: ['pt-BR'], defaultLang: 'pt-BR' },
         }),
       ],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideNativeDateAdapter()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MonthlyDrawdownGrid);
@@ -113,7 +114,7 @@ describe('MonthlyDrawdownGrid', () => {
 
     // Both fields batched behind applyFilter() (like dashboard.ts's own filterForm) - one
     // request set, not one per field change (see monthly-drawdown-grid.ts's class comment).
-    fixture.componentInstance['filterForm'].setValue({ fromMonth: '2026-01', toMonth: '2026-03' });
+    fixture.componentInstance['filterForm'].setValue({ fromMonth: new Date(2026, 0, 1), toMonth: new Date(2026, 2, 1) });
     fixture.componentInstance['applyFilter']();
     flushLoad([{ date: '2026-02-10', netProfit: 50, totalStaked: 100, roi: 0.5, betCount: 1 }]);
     fixture.detectChanges();
@@ -127,7 +128,7 @@ describe('MonthlyDrawdownGrid', () => {
     flushLoad();
     fixture.detectChanges();
 
-    fixture.componentInstance['filterForm'].setValue({ fromMonth: '2026-06', toMonth: '2026-06' });
+    fixture.componentInstance['filterForm'].setValue({ fromMonth: new Date(2026, 5, 1), toMonth: new Date(2026, 5, 1) });
     httpMock.expectNone((req) => req.url === DAILY_URL);
 
     fixture.componentInstance['applyFilter']();
@@ -144,7 +145,7 @@ describe('MonthlyDrawdownGrid', () => {
     flushLoad();
     fixture.detectChanges();
 
-    fixture.componentInstance['filterForm'].setValue({ fromMonth: '2026-06', toMonth: '2026-01' });
+    fixture.componentInstance['filterForm'].setValue({ fromMonth: new Date(2026, 5, 1), toMonth: new Date(2026, 0, 1) });
     fixture.componentInstance['applyFilter']();
     flushLoad();
     fixture.detectChanges();
@@ -157,7 +158,7 @@ describe('MonthlyDrawdownGrid', () => {
     flushLoad();
     fixture.detectChanges();
 
-    fixture.componentInstance['filterForm'].patchValue({ fromMonth: '' });
+    fixture.componentInstance['filterForm'].patchValue({ fromMonth: null as unknown as Date });
     fixture.componentInstance['applyFilter']();
 
     // expectNone() IS the real assertion (a network request is a side effect, not a return
@@ -165,6 +166,21 @@ describe('MonthlyDrawdownGrid', () => {
     // (does not recognize HttpTestingController's own assertion methods as assertions).
     expect(fixture.componentInstance['filterForm'].invalid).toBe(true);
     httpMock.expectNone((req) => req.url === DAILY_URL);
+  });
+
+  it('setting a month via the datepicker updates the control and closes the picker', () => {
+    fixture.detectChanges();
+    flushLoad();
+    fixture.detectChanges();
+
+    let closed = false;
+    fixture.componentInstance['onMonthSelected'](new Date(2026, 4, 15), { close: () => (closed = true) }, 'fromMonth');
+
+    expect(closed).toBe(true);
+    const value = fixture.componentInstance['filterForm'].controls.fromMonth.value;
+    expect(value.getFullYear()).toBe(2026);
+    expect(value.getMonth()).toBe(4);
+    expect(value.getDate()).toBe(1);
   });
 
   it('shows the RFC 7807 detail when the daily statistics request fails', () => {

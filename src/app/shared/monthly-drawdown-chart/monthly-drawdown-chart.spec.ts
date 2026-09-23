@@ -69,4 +69,17 @@ describe('MonthlyDrawdownChart', () => {
 
     expect(() => fixture.detectChanges()).not.toThrow();
   });
+
+  it('disables line smoothing and widens the y-axis grid so real reversals stay visible', () => {
+    const fixture = TestBed.createComponent(MonthlyDrawdownChart);
+    fixture.componentRef.setInput('month', { year: 2026, month: 3, days: [0, 5, 2, 8] });
+    fixture.detectChanges();
+
+    const options = fixture.componentInstance['chartOptions']() as {
+      series: { smooth: boolean }[];
+      yAxis: { splitNumber: number };
+    };
+    expect(options.series[0].smooth).toBe(false);
+    expect(options.yAxis.splitNumber).toBe(4);
+  });
 });

@@ -18,7 +18,10 @@ echarts.use([LineChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
 function buildChartOption(month: MonthlyDrawdownMonth, brandColor: string, borderColor: string): EChartsCoreOption {
   const categories = month.days.map((_, index) => String(index + 1));
-  return buildLineChartOption(categories, [...month.days], brandColor, borderColor);
+  return buildLineChartOption(categories, [...month.days], brandColor, borderColor, {
+    smooth: false,
+    splitNumber: 4,
+  });
 }
 
 /**
