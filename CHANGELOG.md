@@ -192,3 +192,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-542](https://stakevault.atlassian.net/browse/SV-542) - Specs: so os que asseram texto visivel
 - [SV-543](https://stakevault.atlassian.net/browse/SV-543) - Metadados de repositorio (CLAUDE.md, DESIGN.md, PRODUCT.md)
 - [SV-544](https://stakevault.atlassian.net/browse/SV-544) - CHANGELOG e verificacao final
+- [SV-573](https://stakevault.atlassian.net/browse/SV-573) - CI: gerar versao (semver + tag + Release + bump de package.json + corte de CHANGELOG) ao merge em main
+- [SV-574](https://stakevault.atlassian.net/browse/SV-574) - Job 'release' no ci.yml + .github/scripts/cut-changelog.py
+- [SV-575](https://stakevault.atlassian.net/browse/SV-575) - CHANGELOG e verificacao final
