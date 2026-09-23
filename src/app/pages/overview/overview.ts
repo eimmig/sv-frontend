@@ -38,9 +38,8 @@ const EMPTY_DATA: OverviewData = {
 };
 
 /**
- * "Visão geral" pós-login (epic-021) - vida inteira do tenant, sem filtro de período (única tela
- * desta rodada sem shared/period-preset-filter). Formulas em docs/STATISTICS.md "Tela 'Visão
- * geral'".
+ * "Visão geral" pós-login - vida inteira do tenant, sem filtro de período (única tela do app
+ * sem shared/period-preset-filter). Formulas em docs/STATISTICS.md "Tela 'Visão geral'".
  */
 @Component({
   imports: [KpiCard, Panel, PanelLayout, TranslocoPipe],

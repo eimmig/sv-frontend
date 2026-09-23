@@ -20,7 +20,7 @@ export function normalizeForSearch(value: string): string {
 /**
  * Drop-in replacement for mat-select on catalog filter fields (sport/league/market/tipster/
  * team/betting-house) - same formControlName usage via ControlValueAccessor, but filters the
- * option list as the user types instead of a closed dropdown (feat-031).
+ * option list as the user types instead of a closed dropdown.
  */
 @Component({
   imports: [MatAutocompleteModule, MatFormFieldModule, MatInputModule],

@@ -92,7 +92,7 @@ test.describe('RF04 - manual bet registration', () => {
     expect(requestBody?.['betType']).toBe('live');
   });
 
-  // feat-022: betDate splits into a mat-datepicker (calendar click) and a mat-timepicker
+  // betDate splits into a mat-datepicker (calendar click) and a mat-timepicker
   // (typed time, accepted 24h format regardless of locale) - proves the real widgets work and
   // that the combined value reaches bets-service correctly, not just the boundary conversion
   // already unit-tested.

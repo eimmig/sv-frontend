@@ -84,8 +84,8 @@ function signedInt(value: number): string {
 }
 
 /**
- * "Comparativo entre dois períodos" (epic-031, pedido do usuário em 2026-09-22) - 2 seletores de
- * período independentes (shared/period-preset-filter, um por lado) mais o bloco de filtros comuns
+ * "Comparativo entre dois períodos" - 2 seletores de período independentes
+ * (shared/period-preset-filter, um por lado) mais o bloco de filtros comuns
  * já usado em pages/dashboard/dashboard.ts, aplicado igualmente aos 2 lados. Zero endpoint novo -
  * cada lado é a mesma bateria de chamadas já usada por outras telas de estatística (GET
  * /api/v1/statistics(/daily), GET /api/v1/bankroll/balance), só disparada 2x.
@@ -123,8 +123,7 @@ export class PeriodComparison implements OnInit {
   // Seeded already-resolved ("Hoje") instead of {from:'',to:''} - shared/period-preset-filter's 2
   // instances emit independently (not atomically), so an empty seed here would make the 1st
   // applyFilter() run with the other side's period still blank, which StatisticsFilter reads as
-  // "no filter" (whole tenant history) - a real flash of wrong data (achado MAJOR do Plan Review
-  // de feat-037, 2026-09-22).
+  // "no filter" (whole tenant history) - a real flash of wrong data.
   protected readonly periodA = signal<PeriodRange>(resolvePreset('today', new Date()));
   protected readonly periodB = signal<PeriodRange>(resolvePreset('today', new Date()));
 
