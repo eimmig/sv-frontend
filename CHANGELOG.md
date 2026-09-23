@@ -48,6 +48,16 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ### Changed
 
+- Marca renomeada de "StakeVault" para "Arka" (`feat-042`, `epic-032`): assets de produção
+  (`public/assets/logo/`), título/favicon (`index.html`), wordmark do `app-side-nav` e do
+  `login` (achado real do Delivery Reviewer — grep por "StakeVault" não pega o wordmark do
+  login, partido em dois `<span>` "Stake"/"Vault"), texto do splash (`arka-*.svg`/timing
+  inalterado), 3 locales (`splash.ariaLabel`/`splash.title`) e metadados do repositório
+  (`CLAUDE.md`/`DESIGN.md`/`PRODUCT.md`). `e2e/smoke.spec.ts` ganhou `toHaveTitle(/Arka/)`
+  (achado do Test Suite Auditor — nenhum teste jamais afirmou o nome de marca visível).
+  Chaves técnicas reais (`localStorage` `stakevault.*`, alias Sass `as stakevault`) permanecem
+  inalteradas por decisão já registrada em `docs/DECISIONS-LOG.md` (2026-09-23) — não são nome
+  de marca visível.
 - `register-bet` (`feat-026`): campo "Tipo de aposta" trocado de texto livre para `mat-select`
   com 2 opções fixas (`pre`/`live`), alinhado ao enum do backend. A opção "não classificado"
   proposta originalmente foi removida em `feat-036` — toda aposta cadastrada por este formulário
