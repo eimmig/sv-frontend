@@ -54,6 +54,34 @@ test.describe('epic-027 - "Vincular Telegram" page', () => {
     await page.route('**/api/**', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: '{}' }),
     );
+    await page.route('**/api/v1/statistics*', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          overall: {
+            totalStaked: 0,
+            netProfit: 0,
+            roi: 0,
+            winRate: 0,
+            settledCount: 0,
+            wonCount: 0,
+            lostCount: 0,
+            voidCount: 0,
+            preCount: 0,
+            liveCount: 0,
+            avgOdd: null,
+          },
+          bySport: [],
+          byMarket: [],
+          byBettingHouse: [],
+          byLeague: [],
+          byTipster: [],
+          byBetType: [],
+          monthly: [],
+        }),
+      }),
+    );
 
     await page.goto('/dashboard');
     await page.getByTestId('nav-telegram-link').click();

@@ -48,6 +48,16 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ### Changed
 
+- Marca renomeada de "StakeVault" para "Arka" (`feat-042`, `epic-032`): assets de produção
+  (`public/assets/logo/`), título/favicon (`index.html`), wordmark do `app-side-nav` e do
+  `login` (achado real do Delivery Reviewer — grep por "StakeVault" não pega o wordmark do
+  login, partido em dois `<span>` "Stake"/"Vault"), texto do splash (`arka-*.svg`/timing
+  inalterado), 3 locales (`splash.ariaLabel`/`splash.title`) e metadados do repositório
+  (`CLAUDE.md`/`DESIGN.md`/`PRODUCT.md`). `e2e/smoke.spec.ts` ganhou `toHaveTitle(/Arka/)`
+  (achado do Test Suite Auditor — nenhum teste jamais afirmou o nome de marca visível).
+  Chaves técnicas reais (`localStorage` `stakevault.*`, alias Sass `as stakevault`) permanecem
+  inalteradas por decisão já registrada em `docs/DECISIONS-LOG.md` (2026-09-23) — não são nome
+  de marca visível.
 - `register-bet` (`feat-026`): campo "Tipo de aposta" trocado de texto livre para `mat-select`
   com 2 opções fixas (`pre`/`live`), alinhado ao enum do backend. A opção "não classificado"
   proposta originalmente foi removida em `feat-036` — toda aposta cadastrada por este formulário
@@ -67,6 +77,14 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ### Fixed
 
+- `shared/monthly-drawdown-chart`/`pages/dashboard/monthly-drawdown-grid` (`feat-039`): curva de
+  drawdown mensal "só subia e saturava" - duas causas reais, não uma: (1) o mês corrente plotava
+  até o último dia do mês inteiro mesmo para dias ainda no futuro, virando um platô artificial;
+  corrigido para parar em "hoje"; (2) `smooth: true` + `yAxis.splitNumber: 2` (herdados de
+  `core/chart-theme.ts`) escondiam reversões reais por suavização bezier e grade grosseira;
+  `buildLineChartOption` ganhou um parâmetro opcional de estilo, este gráfico usa linha reta e
+  grade mais fina. Filtro "Mês inicial"/"Mês final" trocado de `<input type="month">` nativo para
+  `MatDatepicker` em modo mês/ano, consistente com o resto do app.
 - `shared/catalog-manager` (`feat-024`, telas de cadastro de esporte/liga/mercado/tipster/casa
   de apostas): `:host` sem padding lateral colava o card de "Nova entrada" no menu lateral;
   `.catalog-manager__form` em `display: flex` na horizontal (campo Nome + botão "Adicionar" lado
@@ -273,3 +291,11 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-534](https://stakevault.atlassian.net/browse/SV-534) - Tabela de comparacao de segmentos (componente novo, nao adaptar catalog-dashboard)
 - [SV-535](https://stakevault.atlassian.net/browse/SV-535) - i18n (3 locales) + QA visual (2 temas x mobile/desktop) + testes Playwright
 - [SV-536](https://stakevault.atlassian.net/browse/SV-536) - CHANGELOG e verificacao final
+- [SV-537](https://stakevault.atlassian.net/browse/SV-537) - Reformulacao de marca StakeVault -> Arka
+- [SV-538](https://stakevault.atlassian.net/browse/SV-538) - Assets de producao (public/assets/logo/)
+- [SV-539](https://stakevault.atlassian.net/browse/SV-539) - Nome/asset em UI real (index.html, app-side-nav)
+- [SV-540](https://stakevault.atlassian.net/browse/SV-540) - Splash: so o texto, sem portar timing/tecnica de arka-splash.html
+- [SV-541](https://stakevault.atlassian.net/browse/SV-541) - i18n (3 locales) - splash.ariaLabel/splash.title
+- [SV-542](https://stakevault.atlassian.net/browse/SV-542) - Specs: so os que asseram texto visivel
+- [SV-543](https://stakevault.atlassian.net/browse/SV-543) - Metadados de repositorio (CLAUDE.md, DESIGN.md, PRODUCT.md)
+- [SV-544](https://stakevault.atlassian.net/browse/SV-544) - CHANGELOG e verificacao final

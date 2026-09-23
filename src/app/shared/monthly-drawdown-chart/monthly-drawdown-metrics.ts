@@ -44,6 +44,7 @@ export function buildMonthlyDrawdown(
   to: string,
   saldoAtual: number,
   unitPercent: number,
+  today: Date = new Date(),
 ): MonthlyDrawdownMonth[] {
   const byDate = new Map(daily.map((day) => [day.date, day]));
   const denominator = saldoAtual * unitPercent;
@@ -54,12 +55,20 @@ export function buildMonthlyDrawdown(
   // carry-the-1 on year rollover - no reassignment to track, one fewer edge case to get wrong.
   const fromIndex = fromYear * 12 + (fromMonthNum - 1);
   const toIndex = toYear * 12 + (toMonthNum - 1);
+  const todayIndex = today.getFullYear() * 12 + today.getMonth();
 
   const months: MonthlyDrawdownMonth[] = [];
   for (let index = fromIndex; index <= toIndex; index++) {
     const year = Math.floor(index / 12);
     const month = (index % 12) + 1;
-    const total = daysInMonth(year, month);
+    let total: number;
+    if (index < todayIndex) {
+      total = daysInMonth(year, month);
+    } else if (index === todayIndex) {
+      total = today.getDate();
+    } else {
+      total = 0;
+    }
     const days: (number | null)[] = [];
     let accumulated = 0;
     for (let day = 1; day <= total; day++) {

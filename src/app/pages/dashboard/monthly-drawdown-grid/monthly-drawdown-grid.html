@@ -1,12 +1,36 @@
 <form [formGroup]="filterForm" (ngSubmit)="applyFilter()" class="monthly-drawdown-grid__filter">
   <mat-form-field appearance="outline">
     <mat-label>{{ 'monthlyDrawdown.fromLabel' | transloco }}</mat-label>
-    <input matInput type="month" formControlName="fromMonth" data-testid="monthly-drawdown-from" />
+    <input
+      matInput
+      readonly
+      [matDatepicker]="fromPicker"
+      formControlName="fromMonth"
+      data-testid="monthly-drawdown-from"
+    />
+    <mat-datepicker-toggle matIconSuffix [for]="fromPicker" data-testid="monthly-drawdown-from-toggle" />
+    <mat-datepicker
+      #fromPicker
+      startView="year"
+      (monthSelected)="onMonthSelected($event, fromPicker, 'fromMonth')"
+    />
   </mat-form-field>
 
   <mat-form-field appearance="outline">
     <mat-label>{{ 'monthlyDrawdown.toLabel' | transloco }}</mat-label>
-    <input matInput type="month" formControlName="toMonth" data-testid="monthly-drawdown-to" />
+    <input
+      matInput
+      readonly
+      [matDatepicker]="toPicker"
+      formControlName="toMonth"
+      data-testid="monthly-drawdown-to"
+    />
+    <mat-datepicker-toggle matIconSuffix [for]="toPicker" data-testid="monthly-drawdown-to-toggle" />
+    <mat-datepicker
+      #toPicker
+      startView="year"
+      (monthSelected)="onMonthSelected($event, toPicker, 'toMonth')"
+    />
   </mat-form-field>
 
   <button mat-flat-button type="submit" data-testid="monthly-drawdown-apply" [disabled]="filterForm.invalid">

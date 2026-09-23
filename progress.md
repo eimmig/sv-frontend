@@ -1764,3 +1764,55 @@ temas, navegação por teclado). `docs/CONVENTIONS.md` ganhou o gotcha reutiliz�
 Story SV-466, subtasks SV-467/468/469, PRs #120/#121/#122 (subtask→feature, CI verde) + PR de
 `feature/SV-466`→`develop` (gate completo, incluindo SonarCloud). `./init.sh` do app e da raiz
 verdes.
+
+## `e2e/search-statistics.spec.ts` corrigido + `TypeError` silencioso em 3 outros specs (2026-09-22)
+
+`e2e/search-statistics.spec.ts` estava quebrado desde `feat-036` (risco já registrado na evidence
+de `epic-031`/`feat-037`, não corrigido ali por estar fora daquele escopo): buscava
+`getByTestId('language-selector')`, componente que `feat-036` substituiu pelo menu de
+configurações do side-nav em toda página autenticada — só sobrevive na tela de login. Apontado
+pro fluxo real (`nav-settings-menu` → `nav-settings-language-toggle` →
+`nav-settings-language-pt-BR`).
+
+Rodar a suíte completa depois do fix achou um `TypeError` silencioso (não falhava nenhum teste,
+só poluía o console) em outros 3 specs: `Dashboard.unidadesApostadas` lê
+`dashboard.overall.totalStaked`, e `side-nav.spec.ts`/`change-password.spec.ts`/
+`telegram-link.spec.ts` stubam `**/api/**` genericamente com `{}` (só querem testar o shell, não
+o conteúdo do dashboard) — `overall` ficava `undefined`. Não é bug de produção (o contrato real
+de `GET /api/v1/statistics` sempre garante `overall`), corrigido no fixture: `route` específico
+pra `**/api/v1/statistics*`, registrado depois do stub genérico, devolvendo o shape zero real
+(`EMPTY_STATISTICS_DASHBOARD`).
+
+84/84 testes verdes, sem nenhum erro de console. Sem story/PR formal nesta sessão (fluxo direto
+de pareamento).
+
+## `feat-039` — Corrigir drawdown mensal e padronizar filtro de data (2026-09-22)
+
+Duas causas reais por trás de "a curva só sobe e satura, sem os recuos esperados": (1)
+`buildMonthlyDrawdown` plotava o mês corrente até o último dia do mês inteiro, mesmo pros dias
+ainda no futuro — o platô resultante era visualmente idêntico à queixa, achado só depois de rodar
+a stack real contra o tenant de demonstração (`demo-b583c3`, 2000 apostas reais); corrigido pra
+parar em "hoje" (novo parâmetro `today`, default `new Date()`). (2) `smooth: true` +
+`yAxis.splitNumber: 2` em `core/chart-theme.ts` (herdado de `shared/monthly-profit-chart`)
+suavizavam reversões reais numa curva monotônica aparente — `buildLineChartOption` ganhou um
+parâmetro de estilo opcional, só `monthly-drawdown-chart` usa `{smooth:false, splitNumber:4}`,
+os outros 2 consumidores inalterados.
+
+Filtro "Mês inicial"/"Mês final" trocado de `<input type="month">` nativo (aparência inconsistente
+entre navegadores) pra `MatDatepicker` em modo mês/ano (`startView="year"` + `monthSelected`
+fechando o picker manualmente, padrão oficial do Material desde v6+) — decisão do Plan Reviewer
+contra reaproveitar `shared/period-preset-filter` (dia-granular, presets como "Hoje" não fazem
+sentido pra range de meses, mesma decisão já documentada em `docs/estatisticas.md` do `epic-020`
+original). Novo padrão de UI documentado em `docs/sistema-de-design.md`.
+
+Validado contra a stack real: subi os 4 serviços Java + `ng serve` localmente (2 gotchas de
+ambiente batidos no caminho, já documentados em `docs/observabilidade-e-configuracao.md` mas não
+lidos antes de tentar — `SPRING_PROFILES_ACTIVE=dev` não é automático em `mvn spring-boot:run`, e
+o CORS default do gateway libera só `localhost:4200`, não a porta real `4300`), logei como
+`admin@demo-b583c3` e comparei screenshot antes/depois do gráfico do mês corrente. 2 e2e existentes
+quebraram com a troca de input (`.fill()` não funciona em campo `readonly`) — corrigidos pra
+clicar no calendário; achado de automação: o texto visível do botão de mês é "JAN" mas o
+accessible name real é "January 2026", `getByRole` precisa do nome completo.
+
+6 testes unitários novos. `./init.sh` verde (291 testes, 92.27% cobertura) + suíte e2e completa
+(84/84). Sem story/PR formal (fluxo direto de pareamento).

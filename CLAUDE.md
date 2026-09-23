@@ -6,7 +6,7 @@ histórico e dashboards. Parte do harness multinível do monorepo — leia `../.
 o desenho completo (regras de Shneiderman, RF cobertos). Arquitetura de frontend, testes,
 formato de erro consumido, **tema/paleta de cores/componentes visuais** e **i18n** são
 normativos e já decididos em `../../docs/CONVENTIONS.md`, `../../docs/TESTING.md`,
-`../../docs/API-CONTRACTS.md` e `../../docs/DESIGN-SYSTEM.md` — leia todos antes de `feat-001`.
+`../../docs/API-CONTRACTS.md` e `../../docs/sistema-de-design.md` — leia todos antes de `feat-001`.
 
 ## Fluxo de início de sessão (Startup Workflow)
 
@@ -42,17 +42,18 @@ normativos e já decididos em `../../docs/CONVENTIONS.md`, `../../docs/TESTING.m
   mobile desde o commit que os introduz.
 - **Componentes standalone + Signals** (não NgRx, não `NgModule`) para estado — decisão já
   tomada em `../../docs/CONVENTIONS.md`, não reabrir. Reactive Forms no formulário de apostas.
-- **Marca StakeVault, tema claro/escuro com toggle, paleta de cores e componentes visuais** já
-  decididos em `../../docs/DESIGN-SYSTEM.md` — não inventar cores/estilos/nome por conta própria
-  em nenhuma feature. Assets do logo em `../../docs/design-references/`
-  (`logo-mark-{dark,light,solid}.svg`, `logo-bars-only.svg`). Tema Angular Material (M3) gerado a
+- **Marca Arka, tema claro/escuro com toggle, paleta de cores e componentes visuais** já
+  decididos em `../../docs/sistema-de-design.md` — não inventar cores/estilos/nome por conta própria
+  em nenhuma feature. Assets do logo em `public/assets/logo/` (produção) e
+  `../../docs/design-references/` (fonte) — `arka-mark-{dark,light}.svg`, `arka-bars-only.svg`,
+  `arka-icon.svg`/`arka-app-icon-512.png`. Tema Angular Material (M3) gerado a
   partir de `--color-action-neutral` (azul) como `primary`, não do verde — ver próximo bullet.
-- **Verde é só marca/ganho, nunca CTA genérica** (ver `../../docs/DESIGN-SYSTEM.md` seção "Regra
+- **Verde é só marca/ganho, nunca CTA genérica** (ver `../../docs/sistema-de-design.md` seção "Regra
   semântica de cor"): `--color-brand` (verde) é exclusivo de logo, nav ativa, e valores
   positivos/lucro. Botões de ação neutra (salvar, filtrar, confirmar) usam
   `--color-action-neutral` (azul) por padrão — um botão verde genérico é bug de UX neste app, não
   estilo.
-- **Layout em painéis** (`app-panel-layout`/`app-panel`, ver `../../docs/DESIGN-SYSTEM.md` seção
+- **Layout em painéis** (`app-panel-layout`/`app-panel`, ver `../../docs/sistema-de-design.md` seção
   "Layout em painéis"): toda tela é composta de painéis independentes lado a lado, cada um com
   rolagem própria — não construa uma tela como página única de rolagem contínua nem coloque o
   formulário de aposta em página cheia/modal fora desse padrão.
@@ -67,7 +68,7 @@ normativos e já decididos em `../../docs/CONVENTIONS.md`, `../../docs/TESTING.m
   feature precisa das três traduções antes de a feature ser `done` — validado automaticamente
   pela pipeline de CI (bullet abaixo).
 - **Gráficos (RF10/RF11 UI)**: `ngx-echarts` (Apache ECharts) — decisão de 2026-08-02, ver
-  `../../docs/DESIGN-SYSTEM.md` item 6 do inventário. Não introduzir outra biblioteca de
+  `../../docs/sistema-de-design.md` item 6 do inventário. Não introduzir outra biblioteca de
   gráficos (Chart.js, D3 direto, etc.) em nenhuma feature.
 - **Config de ambiente**: `src/environments/environment.ts`/`environment.development.ts` (build-time,
   `fileReplacements` do Angular CLI) com a URL base do `api-gateway` — decisão de 2026-08-02, ver
@@ -81,14 +82,14 @@ normativos e já decididos em `../../docs/CONVENTIONS.md`, `../../docs/TESTING.m
   na Definição de Pronto abaixo). Uso restrito a auditoria/polish de componentes já
   implementados (`/impeccable audit`/`polish` etc., taste-skill) e prototipagem descartável
   pré-implementação (huashu-design) — nenhuma das três decide aparência por conta própria:
-  `../../docs/DESIGN-SYSTEM.md` continua a única fonte de verdade de design deste app.
-  **`apps/web/DESIGN.md` é pré-escrito a partir de `DESIGN-SYSTEM.md`** (formato oficial
+  `../../docs/sistema-de-design.md` continua a única fonte de verdade de design deste app.
+  **`apps/web/DESIGN.md` é pré-escrito a partir de `sistema-de-design.md`** (formato oficial
   [DESIGN.md](https://github.com/google-labs-code/design.md), primeira tarefa de `feat-001`
   depois do `npx impeccable install`) — isso é o que impede `/impeccable document`/`new-work` de
   gerar um `DESIGN.md` divergente: com o arquivo já existindo, o próprio Impeccable pergunta
   antes de tocar nele (`refresh`/`overwrite`/`merge`), nunca sobrescreve em silêncio. `init` **é**
   seguro de rodar — só grava `PRODUCT.md` (contexto de produto), não escreve `DESIGN.md`. Ver
-  `../../docs/DESIGN-SYSTEM.md` seção "QA visual" para o racional completo e o mapeamento de
+  `../../docs/sistema-de-design.md` seção "QA visual" para o racional completo e o mapeamento de
   seções. Diferente do Playwright (bullet de testes acima) — aquele é E2E funcional, isto é QA
   visual/prototipagem.
 - **CI/CD (`feat-007`)**: pipeline em `.github/workflows/ci.yml`, **dentro deste repositório**
@@ -115,14 +116,14 @@ Uma feature deste app só está `done` quando (done only when):
 
 - [ ] Implementada e rodando via `./init.sh` sem erro.
 - [ ] Testada em pelo menos uma resolução mobile e uma desktop (RNF01).
-- [ ] Testada nos dois temas (claro e escuro) — ver `../../docs/DESIGN-SYSTEM.md`.
+- [ ] Testada nos dois temas (claro e escuro) — ver `../../docs/sistema-de-design.md`.
 - [ ] Toda string de UI nova traduzida nos três locales (`pt-BR`/`en-US`/`es`) — nenhum texto
       hardcoded, nenhum idioma deixado "para depois".
 - [ ] Testes seguindo `../../docs/TESTING.md` (unitários de componente; Playwright para os
       fluxos críticos: cadastro de aposta, atualização de status, filtro de dashboard; pelo
       menos um fluxo rodado com idioma trocado para confirmar que a troca funciona).
 - [ ] Se a feature introduziu UI nova: rodada auditoria de QA visual (Impeccable/taste-skill/huashu-design,
-      ver bullet acima) contra `../../docs/DESIGN-SYSTEM.md`.
+      ver bullet acima) contra `../../docs/sistema-de-design.md`.
 - [ ] `Delivery Reviewer` e `Test Suite Auditor` rodados contra a feature (ver
       `../../docs/AGENT-SKILLS.md`).
 - [ ] `CHANGELOG.md` deste app tem uma entrada em `[Unreleased]` descrevendo a mudança.
