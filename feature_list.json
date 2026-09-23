@@ -2720,7 +2720,10 @@
         "i18n (3 locales) das chaves de bet-type-dashboard que deixarem de existir + testes unitarios/Playwright atualizados (remove specs da tela antiga, cobre o novo local)"
       ],
       "description": "Achado do usuario em uso real (2026-09-22, sessao de geracao de massa de dados de teste): ao navegar pela tela 'Buscar Estatisticas' (/search-statistics) e comparar com /bet-type-dashboard, o usuario notou que bet-type-dashboard existe so pra mostrar o agrupamento PRE/LIVE (byBetType) - informacao que caberia como mais um filtro/segmento dentro de search-statistics, no mesmo espirito dos outros agrupamentos (bySport/byMarket/byLeague/byTipster/byBettingHouse) que NAO tem tela propria. Feature nasceu como nota de sessao (usuario pediu so para registrar, nao implementar agora) - ver progress.md da sessao em que foi capturada para o contexto completo da conversa.",
-      "dependencies": ["feat-012", "feat-026"],
+      "dependencies": [
+        "feat-012",
+        "feat-026"
+      ],
       "status": "not-started",
       "plan_review": "",
       "jira": "",
@@ -2779,6 +2782,127 @@
       "plan_review": "",
       "jira": "",
       "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-042",
+      "name": "Reformulacao de marca StakeVault -> Arka",
+      "goal": "Renomear a marca visivel do app de StakeVault para Arka: assets de producao (public/assets/logo/), titulo/favicon, wordmark do side-nav, texto do splash, strings de i18n (3 locales) e metadados do repositorio - preservando identificadores tecnicos reais (chaves de localStorage stakevault.*, alias Sass) fora de escopo por decisao ja registrada no vault raiz.",
+      "scope": [
+        "apps/web apenas (epic-032 na raiz, harness apps/web e o 2o trabalhado na ordem sugerida, depois do vault raiz - commit 7f88a61) - sem mudanca de contrato entre servicos",
+        "public/assets/logo/: substituir os 4 SVGs antigos (logo-mark-dark/light/solid, logo-bars-only) pelos arka-* correspondentes (docs/design-references/), sem equivalente direto pro '-solid' (papel passa a arka-icon.svg/arka-app-icon-512.png)",
+        "src/index.html (title, favicon), src/app/core/app-side-nav (logoSrc + wordmark texto), src/app/core/splash (SO o texto/mask do nome - NAO portar timing/tecnica de arka-splash.html, geometria do mark ja e identica, achado MAJOR do plan review)",
+        "public/i18n/{pt-BR,en-US,es}.json: splash.ariaLabel/splash.title",
+        "Specs unitarios/e2e que asseram texto visivel (titulo/aria-label do splash, wordmark) - NAO tocar specs que testam localStorage stakevault.* (fora de escopo)",
+        "CLAUDE.md, DESIGN.md, PRODUCT.md deste app: mencoes normativas de marca",
+        "Fora de escopo, decisao ja registrada em docs/DECISIONS-LOG.md 2026-09-23: chaves de localStorage stakevault.auth/theme/language/navCollapsed, alias Sass 'as stakevault' em styles.scss, dominio real stakevault.atlassian.net (links de Jira no CHANGELOG.md)"
+      ],
+      "description": "epic-032 da raiz (pedido do usuario em 2026-09-22): renomear o produto de StakeVault para Arka em todo o projeto. Vault raiz ja renomeado (commit 7f88a61) - identidade visual nova definida e versionada em docs/design-references/ (arka-icon.svg, arka-app-icon-512.png, arka-mark-dark/light.svg, arka-bars-only.svg, arka-logo-horizontal-dark/light.svg, arka-splash.html, arka-tokens.css). docs/sistema-de-design.md/docs/DECISIONS-LOG.md (2026-09-23) ja documentam 2 divergencias deliberadas do arka-tokens.css que NAO devem ser adotadas literalmente nesta feature: cor de CTA/acao neutra continua azul (nao o verde de .arka-btn-primary), texto secundario do modo escuro mantem o valor ja corrigido por acessibilidade (#8B99A2, nao o #7A8A93 pre-correcao). Levantamento: grep -i stakevault em apps/web (excluindo node_modules/.git/dist/coverage) encontrou ~62 arquivos reais.",
+      "dependencies": [],
+      "status": "in-progress",
+      "plan_review": "2026-09-23, Plan Reviewer (review-suite:ln-11-plan-reviewer). Veredito: READY WITH CONCERNS. Independencia reduzida (risco baixo - rename cosmetico, sem auth/money/dado/concorrencia - um so revisor, passe autocritico sem subagente isolado, divulgado). 1 MAJOR: src/app/core/splash e um port Angular ja pronto e testado da versao 'artistica' de 5.4s (splash.scss, ~300 linhas de keyframes sv2-*, INTRO_DURATION_MS=5400) - a geometria do mark ja e identica a arka-mark-*.svg (mesmas coordenadas/opacidades conferidas), so o nome muda. NAO portar timing/tecnica do arquivo de referencia arka-splash.html (2.1s, tecnica de mask diferente) - risco real de regressao visual/acessibilidade pra ganho zero. Correcao: trocar so o texto em splash.html (Stake<tspan>Vault</tspan> -> um <text>Arka</text> so, mask width=420 ja comporta) e o comentario de splash.ts:15 - manter os keyframes/duracao como estao. 2 MINOR (nao bloqueantes): (a) app-side-nav wordmark - menor diff seguro e trocar logoSrc() pra arka-mark-${theme}.svg e o template de 2 spans (Stake/Vault, 2 pesos) pra um span 'Arka' unico, sem adotar o lockup arka-logo-horizontal-*.svg (mudanca de abordagem maior, layout/CSS de colapso, fora do objetivo desta feature - fica como melhoria futura opcional); (b) favicon.ico pode precisar ser regenerado a partir de arka-app-icon-512.png - condicionado a ferramenta de conversao disponivel na sessao de implementacao, senao documentar como residual aceito (nao bloqueia, geometria nao mudou). index.html:8 (<link rel=icon>) aponta pra arka-icon.svg independente disso. Subtasks derivadas do veredito, ordem por dependencia (ver array subtasks).",
+      "jira": "SV-537",
+      "subtasks": [
+        {
+          "id": "feat-042.1",
+          "name": "Assets de producao (public/assets/logo/)",
+          "status": "done",
+          "jira": "SV-538",
+          "detail": "Base para todo o resto - sem os arquivos novos no lugar certo nenhuma das outras subtasks tem o que referenciar.",
+          "checklist": [
+            "Copiar docs/design-references/{arka-mark-dark,arka-mark-light,arka-bars-only,arka-icon,arka-app-icon-512} para public/assets/logo/ (mesmos nomes de arquivo).",
+            "Remover os 4 SVGs antigos de public/assets/logo/ (logo-mark-dark/light/solid, logo-bars-only)."
+          ],
+          "validation": "ls public/assets/logo/ mostra so os arquivos arka-*, nenhum logo-mark-*/logo-bars-only remanescente.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-042.2",
+          "name": "Nome/asset em UI real (index.html, app-side-nav)",
+          "status": "not-started",
+          "jira": "SV-539",
+          "detail": "Achado MINOR (a) do plan review - menor diff seguro, sem adotar o lockup horizontal novo.",
+          "checklist": [
+            "src/index.html: <title> Arka, <link rel=icon> aponta pra assets/logo/arka-icon.svg.",
+            "app-side-nav.ts: logoSrc() computed usa arka-mark-${theme}.svg em vez de logo-mark-${theme}.svg.",
+            "app-side-nav.html: span com 2 sub-spans Stake/Vault (2 pesos) vira 1 span 'Arka'.",
+            "app-side-nav.scss: remover/ajustar as classes .side-nav__wordmark-stake/-vault que ficarem sem uso."
+          ],
+          "validation": "ng test app-side-nav.spec.ts verde. QA visual: nav expandida/colapsada nos 2 temas mostra 'Arka' corretamente.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-042.3",
+          "name": "Splash: so o texto, sem portar timing/tecnica de arka-splash.html",
+          "status": "not-started",
+          "jira": "SV-540",
+          "detail": "Achado MAJOR do plan review - splash.scss ja implementa fielmente a versao artistica, geometria do mark inalterada pelo rebranding.",
+          "checklist": [
+            "splash.html: texto dentro de <g class=sv2-word mask=...> troca de Stake<tspan fill=#3EC46D>Vault</tspan> pra um <text>Arka</text> so (mask width=420 ja comporta, sem ajuste de tamanho).",
+            "splash.ts: comentario da linha 15 (Plays the StakeVault splash...) atualizado pra Arka.",
+            "NAO alterar INTRO_DURATION_MS (5400) nem nenhum keyframe sv2-* em splash.scss."
+          ],
+          "validation": "ng test splash.spec.ts verde. QA visual: splash roda igual (mesma duracao/geometria), so o nome mudou.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-042.4",
+          "name": "i18n (3 locales) - splash.ariaLabel/splash.title",
+          "status": "not-started",
+          "jira": "SV-541",
+          "detail": "Unicas chaves de i18n deste app com o nome da marca em string de UI (confirmado via grep).",
+          "checklist": [
+            "public/i18n/pt-BR.json: splash.ariaLabel/splash.title trocam StakeVault por Arka.",
+            "public/i18n/en-US.json e public/i18n/es.json: mesma troca, 3 locales sincronizados."
+          ],
+          "validation": "validate-i18n-keys.py sem chave orfa. As 3 strings comparadas lado a lado, mesma frase so com o nome trocado.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-042.5",
+          "name": "Specs: so os que asseram texto visivel",
+          "status": "not-started",
+          "jira": "SV-542",
+          "detail": "Specs que testam localStorage stakevault.* ficam intocados (fora de escopo, decisao ja registrada em DECISIONS-LOG).",
+          "checklist": [
+            "splash.spec.ts: assercao do titulo 'Splash animado StakeVault' -> 'Splash animado Arka'.",
+            "app-side-nav.spec.ts: assercao de texto do wordmark, se existir.",
+            "Confirmar (grep) que nenhum spec de localStorage (stakevault.auth/theme/language/navCollapsed) foi tocado."
+          ],
+          "validation": "ng test (suite completa) verde.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-042.6",
+          "name": "Metadados de repositorio (CLAUDE.md, DESIGN.md, PRODUCT.md)",
+          "status": "not-started",
+          "jira": "SV-543",
+          "detail": "Notas normativas deste app - mesmo padrao ja aplicado ao vault raiz (preservar citacoes historicas datadas, atualizar prosa normativa).",
+          "checklist": [
+            "CLAUDE.md (linhas 45/48): 'Marca StakeVault' -> 'Marca Arka', nomes de arquivo antigos -> arka-*.",
+            "DESIGN.md: nome/mencoes de marca -> Arka (preservar citacao a mockups originais como historico, mesmo padrao de docs/sistema-de-design.md).",
+            "PRODUCT.md: nome/mencoes de marca -> Arka."
+          ],
+          "validation": "grep -i stakevault nos 3 arquivos so retorna citacoes historicas explicitas, se houver.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-042.7",
+          "name": "CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-544",
+          "detail": "Fecha a feature com o gate real do harness.",
+          "checklist": [
+            "Entrada em CHANGELOG.md (Changed: marca renomeada StakeVault -> Arka).",
+            "Delivery Reviewer + Test Suite Auditor rodados contra o diff completo.",
+            "ng test (suite completa) + playwright test (suite completa ou pelo menos arquivos tocados) verdes.",
+            "./init.sh deste app e da raiz verdes.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit - ex.: nota curta em docs/sistema-de-design.md explicando por que a implementacao Angular do splash preserva os 5.4s em vez de adotar os 2.1s de arka-splash.html."
+          ],
+          "validation": "feature_list.json (deste app e da raiz) atualizado com status done e evidence.",
+          "owner": "agente"
+        }
+      ],
       "evidence": ""
     }
   ]
