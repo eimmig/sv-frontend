@@ -1764,3 +1764,24 @@ temas, navegação por teclado). `docs/CONVENTIONS.md` ganhou o gotcha reutiliz�
 Story SV-466, subtasks SV-467/468/469, PRs #120/#121/#122 (subtask→feature, CI verde) + PR de
 `feature/SV-466`→`develop` (gate completo, incluindo SonarCloud). `./init.sh` do app e da raiz
 verdes.
+
+## `e2e/search-statistics.spec.ts` corrigido + `TypeError` silencioso em 3 outros specs (2026-09-22)
+
+`e2e/search-statistics.spec.ts` estava quebrado desde `feat-036` (risco já registrado na evidence
+de `epic-031`/`feat-037`, não corrigido ali por estar fora daquele escopo): buscava
+`getByTestId('language-selector')`, componente que `feat-036` substituiu pelo menu de
+configurações do side-nav em toda página autenticada — só sobrevive na tela de login. Apontado
+pro fluxo real (`nav-settings-menu` → `nav-settings-language-toggle` →
+`nav-settings-language-pt-BR`).
+
+Rodar a suíte completa depois do fix achou um `TypeError` silencioso (não falhava nenhum teste,
+só poluía o console) em outros 3 specs: `Dashboard.unidadesApostadas` lê
+`dashboard.overall.totalStaked`, e `side-nav.spec.ts`/`change-password.spec.ts`/
+`telegram-link.spec.ts` stubam `**/api/**` genericamente com `{}` (só querem testar o shell, não
+o conteúdo do dashboard) — `overall` ficava `undefined`. Não é bug de produção (o contrato real
+de `GET /api/v1/statistics` sempre garante `overall`), corrigido no fixture: `route` específico
+pra `**/api/v1/statistics*`, registrado depois do stub genérico, devolvendo o shape zero real
+(`EMPTY_STATISTICS_DASHBOARD`).
+
+84/84 testes verdes, sem nenhum erro de console. Sem story/PR formal nesta sessão (fluxo direto
+de pareamento).

@@ -2706,7 +2706,80 @@
           "owner": "agente"
         }
       ],
-      "evidence": "Fechada em 2026-09-22 (epic-031 da raiz). Tela /period-comparison: 2 seletores de periodo independentes (Periodo A/B, seeds ja resolvidos - achado MAJOR do plan review sobre o 1o request sair com periodo vazio, corrigido e testado) + filtros comuns (esporte/liga/mercado/casa de apostas/tipster), zero endpoint novo (client-side, GET /api/v1/statistics(/daily)/bankroll/settings ja existentes desde epic-013/014/016/018, 2x cada). 14 linhas de KPI comparadas (shared/comparison-metric-row, padrao 'linha de lista' ja documentado em docs/sistema-de-design.md - nao 3 kpi-card por metrica, 2o achado MAJOR do plan review), grafico de 2 series sobrepostas (shared/comparison-equity-chart, core/chart-theme.ts:buildComparisonLineChartOption estende o builder existente), 6 tabelas de comparacao por segmento (pages/period-comparison/segment-comparison-table, componente dedicado - nao adaptacao de shared/catalog-dashboard, 3o achado MAJOR do plan review, uniao dos itens em A OU B). Achado real de QA visual corrigido: linhas de comparacao sem rotulo abaixo de 600px (cabecalho de coluna escondido nessa largura) - auto-rotulacao via data-mobile-label/::before. Achado real de CI corrigido no caminho, fora do escopo desta feature: flake pre-existente (vazamento de locale entre specs, register-bet.spec.ts sem cleanup de localStorage, period-report.spec.ts dependendo do locale ambiente implicito) - achado ja previsto em docs/testes.md (feat-029.3), confirmado na pratica e corrigido. Risco nao relacionado registrado (nao corrigido, fora de escopo): e2e/search-statistics.spec.ts quebrado desde feat-036, nao bloqueia CI. 7 subtasks, cada uma com PR proprio e CI verde (PRs #157-163, sv-frontend). Plan Reviewer (REVISE, 3 MAJOR corrigidos no plano antes de codificar) + Delivery Reviewer + Test Suite Auditor (self-review, contra o diff completo develop...feature/SV-529): todos PASS. ./init.sh do app e da raiz verdes. 286 testes unitarios (cobertura 92%+) + 3 e2e novos (83/84 na suite completa - 1 falha pre-existente nao relacionada). i18n: 284 chaves em sincronia (pt-BR/en-US/es). Vault atualizado no mesmo commit de cada subtask: docs/testes.md (confirmacao do achado de locale), docs/sistema-de-design.md (mecanismo de auto-rotulacao mobile), docs/services/web.md (secao nova da pagina)."
+      "evidence": "Fechada em 2026-09-22 (epic-031 da raiz). Tela /period-comparison: 2 seletores de periodo independentes (Periodo A/B, seeds ja resolvidos - achado MAJOR do plan review sobre o 1o request sair com periodo vazio, corrigido e testado) + filtros comuns (esporte/liga/mercado/casa de apostas/tipster), zero endpoint novo (client-side, GET /api/v1/statistics(/daily)/bankroll/settings ja existentes desde epic-013/014/016/018, 2x cada). 14 linhas de KPI comparadas (shared/comparison-metric-row, padrao 'linha de lista' ja documentado em docs/sistema-de-design.md - nao 3 kpi-card por metrica, 2o achado MAJOR do plan review), grafico de 2 series sobrepostas (shared/comparison-equity-chart, core/chart-theme.ts:buildComparisonLineChartOption estende o builder existente), 6 tabelas de comparacao por segmento (pages/period-comparison/segment-comparison-table, componente dedicado - nao adaptacao de shared/catalog-dashboard, 3o achado MAJOR do plan review, uniao dos itens em A OU B). Achado real de QA visual corrigido: linhas de comparacao sem rotulo abaixo de 600px (cabecalho de coluna escondido nessa largura) - auto-rotulacao via data-mobile-label/::before. Achado real de CI corrigido no caminho, fora do escopo desta feature: flake pre-existente (vazamento de locale entre specs, register-bet.spec.ts sem cleanup de localStorage, period-report.spec.ts dependendo do locale ambiente implicito) - achado ja previsto em docs/testes.md (feat-029.3), confirmado na pratica e corrigido. Risco nao relacionado corrigido em sessao posterior (2026-09-22, fora do escopo desta feature): e2e/search-statistics.spec.ts (quebrado desde feat-036) apontado pro fluxo real do menu de configuracoes do side-nav - ver progress.md. 7 subtasks, cada uma com PR proprio e CI verde (PRs #157-163, sv-frontend). Plan Reviewer (REVISE, 3 MAJOR corrigidos no plano antes de codificar) + Delivery Reviewer + Test Suite Auditor (self-review, contra o diff completo develop...feature/SV-529): todos PASS. ./init.sh do app e da raiz verdes. 286 testes unitarios (cobertura 92%+) + 3 e2e novos (83/84 na suite completa - 1 falha pre-existente nao relacionada). i18n: 284 chaves em sincronia (pt-BR/en-US/es). Vault atualizado no mesmo commit de cada subtask: docs/testes.md (confirmacao do achado de locale), docs/sistema-de-design.md (mecanismo de auto-rotulacao mobile), docs/services/web.md (secao nova da pagina)."
+    },
+    {
+      "id": "feat-038",
+      "name": "Dobrar bet-type-dashboard dentro de search-statistics",
+      "goal": "Remover a rota /bet-type-dashboard como tela propria e expor o mesmo agrupamento PRE/LIVE (byBetType) como mais um segmento/filtro dentro da tela 'Buscar Estatisticas' (/search-statistics), em vez de uma tela dedicada so pra essa informacao.",
+      "scope": [
+        "apps/web apenas - sem mudanca de contrato entre servicos (byBetType ja retornado por GET /api/v1/statistics desde feat-026, so muda onde/como o frontend exibe)",
+        "Remover rota /bet-type-dashboard e a entrada correspondente de navegacao (app-side-nav)",
+        "search-statistics.ts/html ganha o agrupamento PRE/LIVE (ex.: mais uma tabela/segmento na tela, ou um filtro betType somado aos 7 ja existentes - decisao de layout fica para o Plan Reviewer avaliar contra o desenho atual da tela antes de codificar)",
+        "Reavaliar shared/catalog-dashboard: bet-type-dashboard era a unica instancia sem par de 'Cadastrar' (nao e catalogo gerenciavel, ver evidence de feat-026) - confirmar se o componente generico continua fazendo sentido pros outros 5 (sport/market/league/tipster/betting-house) apos a remocao desta instancia, ou se vira dead code parcial",
+        "i18n (3 locales) das chaves de bet-type-dashboard que deixarem de existir + testes unitarios/Playwright atualizados (remove specs da tela antiga, cobre o novo local)"
+      ],
+      "description": "Achado do usuario em uso real (2026-09-22, sessao de geracao de massa de dados de teste): ao navegar pela tela 'Buscar Estatisticas' (/search-statistics) e comparar com /bet-type-dashboard, o usuario notou que bet-type-dashboard existe so pra mostrar o agrupamento PRE/LIVE (byBetType) - informacao que caberia como mais um filtro/segmento dentro de search-statistics, no mesmo espirito dos outros agrupamentos (bySport/byMarket/byLeague/byTipster/byBettingHouse) que NAO tem tela propria. Feature nasceu como nota de sessao (usuario pediu so para registrar, nao implementar agora) - ver progress.md da sessao em que foi capturada para o contexto completo da conversa.",
+      "dependencies": ["feat-012", "feat-026"],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-039",
+      "name": "Corrigir drawdown mensal e padronizar filtro de data do dashboard",
+      "goal": "Investigar e corrigir o comportamento incorreto do grafico de drawdown mensal (pages/dashboard/monthly-drawdown-grid + shared/monthly-drawdown-chart) na tela de dashboard, e trocar o filtro 'Mes inicial'/'Mes final' (mat-datepicker touchUi mes/ano) pelo mesmo padrao de filtro de periodo usado no resto do sistema (shared/period-preset-filter, ja usado em search-statistics/history/period-report).",
+      "scope": [
+        "apps/web apenas - sem mudanca de contrato entre servicos (consome GET /api/v1/statistics/daily ja existente)",
+        "shared/monthly-drawdown-chart + shared/monthly-drawdown-metrics.ts: investigar a causa raiz do comportamento visualmente incorreto reportado (curva so sobe e satura, sem os recuos esperados de um drawdown) antes de assumir onde esta o bug - pode ser no calculo (monthly-drawdown-metrics.ts) ou so na escala/eixo do grafico (core/chart-theme.ts)",
+        "pages/dashboard/monthly-drawdown-grid: trocar os 2 mat-datepicker (touchUi, mes/ano) pelo shared/period-preset-filter existente, alinhando com o padrao ja usado nas outras telas",
+        "Testes unitarios + Playwright cobrindo o caso que expos o bug (filtro default do dashboard, ~12 meses de historico)"
+      ],
+      "description": "Achado do usuario em uso real (2026-09-22, mesma sessao de feat-038). Screenshot mostra o grafico 'Drawdown mensal' na tela de dashboard com uma curva que so cresce e satura num patamar (sem os recuos que um drawdown deveria mostrar) - usuario descreveu como 'ainda com problema', sugerindo que ja era um comportamento conhecido/relatado antes desta sessao. Alem do bug, os campos 'Mes inicial'/'Mes final' (mat-datepicker mes/ano) nao seguem o padrao visual/funcional do filtro de periodo usado no restante do sistema (shared/period-preset-filter, com presets como 'Este mes'/'Ultimos 3 meses'/personalizado). Feature nasceu como nota de sessao (usuario pediu so para registrar, nao investigar/corrigir agora).",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-040",
+      "name": "Titulo, legenda e botao de ajuda em todos os graficos",
+      "goal": "Todo grafico do sistema (equity-curve-chart, monthly-profit-chart, monthly-drawdown-chart, comparison-equity-chart, e qualquer outro shared/*-chart existente ou futuro) ganha titulo visivel, legenda quando houver mais de 1 serie, e um botao/icone de ajuda ('?') que explica o que o grafico representa e como le-lo.",
+      "scope": [
+        "apps/web apenas - mudanca de design system (docs/sistema-de-design.md ganha a convencao nova) que afeta todos os componentes shared/*-chart existentes, nao 1 tela isolada",
+        "Mecanismo generico reaproveitavel (ex.: wrapper/diretiva comum de 'cabecalho de grafico' com titulo + botao de ajuda com tooltip/popover) em vez de duplicar a mesma marcacao em cada componente de grafico - decisao de design de como implementar fica para o Plan Reviewer/quem pegar a feature",
+        "Texto de ajuda de cada grafico (o que ele mostra, como interpretar) localizado nos 3 locales (pt-BR/en-US/es), com copy real por grafico (nao placeholder generico)",
+        "QA visual (claro/escuro, mobile/desktop) do componente novo em todos os graficos afetados"
+      ],
+      "description": "Pedido do usuario em uso real (2026-09-22, mesma sessao de feat-038/039): todo grafico gerado pelo sistema deveria ter titulo, legenda e um botao de '?' explicando o que o grafico e e representa - hoje isso varia grafico a grafico, sem padrao consistente. Feature nasceu como nota de sessao (usuario pediu so para registrar, nao implementar agora) - escopo amplo (cross-cutting, todos os graficos), Plan Reviewer deve mapear o inventario completo de componentes de grafico afetados antes de estimar subtasks.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-041",
+      "name": "monthly-profit-chart adaptar granularidade ao periodo filtrado",
+      "goal": "shared/monthly-profit-chart, usado na tela de dashboard, passa a escolher a granularidade do eixo (mensal/semanal/diario) de acordo com o tamanho do periodo filtrado, em vez de sempre agrupar por mes - filtro com menos de 1 mes de intervalo mostra granularidade diaria/semanal em vez de um unico ponto mensal pouco informativo.",
+      "scope": [
+        "apps/web apenas - GET /api/v1/statistics/daily (epic-016, ja existente) cobre a granularidade diaria; granularidade semanal e agregacao client-side sobre a resposta diaria (sem endpoint novo) ou usa GET /api/v1/statistics (monthly) quando o periodo for longo - regra exata de corte (quantos dias vira semanal, quantos vira mensal) fica para o Plan Reviewer decidir contra o desenho atual do componente",
+        "shared/monthly-profit-chart: logica de escolha de granularidade + adaptacao do eixo X/tooltip pro grao escolhido",
+        "pages/dashboard: passar o periodo filtrado atual pro componente (hoje monthly-profit-chart provavelmente assume sempre mensal - confirmar no codigo antes de codificar)",
+        "Testes unitarios cobrindo os 3 graos (mensal/semanal/diario) e as transicoes de fronteira entre eles"
+      ],
+      "description": "Pedido do usuario em uso real (2026-09-22, mesma sessao de feat-038/039/040): na tela de dashboard, o grafico app-monthly-profit-chart deveria virar semanal ou diario quando o filtro aplicado cobre menos de 1 mes, em vez de continuar agrupando por mes (o que produz um grafico com 1 unico ponto/pouco informativo pra filtros curtos). Feature nasceu como nota de sessao (usuario pediu so para registrar, nao implementar agora).",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
     }
   ]
 }
