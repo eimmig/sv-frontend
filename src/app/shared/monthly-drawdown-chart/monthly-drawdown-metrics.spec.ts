@@ -58,8 +58,28 @@ describe('buildMonthlyDrawdown', () => {
     expect(months[0].days.every((value) => value === null)).toBe(true);
   });
 
+  it('stops plotting the current month at today instead of padding flat to the end of the month', () => {
+    const daily = [day('2026-09-01', 100)];
+
+    const months = buildMonthlyDrawdown(daily, '2026-09-01', '2026-09-30', 1000, 0.01, new Date(2026, 8, 10));
+
+    expect(months[0].days).toHaveLength(10);
+  });
+
+  it('a month entirely after today has no days yet', () => {
+    const months = buildMonthlyDrawdown([], '2026-11-01', '2026-11-30', 1000, 0.01, new Date(2026, 8, 10));
+
+    expect(months[0].days).toHaveLength(0);
+  });
+
+  it('a past month is unaffected by today and still plots every day', () => {
+    const months = buildMonthlyDrawdown([], '2026-01-01', '2026-01-31', 1000, 0.01, new Date(2026, 8, 10));
+
+    expect(months[0].days).toHaveLength(31);
+  });
+
   it('produces one entry per calendar month across a year boundary', () => {
-    const months = buildMonthlyDrawdown([], '2026-12-01', '2027-01-31', 1000, 0.01);
+    const months = buildMonthlyDrawdown([], '2026-12-01', '2027-01-31', 1000, 0.01, new Date(2027, 1, 15));
 
     expect(months).toEqual([
       { year: 2026, month: 12, days: Array(31).fill(0) },

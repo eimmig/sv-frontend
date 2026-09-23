@@ -18,11 +18,14 @@ echarts.use([LineChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
 function buildChartOption(month: MonthlyDrawdownMonth, brandColor: string, borderColor: string): EChartsCoreOption {
   const categories = month.days.map((_, index) => String(index + 1));
-  return buildLineChartOption(categories, [...month.days], brandColor, borderColor);
+  return buildLineChartOption(categories, [...month.days], brandColor, borderColor, {
+    smooth: false,
+    splitNumber: 4,
+  });
 }
 
 /**
- * One mini-chart per calendar month (epic-020, docs/STATISTICS.md "Grade de gráficos mensais de
+ * One mini-chart per calendar month (docs/STATISTICS.md "Grade de gráficos mensais de
  * drawdown") - N instances reused in shared/panel-layout's auto-fit grid, same parameterized-
  * component precedent as shared/monthly-profit-chart, just X-axis by day-of-month instead of
  * by month.

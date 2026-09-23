@@ -69,7 +69,7 @@ export class AppSideNav {
     { initialValue: this.router.url },
   );
 
-  protected readonly logoSrc = computed(() => `assets/logo/logo-mark-${this.theme.current()}.svg`);
+  protected readonly logoSrc = computed(() => `assets/logo/arka-mark-${this.theme.current()}.svg`);
 
   protected readonly primaryLinks: ReadonlyArray<{ route: string; icon: string; labelKey: string; testid: string }> = [
     { route: 'overview', icon: 'insights', labelKey: 'nav.overview', testid: 'nav-overview' },
@@ -101,6 +101,7 @@ export class AppSideNav {
   protected readonly secondaryLinks: ReadonlyArray<{ route: string; icon: string; labelKey: string; testid: string }> = [
     { route: 'search-statistics', icon: 'query_stats', labelKey: 'nav.searchStatistics', testid: 'nav-search-statistics' },
     { route: 'period-report', icon: 'calendar_month', labelKey: 'nav.periodReport', testid: 'nav-period-report' },
+    { route: 'period-comparison', icon: 'compare_arrows', labelKey: 'nav.periodComparison', testid: 'nav-period-comparison' },
     { route: 'bet-type-dashboard', icon: 'sports_score', labelKey: 'nav.betTypeDashboard', testid: 'nav-bet-type-dashboard' },
     { route: 'telegram-link', icon: 'telegram', labelKey: 'nav.telegramLink', testid: 'nav-telegram-link' },
   ];

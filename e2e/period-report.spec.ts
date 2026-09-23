@@ -92,7 +92,7 @@ test.describe('epic-017 - "Relatório do período" page', () => {
     await expect.poll(() => lastFrom).not.toBe(initialFrom);
   });
 
-  // feat-022: proves the "Custom" preset's real mat-datepicker widgets (calendar click, not
+  // Proves the "Custom" preset's real mat-datepicker widgets (calendar click, not
   // .fill() on a native input) drive the from/to query params - period-preset-filter.ts unit
   // tests already cover the boundary conversion, this proves the actual UI wiring.
   test('picks a custom date range via the datepicker calendars', async ({ page }) => {
@@ -123,7 +123,7 @@ test.describe('epic-017 - "Relatório do período" page', () => {
     await expect.poll(() => lastTo).toBe('2026-09-10');
   });
 
-  // feat-034: the appDateMask directive formats input.value as the user types raw digits -
+  // The appDateMask directive formats input.value as the user types raw digits -
   // MatDatepickerInput's own (input) listener on the same element reads that live value and
   // parses it. Proves the two aren't just visually compatible (unit-tested already) but that the
   // final Date actually reaches the query params, against a real browser (JSDOM never resolves

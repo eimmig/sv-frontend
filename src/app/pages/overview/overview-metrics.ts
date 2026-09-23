@@ -1,7 +1,7 @@
 import { DailyBetMetrics, MonthlyBetMetrics } from '../../core/statistics-api';
 
 /** One point per settled-bet day (docs/STATISTICS.md "Curva de lucro acumulado vitalícia") -
- *  unlike the monthly drawdown grid (epic-020), there is no calendar-day filling and no reset:
+ *  unlike the monthly drawdown grid, there is no calendar-day filling and no reset:
  *  the curve only has an entry where `daily` already has one, running from the tenant's first
  *  settled bet onward. */
 export interface LifetimePoint {

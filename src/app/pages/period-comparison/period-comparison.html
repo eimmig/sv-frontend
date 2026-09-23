@@ -1,0 +1,136 @@
+<app-panel-layout columns="320px 1fr">
+  <app-panel [title]="'periodComparison.filtersTitle' | transloco">
+    @if (optionsError(); as message) {
+      <p class="period-comparison__error" role="alert" data-testid="period-comparison-options-error">{{ message }}</p>
+    } @else {
+      <div class="period-comparison__period" data-testid="period-comparison-period-a">
+        <h3>{{ 'periodComparison.periodALabel' | transloco }}</h3>
+        <app-period-preset-filter (rangeChange)="onPeriodAChange($event)" />
+      </div>
+
+      <div class="period-comparison__period" data-testid="period-comparison-period-b">
+        <h3>{{ 'periodComparison.periodBLabel' | transloco }}</h3>
+        <app-period-preset-filter (rangeChange)="onPeriodBChange($event)" />
+      </div>
+
+      <form [formGroup]="filterForm" (ngSubmit)="applyFilter()" class="period-comparison__filters">
+        <app-searchable-select
+          formControlName="bettingHouseId"
+          [options]="options().bettingHouses"
+          [label]="'periodComparison.bettingHouseLabel' | transloco"
+          testId="period-comparison-filter-betting-house"
+          [allOptionLabel]="'periodComparison.filterAll' | transloco"
+        />
+
+        <app-searchable-select
+          formControlName="sportId"
+          [options]="options().sports"
+          [label]="'periodComparison.sportLabel' | transloco"
+          testId="period-comparison-filter-sport"
+          [allOptionLabel]="'periodComparison.filterAll' | transloco"
+        />
+
+        <app-searchable-select
+          formControlName="leagueId"
+          [options]="options().leagues"
+          [label]="'periodComparison.leagueLabel' | transloco"
+          testId="period-comparison-filter-league"
+          [allOptionLabel]="'periodComparison.filterAll' | transloco"
+        />
+
+        <app-searchable-select
+          formControlName="marketId"
+          [options]="options().markets"
+          [label]="'periodComparison.marketLabel' | transloco"
+          testId="period-comparison-filter-market"
+          [allOptionLabel]="'periodComparison.filterAll' | transloco"
+        />
+
+        <app-searchable-select
+          formControlName="tipsterId"
+          [options]="options().tipsters"
+          [label]="'periodComparison.tipsterLabel' | transloco"
+          testId="period-comparison-filter-tipster"
+          [allOptionLabel]="'periodComparison.filterAll' | transloco"
+        />
+
+        <button mat-flat-button type="submit" data-testid="period-comparison-filter-apply">
+          {{ 'periodComparison.applyFilter' | transloco }}
+        </button>
+      </form>
+    }
+  </app-panel>
+
+  <app-panel [title]="'periodComparison.resultsTitle' | transloco">
+    @if (error(); as message) {
+      <p class="period-comparison__error" role="alert" data-testid="period-comparison-results-error">{{ message }}</p>
+    } @else {
+      <div data-testid="period-comparison-results">
+        <div class="period-comparison__rows-header" data-testid="period-comparison-rows-header">
+          <span></span>
+          <span>{{ 'periodComparison.periodALabel' | transloco }}</span>
+          <span>{{ 'periodComparison.periodBLabel' | transloco }}</span>
+          <span>{{ 'periodComparison.deltaLabel' | transloco }}</span>
+        </div>
+        @for (row of rows(); track row.testId) {
+          <app-comparison-metric-row
+            [label]="row.label"
+            [valueA]="row.valueA"
+            [valueB]="row.valueB"
+            [deltaLabel]="row.deltaLabel"
+            [sign]="row.sign"
+            [testId]="row.testId"
+            [columnALabel]="'periodComparison.periodALabel' | transloco"
+            [columnBLabel]="'periodComparison.periodBLabel' | transloco"
+            [columnDeltaLabel]="'periodComparison.deltaLabel' | transloco"
+          />
+        }
+
+        <app-comparison-equity-chart [seriesA]="chartSeries().seriesA" [seriesB]="chartSeries().seriesB" />
+
+        <app-segment-comparison-table
+          [title]="'catalogs.sports.title' | transloco"
+          [nameLabel]="'catalogDashboard.sportNameLabel' | transloco"
+          testId="period-comparison-segment-sport"
+          [segmentA]="data().a.dashboard.bySport"
+          [segmentB]="data().b.dashboard.bySport"
+        />
+        <app-segment-comparison-table
+          [title]="'catalogs.leagues.title' | transloco"
+          [nameLabel]="'catalogDashboard.leagueNameLabel' | transloco"
+          testId="period-comparison-segment-league"
+          [segmentA]="data().a.dashboard.byLeague"
+          [segmentB]="data().b.dashboard.byLeague"
+        />
+        <app-segment-comparison-table
+          [title]="'catalogs.markets.title' | transloco"
+          [nameLabel]="'catalogDashboard.marketNameLabel' | transloco"
+          testId="period-comparison-segment-market"
+          [segmentA]="data().a.dashboard.byMarket"
+          [segmentB]="data().b.dashboard.byMarket"
+        />
+        <app-segment-comparison-table
+          [title]="'catalogs.tipsters.title' | transloco"
+          [nameLabel]="'catalogDashboard.tipsterNameLabel' | transloco"
+          testId="period-comparison-segment-tipster"
+          [segmentA]="data().a.dashboard.byTipster"
+          [segmentB]="data().b.dashboard.byTipster"
+        />
+        <app-segment-comparison-table
+          [title]="'nav.bettingHouses' | transloco"
+          [nameLabel]="'catalogDashboard.bettingHouseNameLabel' | transloco"
+          testId="period-comparison-segment-betting-house"
+          [segmentA]="data().a.dashboard.byBettingHouse"
+          [segmentB]="data().b.dashboard.byBettingHouse"
+        />
+        <app-segment-comparison-table
+          [title]="'nav.betTypeDashboard' | transloco"
+          [nameLabel]="'catalogDashboard.betTypeNameLabel' | transloco"
+          testId="period-comparison-segment-bet-type"
+          [segmentA]="data().a.dashboard.byBetType"
+          [segmentB]="data().b.dashboard.byBetType"
+        />
+      </div>
+    }
+  </app-panel>
+</app-panel-layout>

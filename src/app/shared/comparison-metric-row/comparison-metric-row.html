@@ -1,0 +1,18 @@
+<div class="comparison-metric-row" [attr.data-testid]="testId()">
+  <span class="comparison-metric-row__label">{{ label() }}</span>
+  <span class="comparison-metric-row__value" [attr.data-mobile-label]="columnALabel()" data-testid="comparison-metric-row-value-a">{{
+    valueA()
+  }}</span>
+  <span class="comparison-metric-row__value" [attr.data-mobile-label]="columnBLabel()" data-testid="comparison-metric-row-value-b">{{
+    valueB()
+  }}</span>
+  <span
+    class="comparison-metric-row__delta"
+    [class.comparison-metric-row__delta--positive]="sign() === 'positive'"
+    [class.comparison-metric-row__delta--negative]="sign() === 'negative'"
+    [attr.data-mobile-label]="columnDeltaLabel()"
+    data-testid="comparison-metric-row-delta"
+  >
+    {{ deltaLabel() }}
+  </span>
+</div>

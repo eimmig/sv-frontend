@@ -1,0 +1,58 @@
+:host {
+  display: block;
+  height: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.period-comparison__error {
+  margin: 0;
+  color: var(--color-negative);
+  font-size: 14px;
+}
+
+.period-comparison__period {
+  padding: 8px 0 16px;
+
+  h3 {
+    margin: 0 0 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
+}
+
+.period-comparison__rows-header {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+  gap: 8px;
+  padding: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+
+  span:not(:first-child) {
+    text-align: right;
+  }
+
+  @media (max-width: 599px) {
+    display: none;
+  }
+}
+
+.period-comparison__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 0;
+
+  mat-form-field {
+    min-width: 160px;
+  }
+
+  button {
+    margin-top: 8px;
+  }
+}

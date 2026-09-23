@@ -22,8 +22,8 @@ const SEGMENT_ORDER: readonly DateSegment[] = ['month', 'day', 'year'];
 /**
  * Progressive `mm/dd/aaaa`-style formatting for a text input paired with `matDatepicker` -
  * inserts `/` as the user types raw digits, and shows a translated placeholder as a visual guide
- * when the field is empty (feat-034, regression from feat-022: these fields lost the native
- * `<input type="date">` day/month/year affordance when they switched to free-text + matDatepicker).
+ * when the field is empty - these fields lost the native `<input type="date">` day/month/year
+ * affordance when they switched to free-text + matDatepicker.
  *
  * Purely a display-layer helper - it only rewrites `input.value`/`placeholder`.
  * `MatDatepickerInput`'s own `(input)` listener is bound to the SAME element and reads

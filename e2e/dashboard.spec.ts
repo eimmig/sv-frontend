@@ -211,8 +211,10 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
       await page.getByRole('tab', { name: 'Monthly drawdown' }).click();
       await expect(page.getByTestId('monthly-drawdown-chart-title')).toHaveCount(1);
 
-      await page.getByTestId('monthly-drawdown-from').fill('2026-01');
-      await page.getByTestId('monthly-drawdown-to').fill('2026-03');
+      await page.getByTestId('monthly-drawdown-from-toggle').click();
+      await page.getByRole('button', { name: 'January 2026', exact: true }).click();
+      await page.getByTestId('monthly-drawdown-to-toggle').click();
+      await page.getByRole('button', { name: 'March 2026', exact: true }).click();
       await page.getByTestId('monthly-drawdown-apply').click();
 
       await expect(page.getByTestId('monthly-drawdown-chart-title')).toHaveCount(3);
@@ -223,8 +225,10 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
       await expect(page.getByTestId('dashboard-total-staked')).toContainText('R$');
       await page.getByRole('tab', { name: 'Monthly drawdown' }).click();
 
-      await page.getByTestId('monthly-drawdown-from').fill('2026-06');
-      await page.getByTestId('monthly-drawdown-to').fill('2026-01');
+      await page.getByTestId('monthly-drawdown-from-toggle').click();
+      await page.getByRole('button', { name: 'June 2026', exact: true }).click();
+      await page.getByTestId('monthly-drawdown-to-toggle').click();
+      await page.getByRole('button', { name: 'January 2026', exact: true }).click();
       await page.getByTestId('monthly-drawdown-apply').click();
 
       await expect(page.getByTestId('monthly-drawdown-empty')).toBeVisible();

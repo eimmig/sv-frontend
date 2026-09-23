@@ -1,4 +1,4 @@
-// Ported from docs/design-references/splash-animation-artistic.html - plays once and locks on
+// Plays once and locks on
 // the formed logo instead of the reference's infinite loop: every `infinite` below became
 // `1 forwards` except .sv2-dial's sv2-spin (the guide ring keeps a slow, independent 14s
 // rotation for as long as the overlay is visible - the "discrete loop" the design calls for

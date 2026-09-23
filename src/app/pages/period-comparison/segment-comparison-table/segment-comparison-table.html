@@ -1,0 +1,29 @@
+<div class="segment-comparison-table__wrap" [attr.data-testid]="testId()">
+  <h3 class="segment-comparison-table__title">{{ title() }}</h3>
+  <table class="segment-comparison-table">
+    <thead>
+      <tr>
+        <th>{{ nameLabel() }}</th>
+        <th>{{ 'periodComparison.roiLabel' | transloco }} A</th>
+        <th>{{ 'periodComparison.roiLabel' | transloco }} B</th>
+        <th>{{ 'periodComparison.deltaLabel' | transloco }}</th>
+        <th>{{ 'periodComparison.netProfitLabel' | transloco }} A</th>
+        <th>{{ 'periodComparison.netProfitLabel' | transloco }} B</th>
+        <th>{{ 'periodComparison.deltaLabel' | transloco }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of rows(); track row.dimensionId) {
+        <tr [attr.data-testid]="testId() + '-row'">
+          <td>{{ row.dimensionName }}</td>
+          <td>{{ row.roiA }}</td>
+          <td>{{ row.roiB }}</td>
+          <td [class]="'segment-comparison-table__delta--' + row.roiSign">{{ row.roiDelta }}</td>
+          <td>{{ row.netProfitA }}</td>
+          <td>{{ row.netProfitB }}</td>
+          <td [class]="'segment-comparison-table__delta--' + row.netProfitSign">{{ row.netProfitDelta }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

@@ -64,18 +64,17 @@ $width-collapsed: 72px;
 
 .side-nav__wordmark {
   font-size: 17px;
+  font-weight: 500;
   line-height: 1;
   white-space: nowrap;
   flex: 1 1 auto;
 }
 
-.side-nav__wordmark-stake {
-  font-weight: 400;
+.side-nav__wordmark-ink {
   color: var(--color-text-primary);
 }
 
-.side-nav__wordmark-vault {
-  font-weight: 500;
+.side-nav__wordmark-brand {
   color: var(--color-brand);
 }
 

@@ -37,16 +37,15 @@
 
 .login__wordmark {
   font-size: 24px;
+  font-weight: 500;
   line-height: 1;
 }
 
-.login__wordmark-stake {
-  font-weight: 400;
+.login__wordmark-ink {
   color: var(--color-text-primary);
 }
 
-.login__wordmark-vault {
-  font-weight: 500;
+.login__wordmark-brand {
   color: var(--color-brand);
 }
 

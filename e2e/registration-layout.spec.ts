@@ -45,7 +45,7 @@ test.describe('feat-024.3 - shared registration layout across all catalog + team
       expect(nameBox).not.toBeNull();
       expect(submitBox).not.toBeNull();
 
-      // Directly proves the component's own :host lateral padding (feat-024.1's fix) rather than
+      // Directly proves the component's own :host lateral padding rather than
       // inferring it from a bounding-box gap that ancestors (app-panel, Material chrome) already
       // provide most of regardless of this padding - that gap stayed well above any reasonable
       // threshold even with :host padding fully reverted in a mutation check.

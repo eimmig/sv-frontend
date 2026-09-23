@@ -7,76 +7,13 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 
-### Added
-
-- Tela "Vincular Telegram" (`feat-027`, rota `/telegram-link`): gera um código de curta duração
-  via `POST /api/v1/telegram-links` e mostra código + expiração, com entrada nova em
-  `app-side-nav`.
-- Dashboard "Por tipo de aposta" (`feat-026`, rota `/bet-type-dashboard`): ranking PRE/LIVE
-  reaproveitando `shared/catalog-dashboard`, consumindo o segmento `byBetType` novo em
-  `StatisticsDashboard`.
-- Tela "Visão geral" pós-login (`feat-029`, epic-021, rota `/overview`): curva de lucro
-  acumulado vitalícia, 4 cards (Lucro Total, Pré/Live, Lucro Médio Mensal, ROI) e tabela mensal
-  Jan-Dez do ano corrente. **Login agora redireciona para cá em vez de `/dashboard`** —
-  `/dashboard` continua acessível como item normal de nav.
-
-### Changed
-
-- `register-bet` (`feat-026`): campo "Tipo de aposta" trocado de texto livre para `mat-select`
-  com 2 opções fixas (`pre`/`live`), alinhado ao enum do backend. A opção "não classificado"
-  proposta originalmente foi removida em `feat-036` — toda aposta cadastrada por este formulário
-  passa a ser sempre `pre` ou `live` (default `pre`), nunca nula.
-
-- `app-login-border-trace` (`feat-018.3`) reformulada: 1 caminho fechado único (contorno completo
-  do card) com 2 traços opostos girando continuamente (`stroke-dashoffset`), em vez de 2 metades
-  que desenhavam/seguravam/recolhiam. Ajuste pedido pelo usuário após ver a animação original.
-- `app-language-selector` (`feat-019.3`): quando a sidebar está colapsada, o `mat-select` cede
-  lugar a um botão-ícone com `mat-menu` (mesmo padrão já usado pelos links de recurso), em vez de
-  sumir do DOM inteiramente. Estado expandido intocado (mesmo `data-testid`, mesmos 3 e2e por
-  `role=option`).
-- `betting-houses` (`feat-025`): ação "Movimentar saldo" por linha leva para `/history` já na aba
-  Movimentações com a casa pré-selecionada — ponte de navegação, não um formulário novo (o de
-  depósito/retirada já existia em `History`, intocado). Saldo por casa já re-sincroniza sozinho ao
-  voltar (Angular recria o componente da rota), sem código de sincronização de estado novo.
-
-### Fixed
-
-- `shared/catalog-manager` (`feat-024`, telas de cadastro de esporte/liga/mercado/tipster/casa
-  de apostas): `:host` sem padding lateral colava o card de "Nova entrada" no menu lateral;
-  `.catalog-manager__form` em `display: flex` na horizontal (campo Nome + botão "Adicionar" lado
-  a lado) espremia o campo a poucos caracteres em viewports estreitos, chegando a cortar o
-  próprio label. Padding lateral adicionado ao `:host` e formulário trocado para `flex-direction:
-  column` (botão em linha própria). `shared/team-manager` (`/teams`) tinha o mesmo `:host` sem
-  padding lateral (copiado de `catalog-manager` em `feat-021`, antes deste ajuste existir) —
-  mesmo padding aplicado ali também. Layout compartilhado agora cobre as 5 telas de catálogo mais
-  `/teams`, com cobertura Playwright dedicada para as 6.
-- `app-language-selector` (`feat-023.1`): o pill expandido (`.language-selector-host`) usava
-  `display: block` envolvendo um filho com `width: 100%` — sem uma largura definida no ancestral
-  (como na tela de login, onde os controles flutuam sem largura própria), o cálculo de
-  shrink-to-fit subestimava a largura real do `mat-select`, deixando-o vazar ~13-26px pra fora do
-  próprio pill e sobrepor o botão de tema adjacente. Trocado para `display: flex` (mesmo modo de
-  layout do filho), que tem regra bem definida pra esse caso (CSS Flexbox §9.9). Sem efeito na
-  sidebar (já tinha largura definida, nunca foi afetada).
-- Chave do projeto no SonarCloud corrigida para `eimmig_sv-frontend`. O SonarCloud gera a chave como
-  `<org>_<repo>` ao importar um repositório do GitHub; a forma sem prefixo, usada até aqui, faria a
-  análise falhar com projeto inexistente.
-- `theme-toggle`/`side-nav__collapse-toggle` (`feat-019.1`/`.2`): ícone do tema não centralizava no
-  rodapé colapsado (`:host` `display:block` + `width:100%` forçado pelo footer, sem centralização);
-  botão de colapsar renderizava como `<button>` nativo sem nenhum estilo do Material (`AppSideNav`
-  nunca importava `MatButtonModule`, então o atributo `mat-icon-button` era um no-op silencioso) -
-  causa raiz real da "cor escura fixa no tema claro" relatada (chrome nativo do browser segue o
-  `color-scheme` do SO, não os tokens do app).
-- `period-report.spec.ts` (unitário e `e2e/period-report.spec.ts`): dependiam de `new Date()` real
-  batendo com uma fixture fixa em `2026-09-11` - o teste falhava sempre que a suíte rodasse depois
-  dessa data. Relógio congelado (`vi.setSystemTime`/`page.clock.setFixedTime`) em vez de mudar a
-  fixture, que não é o que o componente realmente controla.
-- `shared/panel` (`feat-025`): "grid blowout" — a coluna nova de `betting-houses` (com o botão
-  "Movimentar saldo") estourava a largura da página inteira em telas estreitas, apesar da tabela
-  já estar dentro de um `overflow-x: auto`. Causa: `:host` de `app-panel` (o item de grid de
-  `app-panel-layout`) não tinha `min-width: 0` — grid/flex items usam `min-width: auto` por
-  padrão, que ignora `overflow` em qualquer descendente e trava o track do grid no tamanho do
-  conteúdo. `min-width: 0` no `:host` corrige para qualquer página que use `app-panel` com
-  conteúdo largo, não só `betting-houses`.
+- Corrigir chave do projeto no SonarCloud (`eimmig_sv-frontend`)
+- `feat-039`: corrigir curva de drawdown mensal (mês corrente truncado em "hoje", smooth/
+  splitNumber ajustados) + filtro de mês/ano com `MatDatepicker`
+- `period-report.spec.ts`/`e2e/period-report.spec.ts`: congelar relógio do sistema em vez de
+  fixture de data fixa (teste intermitente)
+- Remover comentários de código com racional/feat-ID/achados de revisão (não pertencem ao
+  código-fonte)
 - [SV-215](https://stakevault.atlassian.net/browse/SV-215) - Assets de logo + splash animado
 - [SV-216](https://stakevault.atlassian.net/browse/SV-216) - ngx-echarts instalado e provado
 - [SV-217](https://stakevault.atlassian.net/browse/SV-217) - Playwright + gate de cobertura 80%
@@ -239,3 +176,22 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-526](https://stakevault.atlassian.net/browse/SV-526) - side-nav: menu de configuracoes consolidado (idioma/tema/trocar senha/sair) + acordeao de idioma
 - [SV-527](https://stakevault.atlassian.net/browse/SV-527) - language-selector: fontSet do icone (fix real do corte no login)
 - [SV-528](https://stakevault.atlassian.net/browse/SV-528) - CHANGELOG e verificacao final
+- [SV-529](https://stakevault.atlassian.net/browse/SV-529) - Tela dedicada de comparativo entre dois periodos
+- [SV-530](https://stakevault.atlassian.net/browse/SV-530) - Rota /period-comparison + shell da pagina + carregamento de dados (2 periodos + filtros comuns)
+- [SV-531](https://stakevault.atlassian.net/browse/SV-531) - Modulo puro period-comparison-metrics.ts (deltas + serie normalizada por indice de dia)
+- [SV-532](https://stakevault.atlassian.net/browse/SV-532) - Linha de comparacao de KPIs (valor A | valor B | delta) - padrao documentado, nao kpi-card triplicado
+- [SV-533](https://stakevault.atlassian.net/browse/SV-533) - Grafico de comparacao (2 series sobrepostas, chart-theme.ts estendido)
+- [SV-534](https://stakevault.atlassian.net/browse/SV-534) - Tabela de comparacao de segmentos (componente novo, nao adaptar catalog-dashboard)
+- [SV-535](https://stakevault.atlassian.net/browse/SV-535) - i18n (3 locales) + QA visual (2 temas x mobile/desktop) + testes Playwright
+- [SV-536](https://stakevault.atlassian.net/browse/SV-536) - CHANGELOG e verificacao final
+- [SV-537](https://stakevault.atlassian.net/browse/SV-537) - Reformulacao de marca StakeVault -> Arka
+- [SV-538](https://stakevault.atlassian.net/browse/SV-538) - Assets de producao (public/assets/logo/)
+- [SV-539](https://stakevault.atlassian.net/browse/SV-539) - Nome/asset em UI real (index.html, app-side-nav)
+- [SV-540](https://stakevault.atlassian.net/browse/SV-540) - Splash: so o texto, sem portar timing/tecnica de arka-splash.html
+- [SV-541](https://stakevault.atlassian.net/browse/SV-541) - i18n (3 locales) - splash.ariaLabel/splash.title
+- [SV-542](https://stakevault.atlassian.net/browse/SV-542) - Specs: so os que asseram texto visivel
+- [SV-543](https://stakevault.atlassian.net/browse/SV-543) - Metadados de repositorio (CLAUDE.md, DESIGN.md, PRODUCT.md)
+- [SV-544](https://stakevault.atlassian.net/browse/SV-544) - CHANGELOG e verificacao final
+- [SV-573](https://stakevault.atlassian.net/browse/SV-573) - CI: gerar versao (semver + tag + Release + bump de package.json + corte de CHANGELOG) ao merge em main
+- [SV-574](https://stakevault.atlassian.net/browse/SV-574) - Job 'release' no ci.yml + .github/scripts/cut-changelog.py
+- [SV-575](https://stakevault.atlassian.net/browse/SV-575) - CHANGELOG e verificacao final

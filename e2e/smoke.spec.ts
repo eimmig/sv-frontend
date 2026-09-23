@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test.describe('smoke', () => {
   test.beforeEach(async ({ page }) => {
-    // Skips the ~5.4s splash intro (docs/DESIGN-SYSTEM.md item 17) so the suite stays fast -
+    // Skips the ~5.4s splash intro (docs/sistema-de-design.md item 17) so the suite stays fast -
     // prefers-reduced-motion must be set before navigation, since Splash reads it in ngOnInit.
     await page.emulateMedia({ reducedMotion: 'reduce' });
   });
@@ -12,6 +12,7 @@ test.describe('smoke', () => {
 
     await expect(page).toHaveURL(/\/login$/);
     await expect(page.locator('app-splash')).toHaveCount(0);
+    await expect(page).toHaveTitle(/Arka/);
   });
 
   test('switching the language re-renders UI text end to end', async ({ page }) => {

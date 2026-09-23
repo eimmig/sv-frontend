@@ -154,8 +154,9 @@ test.describe('epic-012 - "Buscar Estatisticas" pre-bet decision screen', () => 
     await page.goto('/search-statistics');
     await expect(page.getByTestId('search-statistics-submit')).toHaveText('Search');
 
-    await page.getByTestId('language-selector').click();
-    await page.getByRole('option', { name: 'Português' }).click();
+    await page.getByTestId('nav-settings-menu').click();
+    await page.getByTestId('nav-settings-language-toggle').click();
+    await page.getByTestId('nav-settings-language-pt-BR').click();
 
     await expect(page.getByTestId('search-statistics-submit')).toHaveText('Buscar');
   });

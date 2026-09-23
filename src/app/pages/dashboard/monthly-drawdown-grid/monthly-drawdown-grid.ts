@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -13,14 +14,17 @@ import { StatisticsApi } from '../../../core/statistics-api';
 import { MonthlyDrawdownChart } from '../../../shared/monthly-drawdown-chart/monthly-drawdown-chart';
 import { buildMonthlyDrawdown, MonthlyDrawdownMonth, resolveMonthRange } from '../../../shared/monthly-drawdown-chart/monthly-drawdown-metrics';
 
-function currentMonth(): string {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+function firstOfMonth(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), 1);
+}
+
+function toYearMonth(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
 
 /**
- * "Grade de gráficos mensais de drawdown" (epic-020, docs/STATISTICS.md) - own dedicated
- * month-range filter (2 <input type="month">, deliberately NOT shared/period-preset-filter,
+ * "Grade de gráficos mensais de drawdown" (ver docs/STATISTICS.md) - own dedicated
+ * month-range filter (2 MatDatepicker in month/year mode, deliberately NOT shared/period-preset-filter,
  * which is day-granularity and reused elsewhere for a different purpose). Both fields are
  * batched behind an explicit "Aplicar" submit, same convention as dashboard.ts's own 5-select
  * filterForm - reacting to each field independently would fire 2 overlapping requests when the
@@ -28,7 +32,15 @@ function currentMonth(): string {
  * for the whole interval; the grid of N mini-charts is client-side grouping only.
  */
 @Component({
-  imports: [MatButtonModule, MatFormFieldModule, MatInputModule, MonthlyDrawdownChart, ReactiveFormsModule, TranslocoPipe],
+  imports: [
+    MatButtonModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MonthlyDrawdownChart,
+    ReactiveFormsModule,
+    TranslocoPipe,
+  ],
   selector: 'app-monthly-drawdown-grid',
   styleUrl: './monthly-drawdown-grid.scss',
   templateUrl: './monthly-drawdown-grid.html',
@@ -41,8 +53,8 @@ export class MonthlyDrawdownGrid implements OnInit {
   private readonly transloco = inject(TranslocoService);
 
   protected readonly filterForm = this.formBuilder.nonNullable.group({
-    fromMonth: [currentMonth(), Validators.required],
-    toMonth: [currentMonth(), Validators.required],
+    fromMonth: [firstOfMonth(new Date()), Validators.required],
+    toMonth: [firstOfMonth(new Date()), Validators.required],
   });
 
   protected readonly months = signal<MonthlyDrawdownMonth[]>([]);
@@ -50,6 +62,15 @@ export class MonthlyDrawdownGrid implements OnInit {
 
   ngOnInit(): void {
     this.reload();
+  }
+
+  protected onMonthSelected(
+    date: Date,
+    picker: { close(): void },
+    controlName: 'fromMonth' | 'toMonth',
+  ): void {
+    this.filterForm.controls[controlName].setValue(firstOfMonth(date));
+    picker.close();
   }
 
   protected applyFilter(): void {
@@ -65,7 +86,7 @@ export class MonthlyDrawdownGrid implements OnInit {
 
   private reload(): void {
     const { fromMonth, toMonth } = this.filterForm.getRawValue();
-    const { from, to } = resolveMonthRange(fromMonth, toMonth);
+    const { from, to } = resolveMonthRange(toYearMonth(fromMonth), toYearMonth(toMonth));
     loadInto(
       forkJoin({
         daily: this.statisticsApi.getDaily({ from, to }),

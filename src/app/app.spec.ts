@@ -28,7 +28,7 @@ describe('App', () => {
               language: { label: 'Idioma' },
               splash: {
                 ariaLabel: 'Animação de carregamento',
-                title: 'Splash animado StakeVault',
+                title: 'Splash animado Arka',
                 desc: 'Descrição',
                 tagline: 'GESTÃO DE BANCA',
               },
