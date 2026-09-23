@@ -39,8 +39,8 @@ const EMPTY_OPTIONS: Options = { bettingHouses: [], sports: [], leagues: [], mar
 
 interface DashboardData {
   readonly dashboard: StatisticsDashboard;
-  /** GET /api/v1/bankroll/balance?at=<from|to> (bets-service epic-013) - saldoInicial/saldoFinal
-   *  do periodo filtrado, corte por settledAt (nao betDate), soma todas as casas do tenant. */
+  /** GET /api/v1/bankroll/balance?at=<from|to> - saldoInicial/saldoFinal do periodo filtrado,
+   *  corte por settledAt (nao betDate), soma todas as casas do tenant. */
   readonly bankrollFrom: number;
   readonly bankrollTo: number;
   /** GET /api/v1/bankroll/balance sem 'at' ("agora") - usado so pra unidadesApostadas

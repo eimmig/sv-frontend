@@ -5,8 +5,8 @@ import { KpiCardSign } from '../kpi-card/kpi-card';
 /**
  * One KPI compared across Período A/B (rótulo | valor A | valor B | delta) - the "Linha de
  * lista"/"Texto de valor + variação" pattern from docs/sistema-de-design.md (item 4/5), not a
- * 3rd kpi-card per metric (achado MAJOR do plan review de feat-037: 3 cards por métrica foge do
- * padrão já documentado e gera ruído visual).
+ * 3rd kpi-card per metric (3 cards por métrica foge do padrão já documentado e gera ruído
+ * visual).
  */
 @Component({
   selector: 'app-comparison-metric-row',
@@ -25,8 +25,8 @@ export class ComparisonMetricRow {
   readonly testId = input<string>();
   /** Column headers (Período A/B/Diferença), translated by the caller - only rendered (via CSS
    *  ::before, see .scss) below 600px, where the shared header row above the row list is hidden
-   *  and the grid collapses to 1 column. Without this, achado real de QA visual: a mobile user
-   *  saw 2 bare numbers with nothing indicating which was which. */
+   *  and the grid collapses to 1 column - without it a mobile user sees 2 bare numbers with
+   *  nothing indicating which was which. */
   readonly columnALabel = input<string>('');
   readonly columnBLabel = input<string>('');
   readonly columnDeltaLabel = input<string>('');

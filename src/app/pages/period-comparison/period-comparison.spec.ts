@@ -14,7 +14,7 @@ class ResizeObserverStub {
 }
 
 /** Same jsdom canvas gap as shared/monthly-profit-chart - app-comparison-equity-chart (echarts)
- *  is always instantiated by this page now (feat-037.4). See that spec for the full rationale. */
+ *  is always instantiated by this page now. See that spec for the full rationale. */
 function stubCanvasContext(): void {
   const noop = () => {};
   const context: Record<string, unknown> = {};
@@ -124,9 +124,9 @@ describe('PeriodComparison', () => {
    * batches they arrive - shared/period-preset-filter's 2 instances (Período A/B) each emit their
    * own default on construction, so applyFilter() can run more than once before the view settles
    * (same redundant-initial-load tradeoff already accepted elsewhere in this app for a single
-   * filter). Every statistics/daily request's from/to is asserted non-empty here - the regression
-   * this subtask fixes (achado MAJOR do plan review) is exactly an empty/undefined period slipping
-   * through on the very first request.
+   * filter). Every statistics/daily request's from/to is asserted non-empty here - an
+   * empty/undefined period slipping through on the very first request is the failure mode
+   * this guards against.
    */
   function drainComparisonRequests(balance = 1000, unitPercent = 0.01): void {
     let pending: TestRequest[];

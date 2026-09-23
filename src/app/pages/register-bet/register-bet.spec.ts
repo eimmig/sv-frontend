@@ -85,8 +85,8 @@ describe('RegisterBet', () => {
   }
 
   beforeEach(async () => {
-    // RegisterBet now injects Language (via DateMaskDirective on betDateOnly, feat-034) for the
-    // first time in this file's lifecycle. Without this, Language.current() falls back to
+    // RegisterBet injects Language (via DateMaskDirective on betDateOnly). Without this,
+    // Language.current() falls back to
     // browserLocale() - and this Vitest/jsdom environment's navigator.language is 'en-US', not
     // 'pt-BR' - so it would pick 'en-US', which isn't in this suite's `langs`/`availableLangs`
     // ('pt-BR' only), and every translate() call in the component (not just this directive's)
@@ -208,8 +208,8 @@ describe('RegisterBet', () => {
     expect(fixture.componentInstance['formError']()).toBe('A odd informada deve ser estritamente maior que 1,00 (RN07).');
   });
 
-  // feat-022.4: betDateOnly/betTimeOnly sao 2 FormControl independentes (nunca compartilham
-  // valor) exatamente para evitar o merge assimetrico do proprio Angular Material entre
+  // betDateOnly/betTimeOnly sao 2 FormControl independentes (nunca compartilham valor)
+  // exatamente para evitar o merge assimetrico do proprio Angular Material entre
   // mat-datepicker e mat-timepicker (trocar a data zerar a hora pra meia-noite).
   it('changing the date does not reset the previously chosen time', () => {
     fixture.componentInstance['form'].controls.betTimeOnly.setValue(new Date(2026, 0, 1, 21, 30));

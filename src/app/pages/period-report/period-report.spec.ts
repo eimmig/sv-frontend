@@ -99,8 +99,8 @@ describe('PeriodReport', () => {
     // text) - it falls back to navigator.language/localStorage when neither is pinned. The '22.1'
     // assertion below assumes en-US number formatting; pin it explicitly instead of relying on
     // jsdom's default, which isn't guaranteed across environments and can also be left over from
-    // another spec file's localStorage.setItem('stakevault.language', ...) in the same worker
-    // (achado real: flake intermitente no CI, feat-037 2026-09-22 - visto falhar com '22,1%').
+    // another spec file's localStorage.setItem('stakevault.language', ...) in the same worker -
+    // without this, the '22.1' assertion below can intermittently fail as '22,1' in CI.
     localStorage.removeItem('stakevault.language');
     Object.defineProperty(navigator, 'language', { value: 'en-US', configurable: true });
     await TestBed.configureTestingModule({

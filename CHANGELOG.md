@@ -48,6 +48,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ### Changed
 
+- Comentários de código removidos em ~20 arquivos: blocos explicando o racional de uma mudança
+  ou citando `feat-XXX`/`epic-XXX`/achados de revisão não pertencem ao código-fonte — esse
+  contexto fica no histórico do commit, no Jira e no vault.
 - Marca renomeada de "StakeVault" para "Arka" (`feat-042`, `epic-032`): assets de produção
   (`public/assets/logo/`), título/favicon (`index.html`), wordmark do `app-side-nav` e do
   `login` (achado real do Delivery Reviewer — grep por "StakeVault" não pega o wordmark do

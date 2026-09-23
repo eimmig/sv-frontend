@@ -7,8 +7,8 @@ import { Auth } from '../auth';
 
 /**
  * Non-blocking, session-only dismissible notice - auth-service explicitly returns
- * mustChangePassword without blocking login (see docs/services/auth-service.md), so the
- * dismiss button stays even though /change-password (feat-035) now exists.
+ * mustChangePassword without blocking login, so the dismiss button stays even though
+ * /change-password now exists.
  */
 @Component({
   imports: [MatButtonModule, RouterLink, TranslocoPipe],

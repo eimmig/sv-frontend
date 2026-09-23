@@ -12,8 +12,6 @@ test.describe('smoke', () => {
 
     await expect(page).toHaveURL(/\/login$/);
     await expect(page.locator('app-splash')).toHaveCount(0);
-    // Only real end-to-end proof that the Arka rebrand (feat-042) actually shipped in
-    // index.html, not just in source - toHaveTitle is a browser-native check, not a copy locator.
     await expect(page).toHaveTitle(/Arka/);
   });
 
