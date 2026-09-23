@@ -7,6 +7,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-09-23
+
 - Corrigir chave do projeto no SonarCloud (`eimmig_sv-frontend`)
 - `feat-039`: corrigir curva de drawdown mensal (mês corrente truncado em "hoje", smooth/
   splitNumber ajustados) + filtro de mês/ano com `MatDatepicker`
