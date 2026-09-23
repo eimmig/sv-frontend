@@ -2848,7 +2848,7 @@
         {
           "id": "feat-042.4",
           "name": "i18n (3 locales) - splash.ariaLabel/splash.title",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-541",
           "detail": "Unicas chaves de i18n deste app com o nome da marca em string de UI (confirmado via grep).",
           "checklist": [
