@@ -12,10 +12,7 @@ function prefersReducedMotion(): boolean {
 }
 
 /**
- * Plays the Arka splash once and locks on the formed logo (mark geometry
- * unchanged by the StakeVault->Arka rebrand, ported from the old
- * docs/design-references/splash-animation-artistic.html, since removed -
- * see docs/DECISIONS-LOG.md 2026-09-23) - `done` fires when
+ * Plays the Arka splash once and locks on the formed logo - `done` fires when
  * the intro finishes so the app can dismiss the overlay. Under
  * prefers-reduced-motion the CSS jumps straight to the final frame, so there
  * is nothing to wait for.
