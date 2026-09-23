@@ -2923,7 +2923,7 @@
         {
           "id": "feat-043.2",
           "name": "CHANGELOG e verificacao final",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-575",
           "detail": "Fecha a parte de apps/web do epic-033 da raiz.",
           "checklist": [
@@ -2937,7 +2937,7 @@
           "owner": "agente"
         }
       ],
-      "evidence": ""
+      "evidence": "2 subtasks (SV-574/575, story SV-573) done, PRs #175/#176 (subtask->story) + #177 (story->develop->main, promocao real) - CI+SonarCloud verdes. Job 'release' identico ao desenhado/revisado em auth-service feat-020, adaptado pra npm (npm version --no-git-tag-version). Verificacao real end-to-end confirmada: push real em main (2026-09-23T23:09Z) - tag v0.1.0 criada, GitHub Release 'Latest' publicado, commit chore(release) empurrado pra main via RELEASE_TOKEN, sem loop de CI. Job 'deploy' (nao relacionado, pre-existente) falhou como esperado - KUBE_CONFIG nao alcanca o cluster a partir de runners hospedados (residual ja documentado). Achado de processo nesta sessao: um commit direto do usuario ('fix(brand): restore missing dark mark and split wordmark colors') foi feito em cima da branch feature/SV-573 enquanto ela estava em uso - usuario confirmou via AskUserQuestion que era intencional, mergeado junto sem separar. Fecha a parte de apps/web do epic-033 da raiz."
     },
     {
       "id": "feat-044",
