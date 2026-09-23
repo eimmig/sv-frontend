@@ -2938,6 +2938,13 @@
         }
       ],
       "evidence": ""
+    },
+    {
+      "id": "feat-044",
+      "name": "Mover a splash de antes do login pra depois (durante o carregamento inicial de dados)",
+      "description": "Pedido do usuario em uso real (2026-09-23, sessao de epic-033). Hoje `app.ts` mostra `<app-splash>` (animacao Arka de ~5.4s) incondicionalmente no boot do app, ANTES de saber se o usuario esta autenticado - ou seja, toca a animacao completa so pra chegar na tela de login, sem nenhum dado sendo carregado nesse meio tempo (usuario: 'nao faz sentido carregar pra abrir o login'). Pedido: mover a splash pra DEPOIS do login, no momento em que o app efetivamente busca os dados pra popular a tela inicial (`/overview`, epic-021) - nesse momento faz sentido mostrar uma indicacao de carregamento, ja que ha requisicoes reais em voo (GET /api/v1/statistics/daily, GET /api/v1/statistics, GET /api/v1/bankroll/balance, GET /api/v1/settings, ver `overview.ts`). Pedido explicito do usuario sobre a forma: nao repetir a animacao completa de 5.4s ali - so o logo (mesmo elemento visual da splash) com um blur transparente por cima do sistema (nao uma tela solida cobrindo tudo), enquanto os dados carregam. Decisoes de escopo a fazer no plan review: (1) a tela de login continua sem NENHUM carregamento indicando boot do app (troca instantanea) ou mantem so um flash minimo aceitavel enquanto o Angular inicializa (SSR/hidratacao, se houver)? (2) o overlay de blur+logo cobre so a area de conteudo (RouterOutlet) ou o app inteiro incluindo sidebar/nav? (3) reusar o componente `Splash` existente com um modo/input novo ('completo' vs 'so logo, sem intro animada') ou criar um componente novo dedicado a loading-overlay, evitando acoplar as duas responsabilidades num so componente. (4) todo carregamento de dados do app passa a mostrar esse overlay (qualquer tela, no primeiro fetch) ou so a tela inicial pos-login (`/overview`) especificamente, como o pedido do usuario descreve.",
+      "dependencies": [],
+      "status": "not-started"
     }
   ]
 }
