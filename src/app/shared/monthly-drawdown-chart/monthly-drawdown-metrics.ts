@@ -61,7 +61,14 @@ export function buildMonthlyDrawdown(
   for (let index = fromIndex; index <= toIndex; index++) {
     const year = Math.floor(index / 12);
     const month = (index % 12) + 1;
-    const total = index < todayIndex ? daysInMonth(year, month) : index === todayIndex ? today.getDate() : 0;
+    let total: number;
+    if (index < todayIndex) {
+      total = daysInMonth(year, month);
+    } else if (index === todayIndex) {
+      total = today.getDate();
+    } else {
+      total = 0;
+    }
     const days: (number | null)[] = [];
     let accumulated = 0;
     for (let day = 1; day <= total; day++) {
