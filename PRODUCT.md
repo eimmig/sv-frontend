@@ -16,7 +16,7 @@ aqui como lacuna em aberto, não inferido. Um `admin` cria e gerencia os demais 
 
 ## Product Purpose
 
-StakeVault é uma plataforma de gestão de bankroll e análise estatística de apostas esportivas.
+Arka é uma plataforma de gestão de bankroll e análise estatística de apostas esportivas.
 Centraliza casas de apostas, registro de apostas (manual ou automático via bot Telegram),
 movimentações financeiras (depósito/retirada) e métricas de desempenho (ROI, taxa de acerto,
 lucro acumulado, evolução da banca) — um sistema único com histórico auditável e dashboards.
@@ -34,7 +34,7 @@ planilhas/apps concorrentes sem evidência real.
 
 Uso recorrente após cada aposta feita numa casa externa (o produto não processa apostas, só
 registra e analisa) — o fluxo típico é apostar na casa, depois registrar/confirmar no
-StakeVault (manualmente ou o bot já capturou). Consultas de histórico/dashboard acontecem em
+Arka (manualmente ou o bot já capturou). Consultas de histórico/dashboard acontecem em
 sessões separadas, tipicamente pra revisar desempenho por período/esporte/mercado/casa/tipster.
 
 ## Capabilities and Constraints
@@ -58,19 +58,19 @@ sessões separadas, tipicamente pra revisar desempenho por período/esporte/merc
 
 ## Brand Commitments
 
-Nome **StakeVault**, definido (não é mais placeholder). Logo: anel (o "cofre") com quatro raios
+Nome **Arka**, definido (não é mais placeholder, renomeado de "StakeVault" em 2026-09-22/23). Logo: anel (o "cofre") com quatro raios
 diagonais nos cantos e três barras verticais ascendentes dentro (elemento de crescimento).
-Wordmark "Stake" (peso 400) + "Vault" (peso 500, cor de marca) — nome de marca, nunca traduzido.
+Wordmark "Arka" (peso 500, cor de marca) — nome de marca, nunca traduzido.
 Paleta de cores e regra semântica de cor (verde = só marca/ganho, azul = ação neutra, vermelho =
-só prejuízo) são compromissos de marca explícitos do usuário — ver `docs/DESIGN-SYSTEM.md` seção
+só prejuízo) são compromissos de marca explícitos do usuário — ver `docs/sistema-de-design.md` seção
 "Regra semântica de cor" antes de propor qualquer alternativa.
 
 ## Evidence on Hand
 
 Sem clientes/usuários reais ainda (produto em desenvolvimento, TCC 2 da UTFPR) — sem
 depoimentos, casos de uso reais ou dados de produção pra citar. Mockups de referência (Uphold
-como inspiração de layout, mockups StakeVault próprios) em `docs/design-references/`. Requisitos
-completos (RF01-RF13, RNF01-RNF06, RN01-RN09) em `docs/REQUIREMENTS.md`, extraídos do TCC 1.
+como inspiração de layout, mockups originais da marca) em `docs/design-references/`. Requisitos
+completos (RF01-RF13, RNF01-RNF06, RN01-RN09) em `docs/requisitos.md`, extraídos do TCC 1.
 
 ## Product Principles
 

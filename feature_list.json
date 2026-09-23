@@ -2875,7 +2875,7 @@
         {
           "id": "feat-042.6",
           "name": "Metadados de repositorio (CLAUDE.md, DESIGN.md, PRODUCT.md)",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-543",
           "detail": "Notas normativas deste app - mesmo padrao ja aplicado ao vault raiz (preservar citacoes historicas datadas, atualizar prosa normativa).",
           "checklist": [
