@@ -2834,7 +2834,7 @@
         {
           "id": "feat-042.3",
           "name": "Splash: so o texto, sem portar timing/tecnica de arka-splash.html",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-540",
           "detail": "Achado MAJOR do plan review - splash.scss ja implementa fielmente a versao artistica, geometria do mark inalterada pelo rebranding.",
           "checklist": [
