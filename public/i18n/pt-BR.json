@@ -9,10 +9,10 @@
   "dateMask": {
     "placeholder": "mm/dd/aaaa"
   },
-  "splash": {
-    "ariaLabel": "Animação de carregamento que forma o logo Arka",
-    "title": "Splash animado Arka",
-    "desc": "Um ponto de luz percorre e desenha o anel do cofre, os raios giram até encaixar, as barras sobem em cascata, um pulso se expande e o nome é revelado por uma varredura.",
+  "loadingOverlay": {
+    "ariaLabel": "Carregando",
+    "title": "Arka",
+    "desc": "O logo Arka se monta enquanto os dados carregam.",
     "tagline": "GESTÃO DE BANCA"
   },
   "periodPresetFilter": {
