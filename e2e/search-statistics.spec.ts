@@ -137,6 +137,28 @@ test.describe('epic-012 - "Buscar Estatisticas" pre-bet decision screen', () => 
     await expect(chart.locator('div').filter({ hasText: /2025/ }).last()).toBeVisible();
   });
 
+  test('chart tooltip follows the dark theme instead of the default white box', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('stakevault.theme', 'dark'));
+    await page.route('**/api/v1/statistics/search*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(searchResultBody()) }),
+    );
+
+    await page.goto('/search-statistics');
+    await page.getByTestId('search-statistics-filter-sport').click();
+    await page.getByRole('option', { name: 'Futebol' }).click();
+    await page.getByTestId('search-statistics-filter-league').click();
+    await page.getByRole('option', { name: 'Brasileirao' }).click();
+    await page.getByTestId('search-statistics-submit').click();
+
+    const chart = page.getByTestId('search-statistics-chart');
+    await expect(chart).toBeVisible();
+    await chart.hover();
+
+    const tooltip = chart.locator('div[style*="z-index: 9999999"]');
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toHaveCSS('background-color', 'rgb(29, 42, 54)');
+  });
+
   test('choosing a bet type narrows the search to pre-match or live bets', async ({ page }) => {
     const betTypes: (string | null)[] = [];
     await page.route('**/api/v1/statistics/search*', (route) => {

@@ -70,3 +70,38 @@ describe('axis label contrast', () => {
     expect(colors).toEqual({ xLabel: '#5c6b72', yLabel: '#5c6b72', grid: '#dce3e0' });
   });
 });
+
+describe('tooltip theme', () => {
+  const tokens = { '--color-surface-elevated': '#1d2a36', '--color-border': '#24323f', '--color-text-primary': '#f2f7f5' };
+  const expected = { trigger: 'axis', backgroundColor: '#1d2a36', borderColor: '#24323f', textStyle: { color: '#f2f7f5' } };
+
+  beforeEach(() => {
+    for (const [name, value] of Object.entries(tokens)) {
+      document.documentElement.style.setProperty(name, value);
+    }
+  });
+
+  afterEach(() => {
+    for (const name of Object.keys(tokens)) {
+      document.documentElement.style.removeProperty(name);
+    }
+  });
+
+  it('paints the single-series tooltip with the active theme tokens', () => {
+    const option = buildLineChartOption(['jan'], [1], '#2fa85c', '#dce3e0', '#5c6b72') as { tooltip: unknown };
+
+    expect(option.tooltip).toEqual(expected);
+  });
+
+  it('paints the comparison tooltip with the active theme tokens', () => {
+    const option = buildComparisonLineChartOption(
+      ['1'],
+      { name: 'A', color: '#2fa85c', data: [1] },
+      { name: 'B', color: '#2e70a0', data: [2] },
+      '#dce3e0',
+      '#5c6b72',
+    ) as { tooltip: unknown };
+
+    expect(option.tooltip).toEqual(expected);
+  });
+});
