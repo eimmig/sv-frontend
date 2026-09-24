@@ -4,6 +4,7 @@ import { GridComponent, TooltipComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { EChartsCoreOption } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 
 import { buildLineChartOption, readCssColor } from '../../core/chart-theme';
@@ -11,6 +12,7 @@ import { formatDay } from '../../core/date-format';
 import { Language } from '../../core/language';
 import { StatisticsTimelinePoint } from '../../core/statistics-search-api';
 import { Theme } from '../../core/theme';
+import { ChartFrame } from '../chart-frame/chart-frame';
 
 // Same tree-shaken registration as shared/monthly-profit-chart - this
 // component is lazy-loaded only by the search-statistics page.
@@ -29,7 +31,7 @@ function buildChartOption(
 
 /** Equity curve (cumulative profit) - one series over StatisticsSearchResult.timeline. */
 @Component({
-  imports: [NgxEchartsDirective],
+  imports: [ChartFrame, NgxEchartsDirective, TranslocoPipe],
   providers: [provideEchartsCore({ echarts })],
   selector: 'app-equity-curve-chart',
   templateUrl: './equity-curve-chart.html',

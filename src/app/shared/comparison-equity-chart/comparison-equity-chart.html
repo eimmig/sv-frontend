@@ -1,1 +1,11 @@
-<div echarts [options]="chartOptions()" class="comparison-equity-chart" data-testid="period-comparison-chart"></div>
+<app-chart-frame
+  [title]="'charts.comparison.title' | transloco"
+  [help]="'charts.comparison.help' | transloco"
+  [legend]="[
+    { label: 'periodComparison.periodALabel' | transloco, colorToken: '--color-brand' },
+    { label: 'periodComparison.periodBLabel' | transloco, colorToken: '--color-action-neutral' }
+  ]"
+  testId="period-comparison-chart-frame"
+>
+  <div echarts [options]="chartOptions()" class="comparison-equity-chart" data-testid="period-comparison-chart"></div>
+</app-chart-frame>

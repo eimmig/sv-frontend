@@ -61,6 +61,16 @@ describe('MonthlyProfitChart', () => {
     });
   });
 
+  it('frames the chart with a title, a help toggle and a 1-entry legend', () => {
+    const fixture = TestBed.createComponent(MonthlyProfitChart);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+
+    expect(el.querySelector('[data-testid="dashboard-profit-chart-frame"] h3')).toBeTruthy();
+    expect(el.querySelector('[data-testid="dashboard-profit-chart-frame-help-toggle"]')).toBeTruthy();
+    expect(el.querySelectorAll('[data-testid="dashboard-profit-chart-frame-legend"] li')).toHaveLength(1);
+  });
+
   it('renders the echarts host element without console errors, empty data', () => {
     const fixture = TestBed.createComponent(MonthlyProfitChart);
 

@@ -15,6 +15,30 @@
     "desc": "The Arka logo assembles while data loads.",
     "tagline": "BANKROLL MANAGEMENT"
   },
+  "chartFrame": {
+    "helpLabel": "What does this chart show?"
+  },
+  "charts": {
+    "profit": {
+      "title": "Net profit in the period",
+      "help": "Profit or loss of settled bets, in BRL. For periods of up to 31 days each point is a day (days without bets show as zero); for longer periods each point is a month.",
+      "legend": "Net profit (BRL)"
+    },
+    "drawdown": {
+      "title": "Monthly drawdown",
+      "help": "One chart per month with profit or loss accumulated day by day, in units (profit divided by current balance × unit percentage). The curve restarts at zero on day 1 of each month and repeats the previous value on days without bets.",
+      "legend": "Accumulated profit (units)"
+    },
+    "equity": {
+      "title": "Accumulated profit curve",
+      "help": "Profit added up day after day, in BRL, for the bets matching the searched combination. Shows how that combination performed over time.",
+      "legend": "Accumulated profit (BRL)"
+    },
+    "comparison": {
+      "title": "Periods compared over time",
+      "help": "Accumulated profit in units for each period, aligned by day of the period (day 1, day 2...) to compare their pace even when the dates differ."
+    }
+  },
   "periodPresetFilter": {
     "label": "Period",
     "presetToday": "Today",

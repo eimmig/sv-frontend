@@ -4,6 +4,7 @@ import { GridComponent, TooltipComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { EChartsCoreOption } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 
 import { buildLineChartOption, readCssColor } from '../../core/chart-theme';
@@ -11,6 +12,7 @@ import { formatDay, formatMonth } from '../../core/date-format';
 import { Language } from '../../core/language';
 import { DailyBetMetrics, MonthlyBetMetrics } from '../../core/statistics-api';
 import { Theme } from '../../core/theme';
+import { ChartFrame } from '../chart-frame/chart-frame';
 import { addDays, toDateOnly } from '../period-preset-filter/period-preset-filter';
 
 // Tree-shaken build registered inside this lazy-loaded component rather than app.config.ts, so
@@ -66,7 +68,7 @@ export function buildProfitSeries(
 
 /** Net profit trend - per day for filtered periods of up to 31 days, per month otherwise. */
 @Component({
-  imports: [NgxEchartsDirective],
+  imports: [ChartFrame, NgxEchartsDirective, TranslocoPipe],
   providers: [provideEchartsCore({ echarts })],
   selector: 'app-monthly-profit-chart',
   templateUrl: './monthly-profit-chart.html',

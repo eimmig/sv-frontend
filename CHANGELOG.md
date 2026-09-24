@@ -204,3 +204,7 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-600](https://stakevault.atlassian.net/browse/SV-600) - Serie diaria/mensal no grafico e busca do dashboard
 - [SV-601](https://stakevault.atlassian.net/browse/SV-601) - E2E, CHANGELOG e verificacao final
 - [SV-602](https://stakevault.atlassian.net/browse/SV-602) - Corrigir apontamento SonarCloud typescript:S2699 no dashboard.spec
+- [SV-603](https://stakevault.atlassian.net/browse/SV-603) - Titulo, legenda e botao de ajuda em todos os graficos
+- [SV-604](https://stakevault.atlassian.net/browse/SV-604) - Componente chart-frame
+- [SV-605](https://stakevault.atlassian.net/browse/SV-605) - Aplicar o chart-frame nos 4 graficos
+- [SV-606](https://stakevault.atlassian.net/browse/SV-606) - E2E, QA visual e verificacao final

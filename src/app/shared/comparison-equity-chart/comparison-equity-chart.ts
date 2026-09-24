@@ -1,19 +1,20 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { LineChart } from 'echarts/charts';
-import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
+import { GridComponent, TooltipComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { EChartsCoreOption } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 
 import { buildComparisonLineChartOption, readCssColor } from '../../core/chart-theme';
 import { Theme } from '../../core/theme';
+import { ChartFrame } from '../chart-frame/chart-frame';
 
 // Tree-shaken build registered per lazy-loaded component (docs/DESIGN-SYSTEM.md item 6), same
-// precedent as shared/equity-curve-chart/shared/monthly-drawdown-chart - LegendComponent added
-// on top since this chart (unlike those) shows 2 named series.
-echarts.use([LineChart, GridComponent, LegendComponent, TooltipComponent, CanvasRenderer]);
+// precedent as shared/equity-curve-chart/shared/monthly-drawdown-chart. The legend lives in
+// shared/chart-frame, not in ECharts.
+echarts.use([LineChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
 /**
  * Overlays Período A/B's cumulative profit-in-units curves on a shared day-offset axis (see
@@ -22,7 +23,7 @@ echarts.use([LineChart, GridComponent, LegendComponent, TooltipComponent, Canvas
  * reused by a different page with a different data shape).
  */
 @Component({
-  imports: [NgxEchartsDirective],
+  imports: [ChartFrame, NgxEchartsDirective, TranslocoPipe],
   providers: [provideEchartsCore({ echarts })],
   selector: 'app-comparison-equity-chart',
   templateUrl: './comparison-equity-chart.html',

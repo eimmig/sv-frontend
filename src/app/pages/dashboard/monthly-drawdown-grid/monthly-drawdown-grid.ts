@@ -11,6 +11,7 @@ import { loadInto } from '../../../core/api-request';
 import { BankrollApi } from '../../../core/bankroll-api';
 import { SettingsApi } from '../../../core/settings-api';
 import { StatisticsApi } from '../../../core/statistics-api';
+import { ChartFrame } from '../../../shared/chart-frame/chart-frame';
 import { MonthlyDrawdownChart } from '../../../shared/monthly-drawdown-chart/monthly-drawdown-chart';
 import { buildMonthlyDrawdown, MonthlyDrawdownMonth, resolveMonthRange } from '../../../shared/monthly-drawdown-chart/monthly-drawdown-metrics';
 
@@ -33,6 +34,7 @@ function toYearMonth(date: Date): string {
  */
 @Component({
   imports: [
+    ChartFrame,
     MatButtonModule,
     MatDatepickerModule,
     MatFormFieldModule,
