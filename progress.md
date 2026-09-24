@@ -3,7 +3,12 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-24
-**Estado:** `feat-046`/`feat-048`..`feat-052` fechadas; `feat-047` (aguarda decisão), `feat-053` e `feat-054` no backlog.
+**Estado:** `feat-046`/`feat-048`..`feat-052`/`feat-054` fechadas; `feat-047` (aguarda decisão) e `feat-053` no backlog.
+
+## `feat-054` fechada — erro de render não congela o overlay (2026-09-24)
+
+Story SV-638 (SV-639/640), PR #219. `@if` do overlay subiu para `app.html`. Prova: teste do `App`.
+Desvio: correção prototipada antes do plan review (registrado na `evidence`).
 
 ## `feat-051` fechada — suíte E2E determinística (2026-09-24)
 
