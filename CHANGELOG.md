@@ -218,3 +218,7 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-617](https://stakevault.atlassian.net/browse/SV-617) - Alinhamento dos cabecalhos do comparativo de periodos
 - [SV-618](https://stakevault.atlassian.net/browse/SV-618) - Alinhar valores A/B com o cabecalho
 - [SV-619](https://stakevault.atlassian.net/browse/SV-619) - QA visual, CHANGELOG e verificacao final
+- [SV-620](https://stakevault.atlassian.net/browse/SV-620) - Ano no tooltip de graficos de estatisticas
+- [SV-621](https://stakevault.atlassian.net/browse/SV-621) - Ano nas datas do grafico acima de 1 ano
+- [SV-622](https://stakevault.atlassian.net/browse/SV-622) - QA visual, CHANGELOG e verificacao final
+- [SV-623](https://stakevault.atlassian.net/browse/SV-623) - Corrigir apontamento SonarCloud typescript:S7755 no equity-curve-chart

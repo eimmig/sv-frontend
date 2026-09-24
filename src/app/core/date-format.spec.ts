@@ -1,4 +1,4 @@
-import { formatDateTime, formatDay, formatMonth } from './date-format';
+import { formatDateTime, formatDay, formatMonth, spansMoreThanOneYear } from './date-format';
 
 describe('formatDateTime', () => {
   it('formats an ISO instant using the given locale', () => {
@@ -40,5 +40,20 @@ describe('formatDay', () => {
     const ptBr = formatDay('2026-07-03', 'pt-BR');
 
     expect(en).not.toBe(ptBr);
+  });
+
+  it('includes the year only when asked', () => {
+    expect(formatDay('2025-07-03', 'en-US', true)).toContain('2025');
+    expect(formatDay('2025-07-03', 'en-US')).not.toContain('2025');
+  });
+});
+
+describe('spansMoreThanOneYear', () => {
+  it('is false up to exactly one year', () => {
+    expect(spansMoreThanOneYear('2025-03-10', '2026-03-10')).toBe(false);
+  });
+
+  it('is true from one year and one day', () => {
+    expect(spansMoreThanOneYear('2025-03-10', '2026-03-11')).toBe(true);
   });
 });
