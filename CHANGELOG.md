@@ -239,3 +239,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-638](https://stakevault.atlassian.net/browse/SV-638) - Erro de render nao pode congelar o overlay de loading
 - [SV-639](https://stakevault.atlassian.net/browse/SV-639) - Overlay decidido pelo template do App
 - [SV-640](https://stakevault.atlassian.net/browse/SV-640) - E2E, QA visual e verificacao final
+- [SV-644](https://stakevault.atlassian.net/browse/SV-644) - Menu flutuante da tela de times
+- [SV-645](https://stakevault.atlassian.net/browse/SV-645) - Dashboard de times
+- [SV-646](https://stakevault.atlassian.net/browse/SV-646) - Menu flutuante de Times e verificacao final

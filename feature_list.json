@@ -3415,12 +3415,48 @@
       "name": "Menu flutuante da tela de times",
       "goal": "Padronizar a tela de Times com o menu flutuante usado nas demais telas, permitindo escolher entre o dashboard e o cadastro de times.",
       "scope": "Navegacao e menu flutuante da tela de Times; reutilizar o padrao visual e comportamental existente nas outras telas.",
-      "description": "Apontamento do usuario em 2026-09-24: a tela de Times nao possui o mesmo funcionamento das outras telas, pois nao exibe o menu flutuante para escolher entre acessar o dashboard de times ou cadastrar um novo time. Implementar essa navegacao mantendo o padrao existente de posicionamento, interacao, responsividade e estados visuais.",
+      "description": "Apontamento do usuario em 2026-09-24: a tela de Times nao possui o mesmo funcionamento das outras telas, pois nao exibe o menu flutuante para escolher entre acessar o dashboard de times ou cadastrar um novo time. Implementar essa navegacao mantendo o padrao existente de posicionamento, interacao, responsividade e estados visuais. Decisao do usuario 2026-09-24 (AskUserQuestion): epic cross-service (epic-036 da raiz) - stats-service feat-025 (done) expoe byTeam no bundle; esta feature cria o dashboard de times e o menu.",
       "dependencies": [],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (risco baixo: navegacao + tela nova montada com componentes existentes). Confirmado: CATALOG_DASHBOARD_RESOURCES e shared/catalog-dashboard ja servem 5 segmentos iguais; resources do app-side-nav geram o mat-menu Cadastrar/Dashboard; so app-side-nav.spec usa o testid nav-teams; byTeam (stats-service feat-025) em develop. Decisao: byTeam em StatisticsDashboard/EMPTY; CatalogSegment 'byTeam'; rota teams-dashboard; i18n catalogDashboard.teamNameLabel (Time/Team/Equipo); Times sai de catalogLinks e entra por ultimo em resources (menu nav-teams-menu/-register/-dashboard); catalogLinks e o bloco do template removidos. 2 MINOR: (1) deploys independentes - web em producao antes do stats-service quebraria a tela; catalog-dashboard trata segmento ausente como [] (com teste); (2) Times por ultimo em resources, mesma posicao visual.",
+      "jira": "SV-644",
+      "subtasks": [
+        {
+          "id": "feat-047.1",
+          "name": "Dashboard de times",
+          "detail": "Tela de ranking por time no mesmo componente dos outros catalogos.",
+          "checklist": [
+            "`byTeam` em `StatisticsDashboard` e `EMPTY_STATISTICS_DASHBOARD`",
+            "`CatalogSegment` com `byTeam`; segmento ausente tratado como lista vazia (unit)",
+            "Rota `teams-dashboard` e `catalogDashboard.teamNameLabel` nos 3 locales"
+          ],
+          "validation": "ng test verde.",
+          "owner": "agente",
+          "status": "in-progress",
+          "jira": "SV-645"
+        },
+        {
+          "id": "feat-047.2",
+          "name": "Menu flutuante de Times e verificacao final",
+          "detail": "Times ganha o menu Cadastrar/Dashboard e a feature fecha.",
+          "checklist": [
+            "Times em `resources` do `app-side-nav` (ultimo); `catalogLinks` e bloco do template removidos; `app-side-nav.spec` atualizado",
+            "E2E: menu de Times abre o dashboard de times (ranking por ROI) e Cadastrar leva a `/teams`",
+            "QA visual nos 2 temas, desktop e mobile",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-646"
+        }
+      ],
       "evidence": ""
     },
     {
