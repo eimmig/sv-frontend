@@ -99,6 +99,36 @@ test.describe('epic-012 - "Buscar Estatisticas" pre-bet decision screen', () => 
     await expect(page.getByTestId('search-statistics-chart')).toBeVisible();
   });
 
+  test('chart tooltip shows the year when the results span more than one year', async ({ page }) => {
+    await page.route('**/api/v1/statistics/search*', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          ...searchResultBody(),
+          timeline: [
+            { date: '2024-06-01', cumulativeProfit: 30 },
+            { date: '2025-06-15', cumulativeProfit: -10 },
+            { date: '2026-01-07', cumulativeProfit: 50 },
+          ],
+        }),
+      }),
+    );
+
+    await page.goto('/search-statistics');
+    await page.getByTestId('search-statistics-filter-sport').click();
+    await page.getByRole('option', { name: 'Futebol' }).click();
+    await page.getByTestId('search-statistics-filter-league').click();
+    await page.getByRole('option', { name: 'Brasileirao' }).click();
+    await page.getByTestId('search-statistics-submit').click();
+
+    const chart = page.getByTestId('search-statistics-chart');
+    await expect(chart).toBeVisible();
+    await chart.hover();
+
+    await expect(chart.locator('div').filter({ hasText: /2025/ }).last()).toBeVisible();
+  });
+
   test('choosing a bet type narrows the search to pre-match or live bets', async ({ page }) => {
     const betTypes: (string | null)[] = [];
     await page.route('**/api/v1/statistics/search*', (route) => {

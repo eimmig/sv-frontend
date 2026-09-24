@@ -3,7 +3,13 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-24
-**Estado:** `feat-046` fechada; `feat-047`..`feat-050` (apontamentos do usuário de 2026-09-24) no backlog.
+**Estado:** `feat-046`/`feat-048` fechadas; `feat-047`, `feat-049`..`feat-052` no backlog.
+
+## `feat-048` fechada — ano nas datas do gráfico de Buscar Estatísticas (2026-09-24)
+
+Story SV-620 (SV-621/622), PR #201. Série acima de 1 ano mostra o ano no eixo e no tooltip.
+Tooltip do ECharts é HTML: E2E com `hover()`. Achados viraram `feat-051` (flake `login-layout`) e
+`feat-052` (tooltip branco no tema escuro).
 
 ## `feat-046` fechada — alinhamento dos cabeçalhos do comparativo (2026-09-24)
 

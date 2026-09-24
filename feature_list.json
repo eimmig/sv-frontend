@@ -3464,11 +3464,40 @@
           ],
           "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-622"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechado em 2026-09-24 por feat-048.1/feat-048.2 (story SV-620). Quando a serie do grafico de Buscar Estatisticas passa de 1 ano, as datas (eixo e tooltip) mostram o ano; ate 1 ano continuam compactas (dia + mes).",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #201 (SV-621): formatDay(value, locale, withYear) e spansMoreThanOneYear(primeiro, ultimo) em core/date-format.ts; equity-curve-chart inclui o ano so quando a timeline passa de 1 ano (menos de 2 pontos nunca inclui). Testes unitarios de fronteira (exatamente 1 ano = sem ano, +1 dia = com ano) e de xAxis.data.",
+              "SV-622: E2E em e2e/search-statistics.spec.ts - hover no grafico com timeline 2024-06..2026-01 e o tooltip (HTML) mostra 2025."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "E2E novo falhou com o fix revertido e passou com ele.",
+              "./init.sh do app (cobertura 92,5%) e da raiz verdes; suite E2E completa 90/91 - a falha (login-layout, fora do diff) passou 45/45 isolada, registrada como feat-051.",
+              "QA visual por screenshot do tooltip nos 2 temas: 'Jun 15, 2025'.",
+              "Delivery Reviewer (self-conduzido): PASS. Test Suite Auditor (self-conduzido): PASS - fronteira unitaria + E2E com contrafactual."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Ano aparece tambem no eixo (aceito no plan review: tooltip trigger 'axis' reaproveita a categoria).",
+              "E2E do tooltip acrescentado (plano previa so unitario: o tooltip do ECharts e HTML, nao canvas).",
+              "Apontamentos fora de escopo viraram feature: feat-051 (flake login-layout) e feat-052 (tooltip branco no tema escuro).",
+              "Vault: docs/sistema-de-design.md item 6 - regra da data com ano e tooltip verificavel em E2E."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-049",
@@ -3491,6 +3520,32 @@
       "goal": "Exibir corretamente o icone de odd media em todos os pontos em que ele e apresentado, sem quebrar o tema visual da tela.",
       "scope": "Iconografia e renderizacao do componente de odd media no frontend; validao em tema claro/escuro, estados vazios e diferentes telas onde o item e usado.",
       "description": "Apontamento do usuario em 2026-09-24: o icone de odd media nao aparece e parece estar quebrado. Validar se o recurso foi removido, se o nome do icone/asset esta incorreto, se o CSS do tema esta ocultando o elemento ou se houve regressao no componente que renderiza a odd media. A correcao deve manter a padronizacao visual das odds e funcionar sem depender de dados externos ou fallback quebrado.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-051",
+      "name": "Flake do login-layout na suite E2E completa",
+      "goal": "Suite E2E completa verde de forma deterministica, sem falha intermitente no teste de sobreposicao do login.",
+      "scope": "`e2e/login-layout.spec.ts` (teste 'language selector and theme toggle never overlap the login card, even on a short viewport') e o que ele espera da tela de login.",
+      "description": "Achado durante feat-048 (2026-09-24): na suite completa (91 testes, workers paralelos) o teste falhou 1 vez com `getByTestId('language-selector')` nao encontrado em 5s; isolado passou 45/45 (--repeat-each=5). Investigar a causa (carga no dev server, lazy load do seletor na tela de login, ordem de navegacao) e tornar o teste deterministico sem so aumentar timeout.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-052",
+      "name": "Tooltip dos graficos segue o tema escuro",
+      "goal": "Tooltip dos graficos ECharts com fundo, borda e texto do tema ativo, sem caixa branca no tema escuro.",
+      "scope": "Opcao `tooltip` dos builders de `core/chart-theme.ts` e os graficos que os usam.",
+      "description": "Achado na QA visual de feat-048 (2026-09-24): no tema escuro o tooltip do grafico de Buscar Estatisticas aparece com o fundo branco padrao do ECharts, fora da paleta de docs/sistema-de-design.md (que nao define tooltip de grafico). Aplicar tokens de superficie/texto/borda do tema e registrar a regra no item 6 do sistema de design.",
       "dependencies": [],
       "status": "not-started",
       "plan_review": "",
