@@ -3692,10 +3692,44 @@
       "scope": "Opcao `tooltip` dos builders de `core/chart-theme.ts` e os graficos que os usam.",
       "description": "Achado na QA visual de feat-048 (2026-09-24): no tema escuro o tooltip do grafico de Buscar Estatisticas aparece com o fundo branco padrao do ECharts, fora da paleta de docs/sistema-de-design.md (que nao define tooltip de grafico). Aplicar tokens de superficie/texto/borda do tema e registrar a regra no item 6 do sistema de design.",
       "dependencies": [],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (risco baixo, so UI). Evidencia: tooltip so existe nos 2 builders de core/chart-theme.ts (linhas 42/120), usados pelos 4 graficos; os 4 montam a option num computed que le theme.current(), entao a troca de tema recalcula. Decisao: themedTooltip() em chart-theme.ts le os tokens (--color-surface-elevated fundo, --color-border borda, --color-text-primary texto) e e espalhado nos 2 builders - sem parametro novo (nenhum chamador muda; limite Sonar de 7 parametros). Contraste WCAG texto/fundo: 15,47:1 claro, 13,50:1 escuro. 2 MINOR: unit define e remove os tokens no documentElement (readCssColor tem fallback fixo fora do navegador); contraste registrado na evidence e no vault.",
+      "jira": "SV-630",
+      "subtasks": [
+        {
+          "id": "feat-052.1",
+          "name": "Tooltip com tokens do tema",
+          "detail": "Tooltip dos graficos usa superficie, borda e texto do tema ativo.",
+          "checklist": [
+            "`themedTooltip()` em `core/chart-theme.ts` usado pelos 2 builders",
+            "Unit em `chart-theme.spec.ts`: tooltip dos 2 builders com os tokens",
+            "E2E: tooltip do grafico de Buscar Estatisticas no tema escuro com fundo `rgb(29, 42, 54)`"
+          ],
+          "validation": "ng test e E2E verdes.",
+          "owner": "agente",
+          "status": "in-progress",
+          "jira": "SV-631"
+        },
+        {
+          "id": "feat-052.2",
+          "name": "QA visual, CHANGELOG e verificacao final",
+          "detail": "Prova visual nos 2 temas e fechamento.",
+          "checklist": [
+            "QA visual por screenshot do tooltip nos 2 temas",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-632"
+        }
+      ],
       "evidence": ""
     }
   ]

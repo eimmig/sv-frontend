@@ -228,3 +228,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-627](https://stakevault.atlassian.net/browse/SV-627) - Evitar loading repetido em dados ja carregados
 - [SV-628](https://stakevault.atlassian.net/browse/SV-628) - Cache de GET em memoria com invalidacao
 - [SV-629](https://stakevault.atlassian.net/browse/SV-629) - E2E, QA visual e verificacao final
+- [SV-630](https://stakevault.atlassian.net/browse/SV-630) - Tooltip dos graficos segue o tema escuro
+- [SV-631](https://stakevault.atlassian.net/browse/SV-631) - Tooltip com tokens do tema
+- [SV-632](https://stakevault.atlassian.net/browse/SV-632) - QA visual, CHANGELOG e verificacao final
