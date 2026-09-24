@@ -16,6 +16,7 @@ const CATALOG_DASHBOARD_RESOURCES: { path: string; segment: string; labelKey: st
   { path: 'markets-dashboard', segment: 'byMarket', labelKey: 'catalogDashboard.marketNameLabel' },
   { path: 'tipsters-dashboard', segment: 'byTipster', labelKey: 'catalogDashboard.tipsterNameLabel' },
   { path: 'betting-houses-dashboard', segment: 'byBettingHouse', labelKey: 'catalogDashboard.bettingHouseNameLabel' },
+  { path: 'teams-dashboard', segment: 'byTeam', labelKey: 'catalogDashboard.teamNameLabel' },
 ];
 
 const catalogManagerRoutes: Route[] = CATALOG_MANAGER_RESOURCES.map(({ path, resourcePath }) => ({
