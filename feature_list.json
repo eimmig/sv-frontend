@@ -3011,7 +3011,7 @@
           ],
           "validation": "Gate completo do PR story->develop verde.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-598"
         }
       ],
@@ -3039,7 +3039,8 @@
             "titulo": "O que divergiu do plano",
             "itens": [
               "Nada no comportamento. Residual aceito: inert no .app-shell faz o elemento focado perder o foco enquanto o overlay esta visivel (foco nao volta sozinho ao botao depois) - P3, registrado.",
-              "Vault: docs/sistema-de-design.md item 17 ganhou 'Uso em producao'; docs/services/web.md e docs/testes.md deixaram de citar a Splash."
+              "Vault: docs/sistema-de-design.md item 17 ganhou 'Uso em producao'; docs/services/web.md e docs/testes.md deixaram de citar a Splash.",
+              "Gate do PR story->develop (#181) reprovou no SonarCloud (Web:S6819 - div role=status no overlay). Virou subtask feat-044.4 (SV-598): elemento nativo <output>, que tem papel status implicito; unitario e E2E do overlay ajustados e verdes."
             ]
           }
         ]
