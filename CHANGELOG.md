@@ -200,3 +200,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-596](https://stakevault.atlassian.net/browse/SV-596) - LoadingOverlay e remocao da Splash
 - [SV-597](https://stakevault.atlassian.net/browse/SV-597) - E2E, QA visual e verificacao final
 - [SV-598](https://stakevault.atlassian.net/browse/SV-598) - Corrigir apontamento SonarCloud Web:S6819 no overlay
+- [SV-599](https://stakevault.atlassian.net/browse/SV-599) - monthly-profit-chart adaptar granularidade ao periodo filtrado
+- [SV-600](https://stakevault.atlassian.net/browse/SV-600) - Serie diaria/mensal no grafico e busca do dashboard
+- [SV-601](https://stakevault.atlassian.net/browse/SV-601) - E2E, CHANGELOG e verificacao final

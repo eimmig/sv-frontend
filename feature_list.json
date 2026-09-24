@@ -2769,19 +2769,47 @@
     {
       "id": "feat-041",
       "name": "monthly-profit-chart adaptar granularidade ao periodo filtrado",
-      "goal": "shared/monthly-profit-chart, usado na tela de dashboard, passa a escolher a granularidade do eixo (mensal/semanal/diario) de acordo com o tamanho do periodo filtrado, em vez de sempre agrupar por mes - filtro com menos de 1 mes de intervalo mostra granularidade diaria/semanal em vez de um unico ponto mensal pouco informativo.",
-      "scope": [
-        "apps/web apenas - GET /api/v1/statistics/daily (epic-016, ja existente) cobre a granularidade diaria; granularidade semanal e agregacao client-side sobre a resposta diaria (sem endpoint novo) ou usa GET /api/v1/statistics (monthly) quando o periodo for longo - regra exata de corte (quantos dias vira semanal, quantos vira mensal) fica para o Plan Reviewer decidir contra o desenho atual do componente",
-        "shared/monthly-profit-chart: logica de escolha de granularidade + adaptacao do eixo X/tooltip pro grao escolhido",
-        "pages/dashboard: passar o periodo filtrado atual pro componente (hoje monthly-profit-chart provavelmente assume sempre mensal - confirmar no codigo antes de codificar)",
-        "Testes unitarios cobrindo os 3 graos (mensal/semanal/diario) e as transicoes de fronteira entre eles"
-      ],
-      "description": "Pedido do usuario em uso real (2026-09-22, mesma sessao de feat-038/039/040): na tela de dashboard, o grafico app-monthly-profit-chart deveria virar semanal ou diario quando o filtro aplicado cobre menos de 1 mes, em vez de continuar agrupando por mes (o que produz um grafico com 1 unico ponto/pouco informativo pra filtros curtos). Feature nasceu como nota de sessao (usuario pediu so para registrar, nao implementar agora). DECISAO DO USUARIO (2026-09-24): periodo filtrado de ate 31 dias agrupa por dia; acima disso, por mes (sem nivel semanal). Implementacao autorizada (ordem: depois de feat-044).",
+      "goal": "O grafico de lucro do dashboard passa a mostrar um ponto por dia quando o periodo filtrado tem ate 31 dias, em vez de um unico ponto mensal pouco informativo.",
+      "scope": "`shared/monthly-profit-chart` (serie diaria ou mensal) e `pages/dashboard` (busca `/statistics/daily` so quando o periodo tem ate 31 dias).",
+      "description": "Pedido do usuario em uso real (2026-09-22, mesma sessao de feat-038/039/040): na tela de dashboard, o grafico app-monthly-profit-chart deveria virar semanal ou diario quando o filtro aplicado cobre menos de 1 mes, em vez de continuar agrupando por mes (o que produz um grafico com 1 unico ponto/pouco informativo pra filtros curtos). Feature nasceu como nota de sessao (usuario pediu so para registrar, nao implementar agora).",
       "dependencies": [],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Challenge independente como self-review (independencia reduzida, UI sem contrato novo). Confirmado por leitura: StatisticsApi.getDaily aceita os mesmos 7 filtros de get(); addDays/toDateOnly (period-preset-filter.ts) e buildDailyTable (period-report) ja resolvem preenchimento de dias esparsos; chart usado so em dashboard.html. 2 MINOR incorporados: (1) dashboard.spec.ts usa expectOne(DAILY_STATISTICS_URL) (hoje so o monthly-drawdown-grid chama /daily) - com o novo request quebraria; trocar por match() distinguindo por params; (2) contagem/preenchimento de dias reusa addDays/toDateOnly (datas locais), sem aritmetica UTC nova que deslocaria um dia no fuso BR. Residual aceito: preset 'Hoje' gera grafico de 1 ponto (consequencia direta da regra do usuario). Decisao do usuario: <=31 dias diario, acima mensal, sem nivel semanal.",
+      "jira": "SV-599",
+      "subtasks": [
+        {
+          "id": "feat-041.1",
+          "name": "Serie diaria/mensal no grafico e busca do dashboard",
+          "detail": "Decide a granularidade pelo periodo filtrado e busca os dados diarios so quando necessario.",
+          "checklist": [
+            "isDailyGranularity(from,to) e buildProfitSeries(...) exportadas de shared/monthly-profit-chart, reusando addDays/toDateOnly",
+            "Inputs daily/from/to no componente",
+            "pages/dashboard: daily no forkJoin de applyFilter, com os mesmos 7 filtros, so quando <=31 dias",
+            "Unitarios: 31 dias diario com zeros, 32 mensal, from/to vazio mensal; dashboard.spec com match() nos requests /daily"
+          ],
+          "validation": "ng test verde; dashboard com preset curto busca /daily com os filtros do periodo.",
+          "owner": "agente",
+          "status": "in-progress",
+          "jira": "SV-600"
+        },
+        {
+          "id": "feat-041.2",
+          "name": "E2E, CHANGELOG e verificacao final",
+          "detail": "Prova pelo navegador e fechamento da feature.",
+          "checklist": [
+            "E2E dashboard: preset curto dispara /statistics/daily com from/to do periodo",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "E2E verde, init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-601"
+        }
+      ],
       "evidence": ""
     },
     {
