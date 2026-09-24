@@ -3692,7 +3692,7 @@
       "scope": "Opcao `tooltip` dos builders de `core/chart-theme.ts` e os graficos que os usam.",
       "description": "Achado na QA visual de feat-048 (2026-09-24): no tema escuro o tooltip do grafico de Buscar Estatisticas aparece com o fundo branco padrao do ECharts, fora da paleta de docs/sistema-de-design.md (que nao define tooltip de grafico). Aplicar tokens de superficie/texto/borda do tema e registrar a regra no item 6 do sistema de design.",
       "dependencies": [],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (risco baixo, so UI). Evidencia: tooltip so existe nos 2 builders de core/chart-theme.ts (linhas 42/120), usados pelos 4 graficos; os 4 montam a option num computed que le theme.current(), entao a troca de tema recalcula. Decisao: themedTooltip() em chart-theme.ts le os tokens (--color-surface-elevated fundo, --color-border borda, --color-text-primary texto) e e espalhado nos 2 builders - sem parametro novo (nenhum chamador muda; limite Sonar de 7 parametros). Contraste WCAG texto/fundo: 15,47:1 claro, 13,50:1 escuro. 2 MINOR: unit define e remove os tokens no documentElement (readCssColor tem fallback fixo fora do navegador); contraste registrado na evidence e no vault.",
       "jira": "SV-630",
       "subtasks": [
