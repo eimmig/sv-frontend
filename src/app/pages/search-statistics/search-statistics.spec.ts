@@ -248,6 +248,30 @@ describe('SearchStatistics', () => {
     });
   });
 
+  it('sends betType only when a bet type is chosen', () => {
+    createComponent();
+    flushOptions();
+    fixture.detectChanges();
+    fixture.componentInstance['filterForm'].controls.sportId.setValue('sports-1');
+    httpMock.expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/statistics/teams`).flush([]);
+    fixture.componentInstance['filterForm'].controls.leagueId.setValue('leagues-1');
+    const emptyResult = {
+      summary: { betCount: 0, totalStaked: 0, netProfit: 0, roi: 0, winRate: 0, avgOdd: 0, maxDrawdown: 0, sharpeRatio: null },
+      timeline: [],
+    };
+
+    fixture.componentInstance['search']();
+    const withoutType = httpMock.expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/statistics/search`);
+    expect(withoutType.request.params.has('betType')).toBe(false);
+    withoutType.flush(emptyResult);
+
+    fixture.componentInstance['filterForm'].controls.betType.setValue('live');
+    fixture.componentInstance['search']();
+    const withType = httpMock.expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/statistics/search`);
+    expect(withType.request.params.get('betType')).toBe('live');
+    withType.flush(emptyResult);
+  });
+
   it('renders all summary cards, including betCount, on a real result', () => {
     createComponent();
     flushOptions();

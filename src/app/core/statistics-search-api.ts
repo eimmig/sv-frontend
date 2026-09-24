@@ -15,6 +15,7 @@ export interface StatisticsSearchFilter {
   readonly tipsterId?: string;
   readonly from?: string;
   readonly to?: string;
+  readonly betType?: 'pre' | 'live';
 }
 
 export interface StatisticsSearchSummary {
