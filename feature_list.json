@@ -3726,11 +3726,38 @@
           ],
           "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-632"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechado em 2026-09-24 por feat-052.1/feat-052.2 (story SV-630). Tooltip dos 4 graficos usa os tokens do tema ativo (fundo --color-surface-elevated, borda --color-border, texto --color-text-primary) em vez da caixa branca padrao do ECharts.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #211 (SV-631): themedTooltip() em core/chart-theme.ts espalhado nos 2 builders (unicos pontos com tooltip); nenhum chamador mudou. Unit nos 2 builders; E2E em search-statistics.spec - tooltip no tema escuro com fundo rgb(29, 42, 54)."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "E2E falhou com o fix revertido (fundo rgb(255, 255, 255)) e passou com ele.",
+              "Contraste WCAG texto/fundo: 15,47:1 claro, 13,50:1 escuro.",
+              "./init.sh do app (cobertura 92,6%) e da raiz verdes; suite E2E completa 94/94.",
+              "QA visual por screenshot do tooltip nos 2 temas.",
+              "Delivery Reviewer (self-conduzido): PASS. Test Suite Auditor (self-conduzido): PASS."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Nada. Nenhum apontamento novo fora de escopo.",
+              "Vault: docs/sistema-de-design.md item 6 - regra do tooltip e localizador da caixa raiz em E2E."
+            ]
+          }
+        ]
+      }
     }
   ]
 }

@@ -7,7 +7,7 @@
 
 ## Objetivo atual
 
-`feat-046`, `feat-048`, `feat-049` e `feat-050` fechadas. Em aberto: `feat-047` (aguarda decisão do usuário: não existe dashboard de times), `feat-051`, `feat-052`.
+`feat-046`, `feat-048`, `feat-049`, `feat-050` e `feat-052` fechadas. Em aberto: `feat-047` (aguarda decisão do usuário: não existe dashboard de times) e `feat-051`.
 
 ## Concluído nesta sessão (2026-09-24)
 
@@ -25,6 +25,7 @@
 - [x] **`feat-048` fechada** — ano nas datas do gráfico acima de 1 ano. Story SV-620.
 - [x] **`feat-050` fechada** — ícone de odd média válido na fonte clássica. Story SV-624.
 - [x] **`feat-049` fechada** — cache de GET `/api/`; voltar a tela carregada não mostra loading. Story SV-627.
+- [x] **`feat-052` fechada** — tooltip dos gráficos no tema ativo. Story SV-630.
 
 ## Bloqueios / Riscos
 
@@ -44,7 +45,7 @@
 ## Próxima sessão — por onde começar
 
 1. Rodar `./init.sh` (deve sair `0`).
-2. Próxima feature `not-started` do `feature_list.json` (`feat-047` bloqueada por decisão, `feat-051`, `feat-052`).
+2. Próxima feature `not-started` do `feature_list.json` (`feat-047` bloqueada por decisão, `feat-051`).
 3. Se for mexer em `services/api-gateway`/serviços Java localmente (fora de Docker): `.env` não
    carrega sozinho em `mvn spring-boot:run` — precisa `SPRING_PROFILES_ACTIVE=dev` exportado, e o
    CORS default do gateway libera só `localhost:4200`, não a porta real do `ng serve` (`4300`)
