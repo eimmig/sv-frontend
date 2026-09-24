@@ -239,7 +239,7 @@ describe('Dashboard', () => {
 
     fixture.componentInstance['onPeriodChange']({ from: '2020-03-01', to: '2020-04-01' });
 
-    httpMock.expectNone((req) => req.url === DAILY_STATISTICS_URL && req.params.get('from') === '2020-03-01');
+    expect(httpMock.match((req) => req.url === DAILY_STATISTICS_URL && req.params.get('from') === '2020-03-01')).toHaveLength(0);
     flushDashboardData();
   });
 
