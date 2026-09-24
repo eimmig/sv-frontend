@@ -54,6 +54,7 @@ const EMPTY_DASHBOARD = {
   byBettingHouse: [],
   byLeague: [],
   byTipster: [],
+  byTeam: [],
   byBetType: [],
   monthly: [],
 };

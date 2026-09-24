@@ -3,7 +3,12 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-24
-**Estado:** `feat-046`/`feat-048`..`feat-052`/`feat-054` fechadas; `feat-047` (aguarda decisão) e `feat-053` no backlog.
+**Estado:** `feat-046`..`feat-052`/`feat-054` fechadas; `feat-053` no backlog.
+
+## `feat-047` fechada — dashboard e menu flutuante de Times (2026-09-24)
+
+Story SV-644 (SV-645/646), PR #222. `epic-036` da raiz (backend: `stats-service feat-025`). Rota
+`/teams-dashboard` no `catalog-dashboard`; Times entra em `resources` do side-nav.
 
 ## `feat-054` fechada — erro de render não congela o overlay (2026-09-24)
 
