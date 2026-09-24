@@ -2978,7 +2978,7 @@
           ],
           "validation": "ng test verde; login abre sem animacao; overlay renderiza nos 2 temas.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-596"
         },
         {
