@@ -2789,7 +2789,7 @@
           ],
           "validation": "ng test verde; dashboard com preset curto busca /daily com os filtros do periodo.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-600"
         },
         {
