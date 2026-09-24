@@ -25,7 +25,8 @@ function buildChartOption(
   borderColor: string,
   labelColor: string,
 ): EChartsCoreOption {
-  const withYear = timeline.length > 1 && spansMoreThanOneYear(timeline[0].date, timeline[timeline.length - 1].date);
+  const last = timeline.at(-1);
+  const withYear = timeline.length > 1 && last !== undefined && spansMoreThanOneYear(timeline[0].date, last.date);
   const labels = timeline.map((point) => formatDay(point.date, locale, withYear));
   const cumulativeProfit = timeline.map((point) => point.cumulativeProfit);
   return buildLineChartOption(labels, cumulativeProfit, brandColor, borderColor, labelColor);

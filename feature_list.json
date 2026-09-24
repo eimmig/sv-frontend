@@ -3430,7 +3430,7 @@
       "scope": "Formatacao das datas exibidas ao passar o mouse no grafico de estatisticas, incluindo a deteccao de intervalos superiores a um ano.",
       "description": "Apontamento do usuario em 2026-09-24: ao buscar estatisticas sem informar um periodo, o grafico pode abranger mais de um ano, mas o tooltip exibe apenas dia e mes. Isso torna pontos de anos diferentes confusos. Quando o intervalo dos dados superar um ano, exibir dia, mes e ano no tooltip; manter o formato compacto atual para intervalos de ate um ano, se isso preservar a legibilidade.",
       "dependencies": [],
-      "status": "done",
+      "status": "in-progress",
       "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (risco baixo, so UI). Evidencia: shared/equity-curve-chart so usado em search-statistics; tooltip trigger 'axis' mostra a categoria do eixo, montada por formatDay (core/date-format.ts, dia + mes curto, sem ano); timeline vem ordenada por data (contrato). Decisao: formatDay ganha withYear opcional; helper puro spansMoreThanOneYear(primeiro, ultimo) (ultimo > primeiro + 1 ano calendario); equity-curve-chart passa withYear so nesse caso; monthly-profit-chart (ate 31 dias) inalterado. 2 MINOR: (1) ano aparece tambem no rotulo do eixo, nao so no tooltip - separar exigiria tooltip.formatter proprio e perderia o estilo padrao; aceito e registrado em docs/sistema-de-design.md item 6; (2) timeline com menos de 2 pontos nunca inclui ano. Testes unitarios (canvas): date-format (withYear, fronteira exatamente 1 ano = false, +1 dia = true) e equity-curve-chart.spec lendo chartOptions().xAxis.data.",
       "jira": "SV-620",
       "subtasks": [
@@ -3466,6 +3466,21 @@
           "owner": "agente",
           "status": "done",
           "jira": "SV-622"
+        },
+        {
+          "id": "feat-048.3",
+          "name": "Corrigir apontamento SonarCloud typescript:S7755 no equity-curve-chart",
+          "detail": "Gate do PR story->develop (#203) reprovou: ultimo ponto da timeline lido por indice `[length - 1]` em vez de `.at(-1)`.",
+          "checklist": [
+            "Ultimo ponto lido com `.at(-1)`, sem non-null assertion",
+            "equity-curve-chart.spec verde",
+            "CI do PR story->develop com SonarCloud zero apontamentos",
+            "Regra registrada em docs/testes.md 'CI e SonarCloud'"
+          ],
+          "validation": "Gate completo do PR story->develop verde.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-623"
         }
       ],
       "evidence": {
@@ -3493,7 +3508,8 @@
               "Ano aparece tambem no eixo (aceito no plan review: tooltip trigger 'axis' reaproveita a categoria).",
               "E2E do tooltip acrescentado (plano previa so unitario: o tooltip do ECharts e HTML, nao canvas).",
               "Apontamentos fora de escopo viraram feature: feat-051 (flake login-layout) e feat-052 (tooltip branco no tema escuro).",
-              "Vault: docs/sistema-de-design.md item 6 - regra da data com ano e tooltip verificavel em E2E."
+              "Vault: docs/sistema-de-design.md item 6 - regra da data com ano e tooltip verificavel em E2E.",
+              "Gate do PR story->develop #203 reprovou por typescript:S7755 (ultimo ponto por indice); corrigido em feat-048.3 (SV-623) com .at(-1) + guarda; regra registrada em docs/testes.md 'CI e SonarCloud'."
             ]
           }
         ]
