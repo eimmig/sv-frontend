@@ -7,7 +7,7 @@
 
 ## Objetivo atual
 
-`feat-044`, `feat-041`, `feat-040` e `feat-038` fechadas. Backlog deste app esgotado.
+`feat-044`, `feat-041`, `feat-040`, `feat-038` e `feat-045` fechadas. Backlog deste app esgotado.
 
 ## Concluído nesta sessão (2026-09-24)
 
@@ -19,6 +19,8 @@
       Story SV-603. Gráfico novo entra já dentro do frame.
 - [x] **`feat-038` fechada** — PRE/LIVE vira filtro de Buscar Estatísticas; `/bet-type-dashboard`
       redireciona para a busca. Story SV-610 (`epic-035`, backend em `stats-service feat-024`).
+- [x] **`feat-045` fechada** — rótulos de eixo legíveis (`--color-text-secondary`). Story SV-614.
+      Regra nova do usuário: apontamento fora de escopo vira feature no `feature_list.json`.
 
 ## Bloqueios / Riscos
 
