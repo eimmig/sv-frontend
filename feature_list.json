@@ -3271,7 +3271,7 @@
       "scope": "`core/chart-theme.ts` (cor dos rotulos separada da cor da grade) e os 4 graficos que usam os builders.",
       "description": "Achado durante feat-040 (QA visual por screenshot, 2026-09-24): os rotulos de eixo usam --color-border, a mesma cor da grade - 1.30:1 no tema claro e 1.22:1 no escuro, abaixo do minimo WCAG de 4.5:1. Registrado inicialmente so em docs/sistema-de-design.md como fora de escopo; usuario pediu a correcao e que todo apontamento desse tipo vire tarefa no feature_list.json.",
       "dependencies": [],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Challenge independente como self-review (independencia reduzida, troca de cor por token sem dado nem contrato). Contraste calculado pela formula WCAG 2.x: --color-border 1.30:1 (claro) / 1.22:1 (escuro); --color-text-secondary 5.52:1 / 5.45:1 (passa 4.5:1). Decisao: buildLineChartOption e buildComparisonLineChartOption ganham labelColor (axisLabel de x/y); borderColor fica so na splitLine (grade sutil do item 6 preservada); os 4 chamadores passam readCssColor('--color-text-secondary'). 1 MINOR: wrappers locais buildChartOption de equity-curve-chart e monthly-drawdown-chart tambem ganham o parametro; teste do comparison em chart-theme.spec recebe o 5o argumento - todos abaixo de 7 parametros.",
       "jira": "SV-614",
       "subtasks": [
