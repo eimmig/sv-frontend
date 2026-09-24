@@ -2755,7 +2755,7 @@
       "scope": "Componente novo `shared/chart-frame` aplicado aos 4 graficos (`monthly-profit`, grade de `monthly-drawdown`, `equity-curve`, `comparison-equity`) + textos nos 3 locales.",
       "description": "Pedido do usuario em uso real (2026-09-22, mesma sessao de feat-038/039): todo grafico gerado pelo sistema deveria ter titulo, legenda e um botao de '?' explicando o que o grafico e e representa - hoje isso varia grafico a grafico, sem padrao consistente. Feature nasceu como nota de sessao (usuario pediu so para registrar, nao implementar agora) - escopo amplo (cross-cutting, todos os graficos), Plan Reviewer deve mapear o inventario completo de componentes de grafico afetados antes de estimar subtasks. Implementacao autorizada pelo usuario em 2026-09-24 (ordem: feat-044 -> feat-041 -> feat-040 -> feat-038).",
       "dependencies": [],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Challenge independente como self-review (independencia reduzida, UI de apresentacao sem contrato de API). Inventario confirmado por leitura: 4 componentes ngx-echarts (monthly-profit-chart no dashboard, monthly-drawdown-chart x12 na grade do dashboard, equity-curve-chart em search-statistics, comparison-equity-chart em period-comparison - unico com legenda, nativa do ECharts); overview.html nao tem grafico. Decisoes: componente shared/chart-frame (figure/figcaption, h3, botao mat-icon-button help_outline com aria-expanded/aria-controls alternando explicacao inline - funciona em mobile/teclado, diferente de tooltip; legenda HTML com swatch por token CSS); cada chart envolve o proprio canvas (todo grafico ganha por construcao); drawdown: 1 frame em volta da grade (12 legendas repetidas seria ruido), mini mantem titulo do mes; legenda nativa do comparison removida (um mecanismo so). 3 MINOR incorporados: (1) data-testid atuais ficam no div[echarts] (E2E existentes localizam por eles), frame ganha testid proprio <chart>-frame; (2) legenda do comparison reusa periodComparison.periodALabel/periodBLabel e os mesmos tokens das series (--color-brand/--color-action-neutral), sem chave duplicada; (3) subtracao: LegendComponent sai do registro do echarts no comparison e grid.top volta de 32 pra 16 sem a legenda nativa.",
       "jira": "SV-603",
       "subtasks": [
@@ -2808,11 +2808,39 @@
           ],
           "validation": "E2E verde, init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-606"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechado em 2026-09-24 por feat-040.1..3 (story SV-603). Os 4 graficos do app (lucro do dashboard, grade de drawdown mensal, curva de lucro da busca, comparativo de periodos) ganharam titulo, legenda e botao '?' com explicacao inline, via componente unico shared/chart-frame.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #187 (SV-604): shared/chart-frame (figure/figcaption, h3, botao help com aria-expanded/aria-controls, legenda HTML com swatch por token CSS) + chartFrame.helpLabel nos 3 locales.",
+              "PR #188 (SV-605): frame aplicado nos 4 graficos (drawdown: 1 frame em volta da grade); legenda nativa do ECharts removida do comparison (LegendComponent desregistrado, grid.top 16); testids existentes preservados no canvas; charts.{profit,drawdown,equity,comparison} nos 3 locales.",
+              "SV-606: E2E do dashboard abrindo/fechando a ajuda do grafico de lucro."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "./init.sh (ng build + ng test com gate) verde: 315 testes; suite E2E completa verde (88 com o novo teste).",
+              "QA visual por screenshot real (dev server + Playwright) da moldura com ajuda aberta nos 2 temas, desktop e mobile: titulo, botao, texto e legenda legiveis, sem estouro no mobile. Impeccable/taste-skill indisponiveis como skill nesta sessao - QA manual contra docs/sistema-de-design.md.",
+              "Delivery Reviewer (self-conduzido): PASS - os 4 graficos cobertos, textos de ajuda conferidos contra docs/estatisticas.md, sem mudanca de dados. Test Suite Auditor (self-conduzido): comportamento do frame em unitario (toggle/aria/legenda), presenca do frame nos 4 graficos nos specs deles, fluxo real em E2E."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Codigo da feat-040.2 escrito enquanto a CI da .1 rodava, antes de a subtask ser marcada in-progress no JSON (a transicao no Jira veio depois do codigo local, antes do commit) - desvio de ordem registrado.",
+              "Observado e fora de escopo: rotulos de eixo dos graficos usam --color-border e ficam com pouco contraste (pre-existente) - registrado em docs/sistema-de-design.md.",
+              "Vault: docs/sistema-de-design.md item 6 ganhou a convencao do chart-frame."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-041",
