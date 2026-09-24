@@ -7,8 +7,7 @@
 
 ## Objetivo atual
 
-`feat-044`, `feat-041` e `feat-040` fechadas. Próxima, autorizada pelo usuário em 2026-09-24:
-`feat-038`.
+`feat-044`, `feat-041`, `feat-040` e `feat-038` fechadas. Backlog deste app esgotado.
 
 ## Concluído nesta sessão (2026-09-24)
 
@@ -18,6 +17,8 @@
       dias. Story SV-599. E2E que abre `/dashboard` precisa mockar `/statistics/daily`.
 - [x] **`feat-040` fechada** — todo gráfico dentro de `shared/chart-frame` (título, legenda, `?`).
       Story SV-603. Gráfico novo entra já dentro do frame.
+- [x] **`feat-038` fechada** — PRE/LIVE vira filtro de Buscar Estatísticas; `/bet-type-dashboard`
+      redireciona para a busca. Story SV-610 (`epic-035`, backend em `stats-service feat-024`).
 
 ## Bloqueios / Riscos
 
@@ -31,7 +32,7 @@
 ## Próxima sessão — por onde começar
 
 1. Rodar `./init.sh` (deve sair `0`).
-2. `feat-038` (`feature_list.json`).
+2. Backlog vazio — nada `not-started` neste app.
 3. Se for mexer em `services/api-gateway`/serviços Java localmente (fora de Docker): `.env` não
    carrega sozinho em `mvn spring-boot:run` — precisa `SPRING_PROFILES_ACTIVE=dev` exportado, e o
    CORS default do gateway libera só `localhost:4200`, não a porta real do `ng serve` (`4300`)

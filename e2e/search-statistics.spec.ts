@@ -99,6 +99,25 @@ test.describe('epic-012 - "Buscar Estatisticas" pre-bet decision screen', () => 
     await expect(page.getByTestId('search-statistics-chart')).toBeVisible();
   });
 
+  test('choosing a bet type narrows the search to pre-match or live bets', async ({ page }) => {
+    const betTypes: (string | null)[] = [];
+    await page.route('**/api/v1/statistics/search*', (route) => {
+      betTypes.push(new URL(route.request().url()).searchParams.get('betType'));
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(searchResultBody()) });
+    });
+
+    await page.goto('/search-statistics');
+    await page.getByTestId('search-statistics-filter-sport').click();
+    await page.getByRole('option', { name: 'Futebol' }).click();
+    await page.getByTestId('search-statistics-filter-league').click();
+    await page.getByRole('option', { name: 'Brasileirao' }).click();
+    await page.getByTestId('search-statistics-filter-bet-type').click();
+    await page.getByRole('option', { name: 'Pre-match' }).click();
+    await page.getByTestId('search-statistics-submit').click();
+
+    await expect.poll(() => betTypes.at(-1)).toBe('pre');
+  });
+
   test('shows a distinct message when the combination has zero settled bets', async ({ page }) => {
     await page.route('**/api/v1/statistics/search*', (route) =>
       route.fulfill({
