@@ -54,6 +54,9 @@ test.describe('epic-027 - "Vincular Telegram" page', () => {
     await page.route('**/api/**', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: '{}' }),
     );
+    await page.route('**/api/v1/statistics/daily*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
     await page.route('**/api/v1/statistics*', (route) =>
       route.fulfill({
         status: 200,

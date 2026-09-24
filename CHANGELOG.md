@@ -231,3 +231,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-630](https://stakevault.atlassian.net/browse/SV-630) - Tooltip dos graficos segue o tema escuro
 - [SV-631](https://stakevault.atlassian.net/browse/SV-631) - Tooltip com tokens do tema
 - [SV-632](https://stakevault.atlassian.net/browse/SV-632) - QA visual, CHANGELOG e verificacao final
+- [SV-633](https://stakevault.atlassian.net/browse/SV-633) - Flake do login-layout na suite E2E completa
+- [SV-634](https://stakevault.atlassian.net/browse/SV-634) - Teste de teclado do seletor de idioma deterministico
+- [SV-635](https://stakevault.atlassian.net/browse/SV-635) - Suite completa repetida e verificacao final
+- [SV-636](https://stakevault.atlassian.net/browse/SV-636) - Portao no E2E do overlay da Visao geral
+- [SV-637](https://stakevault.atlassian.net/browse/SV-637) - Mock de /statistics/daily nos specs com stub generico
