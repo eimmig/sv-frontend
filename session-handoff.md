@@ -7,7 +7,7 @@
 
 ## Objetivo atual
 
-`feat-046`, `feat-048`..`feat-052` e `feat-054` fechadas. Em aberto: `feat-047` (aguarda decisão do usuário: não existe dashboard de times) e `feat-053` (conexão recusada pelo dev server, 1 em 9 rodadas).
+`feat-046`..`feat-052` e `feat-054` fechadas. Em aberto: `feat-053` (conexão recusada pelo dev server, 1 em ~18 rodadas, mantida no backlog por decisão do usuário).
 
 ## Concluído nesta sessão (2026-09-24)
 
@@ -28,12 +28,10 @@
 - [x] **`feat-052` fechada** — tooltip dos gráficos no tema ativo. Story SV-630.
 - [x] **`feat-051` fechada** — suíte E2E determinística (3 causas de flake). Story SV-633.
 - [x] **`feat-054` fechada** — erro de render não congela mais o overlay. Story SV-638.
+- [x] **`feat-047` fechada** — dashboard e menu flutuante de Times (`epic-036`). Story SV-644.
 
 ## Bloqueios / Riscos
 
-- **`feat-047` (menu flutuante em Times) depende de decisão do usuário**: não existe dashboard de
-  times (`GET /api/v1/statistics` não tem `byTeam`; `app-side-nav.ts` comenta a ausência). Criar um
-  exige `stats-service` (segmento por time, aposta com 2 times) — cross-service, precisa de epic na raiz.
 - Cache de GET (`feat-049`): dado novo vindo do Telegram/outra aba só aparece após 5 min ou após
   uma mutação no próprio web.
 
@@ -47,7 +45,7 @@
 ## Próxima sessão — por onde começar
 
 1. Rodar `./init.sh` (deve sair `0`).
-2. Próxima feature `not-started` do `feature_list.json` (`feat-047` bloqueada por decisão, `feat-053`).
+2. Próxima feature `not-started` do `feature_list.json` (`feat-053`).
 3. Se for mexer em `services/api-gateway`/serviços Java localmente (fora de Docker): `.env` não
    carrega sozinho em `mvn spring-boot:run` — precisa `SPRING_PROFILES_ACTIVE=dev` exportado, e o
    CORS default do gateway libera só `localhost:4200`, não a porta real do `ng serve` (`4300`)

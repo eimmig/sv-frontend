@@ -3453,11 +3453,39 @@
           ],
           "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-646"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechado em 2026-09-24 por feat-047.1/feat-047.2 (story SV-644, epic-036 da raiz). Times ganhou o menu flutuante Cadastrar/Dashboard das outras telas e a tela /teams-dashboard (ranking por time), sobre o byTeam de stats-service feat-025.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #222 (SV-645): byTeam em StatisticsDashboard/EMPTY; 'byTeam' em CatalogSegment; catalog-dashboard trata segmento ausente como lista vazia (deploys independentes); rota /teams-dashboard; catalogDashboard.teamNameLabel (Time/Team/Equipo).",
+              "SV-646: Times como ultimo item de resources no app-side-nav (menu nav-teams-menu/-register/-dashboard); catalogLinks e o bloco do template removidos."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "E2E: menu de Times abre o ranking ordenado por ROI (Flamengo 25% antes de Vasco -10%) e Cadastrar leva a /teams.",
+              "Unit: segmento ausente mostra estado vazio (falha sem o guard); menu de Times com hrefs /teams e /teams-dashboard.",
+              "./init.sh do app (338 testes, cobertura 92,6%) e da raiz verdes; suite E2E completa 95/95.",
+              "QA visual por screenshot nos 2 temas, 1440px e 390px: menu identico ao dos outros catalogos.",
+              "Delivery Reviewer (self-conduzido): PASS. Test Suite Auditor (self-conduzido): PASS."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Nada. Nenhum apontamento novo fora de escopo.",
+              "Vault: docs/services/web.md secao 'Dashboard de times'."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-048",
