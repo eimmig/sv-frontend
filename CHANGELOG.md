@@ -222,3 +222,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-621](https://stakevault.atlassian.net/browse/SV-621) - Ano nas datas do grafico acima de 1 ano
 - [SV-622](https://stakevault.atlassian.net/browse/SV-622) - QA visual, CHANGELOG e verificacao final
 - [SV-623](https://stakevault.atlassian.net/browse/SV-623) - Corrigir apontamento SonarCloud typescript:S7755 no equity-curve-chart
+- [SV-624](https://stakevault.atlassian.net/browse/SV-624) - Icone de odd media quebrado
+- [SV-625](https://stakevault.atlassian.net/browse/SV-625) - Icone valido para odd media
+- [SV-626](https://stakevault.atlassian.net/browse/SV-626) - QA visual, CHANGELOG e verificacao final

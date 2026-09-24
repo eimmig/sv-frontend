@@ -3537,11 +3537,72 @@
       "scope": "Iconografia e renderizacao do componente de odd media no frontend; validao em tema claro/escuro, estados vazios e diferentes telas onde o item e usado.",
       "description": "Apontamento do usuario em 2026-09-24: o icone de odd media nao aparece e parece estar quebrado. Validar se o recurso foi removido, se o nome do icone/asset esta incorreto, se o CSS do tema esta ocultando o elemento ou se houve regressao no componente que renderiza a odd media. A correcao deve manter a padronizacao visual das odds e funcionar sem depender de dados externos ou fallback quebrado.",
       "dependencies": [],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
-      "evidence": ""
+      "status": "done",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (risco baixo, so UI). Causa raiz confirmada: shared/kpi-card renderiza <mat-icon> sem fontSet (fonte classica Material Icons, index.html); dashboard.html usa icon='target', ausente dos 2235 codepoints oficiais de MaterialIcons-Regular (existe so em Material Symbols) - a ligadura nao resolve. Varredura de todos os icones em fonte classica: 'target' e o unico ausente. Decisao: trocar para local_offer (mesmo icone de odd media de Buscar Estatisticas - padroniza as odds); fontSet de Symbols no kpi-card rejeitado (mudaria o traco de todos os cards). 1 MINOR: E2E depende do Google Fonts (Playwright roda so local) - espera document.fonts.ready e afirma em todos os cards do dashboard e de Buscar Estatisticas (sem fonte todos quebram: nao ha falso verde).",
+      "jira": "SV-624",
+      "subtasks": [
+        {
+          "id": "feat-050.1",
+          "name": "Icone valido para odd media",
+          "detail": "Odd media do dashboard usa o mesmo icone de Buscar Estatisticas, existente na fonte classica.",
+          "checklist": [
+            "`icon=\"local_offer\"` no card de odd media de `dashboard.html`",
+            "E2E: todo `mat-icon` de `.kpi-card` no dashboard e em Buscar Estatisticas renderiza como glifo (apos `document.fonts.ready`, `scrollWidth <= clientWidth`)",
+            "E2E falha antes do fix e passa depois"
+          ],
+          "validation": "E2E do dashboard verde.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-625"
+        },
+        {
+          "id": "feat-050.2",
+          "name": "QA visual, CHANGELOG e verificacao final",
+          "detail": "Prova visual nos 2 temas e fechamento.",
+          "checklist": [
+            "QA visual por screenshot do card nos 2 temas",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-626"
+        }
+      ],
+      "evidence": {
+        "resumo": "Fechado em 2026-09-24 por feat-050.1/feat-050.2 (story SV-624). O card de odd media do dashboard pedia o icone 'target', que nao existe na fonte classica Material Icons usada pelo kpi-card; passou a usar local_offer, o mesmo de Buscar Estatisticas.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #205 (SV-625): icon='local_offer' no card de odd media de dashboard.html. E2E novo no dashboard e assercao no golden path de Buscar Estatisticas: todo mat-icon de app-kpi-card renderiza como glifo (scrollWidth <= clientWidth apos document.fonts.ready)."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "Causa confirmada contra os 2235 codepoints oficiais de MaterialIcons-Regular (google/material-design-icons): 'target' era o unico nome ausente entre os icones do app em fonte classica.",
+              "E2E falhou antes do fix com ['target'] e passou depois.",
+              "./init.sh do app (cobertura 92,5%) e da raiz verdes; suite E2E completa 92/92.",
+              "QA visual por screenshot do card nos 2 temas.",
+              "Delivery Reviewer (self-conduzido): PASS. Test Suite Auditor (self-conduzido): PASS."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Nada. Nenhum apontamento novo fora de escopo.",
+              "Vault: docs/sistema-de-design.md 'Fonte de icone' - fora da sidebar o nome tem que existir no Material Icons classico, e como os E2E verificam."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-051",
