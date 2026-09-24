@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { forkJoin, map } from 'rxjs';
+import { forkJoin, map, of } from 'rxjs';
 
 import { loadInto, submitForm } from '../../core/api-request';
 import { Auth } from '../../core/auth';
@@ -18,9 +18,15 @@ import { Language } from '../../core/language';
 import { formatOdd } from '../../core/number-format';
 import { formatPercent } from '../../core/percent';
 import { SettingsApi } from '../../core/settings-api';
-import { EMPTY_STATISTICS_DASHBOARD, SegmentedBetMetrics, StatisticsApi, StatisticsDashboard } from '../../core/statistics-api';
+import {
+  DailyBetMetrics,
+  EMPTY_STATISTICS_DASHBOARD,
+  SegmentedBetMetrics,
+  StatisticsApi,
+  StatisticsDashboard,
+} from '../../core/statistics-api';
 import { KpiCard, KpiCardSign, kpiSign } from '../../shared/kpi-card/kpi-card';
-import { MonthlyProfitChart } from '../../shared/monthly-profit-chart/monthly-profit-chart';
+import { MonthlyProfitChart, isDailyGranularity } from '../../shared/monthly-profit-chart/monthly-profit-chart';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 import { PeriodPresetFilter, PeriodRange } from '../../shared/period-preset-filter/period-preset-filter';
@@ -39,6 +45,11 @@ const EMPTY_OPTIONS: Options = { bettingHouses: [], sports: [], leagues: [], mar
 
 interface DashboardData {
   readonly dashboard: StatisticsDashboard;
+  /** Period these numbers were loaded for - the profit chart's granularity follows it, not the
+   *  filter being edited, so labels never mix with data from another request. */
+  readonly period: PeriodRange;
+  /** Only fetched when the period is short enough for the per-day profit chart. */
+  readonly daily: DailyBetMetrics[];
   /** GET /api/v1/bankroll/balance?at=<from|to> - saldoInicial/saldoFinal do periodo filtrado,
    *  corte por settledAt (nao betDate), soma todas as casas do tenant. */
   readonly bankrollFrom: number;
@@ -52,6 +63,8 @@ interface DashboardData {
 
 const EMPTY_DASHBOARD_DATA: DashboardData = {
   dashboard: EMPTY_STATISTICS_DASHBOARD,
+  period: { from: '', to: '' },
+  daily: [],
   bankrollFrom: 0,
   bankrollTo: 0,
   bankrollNow: 0,
@@ -174,17 +187,20 @@ export class Dashboard implements OnInit {
   protected applyFilter(): void {
     const raw = this.filterForm.getRawValue();
     const period = this.period();
+    const filter = {
+      bettingHouseId: raw.bettingHouseId || undefined,
+      sportId: raw.sportId || undefined,
+      leagueId: raw.leagueId || undefined,
+      marketId: raw.marketId || undefined,
+      tipsterId: raw.tipsterId || undefined,
+      from: period.from || undefined,
+      to: period.to || undefined,
+    };
     loadInto(
       forkJoin({
-        dashboard: this.statisticsApi.get({
-          bettingHouseId: raw.bettingHouseId || undefined,
-          sportId: raw.sportId || undefined,
-          leagueId: raw.leagueId || undefined,
-          marketId: raw.marketId || undefined,
-          tipsterId: raw.tipsterId || undefined,
-          from: period.from || undefined,
-          to: period.to || undefined,
-        }),
+        dashboard: this.statisticsApi.get(filter),
+        period: of(period),
+        daily: isDailyGranularity(period.from, period.to) ? this.statisticsApi.getDaily(filter) : of([]),
         bankrollFrom: this.bankrollApi.getBalance(period.from).pipe(map((b) => b.balance)),
         bankrollTo: this.bankrollApi.getBalance(period.to).pipe(map((b) => b.balance)),
         bankrollNow: this.bankrollApi.getBalance().pipe(map((b) => b.balance)),

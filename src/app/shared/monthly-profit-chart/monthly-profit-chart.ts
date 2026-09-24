@@ -7,27 +7,64 @@ import { CanvasRenderer } from 'echarts/renderers';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 
 import { buildLineChartOption, readCssColor } from '../../core/chart-theme';
-import { formatMonth } from '../../core/date-format';
+import { formatDay, formatMonth } from '../../core/date-format';
 import { Language } from '../../core/language';
-import { MonthlyBetMetrics } from '../../core/statistics-api';
+import { DailyBetMetrics, MonthlyBetMetrics } from '../../core/statistics-api';
 import { Theme } from '../../core/theme';
+import { addDays, toDateOnly } from '../period-preset-filter/period-preset-filter';
 
 // Tree-shaken build registered inside this lazy-loaded component rather than app.config.ts, so
 // echarts' ~500kB core only ships to the dashboard route.
 echarts.use([LineChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
-function buildChartOption(
-  months: MonthlyBetMetrics[],
-  locale: string,
-  brandColor: string,
-  borderColor: string,
-): EChartsCoreOption {
-  const labels = months.map((entry) => formatMonth(entry.year, entry.month, locale));
-  const netProfit = months.map((entry) => entry.metrics.netProfit);
-  return buildLineChartOption(labels, netProfit, brandColor, borderColor);
+const MAX_DAILY_SPAN_DAYS = 31;
+
+export interface ProfitSeries {
+  readonly labels: string[];
+  readonly values: number[];
 }
 
-/** Monthly net profit trend from StatisticsDashboard.monthly. */
+function parseDateOnly(value: string): Date {
+  const [year, month, day] = value.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+/** Filtered periods of up to 31 days are plotted per day; longer or open-ended ones per month. */
+export function isDailyGranularity(from: string, to: string): boolean {
+  if (!from || !to) {
+    return false;
+  }
+  const limit = toDateOnly(addDays(parseDateOnly(from), MAX_DAILY_SPAN_DAYS - 1));
+  return to >= from && to <= limit;
+}
+
+/** /statistics/daily is sparse (only days with a settled bet) - missing days are plotted as 0. */
+export function buildProfitSeries(
+  monthly: readonly MonthlyBetMetrics[],
+  daily: readonly DailyBetMetrics[],
+  from: string,
+  to: string,
+  locale: string,
+): ProfitSeries {
+  if (!isDailyGranularity(from, to)) {
+    return {
+      labels: monthly.map((entry) => formatMonth(entry.year, entry.month, locale)),
+      values: monthly.map((entry) => entry.metrics.netProfit),
+    };
+  }
+  const byDate = new Map(daily.map((day) => [day.date, day.netProfit]));
+  const labels: string[] = [];
+  const values: number[] = [];
+  const end = parseDateOnly(to);
+  for (let cursor = parseDateOnly(from); cursor <= end; cursor = addDays(cursor, 1)) {
+    const date = toDateOnly(cursor);
+    labels.push(formatDay(date, locale));
+    values.push(byDate.get(date) ?? 0);
+  }
+  return { labels, values };
+}
+
+/** Net profit trend - per day for filtered periods of up to 31 days, per month otherwise. */
 @Component({
   imports: [NgxEchartsDirective],
   providers: [provideEchartsCore({ echarts })],
@@ -40,14 +77,13 @@ export class MonthlyProfitChart {
   private readonly language = inject(Language);
 
   readonly data = input<MonthlyBetMetrics[]>([]);
+  readonly daily = input<DailyBetMetrics[]>([]);
+  readonly from = input('');
+  readonly to = input('');
 
   protected readonly chartOptions = computed<EChartsCoreOption>(() => {
     this.theme.current();
-    return buildChartOption(
-      this.data(),
-      this.language.current(),
-      readCssColor('--color-brand'),
-      readCssColor('--color-border'),
-    );
+    const series = buildProfitSeries(this.data(), this.daily(), this.from(), this.to(), this.language.current());
+    return buildLineChartOption(series.labels, series.values, readCssColor('--color-brand'), readCssColor('--color-border'));
   });
 }
