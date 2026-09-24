@@ -234,3 +234,4 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-633](https://stakevault.atlassian.net/browse/SV-633) - Flake do login-layout na suite E2E completa
 - [SV-634](https://stakevault.atlassian.net/browse/SV-634) - Teste de teclado do seletor de idioma deterministico
 - [SV-635](https://stakevault.atlassian.net/browse/SV-635) - Suite completa repetida e verificacao final
+- [SV-636](https://stakevault.atlassian.net/browse/SV-636) - Portao no E2E do overlay da Visao geral
