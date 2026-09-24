@@ -7,7 +7,7 @@
 
 ## Objetivo atual
 
-`feat-046` e `feat-048` fechadas. Em aberto: `feat-047`, `feat-049`..`feat-052`.
+`feat-046`, `feat-048` e `feat-050` fechadas. Em aberto: `feat-047`, `feat-049`, `feat-051`, `feat-052`.
 
 ## Concluído nesta sessão (2026-09-24)
 
@@ -23,6 +23,7 @@
       Regra nova do usuário: apontamento fora de escopo vira feature no `feature_list.json`.
 - [x] **`feat-046` fechada** — valores A/B do comparativo alinhados ao cabeçalho. Story SV-617.
 - [x] **`feat-048` fechada** — ano nas datas do gráfico acima de 1 ano. Story SV-620.
+- [x] **`feat-050` fechada** — ícone de odd média válido na fonte clássica. Story SV-624.
 
 ## Bloqueios / Riscos
 
@@ -36,7 +37,7 @@
 ## Próxima sessão — por onde começar
 
 1. Rodar `./init.sh` (deve sair `0`).
-2. Próxima feature `not-started` do `feature_list.json` (`feat-047`, `feat-049`..`feat-052`).
+2. Próxima feature `not-started` do `feature_list.json` (`feat-047`, `feat-049`, `feat-051`, `feat-052`).
 3. Se for mexer em `services/api-gateway`/serviços Java localmente (fora de Docker): `.env` não
    carrega sozinho em `mvn spring-boot:run` — precisa `SPRING_PROFILES_ACTIVE=dev` exportado, e o
    CORS default do gateway libera só `localhost:4200`, não a porta real do `ng serve` (`4300`)
