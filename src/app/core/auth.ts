@@ -3,6 +3,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 
 import { environment } from '../../environments/environment';
+import { HttpCache } from './http-cache';
 
 export type Role = 'ADMIN' | 'MEMBER';
 
@@ -46,6 +47,7 @@ function storedSession(): Session | null {
 @Injectable({ providedIn: 'root' })
 export class Auth {
   private readonly http = inject(HttpClient);
+  private readonly httpCache = inject(HttpCache);
 
   readonly session = signal<Session | null>(storedSession());
   readonly isAuthenticated = computed(() => this.session() !== null);
@@ -94,6 +96,7 @@ export class Auth {
   }
 
   logout(): void {
+    this.httpCache.clear();
     this.session.set(null);
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem(STORAGE_KEY);

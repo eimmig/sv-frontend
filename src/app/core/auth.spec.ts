@@ -1,8 +1,9 @@
-import { provideHttpClient } from '@angular/common/http';
+import { HttpResponse, provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
 import { Auth } from './auth';
+import { HttpCache } from './http-cache';
 import { environment } from '../../environments/environment';
 
 describe('Auth', () => {
@@ -105,5 +106,15 @@ describe('Auth', () => {
 
     expect(auth.isAuthenticated()).toBe(false);
     expect(localStorage.getItem('stakevault.auth')).toBeNull();
+  });
+
+  it('logout() drops cached responses so the next user never sees them', () => {
+    const auth = TestBed.inject(Auth);
+    const cache = TestBed.inject(HttpCache);
+    cache.set('/api/v1/bets|pt-BR', new HttpResponse({ body: [] }), cache.generation);
+
+    auth.logout();
+
+    expect(cache.get('/api/v1/bets|pt-BR')).toBeUndefined();
   });
 });
