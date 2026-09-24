@@ -3,7 +3,13 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-24
-**Estado:** `feat-046`/`feat-048`/`feat-049`/`feat-050`/`feat-052` fechadas; `feat-047` (aguarda decisão) e `feat-051` no backlog.
+**Estado:** `feat-046`/`feat-048`..`feat-052` fechadas; `feat-047` (aguarda decisão), `feat-053` e `feat-054` no backlog.
+
+## `feat-051` fechada — suíte E2E determinística (2026-09-24)
+
+Story SV-633 (SV-634..637), PRs #214-#216. 3 causas: idioma do navegador Playwright (en-US) no teste
+de teclado do login; janela curta no E2E do overlay (portão); stub `{}` em `/statistics/daily`
+congelando o overlay. Suíte completa 3× com 94/94. Achados viraram `feat-053` e `feat-054`.
 
 ## `feat-052` fechada — tooltip dos gráficos no tema ativo (2026-09-24)
 
