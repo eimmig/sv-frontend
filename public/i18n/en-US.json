@@ -15,6 +15,9 @@
     "desc": "The Arka logo assembles while data loads.",
     "tagline": "BANKROLL MANAGEMENT"
   },
+  "chartFrame": {
+    "helpLabel": "What does this chart show?"
+  },
   "periodPresetFilter": {
     "label": "Period",
     "presetToday": "Today",

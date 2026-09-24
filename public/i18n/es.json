@@ -15,6 +15,9 @@
     "desc": "El logo de Arka se arma mientras se cargan los datos.",
     "tagline": "GESTIÓN DE BANCA"
   },
+  "chartFrame": {
+    "helpLabel": "¿Qué muestra este gráfico?"
+  },
   "periodPresetFilter": {
     "label": "Período",
     "presetToday": "Hoy",
