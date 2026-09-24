@@ -81,13 +81,16 @@ test.describe('epic-021 - "Visão geral" pós-login', () => {
         statisticsRequests.push(request.url());
       }
     });
+    let releaseFirstLoad: () => void = () => undefined;
+    const firstLoadGate = new Promise<void>((resolve) => (releaseFirstLoad = resolve));
     await page.route('**/api/v1/statistics**', async (route) => {
-      await new Promise((resolve) => setTimeout(resolve, 400));
+      await firstLoadGate;
       await route.fallback();
     });
 
     await page.goto('/overview');
     await expect(page.getByTestId('loading-overlay')).toBeVisible();
+    releaseFirstLoad();
     await expect(page.getByTestId('overview-lucro-total')).toContainText('8.00');
     await expect(page.getByTestId('loading-overlay')).toHaveCount(0);
 
