@@ -2719,7 +2719,7 @@
         "feat-026",
         "stats-service feat-024"
       ],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Challenge independente como self-review (independencia reduzida). Referencias mapeadas por leitura: app.routes.ts (CATALOG_DASHBOARD_RESOURCES), app-side-nav.ts (item nav-bet-type-dashboard), period-comparison.html (usa nav.betTypeDashboard como titulo e catalogDashboard.betTypeNameLabel), catalog-dashboard.ts (union CatalogSegment), e2e/catalog-dashboard.spec.ts (teste da tela). App sem rota wildcard - redirect explicito /bet-type-dashboard -> /search-statistics para bookmark. Filtro reusa o @for de app-searchable-select de optionalCatalogFilters (opcao 'Todos'). Decisoes: nova chave periodComparison.byBetTypeTitle (mesmo texto) no lugar de nav.betTypeDashboard, que sai; catalogDashboard.betTypeNameLabel fica. 3 MINOR: (1) depende de stats-service feat-024 em develop antes do merge da story do web; (2) union controlName ganha 'betType', testid search-statistics-filter-bet-type; (3) remover nav.betTypeDashboard tambem da fixture do app-side-nav.spec.",
       "jira": "SV-610",
       "subtasks": [
