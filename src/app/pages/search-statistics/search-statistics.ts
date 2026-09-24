@@ -81,6 +81,7 @@ export class SearchStatistics implements OnInit {
     bettingHouseId: [''],
     marketId: [''],
     tipsterId: [''],
+    betType: [''],
     from: new FormControl<Date | null>(null),
     to: new FormControl<Date | null>(null),
   });
@@ -131,9 +132,9 @@ export class SearchStatistics implements OnInit {
       .subscribe((teams) => this.teamOptions.set(teams));
   }
 
-  /** bettingHouse/market/tipster are structurally identical optional single-select filters (label + "All" option + catalog list) - one @for in the template instead of 3 near-copies. */
+  /** bettingHouse/market/tipster/betType are structurally identical optional single-select filters (label + "All" option + list) - one @for in the template instead of 4 near-copies. */
   protected optionalCatalogFilters(): {
-    readonly controlName: 'bettingHouseId' | 'marketId' | 'tipsterId';
+    readonly controlName: 'bettingHouseId' | 'marketId' | 'tipsterId' | 'betType';
     readonly labelKey: string;
     readonly testId: string;
     readonly items: { readonly id: string; readonly name: string }[];
@@ -143,6 +144,15 @@ export class SearchStatistics implements OnInit {
       { controlName: 'bettingHouseId', labelKey: 'searchStatistics.bettingHouseLabel', testId: 'search-statistics-filter-betting-house', items: options.bettingHouses },
       { controlName: 'marketId', labelKey: 'searchStatistics.marketLabel', testId: 'search-statistics-filter-market', items: options.markets },
       { controlName: 'tipsterId', labelKey: 'searchStatistics.tipsterLabel', testId: 'search-statistics-filter-tipster', items: options.tipsters },
+      {
+        controlName: 'betType',
+        labelKey: 'searchStatistics.betTypeLabel',
+        testId: 'search-statistics-filter-bet-type',
+        items: [
+          { id: 'pre', name: this.transloco.translate('searchStatistics.betTypePre') },
+          { id: 'live', name: this.transloco.translate('searchStatistics.betTypeLive') },
+        ],
+      },
     ];
   }
 
@@ -172,6 +182,7 @@ export class SearchStatistics implements OnInit {
         tipsterId: raw.tipsterId || undefined,
         from: raw.from ? toDateOnly(raw.from) : undefined,
         to: raw.to ? toDateOnly(raw.to) : undefined,
+        betType: raw.betType === 'pre' || raw.betType === 'live' ? raw.betType : undefined,
       }),
       this.result,
       this.resultError,

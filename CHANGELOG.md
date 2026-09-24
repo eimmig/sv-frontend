@@ -208,3 +208,7 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-604](https://stakevault.atlassian.net/browse/SV-604) - Componente chart-frame
 - [SV-605](https://stakevault.atlassian.net/browse/SV-605) - Aplicar o chart-frame nos 4 graficos
 - [SV-606](https://stakevault.atlassian.net/browse/SV-606) - E2E, QA visual e verificacao final
+- [SV-610](https://stakevault.atlassian.net/browse/SV-610) - Dobrar bet-type-dashboard dentro de search-statistics
+- [SV-611](https://stakevault.atlassian.net/browse/SV-611) - Filtro PRE/LIVE em Buscar Estatisticas
+- [SV-612](https://stakevault.atlassian.net/browse/SV-612) - Remover a tela bet-type-dashboard
+- [SV-613](https://stakevault.atlassian.net/browse/SV-613) - E2E, QA visual e verificacao final

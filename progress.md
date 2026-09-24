@@ -3,7 +3,13 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-24
-**Estado:** `feat-044`/`feat-041`/`feat-040` fechadas. Próxima: `feat-038` (autorizada pelo usuário em 2026-09-24).
+**Estado:** `feat-044`/`feat-041`/`feat-040`/`feat-038` fechadas — backlog deste app esgotado.
+
+## `feat-038` fechada — PRE/LIVE vira filtro da busca, `/bet-type-dashboard` sai (2026-09-24)
+
+Story SV-610 (subtasks SV-611..613), PRs #191-#193. `epic-035` da raiz, com o backend em
+`stats-service feat-024`. Rota antiga redireciona para `/search-statistics`. Detalhe em
+`docs/services/web.md`.
 
 ## `feat-040` fechada — título, legenda e ajuda em todos os gráficos (2026-09-24)
 

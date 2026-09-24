@@ -2711,24 +2711,97 @@
     {
       "id": "feat-038",
       "name": "Dobrar bet-type-dashboard dentro de search-statistics",
-      "goal": "Remover a rota /bet-type-dashboard como tela propria e expor o mesmo agrupamento PRE/LIVE (byBetType) como mais um segmento/filtro dentro da tela 'Buscar Estatisticas' (/search-statistics), em vez de uma tela dedicada so pra essa informacao.",
-      "scope": [
-        "apps/web apenas - sem mudanca de contrato entre servicos (byBetType ja retornado por GET /api/v1/statistics desde feat-026, so muda onde/como o frontend exibe)",
-        "Remover rota /bet-type-dashboard e a entrada correspondente de navegacao (app-side-nav)",
-        "search-statistics.ts/html ganha o agrupamento PRE/LIVE (ex.: mais uma tabela/segmento na tela, ou um filtro betType somado aos 7 ja existentes - decisao de layout fica para o Plan Reviewer avaliar contra o desenho atual da tela antes de codificar)",
-        "Reavaliar shared/catalog-dashboard: bet-type-dashboard era a unica instancia sem par de 'Cadastrar' (nao e catalogo gerenciavel, ver evidence de feat-026) - confirmar se o componente generico continua fazendo sentido pros outros 5 (sport/market/league/tipster/betting-house) apos a remocao desta instancia, ou se vira dead code parcial",
-        "i18n (3 locales) das chaves de bet-type-dashboard que deixarem de existir + testes unitarios/Playwright atualizados (remove specs da tela antiga, cobre o novo local)"
-      ],
-      "description": "Achado do usuario em uso real (2026-09-22, sessao de geracao de massa de dados de teste): ao navegar pela tela 'Buscar Estatisticas' (/search-statistics) e comparar com /bet-type-dashboard, o usuario notou que bet-type-dashboard existe so pra mostrar o agrupamento PRE/LIVE (byBetType) - informacao que caberia como mais um filtro/segmento dentro de search-statistics, no mesmo espirito dos outros agrupamentos (bySport/byMarket/byLeague/byTipster/byBettingHouse) que NAO tem tela propria. Feature nasceu como nota de sessao (usuario pediu so para registrar, nao implementar agora) - ver progress.md da sessao em que foi capturada para o contexto completo da conversa. Implementacao autorizada pelo usuario em 2026-09-24 (ordem: feat-044 -> feat-041 -> feat-040 -> feat-038).",
+      "goal": "PRE/LIVE deixa de ter tela propria e vira filtro da tela Buscar Estatisticas, como os outros agrupamentos.",
+      "scope": "Filtro `betType` em `/search-statistics`; remocao da rota `/bet-type-dashboard` (com redirect), do item de menu e das chaves i18n orfas.",
+      "description": "Achado do usuario em uso real (2026-09-22, sessao de geracao de massa de dados de teste): ao navegar pela tela 'Buscar Estatisticas' (/search-statistics) e comparar com /bet-type-dashboard, o usuario notou que bet-type-dashboard existe so pra mostrar o agrupamento PRE/LIVE (byBetType) - informacao que caberia como mais um filtro/segmento dentro de search-statistics, no mesmo espirito dos outros agrupamentos (bySport/byMarket/byLeague/byTipster/byBettingHouse) que NAO tem tela propria. Feature nasceu como nota de sessao (usuario pediu so para registrar, nao implementar agora) - ver progress.md da sessao em que foi capturada para o contexto completo da conversa. Implementacao autorizada pelo usuario em 2026-09-24 (ordem: feat-044 -> feat-041 -> feat-040 -> feat-038). DECISAO DO USUARIO (2026-09-24, AskUserQuestion): filtro PRE/LIVE na busca + remover /bet-type-dashboard; exige backend (epic-035 da raiz, stats-service feat-024 - betType=pre|live em /statistics/search).",
       "dependencies": [
         "feat-012",
-        "feat-026"
+        "feat-026",
+        "stats-service feat-024"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
-      "evidence": ""
+      "status": "done",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Challenge independente como self-review (independencia reduzida). Referencias mapeadas por leitura: app.routes.ts (CATALOG_DASHBOARD_RESOURCES), app-side-nav.ts (item nav-bet-type-dashboard), period-comparison.html (usa nav.betTypeDashboard como titulo e catalogDashboard.betTypeNameLabel), catalog-dashboard.ts (union CatalogSegment), e2e/catalog-dashboard.spec.ts (teste da tela). App sem rota wildcard - redirect explicito /bet-type-dashboard -> /search-statistics para bookmark. Filtro reusa o @for de app-searchable-select de optionalCatalogFilters (opcao 'Todos'). Decisoes: nova chave periodComparison.byBetTypeTitle (mesmo texto) no lugar de nav.betTypeDashboard, que sai; catalogDashboard.betTypeNameLabel fica. 3 MINOR: (1) depende de stats-service feat-024 em develop antes do merge da story do web; (2) union controlName ganha 'betType', testid search-statistics-filter-bet-type; (3) remover nav.betTypeDashboard tambem da fixture do app-side-nav.spec.",
+      "jira": "SV-610",
+      "subtasks": [
+        {
+          "id": "feat-038.1",
+          "name": "Filtro PRE/LIVE em Buscar Estatisticas",
+          "detail": "Adiciona o tipo de aposta como filtro opcional da busca.",
+          "checklist": [
+            "Controle betType no filterForm e 4o item de optionalCatalogFilters (opcao Todos)",
+            "search() envia betType so quando escolhido; StatisticsSearchFilter ganha betType?: 'pre' | 'live'",
+            "searchStatistics.betTypeLabel/betTypePre/betTypeLive nos 3 locales",
+            "search-statistics.spec cobrindo o envio"
+          ],
+          "validation": "ng test verde; a busca envia betType=pre|live quando escolhido.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-611"
+        },
+        {
+          "id": "feat-038.2",
+          "name": "Remover a tela bet-type-dashboard",
+          "detail": "A tela dedicada sai; o bookmark antigo cai na busca.",
+          "checklist": [
+            "Rota removida de CATALOG_DASHBOARD_RESOURCES e redirect /bet-type-dashboard -> /search-statistics",
+            "Item de nav removido",
+            "nav.betTypeDashboard removida (3 locales + fixture do spec); period-comparison usa periodComparison.byBetTypeTitle",
+            "'byBetType' removido do union CatalogSegment"
+          ],
+          "validation": "ng test verde; nav sem o item; URL antiga redireciona.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-612"
+        },
+        {
+          "id": "feat-038.3",
+          "name": "E2E, QA visual e verificacao final",
+          "detail": "Prova pelo navegador e fechamento da feature e do epic-035.",
+          "checklist": [
+            "E2E search-statistics: escolher PRE envia betType=pre",
+            "E2E catalog-dashboard: /bet-type-dashboard redireciona pra busca e nav sem o item",
+            "QA visual do filtro nos 2 temas, mobile e desktop",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "E2E verde, init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-613"
+        }
+      ],
+      "evidence": {
+        "resumo": "Fechado em 2026-09-24 por feat-038.1..3 (story SV-610). PRE/LIVE virou filtro de Buscar Estatisticas e a tela /bet-type-dashboard saiu (rota redireciona pra busca). Parte web do epic-035 da raiz; backend em stats-service feat-024 (ja em develop).",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #191 (SV-611): controle betType no filterForm, 4o item de optionalCatalogFilters (opcao Todos), envio so quando escolhido; StatisticsSearchFilter.betType; searchStatistics.betTypeLabel/betTypePre/betTypeLive nos 3 locales.",
+              "PR #192 (SV-612): rota e item de nav removidos, redirect /bet-type-dashboard -> /search-statistics, nav.betTypeDashboard removida (periodComparison.byBetTypeTitle no lugar), 'byBetType' fora do union CatalogSegment; E2E da tela antiga trocado por redirect + nav sem o item.",
+              "SV-613: E2E do filtro (escolher Pre-match envia betType=pre)."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "./init.sh (ng build + ng test com gate) verde: 316 testes; suite E2E completa 88/88.",
+              "QA visual por screenshot real nos 2 temas, desktop e mobile: select de tipo de aposta coerente com os outros filtros, nav sem o item removido.",
+              "Delivery Reviewer (self-conduzido): PASS - fluxo real exige stats-service feat-024 em develop (confirmado, story SV-607 merged); byBetType do bundle segue consumido por overview/period-comparison. Test Suite Auditor (self-conduzido): envio condicional em unitario (search-statistics.spec), redirect/nav e filtro em E2E pela borda do navegador; teste da tela removida substituido (DELETE do contrato obsoleto)."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Nada no comportamento. Commit de remocao marcado como breaking (feat(web)!) porque a rota deixa de renderizar pagina.",
+              "Vault: docs/services/web.md registra a remocao na secao de byBetType; contrato do backend ja atualizado em stats-service feat-024."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-039",

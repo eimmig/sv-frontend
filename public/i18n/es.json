@@ -113,6 +113,9 @@
     "bettingHouseLabel": "Casa de apuestas",
     "marketLabel": "Mercado",
     "tipsterLabel": "Tipster",
+    "betTypeLabel": "Tipo de apuesta",
+    "betTypePre": "Prepartido",
+    "betTypeLive": "En vivo",
     "fromLabel": "Desde",
     "toLabel": "Hasta",
     "filterAll": "Todas",
@@ -179,7 +182,8 @@
     "balanceToLabel": "Saldo final",
     "unitsStakedLabel": "Unidades apostadas",
     "indeterminate": "Indeterminado",
-    "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo.",
+    "byBetTypeTitle": "Por tipo de apuesta"
   },
   "overview": {
     "summaryTitle": "Visión general",
@@ -219,7 +223,6 @@
     "searchStatistics": "Buscar estadísticas",
     "periodReport": "Informe del período",
     "periodComparison": "Comparativa de períodos",
-    "betTypeDashboard": "Por tipo de apuesta",
     "telegramLink": "Vincular Telegram",
     "users": "Usuarios",
     "settings": "Configuración",
