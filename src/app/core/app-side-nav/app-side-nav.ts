@@ -90,12 +90,7 @@ export class AppSideNav {
     { id: 'markets', icon: 'storefront', labelKey: 'catalogs.markets.title', registerRoute: 'markets', dashboardRoute: 'markets-dashboard' },
     { id: 'tipsters', icon: 'groups', labelKey: 'catalogs.tipsters.title', registerRoute: 'tipsters', dashboardRoute: 'tipsters-dashboard' },
     { id: 'betting-houses', icon: 'account_balance', labelKey: 'nav.bettingHouses', registerRoute: 'betting-houses', dashboardRoute: 'betting-houses-dashboard' },
-  ];
-
-  // TEAM has no dashboard counterpart yet (unlike `resources` below) - a plain link, not a
-  // register/dashboard mat-menu.
-  protected readonly catalogLinks: ReadonlyArray<{ route: string; icon: string; labelKey: string; testid: string }> = [
-    { route: 'teams', icon: 'groups_2', labelKey: 'catalogs.teams.title', testid: 'nav-teams' },
+    { id: 'teams', icon: 'groups_2', labelKey: 'catalogs.teams.title', registerRoute: 'teams', dashboardRoute: 'teams-dashboard' },
   ];
 
   protected readonly secondaryLinks: ReadonlyArray<{ route: string; icon: string; labelKey: string; testid: string }> = [

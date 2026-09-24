@@ -68,6 +68,42 @@ test.describe('shared/catalog-dashboard (ranking per segment)', () => {
     await expect(rows.last()).toContainText('Futebol');
   });
 
+  test('the Times menu opens the team ranking sorted by ROI and still leads to the team registration', async ({
+    page,
+  }) => {
+    const metrics = (roi: number) => ({ totalStaked: 100, netProfit: roi * 100, roi, winRate: 0.5, settledCount: 2, wonCount: 1, lostCount: 1, voidCount: 0, preCount: 0, liveCount: 0, avgOdd: 2 });
+    await page.route('**/api/v1/statistics*', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          ...statisticsBundle([]),
+          byTeam: [
+            { dimensionId: 't1', dimensionName: 'Vasco', metrics: metrics(-0.1) },
+            { dimensionId: 't2', dimensionName: 'Flamengo', metrics: metrics(0.25) },
+          ],
+        }),
+      }),
+    );
+    await page.route('**/api/v1/statistics/daily*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+
+    await page.goto('/dashboard');
+    await page.getByTestId('nav-teams-menu').click();
+    await page.getByTestId('nav-teams-dashboard').click();
+
+    await expect(page).toHaveURL(/\/teams-dashboard$/);
+    const rows = page.getByTestId('catalog-dashboard-row');
+    await expect(rows).toHaveCount(2);
+    await expect(rows.first()).toContainText('Flamengo');
+    await expect(rows.last()).toContainText('Vasco');
+
+    await page.getByTestId('nav-teams-menu').click();
+    await page.getByTestId('nav-teams-register').click();
+    await expect(page).toHaveURL(/\/teams$/);
+  });
+
   test('changing the period issues a new statistics request with the new date range', async ({ page }) => {
     let lastFrom: string | null = null;
     await page.route('**/api/v1/statistics*', (route) => {
