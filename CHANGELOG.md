@@ -212,3 +212,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-611](https://stakevault.atlassian.net/browse/SV-611) - Filtro PRE/LIVE em Buscar Estatisticas
 - [SV-612](https://stakevault.atlassian.net/browse/SV-612) - Remover a tela bet-type-dashboard
 - [SV-613](https://stakevault.atlassian.net/browse/SV-613) - E2E, QA visual e verificacao final
+- [SV-614](https://stakevault.atlassian.net/browse/SV-614) - Contraste dos rotulos de eixo dos graficos
+- [SV-615](https://stakevault.atlassian.net/browse/SV-615) - Cor propria para rotulos de eixo
+- [SV-616](https://stakevault.atlassian.net/browse/SV-616) - QA visual, CHANGELOG e verificacao final

@@ -3,7 +3,13 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-24
-**Estado:** `feat-044`/`feat-041`/`feat-040`/`feat-038` fechadas — backlog deste app esgotado.
+**Estado:** `feat-044`/`feat-041`/`feat-040`/`feat-038`/`feat-045` fechadas — backlog deste app esgotado.
+
+## `feat-045` fechada — contraste dos rótulos de eixo (2026-09-24)
+
+Story SV-614 (SV-615/616), PRs #195-#197. Achado da QA de `feat-040`; usuário pediu a correção e
+que todo apontamento assim vire tarefa no `feature_list.json`. Rótulos em `--color-text-secondary`
+(5,5:1), grade segue em `--color-border`.
 
 ## `feat-038` fechada — PRE/LIVE vira filtro da busca, `/bet-type-dashboard` sai (2026-09-24)
 

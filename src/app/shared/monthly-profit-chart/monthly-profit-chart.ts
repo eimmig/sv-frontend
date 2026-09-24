@@ -86,6 +86,12 @@ export class MonthlyProfitChart {
   protected readonly chartOptions = computed<EChartsCoreOption>(() => {
     this.theme.current();
     const series = buildProfitSeries(this.data(), this.daily(), this.from(), this.to(), this.language.current());
-    return buildLineChartOption(series.labels, series.values, readCssColor('--color-brand'), readCssColor('--color-border'));
+    return buildLineChartOption(
+      series.labels,
+      series.values,
+      readCssColor('--color-brand'),
+      readCssColor('--color-border'),
+      readCssColor('--color-text-secondary'),
+    );
   });
 }

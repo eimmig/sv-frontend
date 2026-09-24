@@ -3263,6 +3263,79 @@
           }
         ]
       }
+    },
+    {
+      "id": "feat-045",
+      "name": "Contraste dos rotulos de eixo dos graficos",
+      "goal": "Rotulos de eixo legiveis nos dois temas, dentro do contraste minimo WCAG, mantendo a grade sutil.",
+      "scope": "`core/chart-theme.ts` (cor dos rotulos separada da cor da grade) e os 4 graficos que usam os builders.",
+      "description": "Achado durante feat-040 (QA visual por screenshot, 2026-09-24): os rotulos de eixo usam --color-border, a mesma cor da grade - 1.30:1 no tema claro e 1.22:1 no escuro, abaixo do minimo WCAG de 4.5:1. Registrado inicialmente so em docs/sistema-de-design.md como fora de escopo; usuario pediu a correcao e que todo apontamento desse tipo vire tarefa no feature_list.json.",
+      "dependencies": [],
+      "status": "done",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Challenge independente como self-review (independencia reduzida, troca de cor por token sem dado nem contrato). Contraste calculado pela formula WCAG 2.x: --color-border 1.30:1 (claro) / 1.22:1 (escuro); --color-text-secondary 5.52:1 / 5.45:1 (passa 4.5:1). Decisao: buildLineChartOption e buildComparisonLineChartOption ganham labelColor (axisLabel de x/y); borderColor fica so na splitLine (grade sutil do item 6 preservada); os 4 chamadores passam readCssColor('--color-text-secondary'). 1 MINOR: wrappers locais buildChartOption de equity-curve-chart e monthly-drawdown-chart tambem ganham o parametro; teste do comparison em chart-theme.spec recebe o 5o argumento - todos abaixo de 7 parametros.",
+      "jira": "SV-614",
+      "subtasks": [
+        {
+          "id": "feat-045.1",
+          "name": "Cor propria para rotulos de eixo",
+          "detail": "Separa a cor do texto dos eixos da cor da grade.",
+          "checklist": [
+            "labelColor nos 2 builders de chart-theme.ts (axisLabel x/y); splitLine continua borderColor",
+            "4 graficos passam readCssColor('--color-text-secondary')",
+            "chart-theme.spec afirma axisLabel=labelColor e splitLine=borderColor nos 2 builders"
+          ],
+          "validation": "ng test verde.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-615"
+        },
+        {
+          "id": "feat-045.2",
+          "name": "QA visual, CHANGELOG e verificacao final",
+          "detail": "Prova visual nos 2 temas e fechamento.",
+          "checklist": [
+            "QA visual por screenshot nos 2 temas",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-616"
+        }
+      ],
+      "evidence": {
+        "resumo": "Fechado em 2026-09-24 por feat-045.1/feat-045.2 (story SV-614). Rotulos de eixo dos 4 graficos passaram de --color-border (1.30:1 claro / 1.22:1 escuro) para --color-text-secondary (5.52:1 / 5.45:1, acima do WCAG 4.5:1); grade continua em --color-border.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #195 (SV-615): labelColor nos 2 builders de core/chart-theme.ts (axisLabel x/y), splitLine continua borderColor; os 4 graficos passam readCssColor('--color-text-secondary'); chart-theme.spec cobre rotulo e grade nos 2 builders (assertions diretas no it, por causa da regra typescript:S2699)."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "Contraste calculado pela formula WCAG 2.x a partir dos tokens de src/styles/_tokens.scss.",
+              "./init.sh (ng build + ng test com gate) verde: 318 testes; suite E2E completa 89/89.",
+              "QA visual por screenshot real do grafico de lucro nos 2 temas: rotulos legiveis, grade sutil preservada.",
+              "Delivery Reviewer (self-conduzido): PASS - troca de cor por token, sem dado nem contrato. Test Suite Auditor (self-conduzido): regra coberta no builder (unico ponto que decide a cor), sem teste redundante por grafico."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Nada. Nenhum apontamento novo fora de escopo encontrado.",
+              "Vault: docs/sistema-de-design.md item 6 - nota de 'fora de escopo' substituida pela regra (rotulo = text-secondary, grade = border)."
+            ]
+          }
+        ]
+      }
     }
   ]
 }

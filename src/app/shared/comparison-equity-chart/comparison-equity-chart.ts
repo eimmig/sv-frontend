@@ -46,6 +46,7 @@ export class ComparisonEquityChart {
       { name: this.transloco.translate('periodComparison.periodALabel'), color: readCssColor('--color-brand'), data: seriesA },
       { name: this.transloco.translate('periodComparison.periodBLabel'), color: readCssColor('--color-action-neutral'), data: seriesB },
       readCssColor('--color-border'),
+      readCssColor('--color-text-secondary'),
     );
   });
 }
