@@ -3739,11 +3739,41 @@
           ],
           "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-635"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechado em 2026-09-24 por feat-051.1/.3/.4/.2 (story SV-633). Suite E2E completa verde 3 vezes seguidas (94/94) depois de corrigir 3 causas de flake, nenhuma delas de produto.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #214 (SV-634): teste de teclado do login - o Playwright roda com navegador en-US, entao o app abria em ingles e o ArrowDown ia para Espanol (so passava quando a tecla se perdia antes de o mat-select ativar a opcao). Idioma pinado em pt-BR, estado inicial afirmado e espera do aria-activedescendant antes de cada tecla.",
+              "PR #215 (SV-636): E2E de feat-049 afirmava o overlay numa janela de ~150ms; primeira carga agora segura por um portao ate o overlay ser afirmado.",
+              "PR #216 (SV-637): side-nav, change-password e telegram-link abriam /dashboard com stub generico -> {}; /statistics/daily recebia {} (o glob statistics* nao casa /daily), o MonthlyProfitChart lancava a cada change detection e o overlay congelava sobre o app. Mock de /daily -> [] nos 3 specs."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "Teclado: 22/40 falhas -> 40/40. Portao: 20/20. side-nav: 5/20 falhas (0/20 no commit anterior a feat-049) -> 80/80 nos 3 specs, sem 'daily.map' no log.",
+              "Estado do overlay congelado lido via ng.getComponent: Loading.visible=false, pending=0, mas o <output> continuava no DOM.",
+              "Suite E2E completa 3x seguidas: 94/94 em todas. ./init.sh do app e da raiz verdes.",
+              "Delivery Reviewer (self-conduzido): CONCERNS -> corrigido (descricao da feat-053 atribuia ao dev server um timeout que era o overlay congelado). Test Suite Auditor (self-conduzido): PASS."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Subtasks 051.3 e 051.4 descobertas repetindo a suite completa (acrescentadas ao array e ao Jira).",
+              "O modo 1 original ('language-selector' nao encontrado) nao reapareceu em 6 rodadas completas - registrado como nao reproduzido.",
+              "Apontamentos fora de escopo viraram feature: feat-053 (ERR_CONNECTION_REFUSED do dev server, 1 em 9 rodadas) e feat-054 (erro de render congela o overlay de loading - fragilidade do produto desde feat-044).",
+              "Vault: docs/testes.md - 3 gotchas de E2E (idioma do navegador Playwright e teclado em mat-select; estado transitorio com portao; stub generico nao cobre /statistics/daily)."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-052",
@@ -3821,10 +3851,10 @@
     },
     {
       "id": "feat-053",
-      "name": "Instabilidade do dev server na suite E2E completa",
-      "goal": "Suite E2E completa sem falha de infraestrutura local (conexao recusada, timeout de clique) sob execucao paralela.",
+      "name": "Conexao recusada pelo dev server na suite E2E completa",
+      "goal": "Suite E2E completa sem falha de infraestrutura local (conexao recusada pelo ng serve) sob execucao paralela.",
       "scope": "`playwright.config.ts` (webServer, workers, modo de servir o app) e o que a suite exige do ambiente local; nenhum teste de produto.",
-      "description": "Achado durante feat-051 (2026-09-24), repetindo a suite completa 3x: uma rodada falhou com `page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4300/change-password` e outra com `locator.click: Test timeout of 30000ms exceeded` (side-nav collapsed), cada uma em teste diferente e passando isolada; as rodadas levaram 50s-1m12s contra ~30s antes. A suite roda contra `ng serve` (dev server Vite) com workers paralelos. Investigar se servir o build de producao (ex.: `ng build` + servidor estatico) ou limitar workers elimina a instabilidade, sem so aumentar timeouts.",
+      "description": "Achado durante feat-051 (2026-09-24): em 1 de 9 rodadas completas da suite, `page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4300/change-password` - o teste passa isolado e nao reapareceu depois. A suite roda contra `ng serve` (dev server Vite) com workers paralelos. (O 'click timeout' em side-nav observado na mesma investigacao tinha outra causa - overlay congelado pelo stub {} de /statistics/daily, corrigido em feat-051.4; a fragilidade do produto e feat-054.) Investigar se o dev server recusa conexao sob carga (backlog de socket, IPv4/IPv6 em localhost no Windows) e se servir o build de producao ou limitar workers elimina, sem so aumentar timeouts.",
       "dependencies": [],
       "status": "not-started",
       "plan_review": "",
