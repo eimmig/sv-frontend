@@ -7,7 +7,7 @@
 
 ## Objetivo atual
 
-`feat-046` e `feat-048`..`feat-052` fechadas. Em aberto: `feat-047` (aguarda decisão do usuário: não existe dashboard de times), `feat-053` (conexão recusada pelo dev server) e `feat-054` (erro de render congela o overlay).
+`feat-046`, `feat-048`..`feat-052` e `feat-054` fechadas. Em aberto: `feat-047` (aguarda decisão do usuário: não existe dashboard de times) e `feat-053` (conexão recusada pelo dev server, 1 em 9 rodadas).
 
 ## Concluído nesta sessão (2026-09-24)
 
@@ -27,6 +27,7 @@
 - [x] **`feat-049` fechada** — cache de GET `/api/`; voltar a tela carregada não mostra loading. Story SV-627.
 - [x] **`feat-052` fechada** — tooltip dos gráficos no tema ativo. Story SV-630.
 - [x] **`feat-051` fechada** — suíte E2E determinística (3 causas de flake). Story SV-633.
+- [x] **`feat-054` fechada** — erro de render não congela mais o overlay. Story SV-638.
 
 ## Bloqueios / Riscos
 
@@ -46,7 +47,7 @@
 ## Próxima sessão — por onde começar
 
 1. Rodar `./init.sh` (deve sair `0`).
-2. Próxima feature `not-started` do `feature_list.json` (`feat-047` bloqueada por decisão, `feat-053`, `feat-054`).
+2. Próxima feature `not-started` do `feature_list.json` (`feat-047` bloqueada por decisão, `feat-053`).
 3. Se for mexer em `services/api-gateway`/serviços Java localmente (fora de Docker): `.env` não
    carrega sozinho em `mvn spring-boot:run` — precisa `SPRING_PROFILES_ACTIVE=dev` exportado, e o
    CORS default do gateway libera só `localhost:4200`, não a porta real do `ng serve` (`4300`)

@@ -3904,11 +3904,38 @@
           ],
           "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-640"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechado em 2026-09-24 por feat-054.1/feat-054.2 (story SV-638). Um erro de render numa tela nao deixa mais o overlay de loading preso sobre o app: a decisao de mostrar o overlay passou para o template do App.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #219 (SV-639): @if (loading.visible()) movido de loading-overlay.html para app.html. O Angular atualiza o template do App, depois as views das rotas, e por ultimo os componentes filhos - com o @if no filho, um erro numa tela abortava o ciclo antes de o overlay sumir. Teste novo no App spec; teste obsoleto do overlay removido (coberto pelo App)."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "Teste do App (tela da rota lanca no mesmo ciclo em que o overlay some): falhou antes da correcao (<output> continuava no DOM) e passa depois, com .app-shell sem inert.",
+              "./init.sh do app (337 testes, cobertura 92,6%) e da raiz verdes; suite E2E completa 94/94.",
+              "QA visual do overlay nos 2 temas: identico ao anterior.",
+              "Delivery Reviewer (self-conduzido): PASS. Test Suite Auditor (self-conduzido): PASS."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Desvio de processo: a correcao foi prototipada durante a investigacao de feat-051 antes do plan review; o codigo ficou em stash ate plan_review, story e branch existirem, e so entao foi commitado.",
+              "E2E deterministico do congelamento nao reproduziu (depende de o ECharts marcar a view do grafico entre os timers do overlay); a prova e o teste unitario do App.",
+              "Vault: docs/sistema-de-design.md item 17 - por que o @if do overlay fica no App."
+            ]
+          }
+        ]
+      }
     }
   ]
 }
