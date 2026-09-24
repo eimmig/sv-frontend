@@ -203,3 +203,4 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-599](https://stakevault.atlassian.net/browse/SV-599) - monthly-profit-chart adaptar granularidade ao periodo filtrado
 - [SV-600](https://stakevault.atlassian.net/browse/SV-600) - Serie diaria/mensal no grafico e busca do dashboard
 - [SV-601](https://stakevault.atlassian.net/browse/SV-601) - E2E, CHANGELOG e verificacao final
+- [SV-602](https://stakevault.atlassian.net/browse/SV-602) - Corrigir apontamento SonarCloud typescript:S2699 no dashboard.spec
