@@ -3711,6 +3711,19 @@
           "jira": "SV-636"
         },
         {
+          "id": "feat-051.4",
+          "name": "Mock de /statistics/daily nos specs com stub generico",
+          "detail": "Descoberto ao repetir a suite: side-nav, change-password e telegram-link abrem /dashboard com o stub generico '**/api/**' -> {}; /statistics/daily recebe {} em vez de array, o MonthlyProfitChart lanca 'daily.map is not a function' a cada change detection e o overlay de loading fica congelado sobre o app (cliques interceptados). side-nav falhava 5/20 com --repeat-each=10; com o mock, 20/20.",
+          "checklist": [
+            "Mock de `/statistics/daily` retornando `[]` em `side-nav.spec.ts`, `change-password.spec.ts` e `telegram-link.spec.ts`",
+            "Os 3 specs com --repeat-each=10 sem falha"
+          ],
+          "validation": "Os 3 specs repetidos sem falha.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-637"
+        },
+        {
           "id": "feat-051.2",
           "name": "Suite completa repetida e verificacao final",
           "detail": "Confirma o modo 1 do flake e fecha a feature.",
@@ -3812,6 +3825,19 @@
       "goal": "Suite E2E completa sem falha de infraestrutura local (conexao recusada, timeout de clique) sob execucao paralela.",
       "scope": "`playwright.config.ts` (webServer, workers, modo de servir o app) e o que a suite exige do ambiente local; nenhum teste de produto.",
       "description": "Achado durante feat-051 (2026-09-24), repetindo a suite completa 3x: uma rodada falhou com `page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4300/change-password` e outra com `locator.click: Test timeout of 30000ms exceeded` (side-nav collapsed), cada uma em teste diferente e passando isolada; as rodadas levaram 50s-1m12s contra ~30s antes. A suite roda contra `ng serve` (dev server Vite) com workers paralelos. Investigar se servir o build de producao (ex.: `ng build` + servidor estatico) ou limitar workers elimina a instabilidade, sem so aumentar timeouts.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-054",
+      "name": "Erro de render nao pode congelar o overlay de loading",
+      "goal": "Um erro de renderizacao num componente nao deixa o overlay de loading preso sobre o app inteiro.",
+      "scope": "`core/loading-overlay`, `app.html` (`[inert]`) e o tratamento de erro de change detection no modo zoneless; nenhuma mudanca de dado.",
+      "description": "Achado durante feat-051 (2026-09-24): com /statistics/daily devolvendo {} (stub de teste), o MonthlyProfitChart lanca TypeError a cada change detection; depois disso Loading.visible vira false mas o <output data-testid=loading-overlay> continua no DOM (lido via ng.getComponent: visible=false, pending=0, overlayDom=true) e o .app-shell segue inert - o app fica inutilizavel. Na API real o campo e sempre array, mas qualquer erro de template em qualquer tela teria o mesmo efeito desde feat-044. Investigar por que o tick zoneless deixa de atualizar a view do overlay apos o erro e tornar o overlay/inert resilientes a isso.",
       "dependencies": [],
       "status": "not-started",
       "plan_review": "",

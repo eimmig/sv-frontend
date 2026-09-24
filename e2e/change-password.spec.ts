@@ -61,6 +61,9 @@ test.describe('feat-035 - "Change password" page', () => {
     await page.route('**/api/**', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: '{}' }),
     );
+    await page.route('**/api/v1/statistics/daily*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
     await page.route('**/api/v1/statistics*', (route) =>
       route.fulfill({
         status: 200,
