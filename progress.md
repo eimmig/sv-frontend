@@ -3,7 +3,13 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-24
-**Estado:** `feat-044` fechada. `feat-041`/`040`/`038` autorizadas pelo usuário (2026-09-24), nesta ordem.
+**Estado:** `feat-044`/`feat-041` fechadas. Próximas: `feat-040`, `feat-038` (autorizadas pelo usuário em 2026-09-24).
+
+## `feat-041` fechada — gráfico de lucro por dia em períodos curtos (2026-09-24)
+
+Story SV-599 (subtasks SV-600/601), PRs #183-#184. Regra do usuário: até 31 dias por dia, acima por
+mês. Desenho em `docs/services/web.md` ("Granularidade do gráfico de lucro"). Achado: toda suíte
+E2E que abre `/dashboard` precisa mockar `/statistics/daily` (antes falhava em silêncio no grid).
 
 ## `feat-044` fechada — overlay de carregamento substitui a splash de boot (2026-09-24)
 

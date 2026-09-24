@@ -152,6 +152,25 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
     await expect.poll(() => seenRanges.at(-1)?.from).not.toBe(initialRange.from);
   });
 
+  test('the default "Hoje" period loads the profit chart per day', async ({ page }) => {
+    const dailyRanges: { from: string | null; to: string | null }[] = [];
+    await page.route('**/api/v1/statistics/daily*', (route) => {
+      const url = new URL(route.request().url());
+      dailyRanges.push({ from: url.searchParams.get('from'), to: url.searchParams.get('to') });
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) });
+    });
+    await page.route('**/api/v1/statistics?*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(statisticsBundle()) }),
+    );
+
+    await page.goto('/dashboard');
+    await expect(page.getByTestId('dashboard-monthly-chart')).toBeVisible();
+
+    await expect
+      .poll(() => dailyRanges.some((range) => range.from !== null && range.from === range.to))
+      .toBe(true);
+  });
+
   test('does not show the unit config field for a member session', async ({ page }) => {
     await page.route('**/api/v1/statistics*', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(statisticsBundle()) }),

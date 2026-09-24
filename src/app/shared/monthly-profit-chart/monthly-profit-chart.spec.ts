@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
-import { MonthlyProfitChart } from './monthly-profit-chart';
+import { EMPTY_BET_METRICS, MonthlyBetMetrics } from '../../core/statistics-api';
+import { MonthlyProfitChart, buildProfitSeries, isDailyGranularity } from './monthly-profit-chart';
 
 class ResizeObserverStub {
   observe(): void {}
@@ -79,5 +80,43 @@ describe('MonthlyProfitChart', () => {
     ]);
 
     expect(() => fixture.detectChanges()).not.toThrow();
+  });
+});
+
+describe('profit series granularity', () => {
+  const monthly: MonthlyBetMetrics[] = [{ year: 2026, month: 1, metrics: { ...EMPTY_BET_METRICS, netProfit: 150 } }];
+
+  it('plots one point per day, filling days without bets with 0, for a 31-day period', () => {
+    const series = buildProfitSeries(
+      monthly,
+      [
+        { date: '2026-01-01', totalStaked: 100, netProfit: 40, roi: 0.4, betCount: 1 },
+        { date: '2026-01-31', totalStaked: 100, netProfit: -10, roi: -0.1, betCount: 1 },
+      ],
+      '2026-01-01',
+      '2026-01-31',
+      'pt-BR',
+    );
+
+    expect(series.values).toHaveLength(31);
+    expect(series.values[0]).toBe(40);
+    expect(series.values[1]).toBe(0);
+    expect(series.values[30]).toBe(-10);
+  });
+
+  it('crosses a month boundary day by day for a short period', () => {
+    const series = buildProfitSeries(monthly, [], '2026-02-27', '2026-03-02', 'pt-BR');
+
+    expect(series.values).toEqual([0, 0, 0, 0]);
+  });
+
+  it('falls back to one point per month for a 32-day period', () => {
+    expect(isDailyGranularity('2026-01-01', '2026-02-01')).toBe(false);
+    expect(buildProfitSeries(monthly, [], '2026-01-01', '2026-02-01', 'pt-BR').values).toEqual([150]);
+  });
+
+  it('plots per month when the period is open-ended', () => {
+    expect(isDailyGranularity('', '')).toBe(false);
+    expect(isDailyGranularity('2026-01-01', '')).toBe(false);
   });
 });

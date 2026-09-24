@@ -162,7 +162,9 @@ describe('Dashboard', () => {
     for (const request of httpMock.match((req) => req.url === SETTINGS_URL)) {
       request.flush({ unitPercent: 0.01 });
     }
-    httpMock.expectOne((req) => req.url === DAILY_STATISTICS_URL).flush([]);
+    for (const request of httpMock.match((req) => req.url === DAILY_STATISTICS_URL)) {
+      request.flush([]);
+    }
   }
 
   function createComponent() {
@@ -212,6 +214,33 @@ describe('Dashboard', () => {
     const roi = fixture.nativeElement.querySelector('[data-testid="dashboard-roi"]');
     expect(total.textContent).toContain('R$');
     expect(roi.textContent).toContain('%');
+  });
+
+  it('fetches per-day profit with the dashboard filters when the period spans up to 31 days', () => {
+    createComponent();
+    flushOptions();
+    flushDashboardData();
+
+    fixture.componentInstance['filterForm'].patchValue({ sportId: 'sports-1' });
+    fixture.componentInstance['onPeriodChange']({ from: '2020-03-01', to: '2020-03-31' });
+
+    const daily = httpMock.expectOne(
+      (req) => req.url === DAILY_STATISTICS_URL && req.params.get('from') === '2020-03-01',
+    );
+    expect(daily.request.params.get('to')).toBe('2020-03-31');
+    expect(daily.request.params.get('sportId')).toBe('sports-1');
+    flushDashboardData();
+  });
+
+  it('does not fetch per-day profit when the period spans more than 31 days', () => {
+    createComponent();
+    flushOptions();
+    flushDashboardData();
+
+    fixture.componentInstance['onPeriodChange']({ from: '2020-03-01', to: '2020-04-01' });
+
+    expect(httpMock.match((req) => req.url === DAILY_STATISTICS_URL && req.params.get('from') === '2020-03-01')).toHaveLength(0);
+    flushDashboardData();
   });
 
   it('colors net profit/ROI negative when overall metrics show a loss', () => {
@@ -290,7 +319,9 @@ describe('Dashboard', () => {
     for (const request of httpMock.match((req) => req.url === SETTINGS_URL)) {
       request.flush({ unitPercent: 0.01 });
     }
-    httpMock.expectOne((req) => req.url === DAILY_STATISTICS_URL).flush([]);
+    for (const request of httpMock.match((req) => req.url === DAILY_STATISTICS_URL)) {
+      request.flush([]);
+    }
     fixture.detectChanges();
 
     // Missing-translation fallback text for the active lang (see cardValue's comment) - not
@@ -320,6 +351,7 @@ describe('Dashboard', () => {
       bankrollRequest.flush({ at: bankrollRequest.request.params.get('at') ?? 'now', balance: 0 });
     }
     httpMock.expectOne((req) => req.url === SETTINGS_URL).flush({ unitPercent: 0.01 });
+    httpMock.expectOne((req) => req.url === DAILY_STATISTICS_URL).flush([]);
   });
 
   it('shows the RFC 7807 detail when the statistics request fails', () => {
