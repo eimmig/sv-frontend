@@ -3707,7 +3707,7 @@
           ],
           "validation": "ng test e E2E verdes.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-631"
         },
         {
