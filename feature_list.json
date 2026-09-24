@@ -3344,7 +3344,7 @@
       "scope": "Tabela e layout responsivo da tela de comparativo de periodos; nao altera os calculos nem os dados apresentados.",
       "description": "Achado visual reportado pelo usuario em 2026-09-24, com captura de tela: no comparativo de periodos, os cabecalhos 'Periodo A' e 'Periodo B' estao desalinhados horizontalmente em relacao aos valores das colunas. Ajustar o layout para que cada cabecalho fique sobre a coluna correspondente, preservando o alinhamento da coluna 'Diferenca' e dos demais rotulos.",
       "dependencies": [],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (independencia reduzida, risco baixo: CSS local). Causa raiz confirmada: .period-comparison__rows-header alinha os spans 2..4 a direita, mas .comparison-metric-row__value (shared/comparison-metric-row) nao tem text-align e fica a esquerda; delta ja a direita nos dois; mesmo grid (1.4fr 1fr 1fr 1.2fr, gap 8px). Fix: text-align:right em __value no desktop (mobile <600px ja sobrescreve para left e o cabecalho some). comparison-metric-row so e usado em period-comparison. segment-comparison-table ja alinhado (th/td left) - fora do escopo. 1 MINOR: boundingBox do span nao detecta o defeito (item de grid ocupa a celula inteira) - E2E mede a borda direita do texto via Range.getBoundingClientRect e precisa falhar antes do fix.",
       "jira": "SV-617",
       "subtasks": [
