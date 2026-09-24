@@ -3694,7 +3694,7 @@
           ],
           "validation": "40/40 isolado.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-634"
         },
         {
