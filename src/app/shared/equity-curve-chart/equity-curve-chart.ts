@@ -23,10 +23,11 @@ function buildChartOption(
   locale: string,
   brandColor: string,
   borderColor: string,
+  labelColor: string,
 ): EChartsCoreOption {
   const labels = timeline.map((point) => formatDay(point.date, locale));
   const cumulativeProfit = timeline.map((point) => point.cumulativeProfit);
-  return buildLineChartOption(labels, cumulativeProfit, brandColor, borderColor);
+  return buildLineChartOption(labels, cumulativeProfit, brandColor, borderColor, labelColor);
 }
 
 /** Equity curve (cumulative profit) - one series over StatisticsSearchResult.timeline. */
@@ -50,6 +51,7 @@ export class EquityCurveChart {
       this.language.current(),
       readCssColor('--color-brand'),
       readCssColor('--color-border'),
+      readCssColor('--color-text-secondary'),
     );
   });
 }
