@@ -1,8 +1,7 @@
 @if (loading.visible()) {
-  <div
+  <output
     class="loading-overlay"
     [class.loading-overlay--leaving]="loading.leaving()"
-    role="status"
     aria-live="polite"
     data-testid="loading-overlay"
   >
@@ -62,5 +61,5 @@
         </text>
       </g>
     </svg>
-  </div>
+  </output>
 }

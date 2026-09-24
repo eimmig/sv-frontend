@@ -33,7 +33,7 @@ test.describe('feat-044 - loading overlay', () => {
 
     const overlay = page.getByTestId('loading-overlay');
     await expect(overlay).toBeVisible();
-    await expect(overlay).toHaveAttribute('role', 'status');
+    await expect(page.getByRole('status')).toBeVisible();
 
     await expect(overlay).toHaveCount(0, { timeout: 5_000 });
     await expect(page.getByText('E-mail ou senha incorretos.')).toBeVisible();

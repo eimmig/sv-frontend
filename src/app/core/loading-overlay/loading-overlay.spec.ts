@@ -36,7 +36,7 @@ describe('LoadingOverlay', () => {
     const el = render();
 
     const overlay = el.querySelector('[data-testid="loading-overlay"]');
-    expect(overlay?.getAttribute('role')).toBe('status');
+    expect(overlay?.tagName).toBe('OUTPUT');
     expect(el.querySelector('svg')?.getAttribute('aria-label')).toBe('Carregando');
   });
 
