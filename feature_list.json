@@ -3884,7 +3884,7 @@
           ],
           "validation": "ng test verde.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-639"
         },
         {
