@@ -3359,7 +3359,7 @@
           ],
           "validation": "ng test e E2E do comparativo verdes.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-618"
         },
         {
