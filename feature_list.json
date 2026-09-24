@@ -2962,7 +2962,7 @@
           ],
           "validation": "Testes unitarios verdes cobrindo request rapido (nunca mostra), lento (mostra e respeita minimo), reentrada durante saida e /i18n ignorado.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-595"
         },
         {
