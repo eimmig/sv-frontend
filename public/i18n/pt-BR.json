@@ -182,7 +182,8 @@
     "balanceToLabel": "Saldo final",
     "unitsStakedLabel": "Unidades apostadas",
     "indeterminate": "Indeterminado",
-    "genericError": "Não foi possível completar a operação. Tente novamente."
+    "genericError": "Não foi possível completar a operação. Tente novamente.",
+    "byBetTypeTitle": "Por tipo de aposta"
   },
   "overview": {
     "summaryTitle": "Visão geral",
@@ -222,7 +223,6 @@
     "searchStatistics": "Buscar estatísticas",
     "periodReport": "Relatório do período",
     "periodComparison": "Comparativo de períodos",
-    "betTypeDashboard": "Por tipo de aposta",
     "telegramLink": "Vincular Telegram",
     "users": "Usuários",
     "settings": "Configurações",

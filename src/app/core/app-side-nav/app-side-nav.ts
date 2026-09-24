@@ -102,7 +102,6 @@ export class AppSideNav {
     { route: 'search-statistics', icon: 'query_stats', labelKey: 'nav.searchStatistics', testid: 'nav-search-statistics' },
     { route: 'period-report', icon: 'calendar_month', labelKey: 'nav.periodReport', testid: 'nav-period-report' },
     { route: 'period-comparison', icon: 'compare_arrows', labelKey: 'nav.periodComparison', testid: 'nav-period-comparison' },
-    { route: 'bet-type-dashboard', icon: 'sports_score', labelKey: 'nav.betTypeDashboard', testid: 'nav-bet-type-dashboard' },
     { route: 'telegram-link', icon: 'telegram', labelKey: 'nav.telegramLink', testid: 'nav-telegram-link' },
   ];
 
