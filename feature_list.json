@@ -2820,7 +2820,7 @@
           ],
           "validation": "Gate completo do PR story->develop verde.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-602"
         }
       ],
@@ -2846,7 +2846,8 @@
             "titulo": "O que divergiu do plano",
             "itens": [
               "Achado real durante o E2E: panel-layout.spec nao mockava /statistics/daily - antes so o grid de drawdown pedia e falhava em silencio, agora a falha derruba o forkJoin do dashboard. Mock adicionado e a consequencia documentada em docs/services/web.md.",
-              "Vault: docs/services/web.md ganhou a regra de granularidade (secao Dashboard consolidado)."
+              "Vault: docs/services/web.md ganhou a regra de granularidade (secao Dashboard consolidado).",
+              "Gate do PR story->develop (#185) reprovou no SonarCloud (typescript:S2699 - teste de >31 dias so com httpMock.expectNone). Virou subtask feat-041.3 (SV-602): assertion explicita com expect(httpMock.match(...)).toHaveLength(0)."
             ]
           }
         ]
