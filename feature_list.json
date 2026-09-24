@@ -2806,11 +2806,37 @@
           ],
           "validation": "E2E verde, init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-601"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechado em 2026-09-24 por feat-041.1/feat-041.2 (story SV-599). Grafico de lucro do dashboard plota por dia quando o periodo filtrado tem ate 31 dias, por mes acima disso ou com periodo aberto.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #183 (SV-600): isDailyGranularity/buildProfitSeries em shared/monthly-profit-chart (reusam addDays/toDateOnly, datas locais; dias sem aposta = 0); inputs daily/from/to; dashboard busca /statistics/daily no mesmo forkJoin com os 7 filtros so quando <=31 dias; DashboardData.period guarda o periodo dos dados carregados.",
+              "SV-601: E2E do preset 'Hoje' disparando /daily com from=to; panel-layout.spec passou a mockar /statistics/daily."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "./init.sh (ng build + ng test com gate) verde: 309 testes; suite E2E completa 87/87.",
+              "Unitarios: 31 dias diario com zeros, virada de mes dia a dia, 32 dias mensal, periodo aberto mensal; dashboard.spec: /daily com from/to/sportId do filtro e nenhum /daily do dashboard com 32 dias.",
+              "Delivery Reviewer (self-conduzido): PASS - RN08 respeitada (nova request por filtro); granularidade amarrada ao periodo dos dados, sem estado misto durante a request. Test Suite Auditor (self-conduzido): regra de negocio coberta em unitario (funcoes puras), integracao com HTTP em dashboard.spec, fluxo pelo navegador em E2E."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Achado real durante o E2E: panel-layout.spec nao mockava /statistics/daily - antes so o grid de drawdown pedia e falhava em silencio, agora a falha derruba o forkJoin do dashboard. Mock adicionado e a consequencia documentada em docs/services/web.md.",
+              "Vault: docs/services/web.md ganhou a regra de granularidade (secao Dashboard consolidado)."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-042",
