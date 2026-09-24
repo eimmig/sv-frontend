@@ -7,6 +7,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-09-24
+
 - Remover todos os comentários restantes do código, testes, estilos, templates e configuração (convenção de zero comentário, `docs/convencoes.md`)
 - [SV-594](https://stakevault.atlassian.net/browse/SV-594) - Mover a splash de antes do login pra depois (durante o carregamento inicial de dados)
 - [SV-595](https://stakevault.atlassian.net/browse/SV-595) - Servico Loading e interceptor HTTP
