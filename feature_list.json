@@ -2772,7 +2772,7 @@
           ],
           "validation": "ng test verde com o componente isolado.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-604"
         },
         {
