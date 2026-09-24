@@ -2770,11 +2770,38 @@
           ],
           "validation": "E2E verde, init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-613"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechado em 2026-09-24 por feat-038.1..3 (story SV-610). PRE/LIVE virou filtro de Buscar Estatisticas e a tela /bet-type-dashboard saiu (rota redireciona pra busca). Parte web do epic-035 da raiz; backend em stats-service feat-024 (ja em develop).",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #191 (SV-611): controle betType no filterForm, 4o item de optionalCatalogFilters (opcao Todos), envio so quando escolhido; StatisticsSearchFilter.betType; searchStatistics.betTypeLabel/betTypePre/betTypeLive nos 3 locales.",
+              "PR #192 (SV-612): rota e item de nav removidos, redirect /bet-type-dashboard -> /search-statistics, nav.betTypeDashboard removida (periodComparison.byBetTypeTitle no lugar), 'byBetType' fora do union CatalogSegment; E2E da tela antiga trocado por redirect + nav sem o item.",
+              "SV-613: E2E do filtro (escolher Pre-match envia betType=pre)."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "./init.sh (ng build + ng test com gate) verde: 316 testes; suite E2E completa 88/88.",
+              "QA visual por screenshot real nos 2 temas, desktop e mobile: select de tipo de aposta coerente com os outros filtros, nav sem o item removido.",
+              "Delivery Reviewer (self-conduzido): PASS - fluxo real exige stats-service feat-024 em develop (confirmado, story SV-607 merged); byBetType do bundle segue consumido por overview/period-comparison. Test Suite Auditor (self-conduzido): envio condicional em unitario (search-statistics.spec), redirect/nav e filtro em E2E pela borda do navegador; teste da tela removida substituido (DELETE do contrato obsoleto)."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Nada no comportamento. Commit de remocao marcado como breaking (feat(web)!) porque a rota deixa de renderizar pagina.",
+              "Vault: docs/services/web.md registra a remocao na secao de byBetType; contrato do backend ja atualizado em stats-service feat-024."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-039",
