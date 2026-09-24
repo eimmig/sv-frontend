@@ -2770,7 +2770,7 @@
           ],
           "validation": "E2E verde, init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-613"
         }
       ],
