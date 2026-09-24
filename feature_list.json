@@ -3537,7 +3537,7 @@
       "scope": "Iconografia e renderizacao do componente de odd media no frontend; validao em tema claro/escuro, estados vazios e diferentes telas onde o item e usado.",
       "description": "Apontamento do usuario em 2026-09-24: o icone de odd media nao aparece e parece estar quebrado. Validar se o recurso foi removido, se o nome do icone/asset esta incorreto, se o CSS do tema esta ocultando o elemento ou se houve regressao no componente que renderiza a odd media. A correcao deve manter a padronizacao visual das odds e funcionar sem depender de dados externos ou fallback quebrado.",
       "dependencies": [],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (risco baixo, so UI). Causa raiz confirmada: shared/kpi-card renderiza <mat-icon> sem fontSet (fonte classica Material Icons, index.html); dashboard.html usa icon='target', ausente dos 2235 codepoints oficiais de MaterialIcons-Regular (existe so em Material Symbols) - a ligadura nao resolve. Varredura de todos os icones em fonte classica: 'target' e o unico ausente. Decisao: trocar para local_offer (mesmo icone de odd media de Buscar Estatisticas - padroniza as odds); fontSet de Symbols no kpi-card rejeitado (mudaria o traco de todos os cards). 1 MINOR: E2E depende do Google Fonts (Playwright roda so local) - espera document.fonts.ready e afirma em todos os cards do dashboard e de Buscar Estatisticas (sem fonte todos quebram: nao ha falso verde).",
       "jira": "SV-624",
       "subtasks": [
