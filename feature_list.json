@@ -3571,11 +3571,38 @@
           ],
           "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-626"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechado em 2026-09-24 por feat-050.1/feat-050.2 (story SV-624). O card de odd media do dashboard pedia o icone 'target', que nao existe na fonte classica Material Icons usada pelo kpi-card; passou a usar local_offer, o mesmo de Buscar Estatisticas.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #205 (SV-625): icon='local_offer' no card de odd media de dashboard.html. E2E novo no dashboard e assercao no golden path de Buscar Estatisticas: todo mat-icon de app-kpi-card renderiza como glifo (scrollWidth <= clientWidth apos document.fonts.ready)."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "Causa confirmada contra os 2235 codepoints oficiais de MaterialIcons-Regular (google/material-design-icons): 'target' era o unico nome ausente entre os icones do app em fonte classica.",
+              "E2E falhou antes do fix com ['target'] e passou depois.",
+              "./init.sh do app (cobertura 92,5%) e da raiz verdes; suite E2E completa 92/92.",
+              "QA visual por screenshot do card nos 2 temas.",
+              "Delivery Reviewer (self-conduzido): PASS. Test Suite Auditor (self-conduzido): PASS."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Nada. Nenhum apontamento novo fora de escopo.",
+              "Vault: docs/sistema-de-design.md 'Fonte de icone' - fora da sidebar o nome tem que existir no Material Icons classico, e como os E2E verificam."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-051",

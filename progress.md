@@ -3,7 +3,12 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-24
-**Estado:** `feat-046`/`feat-048` fechadas; `feat-047`, `feat-049`..`feat-052` no backlog.
+**Estado:** `feat-046`/`feat-048`/`feat-050` fechadas; `feat-047`, `feat-049`, `feat-051`, `feat-052` no backlog.
+
+## `feat-050` fechada — ícone de odd média (2026-09-24)
+
+Story SV-624 (SV-625/626), PR #205. `target` só existe em Material Symbols; `kpi-card` usa a fonte
+clássica. Virou `local_offer` (igual a Buscar Estatísticas). E2E afirma que todo ícone de card é glifo.
 
 ## `feat-048` fechada — ano nas datas do gráfico de Buscar Estatísticas (2026-09-24)
 
