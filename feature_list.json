@@ -2750,7 +2750,7 @@
           ],
           "validation": "ng test verde; nav sem o item; URL antiga redireciona.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-612"
         },
         {
