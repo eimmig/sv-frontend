@@ -195,3 +195,7 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-573](https://stakevault.atlassian.net/browse/SV-573) - CI: gerar versao (semver + tag + Release + bump de package.json + corte de CHANGELOG) ao merge em main
 - [SV-574](https://stakevault.atlassian.net/browse/SV-574) - Job 'release' no ci.yml + .github/scripts/cut-changelog.py
 - [SV-575](https://stakevault.atlassian.net/browse/SV-575) - CHANGELOG e verificacao final
+- [SV-594](https://stakevault.atlassian.net/browse/SV-594) - Mover a splash de antes do login pra depois (durante o carregamento inicial de dados)
+- [SV-595](https://stakevault.atlassian.net/browse/SV-595) - Servico Loading e interceptor HTTP
+- [SV-596](https://stakevault.atlassian.net/browse/SV-596) - LoadingOverlay e remocao da Splash
+- [SV-597](https://stakevault.atlassian.net/browse/SV-597) - E2E, QA visual e verificacao final
