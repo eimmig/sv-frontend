@@ -39,6 +39,13 @@ function statisticsBundle(overrides: Record<string, unknown> = {}) {
   };
 }
 
+async function brokenKpiIcons(page: import('@playwright/test').Page): Promise<string[]> {
+  await page.evaluate(() => document.fonts.ready);
+  return page
+    .locator('app-kpi-card mat-icon')
+    .evaluateAll((icons) => icons.filter((icon) => icon.scrollWidth > icon.clientWidth).map((icon) => icon.textContent ?? ''));
+}
+
 test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
   test.beforeEach(async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -88,6 +95,17 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
     await expect(page.getByTestId('dashboard-by-sport-row')).toContainText('Futebol');
     // totalStaked=1000, bankrollNow=2000 (mocked), unitPercent=0.01 (mocked) -> 1000/(2000*0.01)=50
     await expect(page.getByTestId('dashboard-units-staked')).toContainText('50.00');
+  });
+
+  test('every KPI card icon renders as a glyph, average odd included', async ({ page }) => {
+    await page.route('**/api/v1/statistics*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(statisticsBundle()) }),
+    );
+
+    await page.goto('/dashboard');
+    await expect(page.getByTestId('dashboard-avg-odd')).toBeVisible();
+
+    expect(await brokenKpiIcons(page)).toEqual([]);
   });
 
   test('applying a filter issues a new statistics request with the chosen betting house', async ({ page }) => {

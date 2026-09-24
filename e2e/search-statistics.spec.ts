@@ -29,6 +29,13 @@ function searchResultBody(overrides: Record<string, unknown> = {}) {
   };
 }
 
+async function brokenKpiIcons(page: import('@playwright/test').Page): Promise<string[]> {
+  await page.evaluate(() => document.fonts.ready);
+  return page
+    .locator('app-kpi-card mat-icon')
+    .evaluateAll((icons) => icons.filter((icon) => icon.scrollWidth > icon.clientWidth).map((icon) => icon.textContent ?? ''));
+}
+
 test.describe('epic-012 - "Buscar Estatisticas" pre-bet decision screen', () => {
   test.beforeEach(async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -97,6 +104,7 @@ test.describe('epic-012 - "Buscar Estatisticas" pre-bet decision screen', () => 
     await expect(page.getByTestId('search-statistics-total-staked')).toContainText('R$');
     await expect(page.getByTestId('search-statistics-roi')).toContainText('%');
     await expect(page.getByTestId('search-statistics-chart')).toBeVisible();
+    expect(await brokenKpiIcons(page)).toEqual([]);
   });
 
   test('chart tooltip shows the year when the results span more than one year', async ({ page }) => {
