@@ -87,7 +87,9 @@ test.describe('feat-023.2 - login floating controls across locales and themes', 
   }
 
   test('language selector and theme toggle are reachable and operable by keyboard', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('stakevault.language', 'pt-BR'));
     await page.goto('/login');
+    await expect(page.getByTestId('login-submit')).toHaveText('Entrar');
 
     // Tab from the top of the document until the language selector receives focus - proves it
     // sits in the normal tab order, not skipped by its fixed positioning.
@@ -99,9 +101,13 @@ test.describe('feat-023.2 - login floating controls across locales and themes', 
     expect(reached).toBe(true);
 
     // Opens with the keyboard (no mouse) and an option is selectable via Enter.
+    const selector = page.getByTestId('language-selector');
+    const activeOption = async (name: string) =>
+      expect(selector).toHaveAttribute('aria-activedescendant', (await page.getByRole('option', { name }).getAttribute('id'))!);
     await page.keyboard.press('Enter');
-    await expect(page.getByRole('option', { name: 'English' })).toBeVisible();
+    await activeOption('Português');
     await page.keyboard.press('ArrowDown');
+    await activeOption('English');
     await page.keyboard.press('Enter');
     await expect(page.getByTestId('login-submit')).toHaveText('Sign in');
 
