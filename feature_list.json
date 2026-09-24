@@ -3524,7 +3524,7 @@
       "dependencies": [
         "feat-044"
       ],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: REVISE, 2 MAJOR + 1 MINOR corrigidos no plano antes de codificar. Self-review em 2 passes distintos (simulacao de execucao, adversarial) - independencia reduzida. Evidencia: loadingInterceptor mostra o overlay em toda chamada /api/ acima de 250ms; telas buscam no ngOnInit via forkJoin (stale-while-revalidate com 2 emissoes rejeitado: forkJoin so emite no complete); sem polling; login e POST, logout local. Desenho: core/http-cache.ts (TTL 5 min, geracao, clear) + httpCacheInterceptor primeiro da cadeia - GET /api/ fresco devolve copia sem chegar ao loading; so 2xx gravado; nao-GET em /api/ limpa o cache; chave = url com params + idioma; Auth.logout limpa (isolamento entre usuarios/tenants). MAJOR 1: limpar no finalize e tarde (roda depois do next do assinante) - limpar ao enviar e em tap(next HttpResponse/error). MAJOR 2: GET em voo durante mutacao gravaria resposta velha - contador de geracao, grava so se nao mudou. MINOR: corpo compartilhado por referencia - structuredClone no acerto. Riscos aceitos: aposta via Telegram so aparece apos TTL ou mutacao no web; lag de consistencia eventual logo apos mutacao pode ficar cacheado ate o TTL - documentados no vault.",
       "jira": "SV-627",
       "subtasks": [
