@@ -2735,7 +2735,7 @@
           ],
           "validation": "ng test verde; a busca envia betType=pre|live quando escolhido.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-611"
         },
         {
