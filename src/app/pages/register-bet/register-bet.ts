@@ -39,11 +39,6 @@ const EMPTY_OPTIONS: FormOptions = {
   teams: [],
 };
 
-// betDateOnly/betTimeOnly nunca compartilham valor (mat-datepicker e mat-timepicker, ver
-// docs/services/web.md "Date picker: mat-datepicker + mat-timepicker" - o merge de data/hora do
-// proprio Angular Material e assimetrico: trocar a data zera a hora pra meia-noite, mas trocar
-// a hora preserva a data) - cada um so e tocado pelo seu picker, combinados aqui so no limite
-// do submit.
 function combineDateAndTime(date: Date, time: Date): Date {
   const combined = new Date(date);
   combined.setHours(time.getHours(), time.getMinutes(), time.getSeconds(), 0);
@@ -142,7 +137,6 @@ export class RegisterBet implements OnInit {
     );
   }
 
-  /** Live preview next to stake/odd - purely derived, no new business rule (stake × odd). */
   protected potentialReturn(): number {
     const raw = this.form.getRawValue();
     return raw.stake > 0 && raw.odd > 0 ? raw.stake * raw.odd : 0;

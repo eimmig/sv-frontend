@@ -7,6 +7,7 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 
+- Remover todos os comentários restantes do código, testes, estilos, templates e configuração (convenção de zero comentário, `docs/convencoes.md`)
 - Corrigir chave do projeto no SonarCloud (`eimmig_sv-frontend`)
 - `feat-039`: corrigir curva de drawdown mensal (mês corrente truncado em "hoje", smooth/
   splitNumber ajustados) + filtro de mês/ano com `MatDatepicker`

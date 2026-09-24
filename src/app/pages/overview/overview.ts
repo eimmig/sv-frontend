@@ -37,10 +37,6 @@ const EMPTY_DATA: OverviewData = {
   unitPercent: 0,
 };
 
-/**
- * "Visão geral" pós-login - vida inteira do tenant, sem filtro de período (única tela do app
- * sem shared/period-preset-filter). Formulas em docs/STATISTICS.md "Tela 'Visão geral'".
- */
 @Component({
   imports: [KpiCard, Panel, PanelLayout, TranslocoPipe],
   selector: 'app-overview',
@@ -57,8 +53,6 @@ export class Overview implements OnInit {
   protected readonly data = signal<OverviewData>(EMPTY_DATA);
   protected readonly error = signal<string | null>(null);
 
-  /** null only when saldoAtual/unitPercent make the denominator 0 (fresh tenant) - same
-   *  defensive convention as buildLifetimeCurve/profitUnidades elsewhere in this app. */
   protected readonly lucroTotalUnidades = computed(() => {
     const curve = buildLifetimeCurve(this.data().daily, this.data().saldoAtual, this.data().unitPercent);
     return curve.at(-1)?.accumulated ?? null;
@@ -74,8 +68,6 @@ export class Overview implements OnInit {
 
   protected readonly roi = computed(() => roiMedioDiario(this.data().daily));
 
-  /** Jan-Dec of the current year - docs/STATISTICS.md "Tela 'Visão geral'". `dashboard.monthly`
-   *  is NOT pre-scoped to this year by the backend (see overview-metrics.ts buildMonthlyTable). */
   protected readonly monthlyTable = computed(() => {
     const data = this.data();
     const year = new Date().getFullYear();

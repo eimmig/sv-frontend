@@ -8,12 +8,6 @@ export interface TenantSettings {
   readonly unitPercent: number;
 }
 
-/**
- * GET/PATCH /api/v1/settings - only sends 'Authorization: Bearer' (authInterceptor).
- * GET is not role-restricted (every user needs unitPercent for "unidades apostadas");
- * PATCH is admin-only server-side (X-User-Role, 403 otherwise) - the caller gates the
- * edit form with Auth.isAdmin() for UX, the backend enforces the real restriction.
- */
 @Injectable({ providedIn: 'root' })
 export class SettingsApi {
   private readonly http = inject(HttpClient);

@@ -28,10 +28,6 @@ interface ComparedField {
   readonly sign: KpiCardSign;
 }
 
-/** Collapses the 2 near-identical roi/netProfit blocks that used to live inline in `rows` (each
- *  with its own "both sides present?" ternary chain) into 1 reusable helper - cuts the cognitive
- *  complexity SonarCloud flagged (typescript:S3776, 23 > 15 allowed) by moving the branching out
- *  of the loop body into a small, separately-testable function. */
 function compareMetric(
   valueA: number | undefined,
   valueB: number | undefined,
@@ -48,16 +44,6 @@ function compareMetric(
   };
 }
 
-/**
- * ROI/netProfit comparados por item de um segmento (esporte/liga/mercado/tipster/casa de
- * apostas/tipo de aposta) entre os 2 períodos - componente NOVO e dedicado, não uma adaptação de
- * shared/catalog-dashboard (aquele componente busca seu próprio período e 1 dataset só, é usado
- * por 5 rotas hoje - adaptar pra 2 datasets injetados arriscaria regressão desproporcional ali).
- * União dos dimensionId presentes em A OU B (não
- * interseção) - um item pode só ter tido aposta liquidada em um dos 2 períodos; o lado ausente
- * mostra "—" (indeterminado), não 0 (0 significaria "teve aposta, lucro zero", diferente de "não
- * teve aposta neste período").
- */
 @Component({
   imports: [TranslocoPipe],
   selector: 'app-segment-comparison-table',

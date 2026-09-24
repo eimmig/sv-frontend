@@ -9,7 +9,6 @@ class ResizeObserverStub {
   disconnect(): void {}
 }
 
-/** Same jsdom canvas gap as shared/monthly-profit-chart - see that spec for the full rationale. */
 function stubCanvasContext(): void {
   const noop = () => {};
   const context: Record<string, unknown> = {};

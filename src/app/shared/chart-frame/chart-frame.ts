@@ -5,13 +5,11 @@ import { TranslocoPipe } from '@jsverse/transloco';
 
 export interface ChartLegendItem {
   readonly label: string;
-  /** Design token name (e.g. `--color-brand`) - the swatch follows the active theme. */
   readonly colorToken: string;
 }
 
 let nextHelpId = 0;
 
-/** Title, legend and an inline "?" explanation around any chart. */
 @Component({
   imports: [MatButtonModule, MatIconModule, TranslocoPipe],
   selector: 'app-chart-frame',

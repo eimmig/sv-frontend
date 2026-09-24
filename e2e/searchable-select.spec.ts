@@ -118,7 +118,7 @@ test.describe('feat-031 - searchable-select (typing filters the catalog list)', 
 
     await expect(team1).toBeEnabled();
     await team1.click();
-    await expect(page.getByRole('option')).toHaveCount(2); // None + Flamengo, Lakers scoped out by sportId
+    await expect(page.getByRole('option')).toHaveCount(2);
     await page.getByRole('option', { name: 'Flamengo' }).click();
     await expect(team1).toHaveValue('Flamengo');
   });

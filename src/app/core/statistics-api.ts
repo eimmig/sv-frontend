@@ -11,7 +11,6 @@ export interface BetMetrics {
   readonly roi: number;
   readonly winRate: number;
   readonly settledCount: number;
-  /** avgOdd is null when no settled bet has an odd yet. */
   readonly wonCount: number;
   readonly lostCount: number;
   readonly voidCount: number;
@@ -20,7 +19,6 @@ export interface BetMetrics {
   readonly avgOdd: number | null;
 }
 
-/** Shared zero-value default, used by any page/signal whose data hasn't loaded yet. */
 export const EMPTY_BET_METRICS: BetMetrics = {
   totalStaked: 0,
   netProfit: 0,
@@ -54,15 +52,11 @@ export interface StatisticsDashboard {
   readonly byBettingHouse: SegmentedBetMetrics[];
   readonly byLeague: SegmentedBetMetrics[];
   readonly byTipster: SegmentedBetMetrics[];
-  /** A bet counts for each of its teams, so the rows add up to more than `overall`. */
   readonly byTeam: SegmentedBetMetrics[];
-  /** Fixed 2-item segment (dimensionId PRE/LIVE only, never a 3rd bucket) - apostas sem betType
-   *  não entram em nenhum dos 2 (docs/API-CONTRACTS.md). */
   readonly byBetType: SegmentedBetMetrics[];
   readonly monthly: MonthlyBetMetrics[];
 }
 
-/** Shared zero-value default, used before the first GET /api/v1/statistics response arrives. */
 export const EMPTY_STATISTICS_DASHBOARD: StatisticsDashboard = {
   overall: EMPTY_BET_METRICS,
   bySport: [],
@@ -85,8 +79,6 @@ export interface StatisticsFilter {
   readonly to?: string;
 }
 
-/** GET /api/v1/statistics/daily - sparse array, only days with at least 1 settled bet; the
- *  caller fills the missing days with zero. */
 export interface DailyBetMetrics {
   readonly date: string;
   readonly totalStaked: number;
@@ -95,12 +87,6 @@ export interface DailyBetMetrics {
   readonly betCount: number;
 }
 
-/**
- * GET /api/v1/statistics(/daily) - only sends 'Authorization: Bearer' (authInterceptor),
- * the gateway injects X-User-Id/X-Tenant-Id from the token. Every filter change
- * is a new request (RN08 - metrics are recalculated server-side, not filtered
- * client-side over already-loaded data).
- */
 @Injectable({ providedIn: 'root' })
 export class StatisticsApi {
   private readonly http = inject(HttpClient);
@@ -111,7 +97,6 @@ export class StatisticsApi {
     });
   }
 
-  /** Same 7 optional filters as get(). */
   getDaily(filter: StatisticsFilter): Observable<DailyBetMetrics[]> {
     return this.http.get<DailyBetMetrics[]>(`${environment.apiGatewayUrl}/api/v1/statistics/daily`, {
       params: toHttpParams(filter),

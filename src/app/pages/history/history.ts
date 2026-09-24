@@ -88,8 +88,6 @@ export class History implements OnInit {
   protected readonly language = inject(Language);
 
   protected readonly formatBrl = formatBrl;
-  // Deep link from betting-houses' "move balance" action (?bettingHouseId=<id>): opens straight
-  // into the Movimentações tab with that house pre-selected, instead of the default Apostas tab.
   protected readonly selectedTabIndex = signal(BETS_TAB);
   protected readonly options = signal<Options>(EMPTY_OPTIONS);
   protected readonly optionsError = signal<string | null>(null);
@@ -159,7 +157,6 @@ export class History implements OnInit {
     return formatDateTime(value, this.language.current());
   }
 
-  /** Tonal badge (docs/DESIGN-SYSTEM.md item 16, "Badge de resultado de aposta"). */
   protected betStatusBadge(status: Bet['status']): string {
     return `badge--${BET_STATUS_BADGE[status]}`;
   }

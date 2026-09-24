@@ -2,7 +2,6 @@ import { expect, test } from '@playwright/test';
 
 test.describe('smoke', () => {
   test.beforeEach(async ({ page }) => {
-    // Skips the loading overlay's 2.1s logo sequence (docs/sistema-de-design.md item 17).
     await page.emulateMedia({ reducedMotion: 'reduce' });
   });
 
@@ -19,8 +18,6 @@ test.describe('smoke', () => {
     const themeToggle = page.getByTestId('theme-toggle');
     const languageSelector = page.getByTestId('language-selector');
 
-    // Pins a known starting language instead of assuming the browser's default locale -
-    // Chromium defaults to en-US, which would make this test pass by accident.
     await languageSelector.click();
     await page.getByRole('option', { name: 'Português' }).click();
     await expect(themeToggle).toHaveAttribute('aria-label', /modo (claro|escuro)/i);

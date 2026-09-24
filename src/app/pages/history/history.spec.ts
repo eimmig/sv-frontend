@@ -218,10 +218,6 @@ describe('History', () => {
   });
 
   it('badges transaction type deposit as positive and withdrawal as neutral', () => {
-    // Rendering the Movimentações tab's rows here would require driving mat-tab-group's
-    // animation-gated body swap, which doesn't complete synchronously under jsdom (no real
-    // transitionend) - e2e/history.spec.ts's "switches to the transactions tab" flow (real
-    // browser) is where the badge is proven end to end instead.
     expect(fixture.componentInstance['transactionTypeBadge']('deposit')).toBe('badge--positive');
     expect(fixture.componentInstance['transactionTypeBadge']('withdrawal')).toBe('badge--neutral');
   });
@@ -338,8 +334,6 @@ describe('History', () => {
   });
 });
 
-// Separate module so the ActivatedRoute override applies before ngOnInit runs - the main
-// describe's fixture is already created (with an empty route) by the time any of its tests run.
 describe('History - deep link from betting houses', () => {
   let fixture: ComponentFixture<History>;
   let httpMock: HttpTestingController;

@@ -93,7 +93,6 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
     await expect(page.getByTestId('dashboard-total-staked')).toContainText('R$');
     await expect(page.getByTestId('dashboard-roi')).toContainText('%');
     await expect(page.getByTestId('dashboard-by-sport-row')).toContainText('Futebol');
-    // totalStaked=1000, bankrollNow=2000 (mocked), unitPercent=0.01 (mocked) -> 1000/(2000*0.01)=50
     await expect(page.getByTestId('dashboard-units-staked')).toContainText('50.00');
   });
 
@@ -144,8 +143,6 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
     await page.goto('/dashboard');
     await expect(page.getByTestId('dashboard-total-staked')).toContainText('R$');
 
-    // Chromium defaults to en-US locale in this suite (see docs/TESTING.md) - tab labels render
-    // in English unless the language selector is switched first.
     await page.getByRole('tab', { name: 'By market' }).click();
 
     await expect(page.getByTestId('dashboard-by-market-row')).toContainText('Handicap');

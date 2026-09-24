@@ -67,12 +67,6 @@ function filterParams(filter: BetFilter, page: number): HttpParams {
   return params;
 }
 
-/**
- * POST/GET /api/v1/bets - only sends 'Authorization: Bearer' (authInterceptor),
- * the gateway injects X-User-Id/X-Tenant-Id from the token. Idempotency-Key
- * is caller-supplied (see docs/API-CONTRACTS.md) - protects against a
- * duplicate submission on network retry or a double click.
- */
 @Injectable({ providedIn: 'root' })
 export class BetsApi {
   private readonly http = inject(HttpClient);
@@ -89,7 +83,6 @@ export class BetsApi {
     });
   }
 
-  /** Only pending -> won|lost|void is a valid transition (RN06) - the backend rejects anything else with 422. */
   updateStatus(id: string, status: 'won' | 'lost' | 'void'): Observable<Bet> {
     return this.http.patch<Bet>(`${environment.apiGatewayUrl}/api/v1/bets/${id}/status`, { status });
   }

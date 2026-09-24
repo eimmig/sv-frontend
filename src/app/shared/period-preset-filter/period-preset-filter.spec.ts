@@ -4,8 +4,7 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { PeriodPresetFilter, resolvePreset } from './period-preset-filter';
 
-// Fixed reference date (a Wednesday) so preset math never depends on the day the suite runs.
-const TODAY = new Date(2026, 8, 16); // 2026-09-16
+const TODAY = new Date(2026, 8, 16);
 
 describe('resolvePreset (pure date math, no real clock dependency)', () => {
   it('today resolves to the same date for from and to', () => {

@@ -45,18 +45,10 @@ const EMPTY_OPTIONS: Options = { bettingHouses: [], sports: [], leagues: [], mar
 
 interface DashboardData {
   readonly dashboard: StatisticsDashboard;
-  /** Period these numbers were loaded for - the profit chart's granularity follows it, not the
-   *  filter being edited, so labels never mix with data from another request. */
   readonly period: PeriodRange;
-  /** Only fetched when the period is short enough for the per-day profit chart. */
   readonly daily: DailyBetMetrics[];
-  /** GET /api/v1/bankroll/balance?at=<from|to> - saldoInicial/saldoFinal do periodo filtrado,
-   *  corte por settledAt (nao betDate), soma todas as casas do tenant. */
   readonly bankrollFrom: number;
   readonly bankrollTo: number;
-  /** GET /api/v1/bankroll/balance sem 'at' ("agora") - usado so pra unidadesApostadas
-   *  (totalStaked/(saldoAtual x unitPercent)), formula em docs/STATISTICS.md - deliberadamente
-   *  nao versionado, usa o saldo/unitPercent vigentes aplicados retroativamente ao periodo. */
   readonly bankrollNow: number;
   readonly unitPercent: number;
 }
@@ -107,14 +99,11 @@ export class Dashboard implements OnInit {
   protected readonly options = signal<Options>(EMPTY_OPTIONS);
   protected readonly optionsError = signal<string | null>(null);
 
-  /** Resolved by <app-period-preset-filter> - defaults to "Hoje" (its own default preset) and
-   *  applies on every change, unlike the 5 catalog selects below (batched behind "Aplicar"). */
   protected readonly period = signal<PeriodRange>({ from: '', to: '' });
 
   protected readonly dashboardData = signal<DashboardData>(EMPTY_DASHBOARD_DATA);
   protected readonly dashboardError = signal<string | null>(null);
 
-  /** null (rendered as "Indeterminado") when saldoAtual or unitPercent is 0. */
   protected readonly unidadesApostadas = computed(() => {
     const data = this.dashboardData();
     const denominator = data.bankrollNow * data.unitPercent;
@@ -129,9 +118,6 @@ export class Dashboard implements OnInit {
     tipsterId: [''],
   });
 
-  /** Admin-only (Auth.isAdmin()) - GET /api/v1/settings isn't role-restricted (every user needs
-   *  unitPercent for unidadesApostadas), only PATCH is. Value shown/edited as a percent (1 for
-   *  1%), converted to the API's decimal fraction (0.01) on submit. */
   protected readonly unitPercentForm = this.formBuilder.nonNullable.group({
     unitPercent: [1, [Validators.required, Validators.min(0.0001), Validators.max(100)]],
   });
@@ -140,8 +126,6 @@ export class Dashboard implements OnInit {
   protected readonly unitPercentSuccess = signal<string | null>(null);
 
   constructor() {
-    // Seeds the field with the loaded unitPercent, but only while the admin hasn't started
-    // editing it (pristine) - avoids clobbering an in-progress edit on every applyFilter() reload.
     effect(() => {
       const percent = this.dashboardData().unitPercent * 100;
       if (this.unitPercentForm.pristine) {
@@ -163,8 +147,6 @@ export class Dashboard implements OnInit {
       this.optionsError,
       () => this.transloco.translate('dashboard.genericError'),
     );
-    // No explicit applyFilter() call here - <app-period-preset-filter> emits its default range
-    // ("Hoje") once on construction, which drives the initial load via onPeriodChange().
   }
 
   protected formatPercent(value: number): string {

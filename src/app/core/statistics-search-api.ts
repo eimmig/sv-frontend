@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { toHttpParams } from './http-params';
 import { environment } from '../../environments/environment';
 
-/** sportId/leagueId are required by the backend (400 RFC 7807 otherwise) - see docs/API-CONTRACTS.md. */
 export interface StatisticsSearchFilter {
   readonly sportId: string;
   readonly leagueId: string;
@@ -44,10 +43,6 @@ export interface StatisticsTeam {
   readonly name: string;
 }
 
-/**
- * GET /api/v1/statistics/search and GET /api/v1/statistics/teams, distinct from the dashboard
- * bundle in statistics-api.ts - sport+league are mandatory here (see docs/API-CONTRACTS.md).
- */
 @Injectable({ providedIn: 'root' })
 export class StatisticsSearchApi {
   private readonly http = inject(HttpClient);

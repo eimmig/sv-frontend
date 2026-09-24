@@ -57,7 +57,6 @@ export class BettingHouses {
     );
   }
 
-  /** Tonal badge next to the current balance (docs/DESIGN-SYSTEM.md "Badge de resultado"). */
   protected delta(house: BettingHouse): number {
     return house.balance - house.initialBalance;
   }

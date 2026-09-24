@@ -36,9 +36,6 @@ export class ChangePassword {
   private readonly formBuilder = inject(FormBuilder);
   private readonly transloco = inject(TranslocoService);
 
-  // FormGroup.reset() alone does not clear FormGroupDirective's own `submitted` flag, which
-  // Material's default ErrorStateMatcher also checks - without resetting through the directive,
-  // the 3 password fields would show red/invalid immediately after a successful, cleared submit.
   @ViewChild(FormGroupDirective) private readonly formDirective!: FormGroupDirective;
 
   protected readonly submitting = signal(false);

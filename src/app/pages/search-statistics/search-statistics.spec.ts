@@ -13,7 +13,6 @@ class ResizeObserverStub {
   disconnect(): void {}
 }
 
-/** Same jsdom canvas gap as shared/monthly-profit-chart.spec.ts - equity-curve-chart is nested here once results render. */
 function stubCanvasContext(): void {
   const noop = () => {};
   const context: Record<string, unknown> = {};
@@ -45,9 +44,6 @@ describe('SearchStatistics', () => {
   let fixture: ComponentFixture<SearchStatistics>;
   let httpMock: HttpTestingController;
 
-  // jsdom's navigator.language is 'en-US', which Language defaults to absent
-  // a stored preference (see core/language.ts) - the fixture matches that
-  // active lang, same reasoning as dashboard.spec.ts's en-US tab-label comment.
   const langs = {
     'en-US': {
       searchStatistics: {

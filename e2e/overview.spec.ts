@@ -64,7 +64,6 @@ test.describe('epic-021 - "Visão geral" pós-login', () => {
   test('renders the 4 lifetime cards and a 12-row monthly table', async ({ page }) => {
     await page.goto('/overview');
 
-    // 100/(1000*0.01)=10, -20/10=-2 -> total 8. Browser locale defaults to en-US in this suite.
     await expect(page.getByTestId('overview-lucro-total')).toContainText('8.00');
     await expect(page.getByTestId('overview-pre-live')).toContainText('7.00');
     await expect(page.getByTestId('overview-lucro-medio-mensal')).toContainText('0.67');

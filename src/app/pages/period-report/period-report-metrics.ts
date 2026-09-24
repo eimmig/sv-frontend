@@ -4,16 +4,13 @@ import { addDays, toDateOnly } from '../../shared/period-preset-filter/period-pr
 export interface DailyTableRow {
   readonly date: string;
   readonly roiPercent: number;
-  /** null when saldoFinal or unitPercent is 0 - never divides by zero in the template. */
   readonly roiUnidades: number | null;
   readonly roiReais: number;
   readonly apostas: number;
 }
 
 export interface PeriodReportSummary {
-  /** netProfit(período) / saldoInicial - distinct from the existing roi (netProfit/totalStaked). */
   readonly roiBankroll: number | null;
-  /** Simple (unweighted) average of each day's roi - only days with at least 1 settled bet. */
   readonly roiMedioDiario: number | null;
   readonly profitUnidades: number | null;
   readonly profitReais: number;
@@ -21,8 +18,6 @@ export interface PeriodReportSummary {
   readonly stakeMedio: number | null;
   readonly diasVerdes: number;
   readonly diasVermelhos: number;
-  /** wonCount/(wonCount+lostCount) − 1/avgOdd - void excluded from the denominator, distinct
-   *  from the existing winRate (which includes void). */
   readonly evPercent: number | null;
 }
 
@@ -31,11 +26,6 @@ function parseDateOnly(value: string): Date {
   return new Date(year, month - 1, day);
 }
 
-/**
- * One row per calendar day in [from, to] - the API's /daily response is a sparse array (only
- * days with at least 1 settled bet), this fills the gaps with zero so the table has no missing
- * rows. "saldoFinal" here plays the role of docs/STATISTICS.md's generic "saldoAtual".
- */
 export function buildDailyTable(
   daily: readonly DailyBetMetrics[],
   from: string,
@@ -64,18 +54,10 @@ export function buildDailyTable(
   return rows;
 }
 
-/** Simple (unweighted) average of each settled-bet day's roi - docs/STATISTICS.md "Métricas da
- *  página 'Relatório do período'". Reused as-is (no filtro de período) by pages/overview for its
- *  ROI card (docs/STATISTICS.md "Tela 'Visão geral'"). */
 export function roiMedioDiario(daily: readonly DailyBetMetrics[]): number | null {
   return daily.length === 0 ? null : daily.reduce((sum, day) => sum + day.roi, 0) / daily.length;
 }
 
-/**
- * Summary cards for the "Relatório do período" page - formulas and reference values in
- * docs/STATISTICS.md. All ratios return null (rendered as "Indeterminado") on a zero
- * denominator instead of throwing or dividing by zero.
- */
 export function computeSummary(
   overall: BetMetrics,
   daily: readonly DailyBetMetrics[],

@@ -20,10 +20,6 @@ export interface CreateUserInput {
   readonly password: string;
 }
 
-/**
- * GET/POST /api/v1/users - only sends 'Authorization: Bearer' (authInterceptor),
- * the gateway injects X-User-Id/X-Tenant-Id from the token (see docs/API-CONTRACTS.md).
- */
 @Injectable({ providedIn: 'root' })
 export class UsersApi {
   private readonly http = inject(HttpClient);

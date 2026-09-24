@@ -103,7 +103,6 @@ test.describe('epic-031 - "Comparativo de períodos" page', () => {
     await page.getByRole('option', { name: 'Last month' }).click();
 
     await expect.poll(() => seenFroms.some((from) => from !== '2026-09-22')).toBe(true);
-    // Período B's own range is still sent alongside A's new one on the same reload.
     await expect.poll(() => seenFroms.includes('2026-09-22')).toBe(true);
   });
 

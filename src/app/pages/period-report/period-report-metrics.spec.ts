@@ -19,9 +19,6 @@ function metrics(overrides: Partial<BetMetrics> = {}): BetMetrics {
 }
 
 describe('computeSummary', () => {
-  // docs/STATISTICS.md "Métricas da página Relatório do período" - values confirmed by the user
-  // against their own reference spreadsheet printout, an oracle independent of this
-  // implementation (not re-deriving the expected value from the same formula under test).
   it('matches the reference spreadsheet: roiBankroll = 264.20 / 1195.05 = 22.11%', () => {
     const summary = computeSummary(metrics({ netProfit: 264.2 }), [], 1195.05, 5000, 0.01);
 
@@ -52,7 +49,6 @@ describe('computeSummary', () => {
 
     const summary = computeSummary(metrics(), daily, 1, 1, 0.01);
 
-    // (0.1 + -0.3) / 2 = -0.1, NOT weighted toward the higher-volume day.
     expect(summary.roiMedioDiario).toBeCloseTo(-0.1, 6);
   });
 
@@ -98,7 +94,6 @@ describe('buildDailyTable', () => {
 
     const rows = buildDailyTable(daily, '2026-01-01', '2026-01-01', 5000, 0.01);
 
-    // 50 / (5000 * 0.01) = 50 / 50 = 1
     expect(rows[0].roiUnidades).toBe(1);
   });
 

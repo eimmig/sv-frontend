@@ -15,8 +15,6 @@ import { Theme } from '../../core/theme';
 import { ChartFrame } from '../chart-frame/chart-frame';
 import { addDays, toDateOnly } from '../period-preset-filter/period-preset-filter';
 
-// Tree-shaken build registered inside this lazy-loaded component rather than app.config.ts, so
-// echarts' ~500kB core only ships to the dashboard route.
 echarts.use([LineChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
 const MAX_DAILY_SPAN_DAYS = 31;
@@ -31,7 +29,6 @@ function parseDateOnly(value: string): Date {
   return new Date(year, month - 1, day);
 }
 
-/** Filtered periods of up to 31 days are plotted per day; longer or open-ended ones per month. */
 export function isDailyGranularity(from: string, to: string): boolean {
   if (!from || !to) {
     return false;
@@ -40,7 +37,6 @@ export function isDailyGranularity(from: string, to: string): boolean {
   return to >= from && to <= limit;
 }
 
-/** /statistics/daily is sparse (only days with a settled bet) - missing days are plotted as 0. */
 export function buildProfitSeries(
   monthly: readonly MonthlyBetMetrics[],
   daily: readonly DailyBetMetrics[],
@@ -66,7 +62,6 @@ export function buildProfitSeries(
   return { labels, values };
 }
 
-/** Net profit trend - per day for filtered periods of up to 31 days, per month otherwise. */
 @Component({
   imports: [ChartFrame, NgxEchartsDirective, TranslocoPipe],
   providers: [provideEchartsCore({ echarts })],

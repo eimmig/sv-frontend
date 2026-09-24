@@ -93,15 +93,11 @@ test.describe('feat-025 - betting houses balance movement bridge', () => {
 
     await page.getByTestId('betting-houses-move-balance').click();
     await page.getByTestId('history-create-transaction-type').click();
-    // "Deposit" is the first <mat-option> in the template (history.html) - selecting by
-    // position, not by translated label, per this suite's locator convention (docs/TESTING.md).
     await page.getByRole('option').first().click();
     await page.getByTestId('history-create-transaction-amount').fill('50');
     await page.getByTestId('history-create-transaction-submit').click();
     await expect(page.getByTestId('history-create-transaction-success')).toBeVisible();
 
-    // In-app SPA navigation (sidebar link), not a full page reload - a reload would trivially
-    // show fresh data regardless of whether Angular's router actually recreates the component.
     await page.getByTestId('nav-betting-houses-menu').click();
     await page.getByTestId('nav-betting-houses-register').click();
     await expect(page).toHaveURL(/\/betting-houses$/);

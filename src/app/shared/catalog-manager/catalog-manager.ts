@@ -11,11 +11,6 @@ import { CatalogEntry, catalogApi } from '../../core/catalog-api';
 import { Panel } from '../panel/panel';
 import { PanelLayout } from '../panel-layout/panel-layout';
 
-/**
- * Reusable list+create screen for a single catalog resource (sports, leagues, markets,
- * tipsters - all structurally identical in bets-service). Instantiated once per catalog route
- * (see app.routes.ts) instead of 4 near-identical pages.
- */
 @Component({
   imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, TranslocoPipe, Panel, PanelLayout],
   selector: 'app-catalog-manager',

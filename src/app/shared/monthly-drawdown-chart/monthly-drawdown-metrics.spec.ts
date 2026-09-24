@@ -28,9 +28,9 @@ describe('buildMonthlyDrawdown', () => {
     expect(months).toHaveLength(2);
     expect(months[0].year).toBe(2026);
     expect(months[0].month).toBe(1);
-    expect(months[0].days[0]).toBeCloseTo(10); // 100 / (1000 * 0.01)
-    expect(months[0].days[1]).toBeCloseTo(5); // 10 + (-50 / 10)
-    expect(months[1].days[0]).toBeCloseTo(2); // resets to 0, then 20 / 10
+    expect(months[0].days[0]).toBeCloseTo(10);
+    expect(months[0].days[1]).toBeCloseTo(5);
+    expect(months[1].days[0]).toBeCloseTo(2);
   });
 
   it('a day without a settled bet carries the previous day accumulated value forward', () => {
@@ -39,8 +39,8 @@ describe('buildMonthlyDrawdown', () => {
     const months = buildMonthlyDrawdown(daily, '2026-01-01', '2026-01-03', 1000, 0.01);
 
     expect(months[0].days[0]).toBeCloseTo(10);
-    expect(months[0].days[1]).toBeCloseTo(10); // day 2, no bet, same as day 1
-    expect(months[0].days[2]).toBeCloseTo(10); // day 3, no bet, same as day 1
+    expect(months[0].days[1]).toBeCloseTo(10);
+    expect(months[0].days[2]).toBeCloseTo(10);
   });
 
   it('a month with no bet at all stays flat at 0', () => {

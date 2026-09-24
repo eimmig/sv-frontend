@@ -21,15 +21,11 @@ test.describe('feat-023 - login floating controls do not overlap the form', () =
     expect(themeBox).not.toBeNull();
     expect(selectorBox!.x + selectorBox!.width).toBeLessThanOrEqual(themeBox!.x);
 
-    // The page must be scrollable to the submit button - it must never be permanently hidden
-    // behind the fixed controls with no way to reach it.
     await submit.scrollIntoViewIfNeeded();
     await expect(submit).toBeInViewport();
 
     const submitBox = (await submit.boundingBox())!;
     const selectorBoxAfterScroll = (await languageSelector.boundingBox())!;
-    // After scrolling the submit button into view, the language pill (still fixed to the
-    // viewport) must not cover it.
     const overlaps =
       submitBox.y < selectorBoxAfterScroll.y + selectorBoxAfterScroll.height &&
       submitBox.y + submitBox.height > selectorBoxAfterScroll.y &&
@@ -72,8 +68,6 @@ test.describe('feat-023.2 - login floating controls across locales and themes', 
 
         const languageSelector = page.getByTestId('language-selector');
         const themeToggle = page.getByTestId('theme-toggle');
-        // data-testid="language-selector" is the <mat-select> itself - the icon is its sibling
-        // inside the pill wrapper, not a descendant of it.
         const icon = page.locator('.language-selector-host mat-icon');
 
         await expect(languageSelector).toBeInViewport();
@@ -91,8 +85,6 @@ test.describe('feat-023.2 - login floating controls across locales and themes', 
     await page.goto('/login');
     await expect(page.getByTestId('login-submit')).toHaveText('Entrar');
 
-    // Tab from the top of the document until the language selector receives focus - proves it
-    // sits in the normal tab order, not skipped by its fixed positioning.
     let reached = false;
     for (let i = 0; i < 15 && !reached; i++) {
       await page.keyboard.press('Tab');
@@ -100,7 +92,6 @@ test.describe('feat-023.2 - login floating controls across locales and themes', 
     }
     expect(reached).toBe(true);
 
-    // Opens with the keyboard (no mouse) and an option is selectable via Enter.
     const selector = page.getByTestId('language-selector');
     const activeOption = async (name: string) =>
       expect(selector).toHaveAttribute('aria-activedescendant', (await page.getByRole('option', { name }).getAttribute('id'))!);

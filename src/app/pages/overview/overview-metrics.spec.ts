@@ -41,9 +41,9 @@ describe('buildLifetimeCurve', () => {
     const curve = buildLifetimeCurve(daily, 1000, 0.01);
 
     expect(curve).toHaveLength(3);
-    expect(curve[0].accumulated).toBeCloseTo(10); // 100 / (1000 * 0.01)
-    expect(curve[1].accumulated).toBeCloseTo(5); // 10 + (-50 / 10)
-    expect(curve[2].accumulated).toBeCloseTo(7); // 5 + (20 / 10)
+    expect(curve[0].accumulated).toBeCloseTo(10);
+    expect(curve[1].accumulated).toBeCloseTo(5);
+    expect(curve[2].accumulated).toBeCloseTo(7);
   });
 
   it('returns an empty curve for a tenant with no settled bet yet', () => {
@@ -138,13 +138,12 @@ describe('buildMonthlyTable', () => {
       winRate: 0.6,
       roi: 0.1,
       profitReais: 50,
-      profitUnidades: 5, // 50 / (1000 * 0.01)
+      profitUnidades: 5,
     });
   });
 
   it('ignores a monthly entry from a different year than the requested one, even for the same month number', () => {
     const balances = buildMonthlyBalances([], 1000, 2026);
-    // Same month number (1), but year 2025 - must not leak into the 2026 table.
     const monthly: MonthlyBetMetrics[] = [{ year: 2025, month: 1, metrics: betMetrics({ settledCount: 99 }) }];
 
     const table = buildMonthlyTable(monthly, balances, 2026, 1000, 0.01);

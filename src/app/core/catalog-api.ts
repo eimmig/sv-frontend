@@ -11,14 +11,6 @@ export interface CatalogEntry {
 
 const MAX_PAGE_SIZE = 100;
 
-/**
- * sports/leagues/markets/tipsters (bets-service) are structurally identical
- * catalogs ({id,name} in, {id,name} out, same PagedResponse envelope) - a
- * parameterized factory instead of 4 near-copies of the same class. Takes
- * `http` as a parameter (rather than calling inject() itself) so it can be
- * built from ngOnInit, once `resourcePath` (a required input) is actually
- * available - signal inputs aren't guaranteed set yet in the constructor.
- */
 export function catalogApi(
   http: HttpClient,
   resourcePath: string,
@@ -45,10 +37,6 @@ export interface Team {
   readonly sportId: string;
 }
 
-/**
- * Not structurally identical to the 4 catalogs above: TEAM has a required sportId FK, so it
- * needs its own {name, sportId} create body instead of reusing catalogApi's {name}-only shape.
- */
 export function teamsApi(http: HttpClient): {
   list(): Observable<Team[]>;
   create(name: string, sportId: string): Observable<Team>;
