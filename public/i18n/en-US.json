@@ -182,7 +182,8 @@
     "balanceToLabel": "Ending balance",
     "unitsStakedLabel": "Units staked",
     "indeterminate": "Indeterminate",
-    "genericError": "Could not complete the operation. Please try again."
+    "genericError": "Could not complete the operation. Please try again.",
+    "byBetTypeTitle": "By bet type"
   },
   "overview": {
     "summaryTitle": "Overview",
@@ -222,7 +223,6 @@
     "searchStatistics": "Search statistics",
     "periodReport": "Period report",
     "periodComparison": "Period comparison",
-    "betTypeDashboard": "By bet type",
     "telegramLink": "Link Telegram",
     "users": "Users",
     "settings": "Settings",
