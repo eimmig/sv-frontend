@@ -3869,10 +3869,45 @@
       "scope": "`core/loading-overlay`, `app.html` (`[inert]`) e o tratamento de erro de change detection no modo zoneless; nenhuma mudanca de dado.",
       "description": "Achado durante feat-051 (2026-09-24): com /statistics/daily devolvendo {} (stub de teste), o MonthlyProfitChart lanca TypeError a cada change detection; depois disso Loading.visible vira false mas o <output data-testid=loading-overlay> continua no DOM (lido via ng.getComponent: visible=false, pending=0, overlayDom=true) e o .app-shell segue inert - o app fica inutilizavel. Na API real o campo e sempre array, mas qualquer erro de template em qualquer tela teria o mesmo efeito desde feat-044. Investigar por que o tick zoneless deixa de atualizar a view do overlay apos o erro e tornar o overlay/inert resilientes a isso.",
       "dependencies": [],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (so UI). Causa comprovada por teste unitario deterministico no App (rota cujo computed lanca; overlay visivel; no mesmo detectChanges a tela quebra e loading.visible vira false): o <output> do overlay continuava no DOM. Ordem de refresh do Angular: template do App (onde fica [inert]) -> views dos containers (router-outlet) -> componentes filhos (onde estava o @if do overlay); o erro da tela abortava o ciclo antes do overlay. Correcao: @if (loading.visible()) { <app-loading-overlay /> } em app.html (executa no template do App, antes das views da rota); overlay renderiza o <output> sem @if; teste 'renders nothing while no loading is visible' do overlay sai (coberto pelo App spec 'opens straight to the app, with no overlay'). 1 MINOR (processo): correcao prototipada durante a investigacao de feat-051 antes deste plan review - validada com teste que falha antes e passa depois; commit so depois de story e branch.",
+      "jira": "SV-638",
+      "subtasks": [
+        {
+          "id": "feat-054.1",
+          "name": "Overlay decidido pelo template do App",
+          "detail": "A decisao de mostrar o overlay sai do componente filho e vai para o template do App, que executa antes das telas da rota.",
+          "checklist": [
+            "`@if (loading.visible())` em `app.html`; `loading-overlay.html` sem `@if`",
+            "Teste no `app.spec.ts`: tela da rota lanca no mesmo ciclo em que o overlay some -> overlay removido e `.app-shell` sem `inert`",
+            "Teste falha antes da correcao e passa depois"
+          ],
+          "validation": "ng test verde.",
+          "owner": "agente",
+          "status": "in-progress",
+          "jira": "SV-639"
+        },
+        {
+          "id": "feat-054.2",
+          "name": "E2E, QA visual e verificacao final",
+          "detail": "Prova no app real e fechamento.",
+          "checklist": [
+            "Tentar E2E que provoque o erro no ciclo em que o overlay some; se nao reproduzir de forma deterministica, registrar que a prova e o teste unitario",
+            "QA visual do overlay nos 2 temas",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-640"
+        }
+      ],
       "evidence": ""
     }
   ]
