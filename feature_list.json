@@ -3430,10 +3430,44 @@
       "scope": "Formatacao das datas exibidas ao passar o mouse no grafico de estatisticas, incluindo a deteccao de intervalos superiores a um ano.",
       "description": "Apontamento do usuario em 2026-09-24: ao buscar estatisticas sem informar um periodo, o grafico pode abranger mais de um ano, mas o tooltip exibe apenas dia e mes. Isso torna pontos de anos diferentes confusos. Quando o intervalo dos dados superar um ano, exibir dia, mes e ano no tooltip; manter o formato compacto atual para intervalos de ate um ano, se isso preservar a legibilidade.",
       "dependencies": [],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (risco baixo, so UI). Evidencia: shared/equity-curve-chart so usado em search-statistics; tooltip trigger 'axis' mostra a categoria do eixo, montada por formatDay (core/date-format.ts, dia + mes curto, sem ano); timeline vem ordenada por data (contrato). Decisao: formatDay ganha withYear opcional; helper puro spansMoreThanOneYear(primeiro, ultimo) (ultimo > primeiro + 1 ano calendario); equity-curve-chart passa withYear so nesse caso; monthly-profit-chart (ate 31 dias) inalterado. 2 MINOR: (1) ano aparece tambem no rotulo do eixo, nao so no tooltip - separar exigiria tooltip.formatter proprio e perderia o estilo padrao; aceito e registrado em docs/sistema-de-design.md item 6; (2) timeline com menos de 2 pontos nunca inclui ano. Testes unitarios (canvas): date-format (withYear, fronteira exatamente 1 ano = false, +1 dia = true) e equity-curve-chart.spec lendo chartOptions().xAxis.data.",
+      "jira": "SV-620",
+      "subtasks": [
+        {
+          "id": "feat-048.1",
+          "name": "Ano nas datas do grafico acima de 1 ano",
+          "detail": "Datas do grafico de Buscar Estatisticas ficam inequivocas quando os dados cobrem mais de um ano.",
+          "checklist": [
+            "`formatDay(value, locale, withYear)` e `spansMoreThanOneYear(first, last)` em `core/date-format.ts`",
+            "`equity-curve-chart` inclui o ano so quando a timeline passa de 1 ano; menos de 2 pontos nunca inclui",
+            "Testes: fronteira de 1 ano em `date-format.spec.ts`; `xAxis.data` com e sem ano em `equity-curve-chart.spec.ts`"
+          ],
+          "validation": "ng test verde.",
+          "owner": "agente",
+          "status": "in-progress",
+          "jira": "SV-621"
+        },
+        {
+          "id": "feat-048.2",
+          "name": "QA visual, CHANGELOG e verificacao final",
+          "detail": "Prova visual do tooltip nos 2 temas e fechamento.",
+          "checklist": [
+            "QA visual por screenshot do tooltip nos 2 temas (timeline de mais de 1 ano)",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-622"
+        }
+      ],
       "evidence": ""
     },
     {
