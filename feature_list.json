@@ -3720,7 +3720,7 @@
           ],
           "validation": "Os 3 specs repetidos sem falha.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-637"
         },
         {
