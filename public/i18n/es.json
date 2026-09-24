@@ -18,6 +18,27 @@
   "chartFrame": {
     "helpLabel": "¿Qué muestra este gráfico?"
   },
+  "charts": {
+    "profit": {
+      "title": "Ganancia neta en el período",
+      "help": "Ganancia o pérdida de las apuestas liquidadas, en reales. En períodos de hasta 31 días cada punto es un día (los días sin apuestas aparecen como cero); en períodos más largos cada punto es un mes.",
+      "legend": "Ganancia neta (R$)"
+    },
+    "drawdown": {
+      "title": "Drawdown mensual",
+      "help": "Un gráfico por mes con la ganancia o pérdida acumulada día a día, en unidades (ganancia dividida por saldo actual × porcentaje de la unidad). La curva vuelve a cero el día 1 de cada mes y repite el valor anterior en los días sin apuestas.",
+      "legend": "Ganancia acumulada (unidades)"
+    },
+    "equity": {
+      "title": "Curva de ganancia acumulada",
+      "help": "Ganancia sumada día tras día, en reales, de las apuestas que coinciden con la combinación buscada. Muestra cómo evolucionó el resultado de esa combinación en el tiempo.",
+      "legend": "Ganancia acumulada (R$)"
+    },
+    "comparison": {
+      "title": "Evolución comparada de los períodos",
+      "help": "Ganancia acumulada en unidades de cada período, alineada por día del período (día 1, día 2...) para comparar el ritmo de ambos aunque las fechas sean distintas."
+    }
+  },
   "periodPresetFilter": {
     "label": "Período",
     "presetToday": "Hoy",

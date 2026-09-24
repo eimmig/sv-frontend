@@ -1,1 +1,8 @@
-<div echarts [options]="chartOptions()" class="monthly-profit-chart" data-testid="dashboard-monthly-chart"></div>
+<app-chart-frame
+  [title]="'charts.profit.title' | transloco"
+  [help]="'charts.profit.help' | transloco"
+  [legend]="[{ label: 'charts.profit.legend' | transloco, colorToken: '--color-brand' }]"
+  testId="dashboard-profit-chart-frame"
+>
+  <div echarts [options]="chartOptions()" class="monthly-profit-chart" data-testid="dashboard-monthly-chart"></div>
+</app-chart-frame>

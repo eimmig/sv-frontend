@@ -121,6 +121,8 @@ describe('MonthlyDrawdownGrid', () => {
 
     const charts = fixture.nativeElement.querySelectorAll('[data-testid="monthly-drawdown-chart-title"]');
     expect(charts).toHaveLength(3);
+    const frame = fixture.nativeElement.querySelector('[data-testid="monthly-drawdown-chart-frame"]');
+    expect(frame.querySelectorAll('[data-testid="monthly-drawdown-chart-frame-legend"] li')).toHaveLength(1);
   });
 
   it('changing the range issues a new request with the recalculated from/to only after applyFilter()', () => {

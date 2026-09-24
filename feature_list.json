@@ -2789,7 +2789,7 @@
           ],
           "validation": "ng test verde; os 4 graficos mostram titulo, legenda e ajuda.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-605"
         },
         {

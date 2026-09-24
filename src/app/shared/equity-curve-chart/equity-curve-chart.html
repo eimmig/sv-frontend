@@ -1,1 +1,8 @@
-<div echarts [options]="chartOptions()" class="equity-curve-chart" data-testid="search-statistics-chart"></div>
+<app-chart-frame
+  [title]="'charts.equity.title' | transloco"
+  [help]="'charts.equity.help' | transloco"
+  [legend]="[{ label: 'charts.equity.legend' | transloco, colorToken: '--color-brand' }]"
+  testId="search-statistics-chart-frame"
+>
+  <div echarts [options]="chartOptions()" class="equity-curve-chart" data-testid="search-statistics-chart"></div>
+</app-chart-frame>

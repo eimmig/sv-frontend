@@ -114,9 +114,8 @@ export function buildComparisonLineChartOption(
   borderColor: string,
 ): EChartsCoreOption {
   return {
-    grid: { top: 32, right: 16, bottom: 24, left: 48 },
+    grid: { top: 16, right: 16, bottom: 24, left: 48 },
     tooltip: { trigger: 'axis' },
-    legend: { top: 0, textStyle: { color: borderColor } },
     xAxis: {
       type: 'category',
       data: categories,

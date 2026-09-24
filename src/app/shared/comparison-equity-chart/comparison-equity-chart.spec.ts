@@ -52,6 +52,16 @@ describe('ComparisonEquityChart', () => {
     });
   });
 
+  it('frames the chart with a title, a help toggle and a 2-entry legend', () => {
+    const fixture = TestBed.createComponent(ComparisonEquityChart);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+
+    expect(el.querySelector('[data-testid="period-comparison-chart-frame"] h3')).toBeTruthy();
+    expect(el.querySelector('[data-testid="period-comparison-chart-frame-help-toggle"]')).toBeTruthy();
+    expect(el.querySelectorAll('[data-testid="period-comparison-chart-frame-legend"] li')).toHaveLength(2);
+  });
+
   it('renders the echarts host element without console errors, empty data', () => {
     const fixture = TestBed.createComponent(ComparisonEquityChart);
 
