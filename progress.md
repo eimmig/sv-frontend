@@ -3,7 +3,12 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-24
-**Estado:** `feat-044`/`feat-041`/`feat-040`/`feat-038`/`feat-045` fechadas — backlog deste app esgotado.
+**Estado:** `feat-046` fechada; `feat-047`..`feat-050` (apontamentos do usuário de 2026-09-24) no backlog.
+
+## `feat-046` fechada — alinhamento dos cabeçalhos do comparativo (2026-09-24)
+
+Story SV-617 (SV-618/619), PR #198. Valores A/B das linhas de KPI à direita, sob o cabeçalho.
+E2E de alinhamento mede o retângulo do texto (`Range`), não o `boundingBox` do item de grid.
 
 ## `feat-045` fechada — contraste dos rótulos de eixo (2026-09-24)
 

@@ -7,7 +7,7 @@
 
 ## Objetivo atual
 
-`feat-044`, `feat-041`, `feat-040`, `feat-038` e `feat-045` fechadas. Backlog deste app esgotado.
+`feat-046` fechada. Em aberto: `feat-047`..`feat-050` (apontamentos do usuário de 2026-09-24).
 
 ## Concluído nesta sessão (2026-09-24)
 
@@ -21,6 +21,7 @@
       redireciona para a busca. Story SV-610 (`epic-035`, backend em `stats-service feat-024`).
 - [x] **`feat-045` fechada** — rótulos de eixo legíveis (`--color-text-secondary`). Story SV-614.
       Regra nova do usuário: apontamento fora de escopo vira feature no `feature_list.json`.
+- [x] **`feat-046` fechada** — valores A/B do comparativo alinhados ao cabeçalho. Story SV-617.
 
 ## Bloqueios / Riscos
 
@@ -34,7 +35,7 @@
 ## Próxima sessão — por onde começar
 
 1. Rodar `./init.sh` (deve sair `0`).
-2. Backlog vazio — nada `not-started` neste app.
+2. Próxima feature `not-started` do `feature_list.json` (`feat-047`..`feat-050`).
 3. Se for mexer em `services/api-gateway`/serviços Java localmente (fora de Docker): `.env` não
    carrega sozinho em `mvn spring-boot:run` — precisa `SPRING_PROFILES_ACTIVE=dev` exportado, e o
    CORS default do gateway libera só `localhost:4200`, não a porta real do `ng serve` (`4300`)
