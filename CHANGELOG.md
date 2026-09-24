@@ -8,6 +8,56 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 ## [Unreleased]
 
 - Remover todos os comentários restantes do código, testes, estilos, templates e configuração (convenção de zero comentário, `docs/convencoes.md`)
+- [SV-594](https://stakevault.atlassian.net/browse/SV-594) - Mover a splash de antes do login pra depois (durante o carregamento inicial de dados)
+- [SV-595](https://stakevault.atlassian.net/browse/SV-595) - Servico Loading e interceptor HTTP
+- [SV-596](https://stakevault.atlassian.net/browse/SV-596) - LoadingOverlay e remocao da Splash
+- [SV-597](https://stakevault.atlassian.net/browse/SV-597) - E2E, QA visual e verificacao final
+- [SV-598](https://stakevault.atlassian.net/browse/SV-598) - Corrigir apontamento SonarCloud Web:S6819 no overlay
+- [SV-599](https://stakevault.atlassian.net/browse/SV-599) - monthly-profit-chart adaptar granularidade ao periodo filtrado
+- [SV-600](https://stakevault.atlassian.net/browse/SV-600) - Serie diaria/mensal no grafico e busca do dashboard
+- [SV-601](https://stakevault.atlassian.net/browse/SV-601) - E2E, CHANGELOG e verificacao final
+- [SV-602](https://stakevault.atlassian.net/browse/SV-602) - Corrigir apontamento SonarCloud typescript:S2699 no dashboard.spec
+- [SV-603](https://stakevault.atlassian.net/browse/SV-603) - Titulo, legenda e botao de ajuda em todos os graficos
+- [SV-604](https://stakevault.atlassian.net/browse/SV-604) - Componente chart-frame
+- [SV-605](https://stakevault.atlassian.net/browse/SV-605) - Aplicar o chart-frame nos 4 graficos
+- [SV-606](https://stakevault.atlassian.net/browse/SV-606) - E2E, QA visual e verificacao final
+- [SV-610](https://stakevault.atlassian.net/browse/SV-610) - Dobrar bet-type-dashboard dentro de search-statistics
+- [SV-611](https://stakevault.atlassian.net/browse/SV-611) - Filtro PRE/LIVE em Buscar Estatisticas
+- [SV-612](https://stakevault.atlassian.net/browse/SV-612) - Remover a tela bet-type-dashboard
+- [SV-613](https://stakevault.atlassian.net/browse/SV-613) - E2E, QA visual e verificacao final
+- [SV-614](https://stakevault.atlassian.net/browse/SV-614) - Contraste dos rotulos de eixo dos graficos
+- [SV-615](https://stakevault.atlassian.net/browse/SV-615) - Cor propria para rotulos de eixo
+- [SV-616](https://stakevault.atlassian.net/browse/SV-616) - QA visual, CHANGELOG e verificacao final
+- [SV-617](https://stakevault.atlassian.net/browse/SV-617) - Alinhamento dos cabecalhos do comparativo de periodos
+- [SV-618](https://stakevault.atlassian.net/browse/SV-618) - Alinhar valores A/B com o cabecalho
+- [SV-619](https://stakevault.atlassian.net/browse/SV-619) - QA visual, CHANGELOG e verificacao final
+- [SV-620](https://stakevault.atlassian.net/browse/SV-620) - Ano no tooltip de graficos de estatisticas
+- [SV-621](https://stakevault.atlassian.net/browse/SV-621) - Ano nas datas do grafico acima de 1 ano
+- [SV-622](https://stakevault.atlassian.net/browse/SV-622) - QA visual, CHANGELOG e verificacao final
+- [SV-623](https://stakevault.atlassian.net/browse/SV-623) - Corrigir apontamento SonarCloud typescript:S7755 no equity-curve-chart
+- [SV-624](https://stakevault.atlassian.net/browse/SV-624) - Icone de odd media quebrado
+- [SV-625](https://stakevault.atlassian.net/browse/SV-625) - Icone valido para odd media
+- [SV-626](https://stakevault.atlassian.net/browse/SV-626) - QA visual, CHANGELOG e verificacao final
+- [SV-627](https://stakevault.atlassian.net/browse/SV-627) - Evitar loading repetido em dados ja carregados
+- [SV-628](https://stakevault.atlassian.net/browse/SV-628) - Cache de GET em memoria com invalidacao
+- [SV-629](https://stakevault.atlassian.net/browse/SV-629) - E2E, QA visual e verificacao final
+- [SV-630](https://stakevault.atlassian.net/browse/SV-630) - Tooltip dos graficos segue o tema escuro
+- [SV-631](https://stakevault.atlassian.net/browse/SV-631) - Tooltip com tokens do tema
+- [SV-632](https://stakevault.atlassian.net/browse/SV-632) - QA visual, CHANGELOG e verificacao final
+- [SV-633](https://stakevault.atlassian.net/browse/SV-633) - Flake do login-layout na suite E2E completa
+- [SV-634](https://stakevault.atlassian.net/browse/SV-634) - Teste de teclado do seletor de idioma deterministico
+- [SV-635](https://stakevault.atlassian.net/browse/SV-635) - Suite completa repetida e verificacao final
+- [SV-636](https://stakevault.atlassian.net/browse/SV-636) - Portao no E2E do overlay da Visao geral
+- [SV-637](https://stakevault.atlassian.net/browse/SV-637) - Mock de /statistics/daily nos specs com stub generico
+- [SV-638](https://stakevault.atlassian.net/browse/SV-638) - Erro de render nao pode congelar o overlay de loading
+- [SV-639](https://stakevault.atlassian.net/browse/SV-639) - Overlay decidido pelo template do App
+- [SV-640](https://stakevault.atlassian.net/browse/SV-640) - E2E, QA visual e verificacao final
+- [SV-644](https://stakevault.atlassian.net/browse/SV-644) - Menu flutuante da tela de times
+- [SV-645](https://stakevault.atlassian.net/browse/SV-645) - Dashboard de times
+- [SV-646](https://stakevault.atlassian.net/browse/SV-646) - Menu flutuante de Times e verificacao final
+
+## [0.1.0] - 2026-09-23
+
 - Corrigir chave do projeto no SonarCloud (`eimmig_sv-frontend`)
 - `feat-039`: corrigir curva de drawdown mensal (mês corrente truncado em "hoje", smooth/
   splitNumber ajustados) + filtro de mês/ano com `MatDatepicker`
@@ -196,50 +246,3 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-573](https://stakevault.atlassian.net/browse/SV-573) - CI: gerar versao (semver + tag + Release + bump de package.json + corte de CHANGELOG) ao merge em main
 - [SV-574](https://stakevault.atlassian.net/browse/SV-574) - Job 'release' no ci.yml + .github/scripts/cut-changelog.py
 - [SV-575](https://stakevault.atlassian.net/browse/SV-575) - CHANGELOG e verificacao final
-- [SV-594](https://stakevault.atlassian.net/browse/SV-594) - Mover a splash de antes do login pra depois (durante o carregamento inicial de dados)
-- [SV-595](https://stakevault.atlassian.net/browse/SV-595) - Servico Loading e interceptor HTTP
-- [SV-596](https://stakevault.atlassian.net/browse/SV-596) - LoadingOverlay e remocao da Splash
-- [SV-597](https://stakevault.atlassian.net/browse/SV-597) - E2E, QA visual e verificacao final
-- [SV-598](https://stakevault.atlassian.net/browse/SV-598) - Corrigir apontamento SonarCloud Web:S6819 no overlay
-- [SV-599](https://stakevault.atlassian.net/browse/SV-599) - monthly-profit-chart adaptar granularidade ao periodo filtrado
-- [SV-600](https://stakevault.atlassian.net/browse/SV-600) - Serie diaria/mensal no grafico e busca do dashboard
-- [SV-601](https://stakevault.atlassian.net/browse/SV-601) - E2E, CHANGELOG e verificacao final
-- [SV-602](https://stakevault.atlassian.net/browse/SV-602) - Corrigir apontamento SonarCloud typescript:S2699 no dashboard.spec
-- [SV-603](https://stakevault.atlassian.net/browse/SV-603) - Titulo, legenda e botao de ajuda em todos os graficos
-- [SV-604](https://stakevault.atlassian.net/browse/SV-604) - Componente chart-frame
-- [SV-605](https://stakevault.atlassian.net/browse/SV-605) - Aplicar o chart-frame nos 4 graficos
-- [SV-606](https://stakevault.atlassian.net/browse/SV-606) - E2E, QA visual e verificacao final
-- [SV-610](https://stakevault.atlassian.net/browse/SV-610) - Dobrar bet-type-dashboard dentro de search-statistics
-- [SV-611](https://stakevault.atlassian.net/browse/SV-611) - Filtro PRE/LIVE em Buscar Estatisticas
-- [SV-612](https://stakevault.atlassian.net/browse/SV-612) - Remover a tela bet-type-dashboard
-- [SV-613](https://stakevault.atlassian.net/browse/SV-613) - E2E, QA visual e verificacao final
-- [SV-614](https://stakevault.atlassian.net/browse/SV-614) - Contraste dos rotulos de eixo dos graficos
-- [SV-615](https://stakevault.atlassian.net/browse/SV-615) - Cor propria para rotulos de eixo
-- [SV-616](https://stakevault.atlassian.net/browse/SV-616) - QA visual, CHANGELOG e verificacao final
-- [SV-617](https://stakevault.atlassian.net/browse/SV-617) - Alinhamento dos cabecalhos do comparativo de periodos
-- [SV-618](https://stakevault.atlassian.net/browse/SV-618) - Alinhar valores A/B com o cabecalho
-- [SV-619](https://stakevault.atlassian.net/browse/SV-619) - QA visual, CHANGELOG e verificacao final
-- [SV-620](https://stakevault.atlassian.net/browse/SV-620) - Ano no tooltip de graficos de estatisticas
-- [SV-621](https://stakevault.atlassian.net/browse/SV-621) - Ano nas datas do grafico acima de 1 ano
-- [SV-622](https://stakevault.atlassian.net/browse/SV-622) - QA visual, CHANGELOG e verificacao final
-- [SV-623](https://stakevault.atlassian.net/browse/SV-623) - Corrigir apontamento SonarCloud typescript:S7755 no equity-curve-chart
-- [SV-624](https://stakevault.atlassian.net/browse/SV-624) - Icone de odd media quebrado
-- [SV-625](https://stakevault.atlassian.net/browse/SV-625) - Icone valido para odd media
-- [SV-626](https://stakevault.atlassian.net/browse/SV-626) - QA visual, CHANGELOG e verificacao final
-- [SV-627](https://stakevault.atlassian.net/browse/SV-627) - Evitar loading repetido em dados ja carregados
-- [SV-628](https://stakevault.atlassian.net/browse/SV-628) - Cache de GET em memoria com invalidacao
-- [SV-629](https://stakevault.atlassian.net/browse/SV-629) - E2E, QA visual e verificacao final
-- [SV-630](https://stakevault.atlassian.net/browse/SV-630) - Tooltip dos graficos segue o tema escuro
-- [SV-631](https://stakevault.atlassian.net/browse/SV-631) - Tooltip com tokens do tema
-- [SV-632](https://stakevault.atlassian.net/browse/SV-632) - QA visual, CHANGELOG e verificacao final
-- [SV-633](https://stakevault.atlassian.net/browse/SV-633) - Flake do login-layout na suite E2E completa
-- [SV-634](https://stakevault.atlassian.net/browse/SV-634) - Teste de teclado do seletor de idioma deterministico
-- [SV-635](https://stakevault.atlassian.net/browse/SV-635) - Suite completa repetida e verificacao final
-- [SV-636](https://stakevault.atlassian.net/browse/SV-636) - Portao no E2E do overlay da Visao geral
-- [SV-637](https://stakevault.atlassian.net/browse/SV-637) - Mock de /statistics/daily nos specs com stub generico
-- [SV-638](https://stakevault.atlassian.net/browse/SV-638) - Erro de render nao pode congelar o overlay de loading
-- [SV-639](https://stakevault.atlassian.net/browse/SV-639) - Overlay decidido pelo template do App
-- [SV-640](https://stakevault.atlassian.net/browse/SV-640) - E2E, QA visual e verificacao final
-- [SV-644](https://stakevault.atlassian.net/browse/SV-644) - Menu flutuante da tela de times
-- [SV-645](https://stakevault.atlassian.net/browse/SV-645) - Dashboard de times
-- [SV-646](https://stakevault.atlassian.net/browse/SV-646) - Menu flutuante de Times e verificacao final
