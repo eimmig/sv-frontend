@@ -2,8 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test.describe('smoke', () => {
   test.beforeEach(async ({ page }) => {
-    // Skips the ~5.4s splash intro (docs/sistema-de-design.md item 17) so the suite stays fast -
-    // prefers-reduced-motion must be set before navigation, since Splash reads it in ngOnInit.
+    // Skips the loading overlay's 2.1s logo sequence (docs/sistema-de-design.md item 17).
     await page.emulateMedia({ reducedMotion: 'reduce' });
   });
 
@@ -11,7 +10,7 @@ test.describe('smoke', () => {
     await page.goto('/');
 
     await expect(page).toHaveURL(/\/login$/);
-    await expect(page.locator('app-splash')).toHaveCount(0);
+    await expect(page.getByTestId('loading-overlay')).toHaveCount(0);
     await expect(page).toHaveTitle(/Arka/);
   });
 

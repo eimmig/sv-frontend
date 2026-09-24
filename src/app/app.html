@@ -1,7 +1,5 @@
-@if (showSplash()) {
-  <app-splash (done)="onSplashDone()" />
-}
-<div class="app-shell">
+<app-loading-overlay />
+<div class="app-shell" [inert]="loading.visible()">
   @if (auth.isAuthenticated()) {
     <app-side-nav />
   }

@@ -9,10 +9,10 @@
   "dateMask": {
     "placeholder": "mm/dd/yyyy"
   },
-  "splash": {
-    "ariaLabel": "Loading animation that forms the Arka logo",
-    "title": "Arka animated splash",
-    "desc": "A point of light traces and draws the vault ring, the spokes turn until they lock into place, the bars rise in a cascade, a pulse expands, and the name is revealed by a sweep.",
+  "loadingOverlay": {
+    "ariaLabel": "Loading",
+    "title": "Arka",
+    "desc": "The Arka logo assembles while data loads.",
     "tagline": "BANKROLL MANAGEMENT"
   },
   "periodPresetFilter": {

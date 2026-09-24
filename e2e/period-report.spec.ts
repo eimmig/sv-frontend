@@ -23,7 +23,7 @@ test.describe('epic-017 - "Relatório do período" page', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     // The "Hoje" default preset resolves from a real new Date() (period-preset-filter.ts) and
     // the fixtures below are fixed to 2026-09-11 - freeze only Date (not setTimeout/rAF, which
-    // the splash intro and Angular still need to run normally) so "today" always matches the
+    // the loading overlay and Angular still need to run normally) so "today" always matches the
     // fixtures, regardless of which real day the suite runs on (same fix as the unit spec for
     // this page).
     await page.clock.setFixedTime(new Date('2026-09-11T12:00:00Z'));

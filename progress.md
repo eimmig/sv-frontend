@@ -2,8 +2,15 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-09-22
-**Estado:** `feat-001` a `feat-037` `done` — backlog deste app esgotado.
+**Última atualização:** 2026-09-24
+**Estado:** `feat-044` fechada. `feat-041`/`040`/`038` autorizadas pelo usuário (2026-09-24), nesta ordem.
+
+## `feat-044` fechada — overlay de carregamento substitui a splash de boot (2026-09-24)
+
+Story SV-594 (subtasks SV-595..597), PRs #178-#180. Decisões do usuário: overlay sobre o app
+inteiro, em todo carregamento (qualquer chamada `/api/` acima de 250ms), login sem splash. Desenho
+completo em `docs/sistema-de-design.md` item 17 ("Uso em produção"); verificação na `evidence` da
+feature. Residual P3: `inert` tira o foco do elemento ativo enquanto o overlay está visível.
 
 ## `feat-037` fechada — tela "Comparativo de períodos" (2026-09-22)
 
