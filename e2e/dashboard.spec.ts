@@ -171,6 +171,26 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
       .toBe(true);
   });
 
+  test('the profit chart shows its title and legend and explains itself from the "?" button', async ({ page }) => {
+    await page.route('**/api/v1/statistics?*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(statisticsBundle()) }),
+    );
+
+    await page.goto('/dashboard');
+    const frame = page.getByTestId('dashboard-profit-chart-frame');
+    await expect(frame.getByRole('heading', { level: 3 })).toBeVisible();
+    await expect(page.getByTestId('dashboard-profit-chart-frame-legend')).toBeVisible();
+
+    const toggle = page.getByTestId('dashboard-profit-chart-frame-help-toggle');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await toggle.click();
+    await expect(page.getByTestId('dashboard-profit-chart-frame-help')).toBeVisible();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+
+    await toggle.click();
+    await expect(page.getByTestId('dashboard-profit-chart-frame-help')).toHaveCount(0);
+  });
+
   test('does not show the unit config field for a member session', async ({ page }) => {
     await page.route('**/api/v1/statistics*', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(statisticsBundle()) }),
