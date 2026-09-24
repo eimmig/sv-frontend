@@ -215,3 +215,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-614](https://stakevault.atlassian.net/browse/SV-614) - Contraste dos rotulos de eixo dos graficos
 - [SV-615](https://stakevault.atlassian.net/browse/SV-615) - Cor propria para rotulos de eixo
 - [SV-616](https://stakevault.atlassian.net/browse/SV-616) - QA visual, CHANGELOG e verificacao final
+- [SV-617](https://stakevault.atlassian.net/browse/SV-617) - Alinhamento dos cabecalhos do comparativo de periodos
+- [SV-618](https://stakevault.atlassian.net/browse/SV-618) - Alinhar valores A/B com o cabecalho
+- [SV-619](https://stakevault.atlassian.net/browse/SV-619) - QA visual, CHANGELOG e verificacao final

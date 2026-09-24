@@ -3344,10 +3344,44 @@
       "scope": "Tabela e layout responsivo da tela de comparativo de periodos; nao altera os calculos nem os dados apresentados.",
       "description": "Achado visual reportado pelo usuario em 2026-09-24, com captura de tela: no comparativo de periodos, os cabecalhos 'Periodo A' e 'Periodo B' estao desalinhados horizontalmente em relacao aos valores das colunas. Ajustar o layout para que cada cabecalho fique sobre a coluna correspondente, preservando o alinhamento da coluna 'Diferenca' e dos demais rotulos.",
       "dependencies": [],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (independencia reduzida, risco baixo: CSS local). Causa raiz confirmada: .period-comparison__rows-header alinha os spans 2..4 a direita, mas .comparison-metric-row__value (shared/comparison-metric-row) nao tem text-align e fica a esquerda; delta ja a direita nos dois; mesmo grid (1.4fr 1fr 1fr 1.2fr, gap 8px). Fix: text-align:right em __value no desktop (mobile <600px ja sobrescreve para left e o cabecalho some). comparison-metric-row so e usado em period-comparison. segment-comparison-table ja alinhado (th/td left) - fora do escopo. 1 MINOR: boundingBox do span nao detecta o defeito (item de grid ocupa a celula inteira) - E2E mede a borda direita do texto via Range.getBoundingClientRect e precisa falhar antes do fix.",
+      "jira": "SV-617",
+      "subtasks": [
+        {
+          "id": "feat-046.1",
+          "name": "Alinhar valores A/B com o cabecalho",
+          "detail": "Valores numericos das linhas de KPI passam a ficar a direita, como os cabecalhos e a Diferenca.",
+          "checklist": [
+            "`text-align: right` em `.comparison-metric-row__value` (desktop); mobile continua a esquerda",
+            "E2E em `e2e/period-comparison.spec.ts` compara a borda direita do texto (Range) de cada cabecalho com a do valor da primeira linha, tolerancia 1px",
+            "E2E falha antes do fix e passa depois"
+          ],
+          "validation": "ng test e E2E do comparativo verdes.",
+          "owner": "agente",
+          "status": "in-progress",
+          "jira": "SV-618"
+        },
+        {
+          "id": "feat-046.2",
+          "name": "QA visual, CHANGELOG e verificacao final",
+          "detail": "Prova visual nos 2 temas e 2 larguras e fechamento.",
+          "checklist": [
+            "QA visual por screenshot nos 2 temas, desktop e mobile",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-619"
+        }
+      ],
       "evidence": ""
     },
     {
@@ -3382,7 +3416,9 @@
       "goal": "Exibir o loading apenas durante a primeira busca efetiva dos dados e evitar sua repeticao ao retornar a telas que ja possuem os dados carregados.",
       "scope": "Ciclo de carregamento e reutilizacao dos dados das telas de Visao geral, Dashboard e demais telas que compartilham dados ja obtidos; manter o loading em buscas novas, refetches e apos invalidacao dos dados.",
       "description": "Apontamento do usuario em 2026-09-24: ao acessar repetidamente telas como Visao geral, Dashboard e outras, o loading aparece toda vez, mesmo quando os dados ja foram carregados. Validar o fluxo e ajustar a estrategia de estado/cache para que o loading continue aparecendo na primeira busca efetiva, mas nao seja exibido novamente ao navegar para uma tela cujos dados ainda estejam disponiveis. O loading atual foi considerado adequado e deve ser preservado para requisicoes reais posteriores.",
-      "dependencies": ["feat-044"],
+      "dependencies": [
+        "feat-044"
+      ],
       "status": "not-started",
       "plan_review": "",
       "jira": "",
