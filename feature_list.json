@@ -3561,11 +3561,42 @@
           ],
           "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-629"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechado em 2026-09-24 por feat-049.1/feat-049.2 (story SV-627). Respostas GET a /api/ ficam em cache em memoria; voltar a uma tela ja carregada nao faz requisicao nem mostra o overlay. Primeira busca, filtro novo e dados alterados continuam indo a rede com o loading.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #208 (SV-628): core/http-cache.ts (TTL 5 min, contador de geracao, 10s sem gravar depois de uma limpeza, structuredClone) e core/http-cache-interceptor.ts antes do interceptor de loading (ordem: acceptLanguage, httpCache, loading, auth); chave = url com params + Accept-Language; so 2xx gravado; nao-GET em /api/ limpa ao enviar e na resposta/erro via tap; Auth.logout limpa.",
+              "SV-629: E2E em e2e/overview.spec.ts - Visao geral -> Dashboard -> Visao geral com /statistics atrasado 400ms: overlay na 1a visita, a volta nao faz requisicao nem mostra overlay."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "E2E novo falhou com o interceptor fora da cadeia e passou com ele.",
+              "Unitarios: acerto, falta, TTL, erro nao cacheado, chave por params/idioma, mutacao limpa antes do assinante (inclusive em erro), GET em voo nao grava, janela pos-limpeza, copia independente, logout limpa.",
+              "E2E ja existentes seguem verdes sob o cache: filtro do dashboard dispara nova requisicao (RN08); criar casa de apostas recarrega a lista.",
+              "./init.sh do app (335 testes, cobertura 92,6%) e da raiz verdes; suite E2E completa 92/93 - a falha (login-layout, troca de idioma no login, sem /api/) passou 54/54 isolada em develop e na branch; anexada a feat-051.",
+              "Sem UI nova: QA visual se resume ao comportamento do overlay, provado pelo E2E.",
+              "/code-review (medium) achou estatistica velha presa apos mutacao (consistencia eventual) - corrigido com a janela de 10s. Delivery Reviewer (self-conduzido): PASS. Test Suite Auditor (self-conduzido): PASS."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Janela de 10s sem gravar apos limpeza, acrescentada depois do /code-review.",
+              "Idioma na chave via header Accept-Language (interceptor de cache depois do acceptLanguageInterceptor) em vez de injetar o servico Language.",
+              "Limite aceito e documentado: aposta via Telegram ou em outra aba so aparece no web depois do TTL ou de uma mutacao no proprio web.",
+              "Vault: docs/sistema-de-design.md item 17 - regra do cache e seus limites."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-050",
@@ -3646,7 +3677,7 @@
       "name": "Flake do login-layout na suite E2E completa",
       "goal": "Suite E2E completa verde de forma deterministica, sem falha intermitente no teste de sobreposicao do login.",
       "scope": "`e2e/login-layout.spec.ts` (teste 'language selector and theme toggle never overlap the login card, even on a short viewport') e o que ele espera da tela de login.",
-      "description": "Achado durante feat-048 (2026-09-24): na suite completa (91 testes, workers paralelos) o teste falhou 1 vez com `getByTestId('language-selector')` nao encontrado em 5s; isolado passou 45/45 (--repeat-each=5). Investigar a causa (carga no dev server, lazy load do seletor na tela de login, ordem de navegacao) e tornar o teste deterministico sem so aumentar timeout.",
+      "description": "Achado durante feat-048 (2026-09-24): na suite completa (91 testes, workers paralelos) o teste falhou 1 vez com `getByTestId('language-selector')` nao encontrado em 5s; isolado passou 45/45 (--repeat-each=5). Investigar a causa (carga no dev server, lazy load do seletor na tela de login, ordem de navegacao) e tornar o teste deterministico sem so aumentar timeout. Reincidencia em feat-049 (2026-09-24): outro teste do mesmo spec ('language selector and theme toggle are reachable and operable by keyboard') falhou 1 vez na suite completa com o botao ainda em 'Iniciar sesion' em vez de 'Sign in' (troca de idioma atrasada) e 1 vez em 27 repeticoes isoladas; 54/54 depois, tanto em develop quanto na branch.",
       "dependencies": [],
       "status": "not-started",
       "plan_review": "",
