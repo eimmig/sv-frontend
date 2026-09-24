@@ -3679,10 +3679,44 @@
       "scope": "`e2e/login-layout.spec.ts` (teste 'language selector and theme toggle never overlap the login card, even on a short viewport') e o que ele espera da tela de login.",
       "description": "Achado durante feat-048 (2026-09-24): na suite completa (91 testes, workers paralelos) o teste falhou 1 vez com `getByTestId('language-selector')` nao encontrado em 5s; isolado passou 45/45 (--repeat-each=5). Investigar a causa (carga no dev server, lazy load do seletor na tela de login, ordem de navegacao) e tornar o teste deterministico sem so aumentar timeout. Reincidencia em feat-049 (2026-09-24): outro teste do mesmo spec ('language selector and theme toggle are reachable and operable by keyboard') falhou 1 vez na suite completa com o botao ainda em 'Iniciar sesion' em vez de 'Sign in' (troca de idioma atrasada) e 1 vez em 27 repeticoes isoladas; 54/54 depois, tanto em develop quanto na branch.",
       "dependencies": [],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (so teste). Causa reproduzida (22/40 com --repeat-each=40): Language.current = storedLocale ?? browserLocale e o Playwright roda com navegador en-US (sem locale no config) - o app abre em ingles, nao pt-BR como o teste assume; ArrowDown a partir de English vai para Espanol, e o teste so passava quando a tecla chegava antes de o key manager do mat-select ativar a opcao selecionada (a tecla se perdia). Correcao: fixar 'stakevault.language'=pt-BR via addInitScript; afirmar 'Entrar' no inicio; abrir com Enter; esperar aria-activedescendant do combobox apontar para Portugues antes do ArrowDown e para English antes do Enter; afirmar 'Sign in'. Prova: --repeat-each=40 sem falha. Modo 1 ('language-selector' nao encontrado em 5s, 1 ocorrencia na suite completa): sem inicializador bloqueando o bootstrap, nao reproduz isolado; rodar a suite completa 3x com --trace=retain-on-failure e diagnosticar pelo trace se reaparecer, sem aumentar timeout as cegas.",
+      "jira": "SV-633",
+      "subtasks": [
+        {
+          "id": "feat-051.1",
+          "name": "Teste de teclado do seletor de idioma deterministico",
+          "detail": "Remove a premissa de idioma errada e a corrida com o key manager do mat-select.",
+          "checklist": [
+            "Idioma inicial fixado em pt-BR no teste (`stakevault.language`) e afirmado ('Entrar')",
+            "Espera `aria-activedescendant` apontar para a opcao certa antes de cada tecla",
+            "`--repeat-each=40` sem falha"
+          ],
+          "validation": "40/40 isolado.",
+          "owner": "agente",
+          "status": "in-progress",
+          "jira": "SV-634"
+        },
+        {
+          "id": "feat-051.2",
+          "name": "Suite completa repetida e verificacao final",
+          "detail": "Confirma o modo 1 do flake e fecha a feature.",
+          "checklist": [
+            "Suite E2E completa 3x com `--trace=retain-on-failure`; se o modo 1 reaparecer, diagnosticar pelo trace",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-635"
+        }
+      ],
       "evidence": ""
     },
     {
