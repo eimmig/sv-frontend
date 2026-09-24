@@ -54,6 +54,8 @@ export interface StatisticsDashboard {
   readonly byBettingHouse: SegmentedBetMetrics[];
   readonly byLeague: SegmentedBetMetrics[];
   readonly byTipster: SegmentedBetMetrics[];
+  /** A bet counts for each of its teams, so the rows add up to more than `overall`. */
+  readonly byTeam: SegmentedBetMetrics[];
   /** Fixed 2-item segment (dimensionId PRE/LIVE only, never a 3rd bucket) - apostas sem betType
    *  não entram em nenhum dos 2 (docs/API-CONTRACTS.md). */
   readonly byBetType: SegmentedBetMetrics[];
@@ -68,6 +70,7 @@ export const EMPTY_STATISTICS_DASHBOARD: StatisticsDashboard = {
   byBettingHouse: [],
   byLeague: [],
   byTipster: [],
+  byTeam: [],
   byBetType: [],
   monthly: [],
 };

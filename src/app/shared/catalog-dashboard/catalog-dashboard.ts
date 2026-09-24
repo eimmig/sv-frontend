@@ -13,7 +13,7 @@ import { PeriodPresetFilter, PeriodRange } from '../period-preset-filter/period-
 
 /** One key per segment array already returned by GET /api/v1/statistics (StatisticsDashboard) -
  *  every catalog dashboard reads the SAME bundle, just a different key. */
-export type CatalogSegment = 'bySport' | 'byLeague' | 'byMarket' | 'byTipster' | 'byBettingHouse';
+export type CatalogSegment = 'bySport' | 'byLeague' | 'byMarket' | 'byTipster' | 'byBettingHouse' | 'byTeam';
 
 /**
  * Reusable ranking view for a single catalog resource (sports, leagues, markets, tipsters,
@@ -42,7 +42,7 @@ export class CatalogDashboard {
 
   /** Ranked most to least profitable - SegmentedBetMetrics.metrics.roi is always a number
    *  (never null), no tie-break/null case to handle. */
-  protected readonly rows = computed(() => [...this.data()[this.segment()]].sort((a, b) => b.metrics.roi - a.metrics.roi));
+  protected readonly rows = computed(() => [...(this.data()[this.segment()] ?? [])].sort((a, b) => b.metrics.roi - a.metrics.roi));
 
   protected formatPercent(value: number): string {
     return formatPercent(value, this.language.current());

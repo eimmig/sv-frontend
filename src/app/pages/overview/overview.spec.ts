@@ -53,6 +53,7 @@ describe('Overview', () => {
       byBettingHouse: [],
       byLeague: [],
       byTipster: [],
+      byTeam: [],
       byBetType,
       monthly,
     });
