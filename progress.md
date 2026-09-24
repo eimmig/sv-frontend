@@ -3,7 +3,13 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-24
-**Estado:** `feat-046`/`feat-048`/`feat-050` fechadas; `feat-047`, `feat-049`, `feat-051`, `feat-052` no backlog.
+**Estado:** `feat-046`/`feat-048`/`feat-049`/`feat-050` fechadas; `feat-047`, `feat-051`, `feat-052` no backlog.
+
+## `feat-049` fechada — tela já carregada não repete o loading (2026-09-24)
+
+Story SV-627 (SV-628/629), PR #208. Cache em memória de GET `/api/` (`core/http-cache*`), limpo
+por mutação/logout, TTL 5 min, 10s sem gravar após limpar. Limite: aposta via Telegram só aparece
+após o TTL. Detalhe em `docs/sistema-de-design.md` item 17.
 
 ## `feat-050` fechada — ícone de odd média (2026-09-24)
 

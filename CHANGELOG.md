@@ -225,3 +225,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-624](https://stakevault.atlassian.net/browse/SV-624) - Icone de odd media quebrado
 - [SV-625](https://stakevault.atlassian.net/browse/SV-625) - Icone valido para odd media
 - [SV-626](https://stakevault.atlassian.net/browse/SV-626) - QA visual, CHANGELOG e verificacao final
+- [SV-627](https://stakevault.atlassian.net/browse/SV-627) - Evitar loading repetido em dados ja carregados
+- [SV-628](https://stakevault.atlassian.net/browse/SV-628) - Cache de GET em memoria com invalidacao
+- [SV-629](https://stakevault.atlassian.net/browse/SV-629) - E2E, QA visual e verificacao final
