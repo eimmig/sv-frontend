@@ -2751,19 +2751,67 @@
     {
       "id": "feat-040",
       "name": "Titulo, legenda e botao de ajuda em todos os graficos",
-      "goal": "Todo grafico do sistema (equity-curve-chart, monthly-profit-chart, monthly-drawdown-chart, comparison-equity-chart, e qualquer outro shared/*-chart existente ou futuro) ganha titulo visivel, legenda quando houver mais de 1 serie, e um botao/icone de ajuda ('?') que explica o que o grafico representa e como le-lo.",
-      "scope": [
-        "apps/web apenas - mudanca de design system (docs/sistema-de-design.md ganha a convencao nova) que afeta todos os componentes shared/*-chart existentes, nao 1 tela isolada",
-        "Mecanismo generico reaproveitavel (ex.: wrapper/diretiva comum de 'cabecalho de grafico' com titulo + botao de ajuda com tooltip/popover) em vez de duplicar a mesma marcacao em cada componente de grafico - decisao de design de como implementar fica para o Plan Reviewer/quem pegar a feature",
-        "Texto de ajuda de cada grafico (o que ele mostra, como interpretar) localizado nos 3 locales (pt-BR/en-US/es), com copy real por grafico (nao placeholder generico)",
-        "QA visual (claro/escuro, mobile/desktop) do componente novo em todos os graficos afetados"
-      ],
+      "goal": "Todo grafico do app passa a ter titulo, legenda e um botao '?' que explica o que ele representa, no mesmo padrao visual.",
+      "scope": "Componente novo `shared/chart-frame` aplicado aos 4 graficos (`monthly-profit`, grade de `monthly-drawdown`, `equity-curve`, `comparison-equity`) + textos nos 3 locales.",
       "description": "Pedido do usuario em uso real (2026-09-22, mesma sessao de feat-038/039): todo grafico gerado pelo sistema deveria ter titulo, legenda e um botao de '?' explicando o que o grafico e e representa - hoje isso varia grafico a grafico, sem padrao consistente. Feature nasceu como nota de sessao (usuario pediu so para registrar, nao implementar agora) - escopo amplo (cross-cutting, todos os graficos), Plan Reviewer deve mapear o inventario completo de componentes de grafico afetados antes de estimar subtasks. Implementacao autorizada pelo usuario em 2026-09-24 (ordem: feat-044 -> feat-041 -> feat-040 -> feat-038).",
       "dependencies": [],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Challenge independente como self-review (independencia reduzida, UI de apresentacao sem contrato de API). Inventario confirmado por leitura: 4 componentes ngx-echarts (monthly-profit-chart no dashboard, monthly-drawdown-chart x12 na grade do dashboard, equity-curve-chart em search-statistics, comparison-equity-chart em period-comparison - unico com legenda, nativa do ECharts); overview.html nao tem grafico. Decisoes: componente shared/chart-frame (figure/figcaption, h3, botao mat-icon-button help_outline com aria-expanded/aria-controls alternando explicacao inline - funciona em mobile/teclado, diferente de tooltip; legenda HTML com swatch por token CSS); cada chart envolve o proprio canvas (todo grafico ganha por construcao); drawdown: 1 frame em volta da grade (12 legendas repetidas seria ruido), mini mantem titulo do mes; legenda nativa do comparison removida (um mecanismo so). 3 MINOR incorporados: (1) data-testid atuais ficam no div[echarts] (E2E existentes localizam por eles), frame ganha testid proprio <chart>-frame; (2) legenda do comparison reusa periodComparison.periodALabel/periodBLabel e os mesmos tokens das series (--color-brand/--color-action-neutral), sem chave duplicada; (3) subtracao: LegendComponent sai do registro do echarts no comparison e grid.top volta de 32 pra 16 sem a legenda nativa.",
+      "jira": "SV-603",
+      "subtasks": [
+        {
+          "id": "feat-040.1",
+          "name": "Componente chart-frame",
+          "detail": "Moldura unica de titulo, ajuda e legenda reaproveitada por todos os graficos.",
+          "checklist": [
+            "shared/chart-frame: inputs title/help/legend/testId, figure + figcaption + h3",
+            "Botao '?' com aria-label i18n, aria-expanded e aria-controls alternando a explicacao inline",
+            "Legenda HTML com swatch por token CSS",
+            "chartFrame.helpLabel nos 3 locales",
+            "Testes unitarios (toggle, aria-expanded, legenda)"
+          ],
+          "validation": "ng test verde com o componente isolado.",
+          "owner": "agente",
+          "status": "in-progress",
+          "jira": "SV-604"
+        },
+        {
+          "id": "feat-040.2",
+          "name": "Aplicar o chart-frame nos 4 graficos",
+          "detail": "Cada grafico ganha titulo, legenda e ajuda com textos derivados de docs/estatisticas.md.",
+          "checklist": [
+            "monthly-profit-chart, equity-curve-chart e comparison-equity-chart envolvem o proprio canvas",
+            "monthly-drawdown-grid: 1 frame em volta da grade",
+            "comparison: legenda nativa removida, LegendComponent desregistrado, grid.top 16",
+            "testids atuais preservados no div[echarts]",
+            "charts.{profit,drawdown,equity,comparison}.{title,help,legend} nos 3 locales",
+            "Specs dos graficos atualizados"
+          ],
+          "validation": "ng test verde; os 4 graficos mostram titulo, legenda e ajuda.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-605"
+        },
+        {
+          "id": "feat-040.3",
+          "name": "E2E, QA visual e verificacao final",
+          "detail": "Prova pelo navegador e fechamento da feature.",
+          "checklist": [
+            "E2E: dashboard abre e fecha a ajuda do grafico de lucro",
+            "QA visual nos 2 temas, mobile e desktop",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "E2E verde, init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-606"
+        }
+      ],
       "evidence": ""
     },
     {
