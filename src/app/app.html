@@ -1,4 +1,6 @@
-<app-loading-overlay />
+@if (loading.visible()) {
+  <app-loading-overlay />
+}
 <div class="app-shell" [inert]="loading.visible()">
   @if (auth.isAuthenticated()) {
     <app-side-nav />
