@@ -2808,11 +2808,39 @@
           ],
           "validation": "E2E verde, init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-606"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechado em 2026-09-24 por feat-040.1..3 (story SV-603). Os 4 graficos do app (lucro do dashboard, grade de drawdown mensal, curva de lucro da busca, comparativo de periodos) ganharam titulo, legenda e botao '?' com explicacao inline, via componente unico shared/chart-frame.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #187 (SV-604): shared/chart-frame (figure/figcaption, h3, botao help com aria-expanded/aria-controls, legenda HTML com swatch por token CSS) + chartFrame.helpLabel nos 3 locales.",
+              "PR #188 (SV-605): frame aplicado nos 4 graficos (drawdown: 1 frame em volta da grade); legenda nativa do ECharts removida do comparison (LegendComponent desregistrado, grid.top 16); testids existentes preservados no canvas; charts.{profit,drawdown,equity,comparison} nos 3 locales.",
+              "SV-606: E2E do dashboard abrindo/fechando a ajuda do grafico de lucro."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "./init.sh (ng build + ng test com gate) verde: 315 testes; suite E2E completa verde (88 com o novo teste).",
+              "QA visual por screenshot real (dev server + Playwright) da moldura com ajuda aberta nos 2 temas, desktop e mobile: titulo, botao, texto e legenda legiveis, sem estouro no mobile. Impeccable/taste-skill indisponiveis como skill nesta sessao - QA manual contra docs/sistema-de-design.md.",
+              "Delivery Reviewer (self-conduzido): PASS - os 4 graficos cobertos, textos de ajuda conferidos contra docs/estatisticas.md, sem mudanca de dados. Test Suite Auditor (self-conduzido): comportamento do frame em unitario (toggle/aria/legenda), presenca do frame nos 4 graficos nos specs deles, fluxo real em E2E."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Codigo da feat-040.2 escrito enquanto a CI da .1 rodava, antes de a subtask ser marcada in-progress no JSON (a transicao no Jira veio depois do codigo local, antes do commit) - desvio de ordem registrado.",
+              "Observado e fora de escopo: rotulos de eixo dos graficos usam --color-border e ficam com pouco contraste (pre-existente) - registrado em docs/sistema-de-design.md.",
+              "Vault: docs/sistema-de-design.md item 6 ganhou a convencao do chart-frame."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-041",

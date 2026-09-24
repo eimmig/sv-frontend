@@ -7,8 +7,8 @@
 
 ## Objetivo atual
 
-`feat-044` e `feat-041` fechadas. Próximas, autorizadas pelo usuário em 2026-09-24 e nesta ordem:
-`feat-040`, `feat-038`.
+`feat-044`, `feat-041` e `feat-040` fechadas. Próxima, autorizada pelo usuário em 2026-09-24:
+`feat-038`.
 
 ## Concluído nesta sessão (2026-09-24)
 
@@ -16,6 +16,8 @@
       carregamento do app inteiro (`core/loading*`). Story SV-594, ver `progress.md`.
 - [x] **`feat-041` fechada** — gráfico de lucro do dashboard por dia quando o período tem até 31
       dias. Story SV-599. E2E que abre `/dashboard` precisa mockar `/statistics/daily`.
+- [x] **`feat-040` fechada** — todo gráfico dentro de `shared/chart-frame` (título, legenda, `?`).
+      Story SV-603. Gráfico novo entra já dentro do frame.
 
 ## Bloqueios / Riscos
 
@@ -29,7 +31,7 @@
 ## Próxima sessão — por onde começar
 
 1. Rodar `./init.sh` (deve sair `0`).
-2. Seguir a ordem `feat-040` -> `feat-038` (`feature_list.json`).
+2. `feat-038` (`feature_list.json`).
 3. Se for mexer em `services/api-gateway`/serviços Java localmente (fora de Docker): `.env` não
    carrega sozinho em `mvn spring-boot:run` — precisa `SPRING_PROFILES_ACTIVE=dev` exportado, e o
    CORS default do gateway libera só `localhost:4200`, não a porta real do `ng serve` (`4300`)

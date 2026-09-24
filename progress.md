@@ -3,7 +3,13 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-24
-**Estado:** `feat-044`/`feat-041` fechadas. Próximas: `feat-040`, `feat-038` (autorizadas pelo usuário em 2026-09-24).
+**Estado:** `feat-044`/`feat-041`/`feat-040` fechadas. Próxima: `feat-038` (autorizada pelo usuário em 2026-09-24).
+
+## `feat-040` fechada — título, legenda e ajuda em todos os gráficos (2026-09-24)
+
+Story SV-603 (subtasks SV-604..606), PRs #187-#189. `shared/chart-frame` aplicado nos 4 gráficos;
+legenda nativa do ECharts saiu do comparativo. Convenção em `docs/sistema-de-design.md` item 6.
+Pendência observada, fora de escopo: rótulos de eixo com pouco contraste (`--color-border`).
 
 ## `feat-041` fechada — gráfico de lucro por dia em períodos curtos (2026-09-24)
 
