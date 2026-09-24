@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Verification for the web app (Angular 22.x + TypeScript ES2025).
 set -euo pipefail
 
 if ! command -v node >/dev/null 2>&1; then

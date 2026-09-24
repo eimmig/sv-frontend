@@ -29,6 +29,13 @@ function searchResultBody(overrides: Record<string, unknown> = {}) {
   };
 }
 
+async function brokenKpiIcons(page: import('@playwright/test').Page): Promise<string[]> {
+  await page.evaluate(() => document.fonts.ready);
+  return page
+    .locator('app-kpi-card mat-icon')
+    .evaluateAll((icons) => icons.filter((icon) => icon.scrollWidth > icon.clientWidth).map((icon) => icon.textContent ?? ''));
+}
+
 test.describe('epic-012 - "Buscar Estatisticas" pre-bet decision screen', () => {
   test.beforeEach(async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -49,15 +56,9 @@ test.describe('epic-012 - "Buscar Estatisticas" pre-bet decision screen', () => 
     await page.route('**/api/v1/leagues*', catalogRoute([{ id: 'lg-1', name: 'Brasileirao' }]));
     await page.route('**/api/v1/markets*', catalogRoute([{ id: 'mk-1', name: 'Handicap' }]));
     await page.route('**/api/v1/tipsters*', catalogRoute([{ id: 'tp-1', name: 'Ana' }]));
-    // GET /api/v1/statistics/teams returns a bare array (see docs/API-CONTRACTS.md), not the
-    // {content:[...]} paged envelope catalogRoute() builds for the other catalogs - a different
-    // shape here would make DimTeam options[Symbol.iterator] undefined once teamOptions() is
-    // passed straight into the template's @for.
     await page.route('**/api/v1/statistics/teams*', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([{ id: 'tm-1', name: 'Flamengo' }]) }),
     );
-    // Only the golden-path test navigates through /dashboard first (to prove the nav link works) -
-    // this route just keeps that page from erroring out while it auto-loads on mount.
     await page.route('**/api/v1/statistics*', (route) =>
       route.fulfill({
         status: 200,
@@ -97,6 +98,78 @@ test.describe('epic-012 - "Buscar Estatisticas" pre-bet decision screen', () => 
     await expect(page.getByTestId('search-statistics-total-staked')).toContainText('R$');
     await expect(page.getByTestId('search-statistics-roi')).toContainText('%');
     await expect(page.getByTestId('search-statistics-chart')).toBeVisible();
+    expect(await brokenKpiIcons(page)).toEqual([]);
+  });
+
+  test('chart tooltip shows the year when the results span more than one year', async ({ page }) => {
+    await page.route('**/api/v1/statistics/search*', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          ...searchResultBody(),
+          timeline: [
+            { date: '2024-06-01', cumulativeProfit: 30 },
+            { date: '2025-06-15', cumulativeProfit: -10 },
+            { date: '2026-01-07', cumulativeProfit: 50 },
+          ],
+        }),
+      }),
+    );
+
+    await page.goto('/search-statistics');
+    await page.getByTestId('search-statistics-filter-sport').click();
+    await page.getByRole('option', { name: 'Futebol' }).click();
+    await page.getByTestId('search-statistics-filter-league').click();
+    await page.getByRole('option', { name: 'Brasileirao' }).click();
+    await page.getByTestId('search-statistics-submit').click();
+
+    const chart = page.getByTestId('search-statistics-chart');
+    await expect(chart).toBeVisible();
+    await chart.hover();
+
+    await expect(chart.locator('div').filter({ hasText: /2025/ }).last()).toBeVisible();
+  });
+
+  test('chart tooltip follows the dark theme instead of the default white box', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('stakevault.theme', 'dark'));
+    await page.route('**/api/v1/statistics/search*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(searchResultBody()) }),
+    );
+
+    await page.goto('/search-statistics');
+    await page.getByTestId('search-statistics-filter-sport').click();
+    await page.getByRole('option', { name: 'Futebol' }).click();
+    await page.getByTestId('search-statistics-filter-league').click();
+    await page.getByRole('option', { name: 'Brasileirao' }).click();
+    await page.getByTestId('search-statistics-submit').click();
+
+    const chart = page.getByTestId('search-statistics-chart');
+    await expect(chart).toBeVisible();
+    await chart.hover();
+
+    const tooltip = chart.locator('div[style*="z-index: 9999999"]');
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toHaveCSS('background-color', 'rgb(29, 42, 54)');
+  });
+
+  test('choosing a bet type narrows the search to pre-match or live bets', async ({ page }) => {
+    const betTypes: (string | null)[] = [];
+    await page.route('**/api/v1/statistics/search*', (route) => {
+      betTypes.push(new URL(route.request().url()).searchParams.get('betType'));
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(searchResultBody()) });
+    });
+
+    await page.goto('/search-statistics');
+    await page.getByTestId('search-statistics-filter-sport').click();
+    await page.getByRole('option', { name: 'Futebol' }).click();
+    await page.getByTestId('search-statistics-filter-league').click();
+    await page.getByRole('option', { name: 'Brasileirao' }).click();
+    await page.getByTestId('search-statistics-filter-bet-type').click();
+    await page.getByRole('option', { name: 'Pre-match' }).click();
+    await page.getByTestId('search-statistics-submit').click();
+
+    await expect.poll(() => betTypes.at(-1)).toBe('pre');
   });
 
   test('shows a distinct message when the combination has zero settled bets', async ({ page }) => {

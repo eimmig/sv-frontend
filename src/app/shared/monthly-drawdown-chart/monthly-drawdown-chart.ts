@@ -12,24 +12,21 @@ import { Language } from '../../core/language';
 import { Theme } from '../../core/theme';
 import { MonthlyDrawdownMonth } from './monthly-drawdown-metrics';
 
-// Tree-shaken build registered per lazy-loaded component (docs/DESIGN-SYSTEM.md item 6), same
-// precedent as shared/monthly-profit-chart.
 echarts.use([LineChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
-function buildChartOption(month: MonthlyDrawdownMonth, brandColor: string, borderColor: string): EChartsCoreOption {
+function buildChartOption(
+  month: MonthlyDrawdownMonth,
+  brandColor: string,
+  borderColor: string,
+  labelColor: string,
+): EChartsCoreOption {
   const categories = month.days.map((_, index) => String(index + 1));
-  return buildLineChartOption(categories, [...month.days], brandColor, borderColor, {
+  return buildLineChartOption(categories, [...month.days], brandColor, borderColor, labelColor, {
     smooth: false,
     splitNumber: 4,
   });
 }
 
-/**
- * One mini-chart per calendar month (docs/STATISTICS.md "Grade de gráficos mensais de
- * drawdown") - N instances reused in shared/panel-layout's auto-fit grid, same parameterized-
- * component precedent as shared/monthly-profit-chart, just X-axis by day-of-month instead of
- * by month.
- */
 @Component({
   imports: [NgxEchartsDirective],
   providers: [provideEchartsCore({ echarts })],
@@ -47,6 +44,11 @@ export class MonthlyDrawdownChart {
 
   protected readonly chartOptions = computed<EChartsCoreOption>(() => {
     this.theme.current();
-    return buildChartOption(this.month(), readCssColor('--color-brand'), readCssColor('--color-border'));
+    return buildChartOption(
+      this.month(),
+      readCssColor('--color-brand'),
+      readCssColor('--color-border'),
+      readCssColor('--color-text-secondary'),
+    );
   });
 }

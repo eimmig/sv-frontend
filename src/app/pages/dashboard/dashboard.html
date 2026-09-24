@@ -143,7 +143,7 @@
           testId="dashboard-pre-live"
         />
         <app-kpi-card
-          icon="target"
+          icon="local_offer"
           [label]="'dashboard.avgOddLabel' | transloco"
           [value]="overall.avgOdd === null ? ('dashboard.indeterminate' | transloco) : formatOdd(overall.avgOdd)"
           testId="dashboard-avg-odd"
@@ -168,7 +168,12 @@
         />
       </div>
 
-      <app-monthly-profit-chart [data]="dashboardData().dashboard.monthly" />
+      <app-monthly-profit-chart
+        [data]="dashboardData().dashboard.monthly"
+        [daily]="dashboardData().daily"
+        [from]="dashboardData().period.from"
+        [to]="dashboardData().period.to"
+      />
 
       <mat-tab-group class="dashboard__breakdown" data-testid="dashboard-breakdown-tabs">
         <mat-tab [label]="'dashboard.bySportTitle' | transloco">

@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { forkJoin, map } from 'rxjs';
+import { forkJoin, map, of } from 'rxjs';
 
 import { loadInto, submitForm } from '../../core/api-request';
 import { Auth } from '../../core/auth';
@@ -18,9 +18,15 @@ import { Language } from '../../core/language';
 import { formatOdd } from '../../core/number-format';
 import { formatPercent } from '../../core/percent';
 import { SettingsApi } from '../../core/settings-api';
-import { EMPTY_STATISTICS_DASHBOARD, SegmentedBetMetrics, StatisticsApi, StatisticsDashboard } from '../../core/statistics-api';
+import {
+  DailyBetMetrics,
+  EMPTY_STATISTICS_DASHBOARD,
+  SegmentedBetMetrics,
+  StatisticsApi,
+  StatisticsDashboard,
+} from '../../core/statistics-api';
 import { KpiCard, KpiCardSign, kpiSign } from '../../shared/kpi-card/kpi-card';
-import { MonthlyProfitChart } from '../../shared/monthly-profit-chart/monthly-profit-chart';
+import { MonthlyProfitChart, isDailyGranularity } from '../../shared/monthly-profit-chart/monthly-profit-chart';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 import { PeriodPresetFilter, PeriodRange } from '../../shared/period-preset-filter/period-preset-filter';
@@ -39,19 +45,18 @@ const EMPTY_OPTIONS: Options = { bettingHouses: [], sports: [], leagues: [], mar
 
 interface DashboardData {
   readonly dashboard: StatisticsDashboard;
-  /** GET /api/v1/bankroll/balance?at=<from|to> - saldoInicial/saldoFinal do periodo filtrado,
-   *  corte por settledAt (nao betDate), soma todas as casas do tenant. */
+  readonly period: PeriodRange;
+  readonly daily: DailyBetMetrics[];
   readonly bankrollFrom: number;
   readonly bankrollTo: number;
-  /** GET /api/v1/bankroll/balance sem 'at' ("agora") - usado so pra unidadesApostadas
-   *  (totalStaked/(saldoAtual x unitPercent)), formula em docs/STATISTICS.md - deliberadamente
-   *  nao versionado, usa o saldo/unitPercent vigentes aplicados retroativamente ao periodo. */
   readonly bankrollNow: number;
   readonly unitPercent: number;
 }
 
 const EMPTY_DASHBOARD_DATA: DashboardData = {
   dashboard: EMPTY_STATISTICS_DASHBOARD,
+  period: { from: '', to: '' },
+  daily: [],
   bankrollFrom: 0,
   bankrollTo: 0,
   bankrollNow: 0,
@@ -94,14 +99,11 @@ export class Dashboard implements OnInit {
   protected readonly options = signal<Options>(EMPTY_OPTIONS);
   protected readonly optionsError = signal<string | null>(null);
 
-  /** Resolved by <app-period-preset-filter> - defaults to "Hoje" (its own default preset) and
-   *  applies on every change, unlike the 5 catalog selects below (batched behind "Aplicar"). */
   protected readonly period = signal<PeriodRange>({ from: '', to: '' });
 
   protected readonly dashboardData = signal<DashboardData>(EMPTY_DASHBOARD_DATA);
   protected readonly dashboardError = signal<string | null>(null);
 
-  /** null (rendered as "Indeterminado") when saldoAtual or unitPercent is 0. */
   protected readonly unidadesApostadas = computed(() => {
     const data = this.dashboardData();
     const denominator = data.bankrollNow * data.unitPercent;
@@ -116,9 +118,6 @@ export class Dashboard implements OnInit {
     tipsterId: [''],
   });
 
-  /** Admin-only (Auth.isAdmin()) - GET /api/v1/settings isn't role-restricted (every user needs
-   *  unitPercent for unidadesApostadas), only PATCH is. Value shown/edited as a percent (1 for
-   *  1%), converted to the API's decimal fraction (0.01) on submit. */
   protected readonly unitPercentForm = this.formBuilder.nonNullable.group({
     unitPercent: [1, [Validators.required, Validators.min(0.0001), Validators.max(100)]],
   });
@@ -127,8 +126,6 @@ export class Dashboard implements OnInit {
   protected readonly unitPercentSuccess = signal<string | null>(null);
 
   constructor() {
-    // Seeds the field with the loaded unitPercent, but only while the admin hasn't started
-    // editing it (pristine) - avoids clobbering an in-progress edit on every applyFilter() reload.
     effect(() => {
       const percent = this.dashboardData().unitPercent * 100;
       if (this.unitPercentForm.pristine) {
@@ -150,8 +147,6 @@ export class Dashboard implements OnInit {
       this.optionsError,
       () => this.transloco.translate('dashboard.genericError'),
     );
-    // No explicit applyFilter() call here - <app-period-preset-filter> emits its default range
-    // ("Hoje") once on construction, which drives the initial load via onPeriodChange().
   }
 
   protected formatPercent(value: number): string {
@@ -174,17 +169,20 @@ export class Dashboard implements OnInit {
   protected applyFilter(): void {
     const raw = this.filterForm.getRawValue();
     const period = this.period();
+    const filter = {
+      bettingHouseId: raw.bettingHouseId || undefined,
+      sportId: raw.sportId || undefined,
+      leagueId: raw.leagueId || undefined,
+      marketId: raw.marketId || undefined,
+      tipsterId: raw.tipsterId || undefined,
+      from: period.from || undefined,
+      to: period.to || undefined,
+    };
     loadInto(
       forkJoin({
-        dashboard: this.statisticsApi.get({
-          bettingHouseId: raw.bettingHouseId || undefined,
-          sportId: raw.sportId || undefined,
-          leagueId: raw.leagueId || undefined,
-          marketId: raw.marketId || undefined,
-          tipsterId: raw.tipsterId || undefined,
-          from: period.from || undefined,
-          to: period.to || undefined,
-        }),
+        dashboard: this.statisticsApi.get(filter),
+        period: of(period),
+        daily: isDailyGranularity(period.from, period.to) ? this.statisticsApi.getDaily(filter) : of([]),
         bankrollFrom: this.bankrollApi.getBalance(period.from).pipe(map((b) => b.balance)),
         bankrollTo: this.bankrollApi.getBalance(period.to).pipe(map((b) => b.balance)),
         bankrollNow: this.bankrollApi.getBalance().pipe(map((b) => b.balance)),

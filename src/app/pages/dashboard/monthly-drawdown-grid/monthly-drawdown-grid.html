@@ -38,16 +38,23 @@
   </button>
 </form>
 
-@if (loadError(); as message) {
-  <p class="monthly-drawdown-grid__error" role="alert" data-testid="monthly-drawdown-error">{{ message }}</p>
-} @else if (months().length === 0) {
-  <p class="monthly-drawdown-grid__empty" data-testid="monthly-drawdown-empty">
-    {{ 'monthlyDrawdown.emptyResult' | transloco }}
-  </p>
-} @else {
-  <div class="monthly-drawdown-grid__grid" data-testid="monthly-drawdown-grid">
-    @for (month of months(); track trackMonth($index, month)) {
-      <app-monthly-drawdown-chart [month]="month" />
-    }
-  </div>
-}
+<app-chart-frame
+  [title]="'charts.drawdown.title' | transloco"
+  [help]="'charts.drawdown.help' | transloco"
+  [legend]="[{ label: 'charts.drawdown.legend' | transloco, colorToken: '--color-brand' }]"
+  testId="monthly-drawdown-chart-frame"
+>
+  @if (loadError(); as message) {
+    <p class="monthly-drawdown-grid__error" role="alert" data-testid="monthly-drawdown-error">{{ message }}</p>
+  } @else if (months().length === 0) {
+    <p class="monthly-drawdown-grid__empty" data-testid="monthly-drawdown-empty">
+      {{ 'monthlyDrawdown.emptyResult' | transloco }}
+    </p>
+  } @else {
+    <div class="monthly-drawdown-grid__grid" data-testid="monthly-drawdown-grid">
+      @for (month of months(); track trackMonth($index, month)) {
+        <app-monthly-drawdown-chart [month]="month" />
+      }
+    </div>
+  }
+</app-chart-frame>

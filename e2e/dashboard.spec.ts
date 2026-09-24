@@ -39,6 +39,13 @@ function statisticsBundle(overrides: Record<string, unknown> = {}) {
   };
 }
 
+async function brokenKpiIcons(page: import('@playwright/test').Page): Promise<string[]> {
+  await page.evaluate(() => document.fonts.ready);
+  return page
+    .locator('app-kpi-card mat-icon')
+    .evaluateAll((icons) => icons.filter((icon) => icon.scrollWidth > icon.clientWidth).map((icon) => icon.textContent ?? ''));
+}
+
 test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
   test.beforeEach(async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -86,8 +93,18 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
     await expect(page.getByTestId('dashboard-total-staked')).toContainText('R$');
     await expect(page.getByTestId('dashboard-roi')).toContainText('%');
     await expect(page.getByTestId('dashboard-by-sport-row')).toContainText('Futebol');
-    // totalStaked=1000, bankrollNow=2000 (mocked), unitPercent=0.01 (mocked) -> 1000/(2000*0.01)=50
     await expect(page.getByTestId('dashboard-units-staked')).toContainText('50.00');
+  });
+
+  test('every KPI card icon renders as a glyph, average odd included', async ({ page }) => {
+    await page.route('**/api/v1/statistics*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(statisticsBundle()) }),
+    );
+
+    await page.goto('/dashboard');
+    await expect(page.getByTestId('dashboard-avg-odd')).toBeVisible();
+
+    expect(await brokenKpiIcons(page)).toEqual([]);
   });
 
   test('applying a filter issues a new statistics request with the chosen betting house', async ({ page }) => {
@@ -126,8 +143,6 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
     await page.goto('/dashboard');
     await expect(page.getByTestId('dashboard-total-staked')).toContainText('R$');
 
-    // Chromium defaults to en-US locale in this suite (see docs/TESTING.md) - tab labels render
-    // in English unless the language selector is switched first.
     await page.getByRole('tab', { name: 'By market' }).click();
 
     await expect(page.getByTestId('dashboard-by-market-row')).toContainText('Handicap');
@@ -150,6 +165,45 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
     await page.getByRole('option', { name: 'Last month' }).click();
 
     await expect.poll(() => seenRanges.at(-1)?.from).not.toBe(initialRange.from);
+  });
+
+  test('the default "Hoje" period loads the profit chart per day', async ({ page }) => {
+    const dailyRanges: { from: string | null; to: string | null }[] = [];
+    await page.route('**/api/v1/statistics/daily*', (route) => {
+      const url = new URL(route.request().url());
+      dailyRanges.push({ from: url.searchParams.get('from'), to: url.searchParams.get('to') });
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) });
+    });
+    await page.route('**/api/v1/statistics?*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(statisticsBundle()) }),
+    );
+
+    await page.goto('/dashboard');
+    await expect(page.getByTestId('dashboard-monthly-chart')).toBeVisible();
+
+    await expect
+      .poll(() => dailyRanges.some((range) => range.from !== null && range.from === range.to))
+      .toBe(true);
+  });
+
+  test('the profit chart shows its title and legend and explains itself from the "?" button', async ({ page }) => {
+    await page.route('**/api/v1/statistics?*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(statisticsBundle()) }),
+    );
+
+    await page.goto('/dashboard');
+    const frame = page.getByTestId('dashboard-profit-chart-frame');
+    await expect(frame.getByRole('heading', { level: 3 })).toBeVisible();
+    await expect(page.getByTestId('dashboard-profit-chart-frame-legend')).toBeVisible();
+
+    const toggle = page.getByTestId('dashboard-profit-chart-frame-help-toggle');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await toggle.click();
+    await expect(page.getByTestId('dashboard-profit-chart-frame-help')).toBeVisible();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+
+    await toggle.click();
+    await expect(page.getByTestId('dashboard-profit-chart-frame-help')).toHaveCount(0);
   });
 
   test('does not show the unit config field for a member session', async ({ page }) => {

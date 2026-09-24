@@ -1,0 +1,63 @@
+<output
+  class="loading-overlay"
+  [class.loading-overlay--leaving]="loading.leaving()"
+  aria-live="polite"
+  data-testid="loading-overlay"
+>
+  <svg
+    width="100%"
+    viewBox="0 0 400 220"
+    class="loading-overlay__svg"
+    role="img"
+    [attr.aria-label]="'loadingOverlay.ariaLabel' | transloco"
+  >
+    <title>{{ 'loadingOverlay.title' | transloco }}</title>
+    <desc>{{ 'loadingOverlay.desc' | transloco }}</desc>
+    <defs>
+      <mask id="arka-loading-mask">
+        <rect class="lo-wipe" x="0" y="140" width="420" height="70" fill="#ffffff" />
+      </mask>
+    </defs>
+    <circle
+      class="lo-dial"
+      cx="200"
+      cy="78"
+      r="53"
+      fill="none"
+      stroke-width="1.5"
+      stroke-dasharray="2 9"
+      stroke-linecap="round"
+    />
+    <circle class="lo-pulse" cx="200" cy="78" r="36" fill="none" stroke-width="2" />
+    <circle class="lo-pulse lo-p2" cx="200" cy="78" r="36" fill="none" stroke-width="1.5" />
+    <g class="lo-icon">
+      <circle
+        class="lo-ring"
+        cx="200"
+        cy="78"
+        r="36"
+        fill="none"
+        stroke-width="6"
+        transform="rotate(-90 200 78)"
+      />
+      <g class="lo-spokes" stroke-width="6" stroke-linecap="round">
+        <line class="lo-spoke" x1="219.8" y1="58.2" x2="232.5" y2="45.5" />
+        <line class="lo-spoke" x1="180.2" y1="58.2" x2="167.5" y2="45.5" />
+        <line class="lo-spoke" x1="219.8" y1="97.8" x2="232.5" y2="110.5" />
+        <line class="lo-spoke" x1="180.2" y1="97.8" x2="167.5" y2="110.5" />
+      </g>
+      <rect class="lo-bar" x="182" y="82" width="8" height="14" rx="3" opacity="0.45" />
+      <rect class="lo-bar lo-b2" x="196" y="72" width="8" height="24" rx="3" opacity="0.75" />
+      <rect class="lo-bar lo-b3" x="210" y="62" width="8" height="34" rx="3" />
+    </g>
+    <g class="lo-comet"><circle cx="200" cy="42" r="5" /></g>
+    <g class="lo-word" mask="url(#arka-loading-mask)">
+      <text class="lo-name" x="200" y="172" font-size="34" font-weight="400" letter-spacing="-0.4" text-anchor="middle">
+        Ar<tspan class="lo-name-accent" font-weight="500">ka</tspan>
+      </text>
+      <text class="lo-tagline" x="200" y="194" font-size="11" letter-spacing="2.2" text-anchor="middle">
+        {{ 'loadingOverlay.tagline' | transloco }}
+      </text>
+    </g>
+  </svg>
+</output>

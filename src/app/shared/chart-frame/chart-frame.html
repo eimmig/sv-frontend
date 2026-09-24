@@ -1,0 +1,31 @@
+<figure class="chart-frame" [attr.data-testid]="testId()">
+  <figcaption class="chart-frame__header">
+    <h3 class="chart-frame__title">{{ title() }}</h3>
+    <button
+      mat-icon-button
+      type="button"
+      class="chart-frame__help-toggle"
+      [attr.data-testid]="testId() + '-help-toggle'"
+      [attr.aria-label]="'chartFrame.helpLabel' | transloco"
+      [attr.aria-expanded]="helpOpen()"
+      [attr.aria-controls]="helpId"
+      (click)="toggleHelp()"
+    >
+      <mat-icon fontSet="material-symbols-outlined">help</mat-icon>
+    </button>
+  </figcaption>
+  @if (helpOpen()) {
+    <p class="chart-frame__help" [id]="helpId" [attr.data-testid]="testId() + '-help'">{{ help() }}</p>
+  }
+  @if (legend().length > 0) {
+    <ul class="chart-frame__legend" [attr.data-testid]="testId() + '-legend'">
+      @for (item of legend(); track item.label) {
+        <li class="chart-frame__legend-item">
+          <span class="chart-frame__swatch" [style.background]="'var(' + item.colorToken + ')'"></span>
+          {{ item.label }}
+        </li>
+      }
+    </ul>
+  }
+  <ng-content />
+</figure>

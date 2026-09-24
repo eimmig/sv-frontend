@@ -103,7 +103,6 @@ test.describe('epic-031 - "Comparativo de períodos" page', () => {
     await page.getByRole('option', { name: 'Last month' }).click();
 
     await expect.poll(() => seenFroms.some((from) => from !== '2026-09-22')).toBe(true);
-    // Período B's own range is still sent alongside A's new one on the same reload.
     await expect.poll(() => seenFroms.includes('2026-09-22')).toBe(true);
   });
 
@@ -125,5 +124,33 @@ test.describe('epic-031 - "Comparativo de períodos" page', () => {
 
     const row = page.getByTestId('period-comparison-row-net-profit');
     await expect(row.getByTestId('comparison-metric-row-delta')).toBeVisible();
+  });
+
+  test('column headers line up with the right edge of each KPI value on desktop', async ({ page }) => {
+    await page.route('**/api/v1/statistics*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(statisticsBundle()) }),
+    );
+
+    await page.goto('/period-comparison');
+    const row = page.getByTestId('period-comparison-row-net-profit');
+    await expect(row).toContainText('R$');
+
+    const textRight = (locator: import('@playwright/test').Locator) =>
+      locator.evaluate((el) => {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        return range.getBoundingClientRect().right;
+      });
+    const headers = page.getByTestId('period-comparison-rows-header').locator('span');
+    const values = [
+      row.getByTestId('comparison-metric-row-value-a'),
+      row.getByTestId('comparison-metric-row-value-b'),
+      row.getByTestId('comparison-metric-row-delta'),
+    ];
+
+    for (const [index, value] of values.entries()) {
+      const headerRight = await textRight(headers.nth(index + 1));
+      expect(Math.abs(headerRight - (await textRight(value)))).toBeLessThanOrEqual(1);
+    }
   });
 });

@@ -32,7 +32,6 @@ describe('AppSideNav', () => {
                 dashboardMenuItem: 'Dashboard',
                 searchStatistics: 'Buscar estatísticas',
                 periodReport: 'Relatório do período',
-                betTypeDashboard: 'Por tipo de aposta',
                 telegramLink: 'Vincular Telegram',
                 users: 'Usuários',
                 settings: 'Configurações',
@@ -98,14 +97,17 @@ describe('AppSideNav', () => {
     expect(document.querySelector('[data-testid="nav-sports-dashboard"]')).toBeTruthy();
   });
 
-  it('shows the "Times" link (no dashboard counterpart, unlike the other catalogs)', () => {
+  it('opens the teams mat-menu with Cadastrar pointing to /teams and Dashboard to /teams-dashboard', async () => {
     session('MEMBER');
     const fixture = TestBed.createComponent(AppSideNav);
     fixture.detectChanges();
 
-    const link = fixture.nativeElement.querySelector('[data-testid="nav-teams"]');
-    expect(link).toBeTruthy();
-    expect(link.getAttribute('href')).toBe('/teams');
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('[data-testid="nav-teams-menu"]')?.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(document.querySelector('[data-testid="nav-teams-register"]')?.getAttribute('href')).toBe('/teams');
+    expect(document.querySelector('[data-testid="nav-teams-dashboard"]')?.getAttribute('href')).toBe('/teams-dashboard');
   });
 
   it('uses the Symbols Outlined fontSet for nav icons, except "telegram" (no glyph in that font)', () => {
@@ -226,7 +228,6 @@ describe('AppSideNav', () => {
     expect(toggle?.classList.contains('mat-mdc-icon-button')).toBe(true);
   });
 
-  // CDK's BreakpointObserver expects a real MediaQueryList shape - a bare {matches} stub throws.
   function stubMatchMedia(matches: boolean) {
     const mql = {
       matches,

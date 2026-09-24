@@ -6,6 +6,8 @@ import { provideTransloco } from '@jsverse/transloco';
 
 import { acceptLanguageInterceptor } from './core/accept-language-interceptor';
 import { authInterceptor } from './core/auth-interceptor';
+import { httpCacheInterceptor } from './core/http-cache-interceptor';
+import { loadingInterceptor } from './core/loading-interceptor';
 import { TranslocoHttpLoader } from './core/transloco-loader';
 import { routes } from './app.routes';
 
@@ -13,9 +15,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
-    provideHttpClient(withInterceptors([acceptLanguageInterceptor, authInterceptor])),
-    // Native Date (Intl), mesma filosofia de core/date-format.ts - sem moment/date-fns.
-    // Locale reativo ao idioma ativo (App, app.ts) - MAT_DATE_LOCALE sozinho e estatico.
+    provideHttpClient(withInterceptors([acceptLanguageInterceptor, httpCacheInterceptor, loadingInterceptor, authInterceptor])),
     provideNativeDateAdapter(),
     provideTransloco({
       config: {

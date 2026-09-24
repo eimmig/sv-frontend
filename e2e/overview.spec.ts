@@ -64,12 +64,44 @@ test.describe('epic-021 - "Visão geral" pós-login', () => {
   test('renders the 4 lifetime cards and a 12-row monthly table', async ({ page }) => {
     await page.goto('/overview');
 
-    // 100/(1000*0.01)=10, -20/10=-2 -> total 8. Browser locale defaults to en-US in this suite.
     await expect(page.getByTestId('overview-lucro-total')).toContainText('8.00');
     await expect(page.getByTestId('overview-pre-live')).toContainText('7.00');
     await expect(page.getByTestId('overview-lucro-medio-mensal')).toContainText('0.67');
 
     await expect(page.getByTestId('overview-monthly-row')).toHaveCount(12);
+  });
+
+  test('returning to an already loaded screen reuses its data, with no new request and no loading overlay', async ({
+    page,
+  }) => {
+    const statisticsRequests: string[] = [];
+    page.on('request', (request) => {
+      if (request.url().includes('/api/v1/statistics')) {
+        statisticsRequests.push(request.url());
+      }
+    });
+    let releaseFirstLoad: () => void = () => undefined;
+    const firstLoadGate = new Promise<void>((resolve) => (releaseFirstLoad = resolve));
+    await page.route('**/api/v1/statistics**', async (route) => {
+      await firstLoadGate;
+      await route.fallback();
+    });
+
+    await page.goto('/overview');
+    await expect(page.getByTestId('loading-overlay')).toBeVisible();
+    releaseFirstLoad();
+    await expect(page.getByTestId('overview-lucro-total')).toContainText('8.00');
+    await expect(page.getByTestId('loading-overlay')).toHaveCount(0);
+
+    await page.getByTestId('nav-dashboard').click();
+    await expect(page).toHaveURL(/\/dashboard$/);
+    await expect(page.getByTestId('loading-overlay')).toHaveCount(0);
+    const requestsBeforeReturn = statisticsRequests.length;
+
+    await page.getByTestId('nav-overview').click();
+    await expect(page.getByTestId('overview-lucro-total')).toContainText('8.00');
+    await expect(page.getByTestId('loading-overlay')).toHaveCount(0);
+    expect(statisticsRequests).toHaveLength(requestsBeforeReturn);
   });
 
   test('login redirects here and /dashboard remains a normal nav item', async ({ page }) => {

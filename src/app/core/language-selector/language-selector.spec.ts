@@ -48,9 +48,6 @@ describe('LanguageSelector', () => {
     expect(el.querySelector('[data-testid="language-selector-collapsed"]')).toBeNull();
   });
 
-  // A mat-icon rendering "language" as a ligature needs the Material Symbols fontSet -
-  // without it the browser falls back to a generic font and shows raw clipped text instead
-  // of the glyph.
   it('uses the Material Symbols Outlined fontSet for the globe icon in both trigger variants', () => {
     const expanded = TestBed.createComponent(LanguageSelector);
     expanded.detectChanges();

@@ -9,11 +9,35 @@
   "dateMask": {
     "placeholder": "mm/dd/aaaa"
   },
-  "splash": {
-    "ariaLabel": "Animação de carregamento que forma o logo Arka",
-    "title": "Splash animado Arka",
-    "desc": "Um ponto de luz percorre e desenha o anel do cofre, os raios giram até encaixar, as barras sobem em cascata, um pulso se expande e o nome é revelado por uma varredura.",
+  "loadingOverlay": {
+    "ariaLabel": "Carregando",
+    "title": "Arka",
+    "desc": "O logo Arka se monta enquanto os dados carregam.",
     "tagline": "GESTÃO DE BANCA"
+  },
+  "chartFrame": {
+    "helpLabel": "O que este gráfico mostra?"
+  },
+  "charts": {
+    "profit": {
+      "title": "Lucro líquido no período",
+      "help": "Lucro ou prejuízo das apostas liquidadas, em reais. Em períodos de até 31 dias, cada ponto é um dia (dias sem aposta aparecem como zero); em períodos maiores, cada ponto é um mês.",
+      "legend": "Lucro líquido (R$)"
+    },
+    "drawdown": {
+      "title": "Drawdown mensal",
+      "help": "Um gráfico por mês com o lucro ou prejuízo acumulado dia a dia, em unidades (lucro dividido por saldo atual × percentual da unidade). A curva recomeça do zero no dia 1 de cada mês e repete o valor anterior nos dias sem aposta.",
+      "legend": "Lucro acumulado (unidades)"
+    },
+    "equity": {
+      "title": "Curva de lucro acumulado",
+      "help": "Lucro somado dia após dia, em reais, das apostas que correspondem à combinação buscada. Mostra como o resultado dessa combinação evoluiu ao longo do tempo.",
+      "legend": "Lucro acumulado (R$)"
+    },
+    "comparison": {
+      "title": "Evolução comparada dos períodos",
+      "help": "Lucro acumulado em unidades de cada período, alinhado pelo dia do período (dia 1, dia 2...) para comparar o ritmo dos dois mesmo quando as datas são diferentes."
+    }
   },
   "periodPresetFilter": {
     "label": "Período",
@@ -77,6 +101,7 @@
     "leagueNameLabel": "Liga",
     "marketNameLabel": "Mercado",
     "tipsterNameLabel": "Tipster",
+    "teamNameLabel": "Time",
     "bettingHouseNameLabel": "Casa de apostas",
     "betTypeNameLabel": "Tipo de aposta"
   },
@@ -89,6 +114,9 @@
     "bettingHouseLabel": "Casa de apostas",
     "marketLabel": "Mercado",
     "tipsterLabel": "Tipster",
+    "betTypeLabel": "Tipo de aposta",
+    "betTypePre": "Pré-jogo",
+    "betTypeLive": "Ao vivo",
     "fromLabel": "De",
     "toLabel": "Até",
     "filterAll": "Todas",
@@ -155,7 +183,8 @@
     "balanceToLabel": "Saldo final",
     "unitsStakedLabel": "Unidades apostadas",
     "indeterminate": "Indeterminado",
-    "genericError": "Não foi possível completar a operação. Tente novamente."
+    "genericError": "Não foi possível completar a operação. Tente novamente.",
+    "byBetTypeTitle": "Por tipo de aposta"
   },
   "overview": {
     "summaryTitle": "Visão geral",
@@ -195,7 +224,6 @@
     "searchStatistics": "Buscar estatísticas",
     "periodReport": "Relatório do período",
     "periodComparison": "Comparativo de períodos",
-    "betTypeDashboard": "Por tipo de aposta",
     "telegramLink": "Vincular Telegram",
     "users": "Usuários",
     "settings": "Configurações",

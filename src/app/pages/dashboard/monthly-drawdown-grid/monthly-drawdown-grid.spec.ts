@@ -13,8 +13,6 @@ class ResizeObserverStub {
   disconnect(): void {}
 }
 
-/** Same jsdom canvas gap as shared/monthly-profit-chart.spec.ts - the grid renders real
- *  app-monthly-drawdown-chart children (echarts). */
 function stubCanvasContext(): void {
   const noop = () => {};
   const context: Record<string, unknown> = {};
@@ -96,7 +94,7 @@ describe('MonthlyDrawdownGrid', () => {
     const from = request.request.params.get('from')!;
     const to = request.request.params.get('to')!;
     expect(from.endsWith('-01')).toBe(true);
-    expect(from.slice(0, 7)).toBe(to.slice(0, 7)); // same month by default
+    expect(from.slice(0, 7)).toBe(to.slice(0, 7));
 
     request.flush([]);
     httpMock.expectOne((req) => req.url === BANKROLL_URL && !req.params.has('at')).flush({ at: 'now', balance: 1000 });
@@ -112,8 +110,6 @@ describe('MonthlyDrawdownGrid', () => {
     flushLoad();
     fixture.detectChanges();
 
-    // Both fields batched behind applyFilter() (like dashboard.ts's own filterForm) - one
-    // request set, not one per field change (see monthly-drawdown-grid.ts's class comment).
     fixture.componentInstance['filterForm'].setValue({ fromMonth: new Date(2026, 0, 1), toMonth: new Date(2026, 2, 1) });
     fixture.componentInstance['applyFilter']();
     flushLoad([{ date: '2026-02-10', netProfit: 50, totalStaked: 100, roi: 0.5, betCount: 1 }]);
@@ -121,6 +117,8 @@ describe('MonthlyDrawdownGrid', () => {
 
     const charts = fixture.nativeElement.querySelectorAll('[data-testid="monthly-drawdown-chart-title"]');
     expect(charts).toHaveLength(3);
+    const frame = fixture.nativeElement.querySelector('[data-testid="monthly-drawdown-chart-frame"]');
+    expect(frame.querySelectorAll('[data-testid="monthly-drawdown-chart-frame-legend"] li')).toHaveLength(1);
   });
 
   it('changing the range issues a new request with the recalculated from/to only after applyFilter()', () => {
@@ -161,9 +159,6 @@ describe('MonthlyDrawdownGrid', () => {
     fixture.componentInstance['filterForm'].patchValue({ fromMonth: null as unknown as Date });
     fixture.componentInstance['applyFilter']();
 
-    // expectNone() IS the real assertion (a network request is a side effect, not a return
-    // value) - the redundant expect() below only satisfies SonarCloud's typescript:S2699
-    // (does not recognize HttpTestingController's own assertion methods as assertions).
     expect(fixture.componentInstance['filterForm'].invalid).toBe(true);
     httpMock.expectNone((req) => req.url === DAILY_URL);
   });

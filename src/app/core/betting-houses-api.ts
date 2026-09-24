@@ -20,10 +20,6 @@ export interface CreateBettingHouseInput {
 
 const MAX_PAGE_SIZE = 100;
 
-/**
- * GET/POST /api/v1/betting-houses - only sends 'Authorization: Bearer' (authInterceptor),
- * the gateway injects X-User-Id/X-Tenant-Id from the token.
- */
 @Injectable({ providedIn: 'root' })
 export class BettingHousesApi {
   private readonly http = inject(HttpClient);

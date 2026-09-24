@@ -14,15 +14,6 @@ class ResizeObserverStub {
   disconnect(): void {}
 }
 
-/**
- * jsdom has no real 2D canvas (getContext('2d') returns null without the
- * native `canvas` package, which this project doesn't install) - zrender
- * (echarts' renderer, behind app-monthly-profit-chart) dereferences that
- * context unconditionally on init and dispose, throwing during test cleanup.
- * A permissive proxy (every method a no-op, every property settable) is
- * enough for echarts to run its full lifecycle without crashing; it isn't
- * asserting pixels, just that nothing throws. See monthly-profit-chart.spec.ts.
- */
 function stubCanvasContext(): void {
   const noop = () => {};
   const context: Record<string, unknown> = {};
@@ -123,14 +114,6 @@ describe('Dashboard', () => {
     }
   }
 
-  /**
-   * The period-preset-filter defaults to "Hoje" (from === to), so the bankrollFrom/bankrollTo
-   * requests share the same 'at' param and can't be told apart by expectOne - match() returns
-   * both and each is flushed the same way. bankrollNow (no 'at') and settings each now have 2
-   * pending requests too (Dashboard's own + app-monthly-drawdown-grid's - the grid is always
-   * instantiated on creation, mat-tab doesn't lazy-load its content), so those also use match()
-   * instead of expectOne.
-   */
   function flushDashboardData(overrides: Record<string, unknown> = {}) {
     httpMock.expectOne((req) => req.url === STATISTICS_URL).flush({
       overall: {
@@ -162,7 +145,9 @@ describe('Dashboard', () => {
     for (const request of httpMock.match((req) => req.url === SETTINGS_URL)) {
       request.flush({ unitPercent: 0.01 });
     }
-    httpMock.expectOne((req) => req.url === DAILY_STATISTICS_URL).flush([]);
+    for (const request of httpMock.match((req) => req.url === DAILY_STATISTICS_URL)) {
+      request.flush([]);
+    }
   }
 
   function createComponent() {
@@ -173,8 +158,6 @@ describe('Dashboard', () => {
     fixture.detectChanges();
   }
 
-  /** Must run before createComponent() - Dashboard reads Auth.isAdmin() in its own constructor-time
-   *  effect for the unit-config field's default reseed logic (see dashboard.ts). */
   function setAdminSession() {
     TestBed.inject(Auth).session.set({
       token: 't',
@@ -214,6 +197,33 @@ describe('Dashboard', () => {
     expect(roi.textContent).toContain('%');
   });
 
+  it('fetches per-day profit with the dashboard filters when the period spans up to 31 days', () => {
+    createComponent();
+    flushOptions();
+    flushDashboardData();
+
+    fixture.componentInstance['filterForm'].patchValue({ sportId: 'sports-1' });
+    fixture.componentInstance['onPeriodChange']({ from: '2020-03-01', to: '2020-03-31' });
+
+    const daily = httpMock.expectOne(
+      (req) => req.url === DAILY_STATISTICS_URL && req.params.get('from') === '2020-03-01',
+    );
+    expect(daily.request.params.get('to')).toBe('2020-03-31');
+    expect(daily.request.params.get('sportId')).toBe('sports-1');
+    flushDashboardData();
+  });
+
+  it('does not fetch per-day profit when the period spans more than 31 days', () => {
+    createComponent();
+    flushOptions();
+    flushDashboardData();
+
+    fixture.componentInstance['onPeriodChange']({ from: '2020-03-01', to: '2020-04-01' });
+
+    expect(httpMock.match((req) => req.url === DAILY_STATISTICS_URL && req.params.get('from') === '2020-03-01')).toHaveLength(0);
+    flushDashboardData();
+  });
+
   it('colors net profit/ROI negative when overall metrics show a loss', () => {
     createComponent();
     flushOptions();
@@ -237,13 +247,6 @@ describe('Dashboard', () => {
     expect(rows[0].textContent).toContain('sports');
   });
 
-  /**
-   * kpi-card concatenates icon + translated label + value in the same element; the active
-   * language in this test environment resolves from navigator.language (jsdom defaults to
-   * en-US), which this suite's `langs` fixture never defines - asserting on the whole card's
-   * textContent would couple the test to that unrelated translation-fallback behavior. Reading
-   * only .kpi-card__value sidesteps it and is the more precise check anyway.
-   */
   function cardValue(testId: string): string {
     return fixture.nativeElement.querySelector(`[data-testid="${testId}"] .kpi-card__value`).textContent;
   }
@@ -264,7 +267,6 @@ describe('Dashboard', () => {
   it('computes unidades apostadas from totalStaked, current balance, and unitPercent', () => {
     createComponent();
     flushOptions();
-    // totalStaked=1000, bankrollNow=2000, unitPercent=0.01 -> 1000 / (2000 * 0.01) = 50
     flushDashboardData();
     fixture.detectChanges();
 
@@ -290,11 +292,11 @@ describe('Dashboard', () => {
     for (const request of httpMock.match((req) => req.url === SETTINGS_URL)) {
       request.flush({ unitPercent: 0.01 });
     }
-    httpMock.expectOne((req) => req.url === DAILY_STATISTICS_URL).flush([]);
+    for (const request of httpMock.match((req) => req.url === DAILY_STATISTICS_URL)) {
+      request.flush([]);
+    }
     fixture.detectChanges();
 
-    // Missing-translation fallback text for the active lang (see cardValue's comment) - not
-    // asserting the exact localized word, just that it's not a stale/leftover numeric value.
     expect(cardValue('dashboard-units-staked')).not.toMatch(/\d/);
   });
 
@@ -320,22 +322,15 @@ describe('Dashboard', () => {
       bankrollRequest.flush({ at: bankrollRequest.request.params.get('at') ?? 'now', balance: 0 });
     }
     httpMock.expectOne((req) => req.url === SETTINGS_URL).flush({ unitPercent: 0.01 });
+    httpMock.expectOne((req) => req.url === DAILY_STATISTICS_URL).flush([]);
   });
 
   it('shows the RFC 7807 detail when the statistics request fails', () => {
     createComponent();
     flushOptions();
-    // forkJoin initiates all 5 HTTP requests eagerly on subscribe (HttpClient sends immediately
-    // regardless of the combinator); once statistics errors, forkJoin unsubscribes the other 4,
-    // which cancels some (not deterministically all - depends on where each sibling request was
-    // in its lifecycle) of the underlying TestRequests. Resolve whatever is still open rather
-    // than assuming a fixed cancelled/open split.
     httpMock
       .expectOne((req) => req.url === STATISTICS_URL)
       .flush({ detail: 'Filtro inválido.' }, { status: 400, statusText: 'Bad Request' });
-    // app-monthly-drawdown-grid's own forkJoin is independent of Dashboard's - its daily
-    // statistics request needs a real array (not the generic {} below), or its pipe's
-    // .map() throws synchronously instead of surfacing as a normal HTTP error.
     for (const request of httpMock.match((req) => req.url === DAILY_STATISTICS_URL)) {
       if (!request.cancelled) {
         request.flush([]);
@@ -364,7 +359,7 @@ describe('Dashboard', () => {
     setAdminSession();
     createComponent();
     flushOptions();
-    flushDashboardData(); // settings.get() responds { unitPercent: 0.01 } -> field shows 1 (%)
+    flushDashboardData();
     fixture.detectChanges();
 
     const input: HTMLInputElement = fixture.nativeElement.querySelector('[data-testid="dashboard-unit-percent-input"]');
@@ -388,8 +383,6 @@ describe('Dashboard', () => {
     request.flush({ unitPercent: 0.02 });
     fixture.detectChanges();
 
-    // Active lang in this test environment resolves from navigator.language (see cardValue's
-    // comment above) - asserting presence, not the exact localized string.
     expect(fixture.nativeElement.querySelector('[data-testid="dashboard-unit-percent-success"]')).not.toBeNull();
   });
 

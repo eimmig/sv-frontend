@@ -58,9 +58,6 @@ export class AppSideNav {
 
   protected readonly collapsed = signal(storedCollapsed());
 
-  // A mat-menu trigger button isn't itself a routerLink, so routerLinkActive (used by the plain
-  // links) can't reach it - this tracks the active route manually to highlight the trigger when
-  // the user is on either of its 2 destinations (Cadastrar/Dashboard).
   private readonly currentUrl = toSignal(
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd),
@@ -90,29 +87,19 @@ export class AppSideNav {
     { id: 'markets', icon: 'storefront', labelKey: 'catalogs.markets.title', registerRoute: 'markets', dashboardRoute: 'markets-dashboard' },
     { id: 'tipsters', icon: 'groups', labelKey: 'catalogs.tipsters.title', registerRoute: 'tipsters', dashboardRoute: 'tipsters-dashboard' },
     { id: 'betting-houses', icon: 'account_balance', labelKey: 'nav.bettingHouses', registerRoute: 'betting-houses', dashboardRoute: 'betting-houses-dashboard' },
-  ];
-
-  // TEAM has no dashboard counterpart yet (unlike `resources` below) - a plain link, not a
-  // register/dashboard mat-menu.
-  protected readonly catalogLinks: ReadonlyArray<{ route: string; icon: string; labelKey: string; testid: string }> = [
-    { route: 'teams', icon: 'groups_2', labelKey: 'catalogs.teams.title', testid: 'nav-teams' },
+    { id: 'teams', icon: 'groups_2', labelKey: 'catalogs.teams.title', registerRoute: 'teams', dashboardRoute: 'teams-dashboard' },
   ];
 
   protected readonly secondaryLinks: ReadonlyArray<{ route: string; icon: string; labelKey: string; testid: string }> = [
     { route: 'search-statistics', icon: 'query_stats', labelKey: 'nav.searchStatistics', testid: 'nav-search-statistics' },
     { route: 'period-report', icon: 'calendar_month', labelKey: 'nav.periodReport', testid: 'nav-period-report' },
     { route: 'period-comparison', icon: 'compare_arrows', labelKey: 'nav.periodComparison', testid: 'nav-period-comparison' },
-    { route: 'bet-type-dashboard', icon: 'sports_score', labelKey: 'nav.betTypeDashboard', testid: 'nav-bet-type-dashboard' },
     { route: 'telegram-link', icon: 'telegram', labelKey: 'nav.telegramLink', testid: 'nav-telegram-link' },
   ];
 
   protected toggleCollapsed(): void {
     const next = !this.collapsed();
     this.collapsed.set(next);
-    // Only an explicit toggle persists - the initial value (viewport default or a previous
-    // explicit choice) must not be written back as if the user had just chosen it, or a mobile
-    // visit's viewport-based default would incorrectly become "the user's choice" the next time
-    // they open the app from a desktop-width browser.
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(STORAGE_KEY, String(next));
     }
@@ -132,8 +119,6 @@ export class AppSideNav {
     this.language.set(locale);
   }
 
-  // stopPropagation: without it the click bubbles out of the mat-menu panel and CDK's
-  // outside-click detector closes the whole settings menu instead of just expanding the list.
   protected toggleLanguageExpanded(event: MouseEvent): void {
     event.stopPropagation();
     this.languageExpanded.set(!this.languageExpanded());

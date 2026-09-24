@@ -1,4 +1,4 @@
-import { buildComparisonLineChartOption, readCssColor, withAlpha } from './chart-theme';
+import { buildComparisonLineChartOption, buildLineChartOption, readCssColor, withAlpha } from './chart-theme';
 
 describe('withAlpha', () => {
   it('converts a #rrggbb hex color into an rgba() string with the given alpha', () => {
@@ -25,6 +25,7 @@ describe('buildComparisonLineChartOption', () => {
       { name: 'Período A', color: '#2fa85c', data: [10, 20, null] },
       { name: 'Período B', color: '#2e70a0', data: [5, null, null] },
       '#dce3e0',
+      '#5c6b72',
     );
 
     expect(option['series']).toHaveLength(2);
@@ -37,5 +38,70 @@ describe('buildComparisonLineChartOption', () => {
     expect(seriesB.data).toEqual([5, null, null]);
     expect(seriesB.itemStyle.color).toBe('#2e70a0');
     expect((option['xAxis'] as { data: string[] }).data).toEqual(['1', '2', '3']);
+  });
+});
+
+type AxisOption = { axisLabel: { color: string }; splitLine?: { lineStyle: { color: string } } };
+
+function axisColors(option: Record<string, unknown>): { xLabel: string; yLabel: string; grid?: string } {
+  const xAxis = option['xAxis'] as AxisOption;
+  const yAxis = option['yAxis'] as AxisOption;
+  return { xLabel: xAxis.axisLabel.color, yLabel: yAxis.axisLabel.color, grid: yAxis.splitLine?.lineStyle.color };
+}
+
+describe('axis label contrast', () => {
+  it('paints single-series axis labels with the label color, keeping the grid on the border color', () => {
+    const colors = axisColors(buildLineChartOption(['jan'], [1], '#2fa85c', '#dce3e0', '#5c6b72'));
+
+    expect(colors).toEqual({ xLabel: '#5c6b72', yLabel: '#5c6b72', grid: '#dce3e0' });
+  });
+
+  it('paints comparison axis labels with the label color, keeping the grid on the border color', () => {
+    const colors = axisColors(
+      buildComparisonLineChartOption(
+        ['1'],
+        { name: 'A', color: '#2fa85c', data: [1] },
+        { name: 'B', color: '#2e70a0', data: [2] },
+        '#dce3e0',
+        '#5c6b72',
+      ),
+    );
+
+    expect(colors).toEqual({ xLabel: '#5c6b72', yLabel: '#5c6b72', grid: '#dce3e0' });
+  });
+});
+
+describe('tooltip theme', () => {
+  const tokens = { '--color-surface-elevated': '#1d2a36', '--color-border': '#24323f', '--color-text-primary': '#f2f7f5' };
+  const expected = { trigger: 'axis', backgroundColor: '#1d2a36', borderColor: '#24323f', textStyle: { color: '#f2f7f5' } };
+
+  beforeEach(() => {
+    for (const [name, value] of Object.entries(tokens)) {
+      document.documentElement.style.setProperty(name, value);
+    }
+  });
+
+  afterEach(() => {
+    for (const name of Object.keys(tokens)) {
+      document.documentElement.style.removeProperty(name);
+    }
+  });
+
+  it('paints the single-series tooltip with the active theme tokens', () => {
+    const option = buildLineChartOption(['jan'], [1], '#2fa85c', '#dce3e0', '#5c6b72') as { tooltip: unknown };
+
+    expect(option.tooltip).toEqual(expected);
+  });
+
+  it('paints the comparison tooltip with the active theme tokens', () => {
+    const option = buildComparisonLineChartOption(
+      ['1'],
+      { name: 'A', color: '#2fa85c', data: [1] },
+      { name: 'B', color: '#2e70a0', data: [2] },
+      '#dce3e0',
+      '#5c6b72',
+    ) as { tooltip: unknown };
+
+    expect(option.tooltip).toEqual(expected);
   });
 });

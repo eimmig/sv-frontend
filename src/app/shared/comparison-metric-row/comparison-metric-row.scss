@@ -22,6 +22,7 @@
 
 .comparison-metric-row__value {
   font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
 .comparison-metric-row__delta {
@@ -39,10 +40,6 @@
 }
 
 @media (max-width: 599px) {
-  // The shared column header (Período A/B/Diferença) above the row list is hidden at this width
-  // (see period-comparison.scss __rows-header) and a 4-column grid has no room to reflow legibly
-  // - each value/delta gets its own line instead, self-labeled via ::before (sem isso, 2 números
-  // soltos sem indicar qual período era qual).
   .comparison-metric-row {
     grid-template-columns: 1fr;
     row-gap: 2px;

@@ -2,8 +2,81 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-09-22
-**Estado:** `feat-001` a `feat-037` `done` — backlog deste app esgotado.
+**Última atualização:** 2026-09-24
+**Estado:** `feat-046`..`feat-052`/`feat-054` fechadas; `feat-053` no backlog.
+
+## `feat-047` fechada — dashboard e menu flutuante de Times (2026-09-24)
+
+Story SV-644 (SV-645/646), PR #222. `epic-036` da raiz (backend: `stats-service feat-025`). Rota
+`/teams-dashboard` no `catalog-dashboard`; Times entra em `resources` do side-nav.
+
+## `feat-054` fechada — erro de render não congela o overlay (2026-09-24)
+
+Story SV-638 (SV-639/640), PR #219. `@if` do overlay subiu para `app.html`. Prova: teste do `App`.
+Desvio: correção prototipada antes do plan review (registrado na `evidence`).
+
+## `feat-051` fechada — suíte E2E determinística (2026-09-24)
+
+Story SV-633 (SV-634..637), PRs #214-#216. 3 causas: idioma do navegador Playwright (en-US) no teste
+de teclado do login; janela curta no E2E do overlay (portão); stub `{}` em `/statistics/daily`
+congelando o overlay. Suíte completa 3× com 94/94. Achados viraram `feat-053` e `feat-054`.
+
+## `feat-052` fechada — tooltip dos gráficos no tema ativo (2026-09-24)
+
+Story SV-630 (SV-631/632), PR #211. `themedTooltip()` nos 2 builders de `core/chart-theme.ts`.
+
+## `feat-049` fechada — tela já carregada não repete o loading (2026-09-24)
+
+Story SV-627 (SV-628/629), PR #208. Cache em memória de GET `/api/` (`core/http-cache*`), limpo
+por mutação/logout, TTL 5 min, 10s sem gravar após limpar. Limite: aposta via Telegram só aparece
+após o TTL. Detalhe em `docs/sistema-de-design.md` item 17.
+
+## `feat-050` fechada — ícone de odd média (2026-09-24)
+
+Story SV-624 (SV-625/626), PR #205. `target` só existe em Material Symbols; `kpi-card` usa a fonte
+clássica. Virou `local_offer` (igual a Buscar Estatísticas). E2E afirma que todo ícone de card é glifo.
+
+## `feat-048` fechada — ano nas datas do gráfico de Buscar Estatísticas (2026-09-24)
+
+Story SV-620 (SV-621/622), PR #201. Série acima de 1 ano mostra o ano no eixo e no tooltip.
+Tooltip do ECharts é HTML: E2E com `hover()`. Achados viraram `feat-051` (flake `login-layout`) e
+`feat-052` (tooltip branco no tema escuro).
+
+## `feat-046` fechada — alinhamento dos cabeçalhos do comparativo (2026-09-24)
+
+Story SV-617 (SV-618/619), PR #198. Valores A/B das linhas de KPI à direita, sob o cabeçalho.
+E2E de alinhamento mede o retângulo do texto (`Range`), não o `boundingBox` do item de grid.
+
+## `feat-045` fechada — contraste dos rótulos de eixo (2026-09-24)
+
+Story SV-614 (SV-615/616), PRs #195-#197. Achado da QA de `feat-040`; usuário pediu a correção e
+que todo apontamento assim vire tarefa no `feature_list.json`. Rótulos em `--color-text-secondary`
+(5,5:1), grade segue em `--color-border`.
+
+## `feat-038` fechada — PRE/LIVE vira filtro da busca, `/bet-type-dashboard` sai (2026-09-24)
+
+Story SV-610 (subtasks SV-611..613), PRs #191-#193. `epic-035` da raiz, com o backend em
+`stats-service feat-024`. Rota antiga redireciona para `/search-statistics`. Detalhe em
+`docs/services/web.md`.
+
+## `feat-040` fechada — título, legenda e ajuda em todos os gráficos (2026-09-24)
+
+Story SV-603 (subtasks SV-604..606), PRs #187-#189. `shared/chart-frame` aplicado nos 4 gráficos;
+legenda nativa do ECharts saiu do comparativo. Convenção em `docs/sistema-de-design.md` item 6.
+Pendência observada, fora de escopo: rótulos de eixo com pouco contraste (`--color-border`).
+
+## `feat-041` fechada — gráfico de lucro por dia em períodos curtos (2026-09-24)
+
+Story SV-599 (subtasks SV-600/601), PRs #183-#184. Regra do usuário: até 31 dias por dia, acima por
+mês. Desenho em `docs/services/web.md` ("Granularidade do gráfico de lucro"). Achado: toda suíte
+E2E que abre `/dashboard` precisa mockar `/statistics/daily` (antes falhava em silêncio no grid).
+
+## `feat-044` fechada — overlay de carregamento substitui a splash de boot (2026-09-24)
+
+Story SV-594 (subtasks SV-595..597), PRs #178-#180. Decisões do usuário: overlay sobre o app
+inteiro, em todo carregamento (qualquer chamada `/api/` acima de 250ms), login sem splash. Desenho
+completo em `docs/sistema-de-design.md` item 17 ("Uso em produção"); verificação na `evidence` da
+feature. Residual P3: `inert` tira o foco do elemento ativo enquanto o overlay está visível.
 
 ## `feat-037` fechada — tela "Comparativo de períodos" (2026-09-22)
 

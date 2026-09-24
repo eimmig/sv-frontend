@@ -9,8 +9,6 @@ import { Login } from './login';
 import { Auth } from '../../core/auth';
 import { environment } from '../../../environments/environment';
 
-// jsdom has no ResizeObserver - app-login-border-trace (rendered inside Login) needs one to
-// measure the card it overlays. Same stub pattern as shared/equity-curve-chart's spec.
 class ResizeObserverStub {
   observe(): void {}
   unobserve(): void {}

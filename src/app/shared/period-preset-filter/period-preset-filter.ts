@@ -15,7 +15,6 @@ export interface PeriodRange {
   readonly to: string;
 }
 
-/** Exported for reuse by pages/period-report/period-report-metrics.ts (iterating a date range). */
 export function toDateOnly(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -34,17 +33,9 @@ function startOfMonth(date: Date, monthOffset: number): Date {
 }
 
 function endOfMonth(date: Date, monthOffset: number): Date {
-  // Day 0 of the following month is the last day of the target month.
   return new Date(date.getFullYear(), date.getMonth() + monthOffset + 1, 0);
 }
 
-/**
- * Resolves a preset into a {from, to} range anchored on `today` - pure function so tests can
- * inject a fixed reference date instead of depending on the real clock (see period-preset-filter.spec.ts).
- * "Ultima semana"/"Ultimos 15 dias" are rolling windows ending today (7/15 days inclusive);
- * "Ultimo mes" is the previous full calendar month; "Este mes" is day 1 of the current month
- * through today.
- */
 export function resolvePreset(preset: Exclude<PeriodPreset, 'custom'>, today: Date): PeriodRange {
   switch (preset) {
     case 'today':
@@ -60,11 +51,6 @@ export function resolvePreset(preset: Exclude<PeriodPreset, 'custom'>, today: Da
   }
 }
 
-/**
- * Reusable period filter (presets + custom range). Presets resolve client-side to yyyy-MM-dd
- * (StatisticsApi's existing from/to contract, no new query param). Defaults to "Hoje" and emits
- * once on construction so the parent doesn't need to duplicate default-preset logic.
- */
 @Component({
   imports: [
     DateMaskDirective,
@@ -92,8 +78,6 @@ export class PeriodPresetFilter {
       if (preset === 'custom') {
         const from = this.customFrom();
         const to = this.customTo();
-        // Conversao pro contrato yyyy-MM-dd (StatisticsApi from/to) acontece aqui, no limite -
-        // customFrom/customTo internamente sao Date (mat-datepicker), nunca string no template.
         if (from && to) {
           this.rangeChange.emit({ from: toDateOnly(from), to: toDateOnly(to) });
         }

@@ -4,11 +4,6 @@ import { Observable } from 'rxjs';
 
 import { toProblemDetail } from './problem-detail';
 
-/**
- * Runs a read request, writing the result (or the RFC 7807 detail on error)
- * into the given signals - the load-list half of every "list + create"
- * screen (users, betting houses, and future paginated resources).
- */
 export function loadInto<T>(
   request: Observable<T>,
   data: WritableSignal<T>,
@@ -27,11 +22,6 @@ export function loadInto<T>(
   });
 }
 
-/**
- * Runs a write request, toggling the given `submitting` signal and writing
- * the RFC 7807 detail into `error` on failure - the submit half of every
- * "list + create" screen.
- */
 export function submitForm<T>(
   request: Observable<T>,
   submitting: WritableSignal<boolean>,

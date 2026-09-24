@@ -50,7 +50,6 @@ export class Users {
     );
   }
 
-  /** Avatar/badge de iniciais (docs/DESIGN-SYSTEM.md item 14) - circulo, fundo muted, negrito. */
   protected initials(name: string): string {
     const parts = name.trim().split(/\s+/).filter(Boolean);
     if (parts.length === 0) {

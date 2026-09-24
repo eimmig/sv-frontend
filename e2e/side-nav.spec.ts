@@ -15,10 +15,11 @@ test.describe('app-side-nav collapsed state', () => {
         }),
       );
     });
-    // Only the shell (side-nav) is under test here - stub every API call generically so the
-    // dashboard page underneath doesn't error out while loading its own data.
     await page.route('**/api/**', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: '{}' }),
+    );
+    await page.route('**/api/v1/statistics/daily*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
     );
     await page.route('**/api/v1/statistics*', (route) =>
       route.fulfill({

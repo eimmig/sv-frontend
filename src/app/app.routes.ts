@@ -16,7 +16,7 @@ const CATALOG_DASHBOARD_RESOURCES: { path: string; segment: string; labelKey: st
   { path: 'markets-dashboard', segment: 'byMarket', labelKey: 'catalogDashboard.marketNameLabel' },
   { path: 'tipsters-dashboard', segment: 'byTipster', labelKey: 'catalogDashboard.tipsterNameLabel' },
   { path: 'betting-houses-dashboard', segment: 'byBettingHouse', labelKey: 'catalogDashboard.bettingHouseNameLabel' },
-  { path: 'bet-type-dashboard', segment: 'byBetType', labelKey: 'catalogDashboard.betTypeNameLabel' },
+  { path: 'teams-dashboard', segment: 'byTeam', labelKey: 'catalogDashboard.teamNameLabel' },
 ];
 
 const catalogManagerRoutes: Route[] = CATALOG_MANAGER_RESOURCES.map(({ path, resourcePath }) => ({
@@ -35,6 +35,7 @@ const catalogDashboardRoutes: Route[] = CATALOG_DASHBOARD_RESOURCES.map(({ path,
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
+  { path: 'bet-type-dashboard', redirectTo: 'search-statistics' },
   {
     path: 'login',
     loadComponent: () => import('./pages/login/login').then((m) => m.Login),

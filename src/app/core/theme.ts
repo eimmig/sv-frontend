@@ -27,13 +27,6 @@ function applyExplicitTheme(mode: ThemeMode | null): void {
   document.documentElement.dataset['theme'] = mode;
 }
 
-/**
- * Explicit light/dark toggle, persisted in localStorage, overriding
- * `prefers-color-scheme` once the user has chosen a theme explicitly (see
- * docs/DESIGN-SYSTEM.md "Modos claro e escuro"). Until then, no `data-theme`
- * attribute is set on <html> and the `@media (prefers-color-scheme: dark)`
- * block in styles.scss decides.
- */
 @Injectable({ providedIn: 'root' })
 export class Theme {
   readonly current = signal<ThemeMode>(storedTheme() ?? (prefersDark() ? 'dark' : 'light'));

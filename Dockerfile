@@ -1,4 +1,3 @@
-# Multi-stage build: compila com Node, serve estatico com nginx (imagem final sem toolchain).
 FROM node:24-alpine AS build
 WORKDIR /app
 COPY package*.json ./

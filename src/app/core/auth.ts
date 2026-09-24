@@ -3,6 +3,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 
 import { environment } from '../../environments/environment';
+import { HttpCache } from './http-cache';
 
 export type Role = 'ADMIN' | 'MEMBER';
 
@@ -38,14 +39,10 @@ function storedSession(): Session | null {
   }
 }
 
-/**
- * PASETO v4.local session, persisted in localStorage (same 'stakevault.*' pattern as
- * Theme/Language) - the token is symmetrically encrypted, so userId/role are returned by the
- * login endpoint itself rather than decoded client-side.
- */
 @Injectable({ providedIn: 'root' })
 export class Auth {
   private readonly http = inject(HttpClient);
+  private readonly httpCache = inject(HttpCache);
 
   readonly session = signal<Session | null>(storedSession());
   readonly isAuthenticated = computed(() => this.session() !== null);
@@ -76,11 +73,6 @@ export class Auth {
       );
   }
 
-  /**
-   * Called after a successful POST /api/v1/auth/change-password - the token itself is not
-   * reissued (its claims never carried mustChangePassword), so the session flag is cleared
-   * locally instead of requiring a fresh login.
-   */
   clearMustChangePassword(): void {
     const current = this.session();
     if (!current?.mustChangePassword) {
@@ -94,6 +86,7 @@ export class Auth {
   }
 
   logout(): void {
+    this.httpCache.clear();
     this.session.set(null);
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem(STORAGE_KEY);

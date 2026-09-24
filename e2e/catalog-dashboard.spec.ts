@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-function statisticsBundle(bySport: unknown[], byBetType: unknown[] = []) {
+function statisticsBundle(bySport: unknown[]) {
   return {
     overall: {
       totalStaked: 0,
@@ -20,7 +20,7 @@ function statisticsBundle(bySport: unknown[], byBetType: unknown[] = []) {
     byBettingHouse: [],
     byLeague: [],
     byTipster: [],
-    byBetType,
+    byBetType: [],
     monthly: [],
   };
 }
@@ -63,9 +63,44 @@ test.describe('shared/catalog-dashboard (ranking per segment)', () => {
     await expect(page).toHaveURL(/\/sports-dashboard$/);
     const rows = page.getByTestId('catalog-dashboard-row');
     await expect(rows).toHaveCount(2);
-    // Basquete has the higher ROI (18% > 4%) and must rank first.
     await expect(rows.first()).toContainText('Basquete');
     await expect(rows.last()).toContainText('Futebol');
+  });
+
+  test('the Times menu opens the team ranking sorted by ROI and still leads to the team registration', async ({
+    page,
+  }) => {
+    const metrics = (roi: number) => ({ totalStaked: 100, netProfit: roi * 100, roi, winRate: 0.5, settledCount: 2, wonCount: 1, lostCount: 1, voidCount: 0, preCount: 0, liveCount: 0, avgOdd: 2 });
+    await page.route('**/api/v1/statistics*', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          ...statisticsBundle([]),
+          byTeam: [
+            { dimensionId: 't1', dimensionName: 'Vasco', metrics: metrics(-0.1) },
+            { dimensionId: 't2', dimensionName: 'Flamengo', metrics: metrics(0.25) },
+          ],
+        }),
+      }),
+    );
+    await page.route('**/api/v1/statistics/daily*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+
+    await page.goto('/dashboard');
+    await page.getByTestId('nav-teams-menu').click();
+    await page.getByTestId('nav-teams-dashboard').click();
+
+    await expect(page).toHaveURL(/\/teams-dashboard$/);
+    const rows = page.getByTestId('catalog-dashboard-row');
+    await expect(rows).toHaveCount(2);
+    await expect(rows.first()).toContainText('Flamengo');
+    await expect(rows.last()).toContainText('Vasco');
+
+    await page.getByTestId('nav-teams-menu').click();
+    await page.getByTestId('nav-teams-register').click();
+    await expect(page).toHaveURL(/\/teams$/);
   });
 
   test('changing the period issues a new statistics request with the new date range', async ({ page }) => {
@@ -96,31 +131,17 @@ test.describe('shared/catalog-dashboard (ranking per segment)', () => {
     await expect(page.getByTestId('catalog-dashboard-error')).toContainText('Filtro inválido.');
   });
 
-  test('opens /bet-type-dashboard from the nav and shows the PRE/LIVE buckets', async ({ page }) => {
+  test('the old /bet-type-dashboard address lands on the statistics search, and the nav no longer lists it', async ({
+    page,
+  }) => {
     await page.route('**/api/v1/statistics*', (route) =>
-      route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(
-          statisticsBundle(
-            [],
-            [
-              { dimensionId: 'PRE', dimensionName: 'PRE', metrics: { totalStaked: 700, netProfit: 100, roi: 0.14, winRate: 0.55, settledCount: 30, wonCount: 17, lostCount: 13, voidCount: 0, preCount: 30, liveCount: 0, avgOdd: 1.9 } },
-              { dimensionId: 'LIVE', dimensionName: 'LIVE', metrics: { totalStaked: 300, netProfit: 50, roi: 0.17, winRate: 0.58, settledCount: 12, wonCount: 7, lostCount: 5, voidCount: 0, preCount: 0, liveCount: 12, avgOdd: 2.1 } },
-            ],
-          ),
-        ),
-      }),
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(statisticsBundle([])) }),
     );
 
-    await page.goto('/dashboard');
-    await page.getByTestId('nav-bet-type-dashboard').click();
+    await page.goto('/bet-type-dashboard');
 
-    await expect(page).toHaveURL(/\/bet-type-dashboard$/);
-    const rows = page.getByTestId('catalog-dashboard-row');
-    await expect(rows).toHaveCount(2);
-    // LIVE has the higher ROI (17% > 14%) and must rank first.
-    await expect(rows.first()).toContainText('LIVE');
-    await expect(rows.last()).toContainText('PRE');
+    await expect(page).toHaveURL(/\/search-statistics$/);
+    await expect(page.getByTestId('nav-search-statistics')).toBeVisible();
+    await expect(page.getByTestId('nav-bet-type-dashboard')).toHaveCount(0);
   });
 });

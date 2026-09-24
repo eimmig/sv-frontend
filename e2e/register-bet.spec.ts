@@ -92,10 +92,6 @@ test.describe('RF04 - manual bet registration', () => {
     expect(requestBody?.['betType']).toBe('live');
   });
 
-  // betDate splits into a mat-datepicker (calendar click) and a mat-timepicker
-  // (typed time, accepted 24h format regardless of locale) - proves the real widgets work and
-  // that the combined value reaches bets-service correctly, not just the boundary conversion
-  // already unit-tested.
   test('picks the bet date via the calendar and the time via the timepicker input', async ({ page }) => {
     let requestBody: Record<string, unknown> | null = null;
     await page.route('**/api/v1/bets', (route) => {
@@ -129,7 +125,7 @@ test.describe('RF04 - manual bet registration', () => {
     await expect(page.getByTestId('register-bet-success')).toBeVisible();
     const sentDate = new Date(requestBody?.['betDate'] as string);
     expect(sentDate.getDate()).toBe(10);
-    expect(sentDate.getMonth()).toBe(8); // September, 0-indexed
+    expect(sentDate.getMonth()).toBe(8);
     expect(sentDate.getHours()).toBe(14);
     expect(sentDate.getMinutes()).toBe(30);
   });

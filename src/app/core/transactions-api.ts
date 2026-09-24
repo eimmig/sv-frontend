@@ -29,11 +29,6 @@ export interface CreateTransactionInput {
 
 const PAGE_SIZE = 20;
 
-/**
- * POST/GET /api/v1/transactions - only sends 'Authorization: Bearer' (authInterceptor),
- * the gateway injects X-User-Id/X-Tenant-Id from the token. No Idempotency-Key here
- * (unlike POST /bets) - the backend contract doesn't require one for transactions.
- */
 @Injectable({ providedIn: 'root' })
 export class TransactionsApi {
   private readonly http = inject(HttpClient);

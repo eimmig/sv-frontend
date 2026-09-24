@@ -9,7 +9,6 @@ class ResizeObserverStub {
   disconnect(): void {}
 }
 
-/** Same jsdom canvas gap as shared/monthly-profit-chart - see that spec for the full rationale. */
 function stubCanvasContext(): void {
   const noop = () => {};
   const context: Record<string, unknown> = {};
@@ -52,6 +51,16 @@ describe('EquityCurveChart', () => {
     });
   });
 
+  it('frames the chart with a title, a help toggle and a 1-entry legend', () => {
+    const fixture = TestBed.createComponent(EquityCurveChart);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+
+    expect(el.querySelector('[data-testid="search-statistics-chart-frame"] h3')).toBeTruthy();
+    expect(el.querySelector('[data-testid="search-statistics-chart-frame-help-toggle"]')).toBeTruthy();
+    expect(el.querySelectorAll('[data-testid="search-statistics-chart-frame-legend"] li')).toHaveLength(1);
+  });
+
   it('renders the echarts host element without console errors, empty data', () => {
     const fixture = TestBed.createComponent(EquityCurveChart);
 
@@ -68,5 +77,24 @@ describe('EquityCurveChart', () => {
     ]);
 
     expect(() => fixture.detectChanges()).not.toThrow();
+  });
+
+  it('adds the year to the dates only when the timeline spans more than one year', () => {
+    const fixture = TestBed.createComponent(EquityCurveChart);
+    const categories = () =>
+      (fixture.componentInstance['chartOptions']() as { xAxis: { data: string[] } }).xAxis.data;
+
+    fixture.componentRef.setInput('data', [
+      { date: '2024-01-01', cumulativeProfit: 30 },
+      { date: '2026-01-02', cumulativeProfit: -10 },
+    ]);
+    expect(categories()[0]).toContain('2024');
+    expect(categories()[1]).toContain('2026');
+
+    fixture.componentRef.setInput('data', [
+      { date: '2026-01-03', cumulativeProfit: 30 },
+      { date: '2026-03-07', cumulativeProfit: -10 },
+    ]);
+    expect(categories().some((label) => label.includes('2026'))).toBe(false);
   });
 });

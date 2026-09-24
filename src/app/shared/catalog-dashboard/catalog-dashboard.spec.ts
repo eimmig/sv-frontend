@@ -54,6 +54,7 @@ describe('CatalogDashboard', () => {
       byBettingHouse: [],
       byLeague: [],
       byTipster: [],
+      byTeam: [],
       byBetType: [],
       monthly: [],
       ...overrides,
@@ -108,6 +109,15 @@ describe('CatalogDashboard', () => {
     const rows = fixture.nativeElement.querySelectorAll('[data-testid="catalog-dashboard-row"]');
     expect(rows).toHaveLength(1);
     expect(rows[0].textContent).toContain('Ana');
+  });
+
+  it('shows the empty state when the API response has no array for the segment yet', () => {
+    createComponent('byTeam', 'catalogDashboard.teamNameLabel');
+    flushBundle({ byTeam: undefined });
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('[data-testid="catalog-dashboard-empty"]')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('[data-testid="catalog-dashboard-row"]')).toBeNull();
   });
 
   it('renders the empty-state row, not an error, when the segment has no entries', () => {

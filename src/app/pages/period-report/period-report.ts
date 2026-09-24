@@ -19,8 +19,6 @@ import { buildDailyTable, computeSummary } from './period-report-metrics';
 interface PeriodReportData {
   readonly overall: BetMetrics;
   readonly daily: DailyBetMetrics[];
-  /** This page has no separate "saldoAtual agora" fetch - saldoFinal plays that role in every
-   *  formula here (see period-report-metrics.ts). */
   readonly saldoInicial: number;
   readonly saldoFinal: number;
   readonly unitPercent: number;
@@ -34,11 +32,6 @@ const EMPTY_DATA: PeriodReportData = {
   unitPercent: 0,
 };
 
-/**
- * "Relatório do período" - closed-form view of performance within a period, always with a
- * mandatory date filter (reuses shared/period-preset-filter, which always has a value - defaults
- * to "Hoje" - so this page never has a "no filter" state by construction).
- */
 @Component({
   imports: [KpiCard, Panel, PanelLayout, PeriodPresetFilter, TranslocoPipe],
   selector: 'app-period-report',

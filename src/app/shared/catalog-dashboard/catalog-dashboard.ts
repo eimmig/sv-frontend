@@ -11,15 +11,8 @@ import { Panel } from '../panel/panel';
 import { PanelLayout } from '../panel-layout/panel-layout';
 import { PeriodPresetFilter, PeriodRange } from '../period-preset-filter/period-preset-filter';
 
-/** One key per segment array already returned by GET /api/v1/statistics (StatisticsDashboard) -
- *  every catalog dashboard reads the SAME bundle, just a different key. */
-export type CatalogSegment = 'bySport' | 'byLeague' | 'byMarket' | 'byTipster' | 'byBettingHouse' | 'byBetType';
+export type CatalogSegment = 'bySport' | 'byLeague' | 'byMarket' | 'byTipster' | 'byBettingHouse' | 'byTeam';
 
-/**
- * Reusable ranking view for a single catalog resource (sports, leagues, markets, tipsters,
- * betting houses - all structurally identical segments of StatisticsDashboard). Instantiated
- * once per route instead of one near-identical page per resource.
- */
 @Component({
   imports: [Panel, PanelLayout, PeriodPresetFilter, TranslocoPipe],
   selector: 'app-catalog-dashboard',
@@ -28,7 +21,6 @@ export type CatalogSegment = 'bySport' | 'byLeague' | 'byMarket' | 'byTipster' |
 })
 export class CatalogDashboard {
   readonly segment = input.required<CatalogSegment>();
-  /** i18n key for the "Nome" column header, e.g. 'catalogDashboard.sportNameLabel'. */
   readonly labelKey = input.required<string>();
 
   private readonly statisticsApi = inject(StatisticsApi);
@@ -40,9 +32,7 @@ export class CatalogDashboard {
   protected readonly data = signal<StatisticsDashboard>(EMPTY_STATISTICS_DASHBOARD);
   protected readonly error = signal<string | null>(null);
 
-  /** Ranked most to least profitable - SegmentedBetMetrics.metrics.roi is always a number
-   *  (never null), no tie-break/null case to handle. */
-  protected readonly rows = computed(() => [...this.data()[this.segment()]].sort((a, b) => b.metrics.roi - a.metrics.roi));
+  protected readonly rows = computed(() => [...(this.data()[this.segment()] ?? [])].sort((a, b) => b.metrics.roi - a.metrics.roi));
 
   protected formatPercent(value: number): string {
     return formatPercent(value, this.language.current());

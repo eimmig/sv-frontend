@@ -9,11 +9,35 @@
   "dateMask": {
     "placeholder": "mm/dd/yyyy"
   },
-  "splash": {
-    "ariaLabel": "Loading animation that forms the Arka logo",
-    "title": "Arka animated splash",
-    "desc": "A point of light traces and draws the vault ring, the spokes turn until they lock into place, the bars rise in a cascade, a pulse expands, and the name is revealed by a sweep.",
+  "loadingOverlay": {
+    "ariaLabel": "Loading",
+    "title": "Arka",
+    "desc": "The Arka logo assembles while data loads.",
     "tagline": "BANKROLL MANAGEMENT"
+  },
+  "chartFrame": {
+    "helpLabel": "What does this chart show?"
+  },
+  "charts": {
+    "profit": {
+      "title": "Net profit in the period",
+      "help": "Profit or loss of settled bets, in BRL. For periods of up to 31 days each point is a day (days without bets show as zero); for longer periods each point is a month.",
+      "legend": "Net profit (BRL)"
+    },
+    "drawdown": {
+      "title": "Monthly drawdown",
+      "help": "One chart per month with profit or loss accumulated day by day, in units (profit divided by current balance × unit percentage). The curve restarts at zero on day 1 of each month and repeats the previous value on days without bets.",
+      "legend": "Accumulated profit (units)"
+    },
+    "equity": {
+      "title": "Accumulated profit curve",
+      "help": "Profit added up day after day, in BRL, for the bets matching the searched combination. Shows how that combination performed over time.",
+      "legend": "Accumulated profit (BRL)"
+    },
+    "comparison": {
+      "title": "Periods compared over time",
+      "help": "Accumulated profit in units for each period, aligned by day of the period (day 1, day 2...) to compare their pace even when the dates differ."
+    }
   },
   "periodPresetFilter": {
     "label": "Period",
@@ -77,6 +101,7 @@
     "leagueNameLabel": "League",
     "marketNameLabel": "Market",
     "tipsterNameLabel": "Tipster",
+    "teamNameLabel": "Team",
     "bettingHouseNameLabel": "Betting house",
     "betTypeNameLabel": "Bet type"
   },
@@ -89,6 +114,9 @@
     "bettingHouseLabel": "Betting house",
     "marketLabel": "Market",
     "tipsterLabel": "Tipster",
+    "betTypeLabel": "Bet type",
+    "betTypePre": "Pre-match",
+    "betTypeLive": "Live",
     "fromLabel": "From",
     "toLabel": "To",
     "filterAll": "All",
@@ -155,7 +183,8 @@
     "balanceToLabel": "Ending balance",
     "unitsStakedLabel": "Units staked",
     "indeterminate": "Indeterminate",
-    "genericError": "Could not complete the operation. Please try again."
+    "genericError": "Could not complete the operation. Please try again.",
+    "byBetTypeTitle": "By bet type"
   },
   "overview": {
     "summaryTitle": "Overview",
@@ -195,7 +224,6 @@
     "searchStatistics": "Search statistics",
     "periodReport": "Period report",
     "periodComparison": "Period comparison",
-    "betTypeDashboard": "By bet type",
     "telegramLink": "Link Telegram",
     "users": "Users",
     "settings": "Settings",

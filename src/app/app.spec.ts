@@ -1,13 +1,27 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { Component, computed, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { DateAdapter, provideNativeDateAdapter } from '@angular/material/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { vi } from 'vitest';
 
 import { App } from './app';
 import { Language } from './core/language';
+import { Loading } from './core/loading';
+
+const brokenScreen = signal(false);
+
+@Component({ template: '<p>{{ content() }}</p>' })
+class BrokenScreen {
+  protected readonly content = computed(() => {
+    if (brokenScreen()) {
+      throw new TypeError('render failure');
+    }
+    return 'ok';
+  });
+}
 
 describe('App', () => {
   beforeEach(async () => {
@@ -26,9 +40,9 @@ describe('App', () => {
             'pt-BR': {
               theme: { switchToLight: 'Modo claro', switchToDark: 'Modo escuro' },
               language: { label: 'Idioma' },
-              splash: {
-                ariaLabel: 'Animação de carregamento',
-                title: 'Splash animado Arka',
+              loadingOverlay: {
+                ariaLabel: 'Carregando',
+                title: 'Arka',
                 desc: 'Descrição',
                 tagline: 'GESTÃO DE BANCA',
               },
@@ -89,16 +103,41 @@ describe('App', () => {
     expect(ptBrFormatted.toLowerCase()).toContain('setembro');
   });
 
-  it('shows the splash first and dismisses it once the intro finishes', () => {
+  it('opens straight to the app, with no overlay while nothing is loading', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
 
-    expect(el.querySelector('app-splash')).toBeTruthy();
+    expect(el.querySelector('[data-testid="loading-overlay"]')).toBeNull();
+    expect(el.querySelector<HTMLElement>('.app-shell')?.inert).toBe(false);
+  });
 
-    vi.runAllTimers();
+  it('shows the overlay and makes the shell inert while a backend call is loading', () => {
+    const fixture = TestBed.createComponent(App);
+    TestBed.inject(Loading).visible.set(true);
     fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
 
-    expect(el.querySelector('app-splash')).toBeNull();
+    expect(el.querySelector('[data-testid="loading-overlay"]')).toBeTruthy();
+    expect(el.querySelector<HTMLElement>('.app-shell')?.inert).toBe(true);
+  });
+
+  it('removes the overlay even when a screen fails to render in the same pass', async () => {
+    brokenScreen.set(false);
+    TestBed.inject(Router).resetConfig([{ path: '', component: BrokenScreen }]);
+    const fixture = TestBed.createComponent(App);
+    await TestBed.inject(Router).navigateByUrl('/');
+    const loading = TestBed.inject(Loading);
+    loading.visible.set(true);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('[data-testid="loading-overlay"]')).toBeTruthy();
+
+    brokenScreen.set(true);
+    loading.visible.set(false);
+    expect(() => fixture.detectChanges()).toThrow('render failure');
+
+    expect(el.querySelector('[data-testid="loading-overlay"]')).toBeNull();
+    expect(el.querySelector<HTMLElement>('.app-shell')?.inert).toBe(false);
   });
 });

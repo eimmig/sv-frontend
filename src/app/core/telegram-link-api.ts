@@ -9,10 +9,6 @@ export interface TelegramLink {
   readonly expiresAt: string;
 }
 
-/**
- * POST /api/v1/telegram-links - only sends 'Authorization: Bearer' (authInterceptor), the
- * gateway injects X-User-Id/X-Tenant-Id from the token (docs/services/auth-service.md).
- */
 @Injectable({ providedIn: 'root' })
 export class TelegramLinkApi {
   private readonly http = inject(HttpClient);

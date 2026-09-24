@@ -13,8 +13,6 @@ class ResizeObserverStub {
   disconnect(): void {}
 }
 
-/** Same jsdom canvas gap as shared/monthly-profit-chart - app-comparison-equity-chart (echarts)
- *  is always instantiated by this page now. See that spec for the full rationale. */
 function stubCanvasContext(): void {
   const noop = () => {};
   const context: Record<string, unknown> = {};
@@ -54,6 +52,7 @@ const EMPTY_DASHBOARD = {
   byBettingHouse: [],
   byLeague: [],
   byTipster: [],
+  byTeam: [],
   byBetType: [],
   monthly: [],
 };
@@ -119,15 +118,6 @@ describe('PeriodComparison', () => {
     }
   }
 
-  /**
-   * Drains every pending comparison request (statistics/daily/bankroll/settings) in whatever
-   * batches they arrive - shared/period-preset-filter's 2 instances (Período A/B) each emit their
-   * own default on construction, so applyFilter() can run more than once before the view settles
-   * (same redundant-initial-load tradeoff already accepted elsewhere in this app for a single
-   * filter). Every statistics/daily request's from/to is asserted non-empty here - an
-   * empty/undefined period slipping through on the very first request is the failure mode
-   * this guards against.
-   */
   function drainComparisonRequests(balance = 1000, unitPercent = 0.01): void {
     let pending: TestRequest[];
     while ((pending = httpMock.match((req) => [STATISTICS_URL, DAILY_URL, BANKROLL_URL, SETTINGS_URL].includes(req.url))).length > 0) {
@@ -158,14 +148,8 @@ describe('PeriodComparison', () => {
   }
 
   beforeEach(async () => {
-    // Both period-preset-filter defaults ("Hoje") resolve from a real `new Date()` - freeze the
-    // clock so assertions on the emitted from/to don't depend on which day the suite runs on.
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-09-22T12:00:00Z'));
-    // Language.current() (core/language.ts) falls back to navigator.language when nothing is
-    // pinned - this suite's `langs`/`availableLangs` only register 'pt-BR', so an unpinned
-    // 'en-US' jsdom default would resolve translate() calls (e.g. periodComparison.indeterminate)
-    // against a lang transloco never loaded. Same fix already applied to period-report.spec.ts.
     localStorage.removeItem('stakevault.language');
     Object.defineProperty(navigator, 'language', { value: 'pt-BR', configurable: true });
     await TestBed.configureTestingModule({
@@ -203,8 +187,6 @@ describe('PeriodComparison', () => {
     drainComparisonRequests();
     fixture.detectChanges();
 
-    // Distinguishable periods (A=January, B stays "Hoje") so each side's statistics request can
-    // be flushed with a different payload.
     fixture.componentInstance['onPeriodAChange']({ from: '2026-01-01', to: '2026-01-31' });
 
     for (const request of httpMock.match((req) => req.url === STATISTICS_URL)) {
@@ -225,14 +207,13 @@ describe('PeriodComparison', () => {
     const settledCountRow = fixture.nativeElement.querySelector('[data-testid="period-comparison-row-settled-count"]');
     expect(settledCountRow.querySelector('[data-testid="comparison-metric-row-value-a"]').textContent).toContain('10');
     expect(settledCountRow.querySelector('[data-testid="comparison-metric-row-value-b"]').textContent).toContain('12');
-    // Plain counts never get a colored delta (only netProfit/roi do, same restraint as kpi-card elsewhere).
     expect(settledCountRow.querySelector('.comparison-metric-row__delta--positive')).toBeNull();
   });
 
   it('renders "Indeterminado" for avgOdd/unidadesApostadas when a side has no settled bet or zero balance', () => {
     createComponent();
     flushOptions();
-    drainComparisonRequests(0); // balance=0 on both sides
+    drainComparisonRequests(0);
     fixture.detectChanges();
 
     const avgOddRow = fixture.nativeElement.querySelector('[data-testid="period-comparison-row-avg-odd"]');
@@ -253,7 +234,7 @@ describe('PeriodComparison', () => {
     expect(requests.length).toBeGreaterThan(0);
     const froms = requests.map((request) => request.request.params.get('from'));
     expect(froms).toContain('2026-01-01');
-    expect(froms).toContain('2026-09-22'); // period B, untouched
+    expect(froms).toContain('2026-09-22');
     for (const request of requests) {
       request.flush(EMPTY_DASHBOARD);
     }
@@ -269,8 +250,6 @@ describe('PeriodComparison', () => {
     fixture.componentInstance['filterForm'].patchValue({ sportId: 'sport-1' });
     fixture.componentInstance['applyFilter']();
 
-    // 2 real HTTP requests (one per period side) - both periods happen to be "Hoje" at this
-    // point, but each side still fires its own GET, never deduplicated by HttpClient.
     const requests = httpMock.match((req) => req.url === STATISTICS_URL);
     expect(requests).toHaveLength(2);
     for (const request of requests) {
@@ -305,7 +284,6 @@ describe('PeriodComparison', () => {
         break;
       }
     }
-    // Drain whatever the failure left behind (forkJoin cancels the siblings of the failed request).
     for (const request of httpMock.match(() => true)) {
       if (!request.cancelled) {
         request.flush({});
