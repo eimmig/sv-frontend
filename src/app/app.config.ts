@@ -16,8 +16,6 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
     provideHttpClient(withInterceptors([acceptLanguageInterceptor, httpCacheInterceptor, loadingInterceptor, authInterceptor])),
-    // Native Date (Intl), mesma filosofia de core/date-format.ts - sem moment/date-fns.
-    // Locale reativo ao idioma ativo (App, app.ts) - MAT_DATE_LOCALE sozinho e estatico.
     provideNativeDateAdapter(),
     provideTransloco({
       config: {

@@ -5,11 +5,6 @@ import { TranslocoPipe } from '@jsverse/transloco';
 
 import { Auth } from '../auth';
 
-/**
- * Non-blocking, session-only dismissible notice - auth-service explicitly returns
- * mustChangePassword without blocking login, so the dismiss button stays even though
- * /change-password now exists.
- */
 @Component({
   imports: [MatButtonModule, RouterLink, TranslocoPipe],
   selector: 'app-must-change-password-banner',

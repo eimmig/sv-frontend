@@ -14,8 +14,6 @@ import { StatisticsTimelinePoint } from '../../core/statistics-search-api';
 import { Theme } from '../../core/theme';
 import { ChartFrame } from '../chart-frame/chart-frame';
 
-// Same tree-shaken registration as shared/monthly-profit-chart - this
-// component is lazy-loaded only by the search-statistics page.
 echarts.use([LineChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
 function buildChartOption(
@@ -32,7 +30,6 @@ function buildChartOption(
   return buildLineChartOption(labels, cumulativeProfit, brandColor, borderColor, labelColor);
 }
 
-/** Equity curve (cumulative profit) - one series over StatisticsSearchResult.timeline. */
 @Component({
   imports: [ChartFrame, NgxEchartsDirective, TranslocoPipe],
   providers: [provideEchartsCore({ echarts })],

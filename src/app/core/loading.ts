@@ -12,11 +12,6 @@ function prefersReducedMotion(): boolean {
   );
 }
 
-/**
- * Whether the loading overlay is on screen. Requests shorter than SHOW_DELAY_MS never show it;
- * once shown, it stays until the logo sequence has finished (docs/sistema-de-design.md item 17)
- * and then fades out.
- */
 @Injectable({ providedIn: 'root' })
 export class Loading {
   readonly visible = signal(false);

@@ -21,11 +21,6 @@ function statisticsBundle(overrides: Record<string, unknown> = {}) {
 test.describe('epic-017 - "Relatório do período" page', () => {
   test.beforeEach(async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    // The "Hoje" default preset resolves from a real new Date() (period-preset-filter.ts) and
-    // the fixtures below are fixed to 2026-09-11 - freeze only Date (not setTimeout/rAF, which
-    // the loading overlay and Angular still need to run normally) so "today" always matches the
-    // fixtures, regardless of which real day the suite runs on (same fix as the unit spec for
-    // this page).
     await page.clock.setFixedTime(new Date('2026-09-11T12:00:00Z'));
     await page.addInitScript(() => {
       localStorage.setItem(
@@ -66,7 +61,6 @@ test.describe('epic-017 - "Relatório do período" page', () => {
   test('loads with the "Hoje" default period and renders the summary cards + daily table', async ({ page }) => {
     await page.goto('/period-report');
 
-    // 264.20 / 1195.05 ≈ 22.11% (docs/STATISTICS.md reference value).
     await expect(page.getByTestId('period-report-roi-bankroll')).toContainText('22');
     await expect(page.getByTestId('period-report-daily-row')).toContainText('2026-09-11');
   });
@@ -92,9 +86,6 @@ test.describe('epic-017 - "Relatório do período" page', () => {
     await expect.poll(() => lastFrom).not.toBe(initialFrom);
   });
 
-  // Proves the "Custom" preset's real mat-datepicker widgets (calendar click, not
-  // .fill() on a native input) drive the from/to query params - period-preset-filter.ts unit
-  // tests already cover the boundary conversion, this proves the actual UI wiring.
   test('picks a custom date range via the datepicker calendars', async ({ page }) => {
     let lastFrom: string | null = null;
     let lastTo: string | null = null;
@@ -123,11 +114,6 @@ test.describe('epic-017 - "Relatório do período" page', () => {
     await expect.poll(() => lastTo).toBe('2026-09-10');
   });
 
-  // The appDateMask directive formats input.value as the user types raw digits -
-  // MatDatepickerInput's own (input) listener on the same element reads that live value and
-  // parses it. Proves the two aren't just visually compatible (unit-tested already) but that the
-  // final Date actually reaches the query params, against a real browser (JSDOM never resolves
-  // this - see date-mask.directive.spec.ts).
   test('typing a raw digit sequence into the custom date fields drives the from/to query params', async ({ page }) => {
     let lastFrom: string | null = null;
     let lastTo: string | null = null;

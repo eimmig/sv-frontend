@@ -56,15 +56,9 @@ test.describe('epic-012 - "Buscar Estatisticas" pre-bet decision screen', () => 
     await page.route('**/api/v1/leagues*', catalogRoute([{ id: 'lg-1', name: 'Brasileirao' }]));
     await page.route('**/api/v1/markets*', catalogRoute([{ id: 'mk-1', name: 'Handicap' }]));
     await page.route('**/api/v1/tipsters*', catalogRoute([{ id: 'tp-1', name: 'Ana' }]));
-    // GET /api/v1/statistics/teams returns a bare array (see docs/API-CONTRACTS.md), not the
-    // {content:[...]} paged envelope catalogRoute() builds for the other catalogs - a different
-    // shape here would make DimTeam options[Symbol.iterator] undefined once teamOptions() is
-    // passed straight into the template's @for.
     await page.route('**/api/v1/statistics/teams*', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([{ id: 'tm-1', name: 'Flamengo' }]) }),
     );
-    // Only the golden-path test navigates through /dashboard first (to prove the nav link works) -
-    // this route just keeps that page from erroring out while it auto-loads on mount.
     await page.route('**/api/v1/statistics*', (route) =>
       route.fulfill({
         status: 200,

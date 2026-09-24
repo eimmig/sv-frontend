@@ -55,9 +55,6 @@ test.describe('feat-035 - "Change password" page', () => {
   });
 
   test('side nav and the mustChangePassword banner both link to the page', async ({ page }) => {
-    // Only the shell/banner is under test here - stub every API call generically so the
-    // dashboard page underneath doesn't error out while loading its own data (same pattern as
-    // e2e/side-nav.spec.ts / e2e/telegram-link.spec.ts).
     await page.route('**/api/**', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: '{}' }),
     );

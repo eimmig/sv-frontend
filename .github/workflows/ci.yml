@@ -13,25 +13,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 1. Changelog - ver docs/CI-CD.md (vault local, nao versionado neste repo)
+      # 1. Changelog
       - name: Validar atualizacao do CHANGELOG.md
-        # So no PR story -> develop/main, ver docs/CI-CD.md "Quais passos rodam em qual PR":
-        # a linha de cada subtask nasce (via jira_story.py) antes da branch daquela subtask
-        # existir, entao o diff de uma PR subtask/ -> story nunca toca CHANGELOG.md por
-        # sequenciamento, nao por esquecimento real - exigir o toque tambem ali quebraria todo
-        # PR de subtask.
         if: github.event_name == 'pull_request' && (github.base_ref == 'develop' || github.base_ref == 'main')
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: .github/scripts/validate-changelog.sh CHANGELOG.md
 
-      # 2. Chaves de traducao - ver docs/CONVENTIONS.md secao "Internacionalizacao (i18n)"
+      # 2. Chaves de traducao
       - name: Validar chaves de traducao (pt-BR/en-US/es)
-        # Guarda propria (public/i18n/pt-BR.json), independente do package-lock.json que
-        # guarda os passos 3-5: package-lock.json nasce bem antes dos arquivos de locale -
-        # guardar so por package-lock.json quebraria a PR de toda subtask intermediaria por
-        # sequenciamento, nao por defeito real.
         if: hashFiles('public/i18n/pt-BR.json') != ''
         run: |
           python3 .github/scripts/validate-i18n-keys.py --format json \
@@ -40,8 +31,6 @@ jobs:
             --file es=public/i18n/es.json
 
       - uses: actions/setup-node@v4
-        # Guarda por arquivo-marcador: enquanto o projeto nao existe (repositorio so com
-        # harness), este passo e pulado em vez de falhar. Ver docs/CI-CD.md.
         if: hashFiles('package-lock.json') != ''
         with:
           node-version: 24
@@ -49,8 +38,6 @@ jobs:
 
       # 3. Build
       - name: Build
-        # Guarda por arquivo-marcador: enquanto o projeto nao existe (repositorio so com
-        # harness), este passo e pulado em vez de falhar. Ver docs/CI-CD.md.
         if: hashFiles('package-lock.json') != ''
         run: |
           npm ci
@@ -58,20 +45,11 @@ jobs:
 
       # 4. Testes unitarios + cobertura
       - name: Testes unitarios e cobertura
-        # Guarda por arquivo-marcador: enquanto o projeto nao existe (repositorio so com
-        # harness), este passo e pulado em vez de falhar. Ver docs/CI-CD.md.
         if: hashFiles('package-lock.json') != ''
         run: npm run test -- --coverage --watch=false
 
-      # 5. Qualidade de codigo e cobertura (SonarCloud)
+      # 5. Qualidade de codigo e cobertura
       - name: SonarCloud
-        # Pulado em PR de subtask: cobertura parcial de uma feature em andamento
-        # reprovaria o quality gate sem indicar defeito real.
-        # Guarda por arquivo-marcador: enquanto o projeto nao existe (repositorio so com
-        # harness), este passo e pulado em vez de falhar. Ver docs/CI-CD.md.
-        # sonar.qualitygate.wait pulado em qualquer push direto (main incluso, nao so develop):
-        # a primeira analise de uma branch longa sem leak period definido devolve status NONE,
-        # tratado como reprovado pelo plugin. Ver docs/CI-CD.md.
         if: hashFiles('package-lock.json') != '' && (github.event_name != 'pull_request' || github.base_ref == 'develop' || github.base_ref == 'main')
         uses: SonarSource/sonarqube-scan-action@v4
         env:
@@ -83,7 +61,7 @@ jobs:
             -Dsonar.host.url=https://sonarcloud.io
             ${{ github.event_name != 'push' && '-Dsonar.qualitygate.wait=true' || '' }}
 
-      # 6. Gate de issue/hotspot do SonarCloud - pulado em qualquer push direto (mesmo racional do passo 5)
+      # 6. Gate de issue/hotspot do SonarCloud
       - name: Validar zero issues no SonarCloud
         if: hashFiles('package-lock.json') != '' && (github.event_name != 'pull_request' || github.base_ref == 'develop' || github.base_ref == 'main') && github.event_name != 'push'
         env:
@@ -128,7 +106,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {}
     steps:
-      # kubectl ja vem preinstalado no runner ubuntu-latest - sem action de terceiro
       - name: Configurar kubeconfig
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
@@ -152,9 +129,6 @@ jobs:
           fetch-tags: true
           persist-credentials: false
 
-      # Calcula a proxima versao a partir de Conventional Commits desde a ultima tag - so
-      # calcula, nao cria a tag (isso e o passo "Criar tag e GitHub Release" mais abaixo).
-      # github.token de leitura basta aqui, nada disto e bloqueado por branch protection.
       - name: Calcular proxima versao (Conventional Commits)
         id: semver
         uses: ietf-tools/semver-action@c90370b2958652d71c06a3484129a4d423a6d8a8 # v1.11.0
@@ -163,9 +137,6 @@ jobs:
           branch: main
           noVersionBumpBehavior: patch
 
-      # --no-git-tag-version: so escreve package.json/package-lock.json, nao cria tag/commit
-      # proprio (isso ja e feito manualmente no passo de commit mais abaixo).
-      # --allow-same-version: nao falha se rodar de novo com o mesmo numero.
       - name: Atualizar versao no package.json
         run: npm version ${{ steps.semver.outputs.nextStrict }} --no-git-tag-version --allow-same-version
 
@@ -175,13 +146,6 @@ jobs:
       - name: Cortar CHANGELOG.md
         run: python3 .github/scripts/cut-changelog.py CHANGELOG.md ${{ steps.semver.outputs.nextStrict }}
 
-      # main tem required status check "pipeline" - o GITHUB_TOKEN padrao roda como
-      # github-actions[bot], que nao e admin e seria rejeitado empurrando um commit novo
-      # (nenhum check rodou pra ele ainda). RELEASE_TOKEN (PAT do dono/admin, ver
-      # docs/pipeline-ci-cd.md) bypassa isso do mesmo jeito que um push manual do dono
-      # bypassaria - usado so aqui, embutido na URL (vida curta de um comando), nunca
-      # persistido no credential helper (persist-credentials: false acima). [skip ci] evita
-      # o loop: PAT (diferente de GITHUB_TOKEN) dispara o workflow de novo por padrao.
       - name: Commit e push da release
         id: release-commit
         env:
@@ -199,8 +163,6 @@ jobs:
           fi
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      # commit: aponta explicitamente pro commit que acabou de ser empurrado (o bump) -
-      # sem isso a action usaria o commit que disparou o job, ANTES do bump.
       - name: Criar tag e GitHub Release
         uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1.21.0
         with:

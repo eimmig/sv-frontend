@@ -48,9 +48,6 @@ test.describe('epic-027 - "Vincular Telegram" page', () => {
   });
 
   test('side nav links to the telegram-link page', async ({ page }) => {
-    // Only the shell (side-nav) is under test here - stub every API call generically so the
-    // dashboard page underneath doesn't error out while loading its own data (same pattern as
-    // e2e/side-nav.spec.ts).
     await page.route('**/api/**', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: '{}' }),
     );

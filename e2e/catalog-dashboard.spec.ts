@@ -63,7 +63,6 @@ test.describe('shared/catalog-dashboard (ranking per segment)', () => {
     await expect(page).toHaveURL(/\/sports-dashboard$/);
     const rows = page.getByTestId('catalog-dashboard-row');
     await expect(rows).toHaveCount(2);
-    // Basquete has the higher ROI (18% > 4%) and must rank first.
     await expect(rows.first()).toContainText('Basquete');
     await expect(rows.last()).toContainText('Futebol');
   });

@@ -19,7 +19,6 @@ describe('computeDelta', () => {
   });
 
   it('uses the absolute value of a as the percent denominator (a negative a still yields a sensible sign)', () => {
-    // a=-100 -> b=-50 is an improvement (loss got smaller) - percent should read positive (+50%).
     expect(computeDelta(-100, -50)).toEqual({ absolute: 50, percent: 0.5 });
   });
 });
@@ -31,8 +30,8 @@ describe('buildComparisonSeries', () => {
 
     const result = buildComparisonSeries(a, b, 0.01);
 
-    expect(result.seriesA).toEqual([10, 5]); // 100/10=10, then 10 + (-50/10)
-    expect(result.seriesB).toEqual([2, 4]); // 20/10=2, then 2 + 20/10
+    expect(result.seriesA).toEqual([10, 5]);
+    expect(result.seriesB).toEqual([2, 4]);
   });
 
   it('a day without a settled bet carries the previous accumulated value forward', () => {
@@ -45,13 +44,13 @@ describe('buildComparisonSeries', () => {
   });
 
   it('pads the shorter period with null past its own length instead of repeating the last value', () => {
-    const a = { daily: [day('2026-01-01', 100)], from: '2026-01-01', to: '2026-01-01', saldoFinal: 1000 }; // 1-day period
+    const a = { daily: [day('2026-01-01', 100)], from: '2026-01-01', to: '2026-01-01', saldoFinal: 1000 };
     const b = {
       daily: [day('2025-01-01', 10), day('2025-01-02', 10), day('2025-01-03', 10)],
       from: '2025-01-01',
       to: '2025-01-03',
       saldoFinal: 1000,
-    }; // 3-day period
+    };
 
     const result = buildComparisonSeries(a, b, 0.01);
 

@@ -1,4 +1,3 @@
-/** Matches the pagination envelope every paginated Java endpoint returns (docs/API-CONTRACTS.md). */
 export interface PagedResponse<T> {
   readonly content: T[];
   readonly page: number;

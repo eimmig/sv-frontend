@@ -23,15 +23,6 @@ function toYearMonth(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
 
-/**
- * "Grade de gráficos mensais de drawdown" (ver docs/STATISTICS.md) - own dedicated
- * month-range filter (2 MatDatepicker in month/year mode, deliberately NOT shared/period-preset-filter,
- * which is day-granularity and reused elsewhere for a different purpose). Both fields are
- * batched behind an explicit "Aplicar" submit, same convention as dashboard.ts's own 5-select
- * filterForm - reacting to each field independently would fire 2 overlapping requests when the
- * user changes both (from then to), risking the stale one resolving last. One HTTP round trip
- * for the whole interval; the grid of N mini-charts is client-side grouping only.
- */
 @Component({
   imports: [
     ChartFrame,

@@ -58,9 +58,6 @@ export class AppSideNav {
 
   protected readonly collapsed = signal(storedCollapsed());
 
-  // A mat-menu trigger button isn't itself a routerLink, so routerLinkActive (used by the plain
-  // links) can't reach it - this tracks the active route manually to highlight the trigger when
-  // the user is on either of its 2 destinations (Cadastrar/Dashboard).
   private readonly currentUrl = toSignal(
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd),
@@ -103,10 +100,6 @@ export class AppSideNav {
   protected toggleCollapsed(): void {
     const next = !this.collapsed();
     this.collapsed.set(next);
-    // Only an explicit toggle persists - the initial value (viewport default or a previous
-    // explicit choice) must not be written back as if the user had just chosen it, or a mobile
-    // visit's viewport-based default would incorrectly become "the user's choice" the next time
-    // they open the app from a desktop-width browser.
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(STORAGE_KEY, String(next));
     }
@@ -126,8 +119,6 @@ export class AppSideNav {
     this.language.set(locale);
   }
 
-  // stopPropagation: without it the click bubbles out of the mat-menu panel and CDK's
-  // outside-click detector closes the whole settings menu instead of just expanding the list.
   protected toggleLanguageExpanded(event: MouseEvent): void {
     event.stopPropagation();
     this.languageExpanded.set(!this.languageExpanded());

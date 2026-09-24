@@ -28,11 +28,6 @@ function browserLocale(): Locale {
   return 'pt-BR';
 }
 
-/**
- * Explicit locale, persisted in localStorage, overriding the browser locale
- * once the user has chosen one explicitly (see docs/CONVENTIONS.md
- * "Internacionalização (i18n)"). Drives TranslocoService's active lang.
- */
 @Injectable({ providedIn: 'root' })
 export class Language {
   private readonly transloco = inject(TranslocoService);

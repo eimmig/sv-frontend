@@ -8,29 +8,8 @@ type DateSegment = 'day' | 'month' | 'year';
 const SEGMENT_LENGTHS: Record<DateSegment, number> = { day: 2, month: 2, year: 4 };
 const MAX_DIGITS = SEGMENT_LENGTHS.day + SEGMENT_LENGTHS.month + SEGMENT_LENGTHS.year;
 
-// Always month/day/year, regardless of the app's active i18n locale - NOT a stylistic choice.
-// NativeDateAdapter.parse() (@angular/material/fesm2022/core.mjs) is `new Date(Date.parse(value))`,
-// and Date.parse() for a non-ISO slash-separated string is locale-independent: it always reads
-// M/D/Y (confirmed against a real browser - a day-first mask for pt-BR/es silently swapped
-// day/month on `Date.parse()` whenever day<=12, e.g. typed "05/09/2026" as day=5/month=9 parsed
-// to month=5/day=9 instead). The calendar-click path (MatDatepicker's own popup) never goes
-// through this - it builds a real Date directly - which is why that path has always been
-// locale-correct while text typing never was. Locale only changes DISPLAY (the placeholder's
-// wording), never the required typing order.
 const SEGMENT_ORDER: readonly DateSegment[] = ['month', 'day', 'year'];
 
-/**
- * Progressive `mm/dd/aaaa`-style formatting for a text input paired with `matDatepicker` -
- * inserts `/` as the user types raw digits, and shows a translated placeholder as a visual guide
- * when the field is empty - these fields lost the native `<input type="date">` day/month/year
- * affordance when they switched to free-text + matDatepicker.
- *
- * Purely a display-layer helper - it only rewrites `input.value`/`placeholder`.
- * `MatDatepickerInput`'s own `(input)` listener is bound to the SAME element and reads
- * `event.target.value` live (verified against @angular/material/fesm2022/datepicker.mjs
- * `_onInput`), so it always parses whatever this directive leaves in `input.value`, regardless
- * of listener registration order - see docs/CONVENTIONS.md for the full analysis.
- */
 @Directive({
   selector: 'input[matDatepicker][appDateMask]',
 })

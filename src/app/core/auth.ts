@@ -39,11 +39,6 @@ function storedSession(): Session | null {
   }
 }
 
-/**
- * PASETO v4.local session, persisted in localStorage (same 'stakevault.*' pattern as
- * Theme/Language) - the token is symmetrically encrypted, so userId/role are returned by the
- * login endpoint itself rather than decoded client-side.
- */
 @Injectable({ providedIn: 'root' })
 export class Auth {
   private readonly http = inject(HttpClient);
@@ -78,11 +73,6 @@ export class Auth {
       );
   }
 
-  /**
-   * Called after a successful POST /api/v1/auth/change-password - the token itself is not
-   * reissued (its claims never carried mustChangePassword), so the session flag is cleared
-   * locally instead of requiring a fresh login.
-   */
   clearMustChangePassword(): void {
     const current = this.session();
     if (!current?.mustChangePassword) {

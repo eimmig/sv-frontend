@@ -10,15 +10,6 @@ class ResizeObserverStub {
   disconnect(): void {}
 }
 
-/**
- * jsdom has no real 2D canvas (getContext('2d') returns null without the
- * native `canvas` package, which this project doesn't install) - zrender
- * (echarts' renderer) dereferences that context unconditionally on init and
- * dispose, throwing during test cleanup. A permissive proxy (every method a
- * no-op, every property settable) is enough for echarts to run its full
- * lifecycle without crashing; it isn't asserting pixels, just that nothing
- * throws.
- */
 function stubCanvasContext(): void {
   const noop = () => {};
   const context: Record<string, unknown> = {};

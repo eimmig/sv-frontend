@@ -9,7 +9,6 @@ interface CacheEntry {
   readonly storedAt: number;
 }
 
-/** In-memory GET response cache, cleared by any mutation or logout (docs/sistema-de-design.md item 17). */
 @Injectable({ providedIn: 'root' })
 export class HttpCache {
   private readonly entries = new Map<string, CacheEntry>();

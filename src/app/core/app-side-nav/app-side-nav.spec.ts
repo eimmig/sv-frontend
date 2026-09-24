@@ -228,7 +228,6 @@ describe('AppSideNav', () => {
     expect(toggle?.classList.contains('mat-mdc-icon-button')).toBe(true);
   });
 
-  // CDK's BreakpointObserver expects a real MediaQueryList shape - a bare {matches} stub throws.
   function stubMatchMedia(matches: boolean) {
     const mql = {
       matches,

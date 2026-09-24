@@ -9,7 +9,6 @@ export interface SearchableSelectOption {
   readonly name: string;
 }
 
-/** Case+diacritic-insensitive match ("brasileirao" finds "Brasileirão") - no precedent in this app, first free-text catalog filter. */
 export function normalizeForSearch(value: string): string {
   return value
     .normalize('NFD')
@@ -17,11 +16,6 @@ export function normalizeForSearch(value: string): string {
     .toLocaleLowerCase();
 }
 
-/**
- * Drop-in replacement for mat-select on catalog filter fields (sport/league/market/tipster/
- * team/betting-house) - same formControlName usage via ControlValueAccessor, but filters the
- * option list as the user types instead of a closed dropdown.
- */
 @Component({
   imports: [MatAutocompleteModule, MatFormFieldModule, MatInputModule],
   selector: 'app-searchable-select',
@@ -39,14 +33,11 @@ export class SearchableSelect implements ControlValueAccessor {
   readonly options = input<SearchableSelectOption[]>([]);
   readonly label = input<string>('');
   readonly testId = input<string>('');
-  /** Sentinel option (id '') rendered first, e.g. "Todos"/"Nenhum" - omit to require a real selection. */
   readonly allOptionLabel = input<string | null>(null);
-  /** Already-resolved (transloco'd) validation message - rendered as mat-error inside this field's own mat-form-field. */
   readonly errorMessage = input<string | null>(null);
 
   protected readonly disabled = signal(false);
   private readonly committedId = signal('');
-  /** null = not being edited right now, display resolves from committedId(); a string once the user starts typing. */
   private readonly typedQuery = signal<string | null>(null);
 
   private onChange: (value: string) => void = () => {};
@@ -69,8 +60,6 @@ export class SearchableSelect implements ControlValueAccessor {
     this.typedQuery.set((event.target as HTMLInputElement).value);
   }
 
-  // Selects the whole displayed text on focus, so the first keystroke replaces it instead of
-  // being appended after the current value (e.g. "Todas" + typed letters).
   protected onFocus(event: FocusEvent): void {
     (event.target as HTMLInputElement).select();
   }

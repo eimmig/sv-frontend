@@ -100,16 +100,11 @@ export class SearchStatistics implements OnInit {
       () => this.transloco.translate('searchStatistics.genericError'),
     );
 
-    // Team autocomplete is scoped by sport (docs/API-CONTRACTS.md) - switchMap
-    // cancels a slow in-flight listTeams() for a sport the user already
-    // navigated away from, so it can never overwrite the current selection.
     this.filterForm.controls.sportId.valueChanges
       .pipe(
         tap((sportId) => {
           this.filterForm.controls.teamId.setValue('');
           this.teamsError.set(null);
-          // Disabling via the control (not a template [disabled] binding) avoids the
-          // "disabled attribute with reactive form directive" conflict Angular warns about.
           if (sportId) {
             this.filterForm.controls.teamId.enable();
           } else {
@@ -132,7 +127,6 @@ export class SearchStatistics implements OnInit {
       .subscribe((teams) => this.teamOptions.set(teams));
   }
 
-  /** bettingHouse/market/tipster/betType are structurally identical optional single-select filters (label + "All" option + list) - one @for in the template instead of 4 near-copies. */
   protected optionalCatalogFilters(): {
     readonly controlName: 'bettingHouseId' | 'marketId' | 'tipsterId' | 'betType';
     readonly labelKey: string;

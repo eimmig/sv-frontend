@@ -12,8 +12,6 @@ import { Language } from '../../core/language';
 import { Theme } from '../../core/theme';
 import { MonthlyDrawdownMonth } from './monthly-drawdown-metrics';
 
-// Tree-shaken build registered per lazy-loaded component (docs/DESIGN-SYSTEM.md item 6), same
-// precedent as shared/monthly-profit-chart.
 echarts.use([LineChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
 function buildChartOption(
@@ -29,12 +27,6 @@ function buildChartOption(
   });
 }
 
-/**
- * One mini-chart per calendar month (docs/STATISTICS.md "Grade de gráficos mensais de
- * drawdown") - N instances reused in shared/panel-layout's auto-fit grid, same parameterized-
- * component precedent as shared/monthly-profit-chart, just X-axis by day-of-month instead of
- * by month.
- */
 @Component({
   imports: [NgxEchartsDirective],
   providers: [provideEchartsCore({ echarts })],

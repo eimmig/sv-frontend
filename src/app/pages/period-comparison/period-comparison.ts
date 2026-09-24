@@ -72,8 +72,6 @@ interface ComparisonRow {
   readonly testId: string;
 }
 
-/** unidadesApostadas = totalStaked / (saldoFinal x unitPercent) - same formula as dashboard.ts/
- *  period-report-metrics.ts, applied per side with that side's own saldoFinal (bankrollTo). */
 function unidadesApostadas(overall: BetMetrics, bankrollTo: number, unitPercent: number): number | null {
   const denominator = bankrollTo * unitPercent;
   return denominator === 0 ? null : overall.totalStaked / denominator;
@@ -83,13 +81,6 @@ function signedInt(value: number): string {
   return value > 0 ? `+${value}` : String(value);
 }
 
-/**
- * "Comparativo entre dois períodos" - 2 seletores de período independentes
- * (shared/period-preset-filter, um por lado) mais o bloco de filtros comuns
- * já usado em pages/dashboard/dashboard.ts, aplicado igualmente aos 2 lados. Zero endpoint novo -
- * cada lado é a mesma bateria de chamadas já usada por outras telas de estatística (GET
- * /api/v1/statistics(/daily), GET /api/v1/bankroll/balance), só disparada 2x.
- */
 @Component({
   imports: [
     ComparisonEquityChart,
@@ -120,10 +111,6 @@ export class PeriodComparison implements OnInit {
   protected readonly options = signal<Options>(EMPTY_OPTIONS);
   protected readonly optionsError = signal<string | null>(null);
 
-  // Seeded already-resolved ("Hoje") instead of {from:'',to:''} - shared/period-preset-filter's 2
-  // instances emit independently (not atomically), so an empty seed here would make the 1st
-  // applyFilter() run with the other side's period still blank, which StatisticsFilter reads as
-  // "no filter" (whole tenant history) - a real flash of wrong data.
   protected readonly periodA = signal<PeriodRange>(resolvePreset('today', new Date()));
   protected readonly periodB = signal<PeriodRange>(resolvePreset('today', new Date()));
 

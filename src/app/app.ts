@@ -25,9 +25,6 @@ export class App {
   private readonly dateAdapter = inject(DateAdapter);
 
   constructor() {
-    // MAT_DATE_LOCALE sozinho e um DI token estatico - o app troca idioma em runtime
-    // (Language.current, ja fonte de verdade do TranslocoService em todo o app), entao o
-    // DateAdapter (mat-datepicker/mat-timepicker) precisa ser rebindado explicitamente.
     effect(() => this.dateAdapter.setLocale(this.language.current()));
   }
 }
