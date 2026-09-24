@@ -2944,7 +2944,7 @@
       "name": "Mover a splash de antes do login pra depois (durante o carregamento inicial de dados)",
       "description": "Pedido do usuario em uso real (2026-09-23, sessao de epic-033). Hoje `app.ts` mostra `<app-splash>` (animacao Arka de ~5.4s) incondicionalmente no boot do app, ANTES de saber se o usuario esta autenticado - ou seja, toca a animacao completa so pra chegar na tela de login, sem nenhum dado sendo carregado nesse meio tempo (usuario: 'nao faz sentido carregar pra abrir o login'). Pedido: mover a splash pra DEPOIS do login, no momento em que o app efetivamente busca os dados pra popular a tela inicial (`/overview`, epic-021) - nesse momento faz sentido mostrar uma indicacao de carregamento, ja que ha requisicoes reais em voo (GET /api/v1/statistics/daily, GET /api/v1/statistics, GET /api/v1/bankroll/balance, GET /api/v1/settings, ver `overview.ts`). Pedido explicito do usuario sobre a forma: nao repetir a animacao completa de 5.4s ali - so o logo (mesmo elemento visual da splash) com um blur transparente por cima do sistema (nao uma tela solida cobrindo tudo), enquanto os dados carregam. Decisoes de escopo a fazer no plan review: (1) a tela de login continua sem NENHUM carregamento indicando boot do app (troca instantanea) ou mantem so um flash minimo aceitavel enquanto o Angular inicializa (SSR/hidratacao, se houver)? (2) o overlay de blur+logo cobre so a area de conteudo (RouterOutlet) ou o app inteiro incluindo sidebar/nav? (3) reusar o componente `Splash` existente com um modo/input novo ('completo' vs 'so logo, sem intro animada') ou criar um componente novo dedicado a loading-overlay, evitando acoplar as duas responsabilidades num so componente. (4) todo carregamento de dados do app passa a mostrar esse overlay (qualquer tela, no primeiro fetch) ou so a tela inicial pos-login (`/overview`) especificamente, como o pedido do usuario descreve. DECISOES DO USUARIO (2026-09-24, AskUserQuestion): (1) overlay cobre o app inteiro (sidebar + conteudo); (2) aparece em TODO loading - qualquer chamada ao backend em andamento, em qualquer tela, nao so /overview ('ao inves do icone girando, a animacao de loading deve ser esse overlay montando a logo'); (3) login abre instantaneo, sem splash. (4) componente novo dedicado (LoadingOverlay), Splash removida - decidido no plan review.",
       "dependencies": [],
-      "status": "in-progress",
+      "status": "done",
       "goal": "Tirar a splash de antes do login e transformar a montagem do logo Arka no indicador de carregamento do app inteiro, exibido sempre que houver chamada ao backend em andamento.",
       "scope": "Servico `Loading` + interceptor HTTP (so `/api/`), componente `LoadingOverlay` (logo + blur sobre o app inteiro), remocao da `Splash` de boot.",
       "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Challenge independente como self-review (independencia reduzida, UI isolada sem contrato de backend). Confirmado por leitura: app nao tem nenhum spinner hoje (overlay e o primeiro indicador de loading); Splash so referenciada em app.ts/app.spec.ts/e2e/smoke.spec.ts (+ comentario em period-report.spec.ts); TranslocoHttpLoader usa HttpClient pra /i18n/*.json - filtro '/api/' no interceptor e necessario pra login abrir instantaneo; searchable-select filtra client-side (nenhuma request por tecla); mocks E2E respondem instantaneo (<250ms), suites existentes nao veem o overlay. Referencia de 2.1s (docs/design-references/arka-splash.html) adotada - Splash atual usava 5.4s, divergente do vault. 4 MINOR incorporados: (1) z-index 1100 (acima do .cdk-overlay-container do Material, 1000 - request disparado de dentro de dialog nao fica por baixo); (2) atributo nativo inert no .app-shell enquanto visivel (overlay bloqueava so ponteiro, nao teclado); (3) e2e novo com rota mockada com atraso explicito (~800ms) pra passar do delay de 250ms; (4) trade-off aceito: uma vez visivel, a sequencia de 2.1s completa antes do fade (regra do vault item 17 + pedido do usuario) - UI fica bloqueada ate ~2.5s apos um request lento terminar.",
@@ -2996,11 +2996,39 @@
           ],
           "validation": "E2E verde, init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-597"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechado em 2026-09-24 por feat-044.1..3 (story SV-594). Splash de boot removida (login abre instantaneo); montagem do logo Arka virou o indicador de carregamento do app inteiro, exibido sobre sidebar + conteudo com blur sempre que uma chamada /api/ passa de 250ms.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #178 (SV-595): core/loading.ts (Loading - contador de requests, delay 250ms, sequencia de 2.1s completa antes do fade de 400ms, reentrada cancela saida, reduced-motion sem espera) + core/loading-interceptor.ts (so URLs com /api/, finalize em sucesso/erro/cancelamento).",
+              "PR #179 (SV-596): core/loading-overlay (z-index 1100, color-mix + backdrop-filter blur, SVG da referencia de 2.1s com cores por token, role=status, label i18n nos 3 locales); .app-shell inert enquanto visivel; Splash e chaves splash.* removidas.",
+              "SV-597: e2e/loading-overlay.spec.ts (login sem overlay no boot; login lento mostra overlay e depois a tela volta a ser utilizavel)."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "./init.sh (ng build + ng test com gate de cobertura) verde: 303 testes em 64 arquivos; warning de budget do bundle e pre-existente (ver progress.md).",
+              "Suite E2E completa: 86/86 verdes (inclui search-statistics.spec.ts).",
+              "QA visual por screenshot real (dev server + Playwright) nos 2 temas, desktop 1280x800 e mobile 390x844: logo formado legivel sobre o blur nos 4 casos. Impeccable/taste-skill nao disponiveis como skill nesta sessao - QA feita manualmente contra docs/sistema-de-design.md item 17.",
+              "Delivery Reviewer (self-conduzido): PASS - requests sequenciais (overview: settings -> statistics) nao piscam o overlay (begin durante saida cancela o fade); mocks E2E existentes respondem <250ms, nenhuma suite antiga afetada. Test Suite Auditor (self-conduzido): logica de tempo coberta em unitario com fake timers (unico nivel deterministico pra 250ms/2.1s/400ms), fluxo real coberto em E2E pela borda do navegador; splash.spec.ts removido junto com o codigo (DELETE, contrato obsoleto)."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Nada no comportamento. Residual aceito: inert no .app-shell faz o elemento focado perder o foco enquanto o overlay esta visivel (foco nao volta sozinho ao botao depois) - P3, registrado.",
+              "Vault: docs/sistema-de-design.md item 17 ganhou 'Uso em producao'; docs/services/web.md e docs/testes.md deixaram de citar a Splash."
+            ]
+          }
+        ]
+      }
     }
   ]
 }
