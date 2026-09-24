@@ -3524,10 +3524,47 @@
       "dependencies": [
         "feat-044"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: REVISE, 2 MAJOR + 1 MINOR corrigidos no plano antes de codificar. Self-review em 2 passes distintos (simulacao de execucao, adversarial) - independencia reduzida. Evidencia: loadingInterceptor mostra o overlay em toda chamada /api/ acima de 250ms; telas buscam no ngOnInit via forkJoin (stale-while-revalidate com 2 emissoes rejeitado: forkJoin so emite no complete); sem polling; login e POST, logout local. Desenho: core/http-cache.ts (TTL 5 min, geracao, clear) + httpCacheInterceptor primeiro da cadeia - GET /api/ fresco devolve copia sem chegar ao loading; so 2xx gravado; nao-GET em /api/ limpa o cache; chave = url com params + idioma; Auth.logout limpa (isolamento entre usuarios/tenants). MAJOR 1: limpar no finalize e tarde (roda depois do next do assinante) - limpar ao enviar e em tap(next HttpResponse/error). MAJOR 2: GET em voo durante mutacao gravaria resposta velha - contador de geracao, grava so se nao mudou. MINOR: corpo compartilhado por referencia - structuredClone no acerto. Riscos aceitos: aposta via Telegram so aparece apos TTL ou mutacao no web; lag de consistencia eventual logo apos mutacao pode ficar cacheado ate o TTL - documentados no vault.",
+      "jira": "SV-627",
+      "subtasks": [
+        {
+          "id": "feat-049.1",
+          "name": "Cache de GET em memoria com invalidacao",
+          "detail": "Tela ja carregada volta sem nova requisicao, entao sem overlay; buscas novas e dados alterados continuam indo a rede.",
+          "checklist": [
+            "`core/http-cache.ts`: get/set/clear, geracao, TTL 5 min",
+            "`httpCacheInterceptor` primeiro na cadeia de `app.config.ts`: acerto devolve `structuredClone` do corpo; so 2xx gravado e so se a geracao nao mudou; nao-GET em `/api/` limpa ao enviar e na resposta/erro via `tap`",
+            "Chave: url com params + idioma ativo",
+            "`Auth.logout` limpa o cache",
+            "Testes: acerto, falta, TTL, erro nao cacheado, mutacao limpa antes do assinante, GET em voo nao grava apos limpeza, logout limpa, copia independente"
+          ],
+          "validation": "ng test verde.",
+          "owner": "agente",
+          "status": "in-progress",
+          "jira": "SV-628"
+        },
+        {
+          "id": "feat-049.2",
+          "name": "E2E, QA visual e verificacao final",
+          "detail": "Prova da navegacao sem overlay e fechamento.",
+          "checklist": [
+            "E2E: overview -> dashboard -> overview sem nova requisicao nem overlay na volta; filtro novo continua disparando requisicao (RN08); mutacao seguida de recarga busca de novo",
+            "QA visual da navegacao nos 2 temas",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-629"
+        }
+      ],
       "evidence": ""
     },
     {
