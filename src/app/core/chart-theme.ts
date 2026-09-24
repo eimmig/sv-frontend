@@ -33,6 +33,7 @@ export function buildLineChartOption(
   values: (number | null)[],
   brandColor: string,
   borderColor: string,
+  labelColor: string,
   style: LineChartStyleOptions = {},
 ): EChartsCoreOption {
   const { smooth = true, splitNumber = 2 } = style;
@@ -44,12 +45,12 @@ export function buildLineChartOption(
       data: categories,
       axisLine: { show: false },
       axisTick: { show: false },
-      axisLabel: { color: borderColor },
+      axisLabel: { color: labelColor },
     },
     yAxis: {
       type: 'value',
       splitNumber,
-      axisLabel: { color: borderColor },
+      axisLabel: { color: labelColor },
       splitLine: { lineStyle: { color: borderColor, width: 1 } },
     },
     series: [
@@ -112,6 +113,7 @@ export function buildComparisonLineChartOption(
   seriesA: ComparisonSeriesStyle,
   seriesB: ComparisonSeriesStyle,
   borderColor: string,
+  labelColor: string,
 ): EChartsCoreOption {
   return {
     grid: { top: 16, right: 16, bottom: 24, left: 48 },
@@ -121,12 +123,12 @@ export function buildComparisonLineChartOption(
       data: categories,
       axisLine: { show: false },
       axisTick: { show: false },
-      axisLabel: { color: borderColor },
+      axisLabel: { color: labelColor },
     },
     yAxis: {
       type: 'value',
       splitNumber: 2,
-      axisLabel: { color: borderColor },
+      axisLabel: { color: labelColor },
       splitLine: { lineStyle: { color: borderColor, width: 1 } },
     },
     series: [comparisonSeriesOption(seriesA), comparisonSeriesOption(seriesB)],
