@@ -199,3 +199,4 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-595](https://stakevault.atlassian.net/browse/SV-595) - Servico Loading e interceptor HTTP
 - [SV-596](https://stakevault.atlassian.net/browse/SV-596) - LoadingOverlay e remocao da Splash
 - [SV-597](https://stakevault.atlassian.net/browse/SV-597) - E2E, QA visual e verificacao final
+- [SV-598](https://stakevault.atlassian.net/browse/SV-598) - Corrigir apontamento SonarCloud Web:S6819 no overlay
