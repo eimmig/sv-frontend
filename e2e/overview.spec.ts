@@ -72,6 +72,36 @@ test.describe('epic-021 - "Visão geral" pós-login', () => {
     await expect(page.getByTestId('overview-monthly-row')).toHaveCount(12);
   });
 
+  test('returning to an already loaded screen reuses its data, with no new request and no loading overlay', async ({
+    page,
+  }) => {
+    const statisticsRequests: string[] = [];
+    page.on('request', (request) => {
+      if (request.url().includes('/api/v1/statistics')) {
+        statisticsRequests.push(request.url());
+      }
+    });
+    await page.route('**/api/v1/statistics**', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 400));
+      await route.fallback();
+    });
+
+    await page.goto('/overview');
+    await expect(page.getByTestId('loading-overlay')).toBeVisible();
+    await expect(page.getByTestId('overview-lucro-total')).toContainText('8.00');
+    await expect(page.getByTestId('loading-overlay')).toHaveCount(0);
+
+    await page.getByTestId('nav-dashboard').click();
+    await expect(page).toHaveURL(/\/dashboard$/);
+    await expect(page.getByTestId('loading-overlay')).toHaveCount(0);
+    const requestsBeforeReturn = statisticsRequests.length;
+
+    await page.getByTestId('nav-overview').click();
+    await expect(page.getByTestId('overview-lucro-total')).toContainText('8.00');
+    await expect(page.getByTestId('loading-overlay')).toHaveCount(0);
+    expect(statisticsRequests).toHaveLength(requestsBeforeReturn);
+  });
+
   test('login redirects here and /dashboard remains a normal nav item', async ({ page }) => {
     await page.goto('/overview');
 
