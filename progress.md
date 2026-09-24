@@ -3,7 +3,11 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-24
-**Estado:** `feat-046`/`feat-048`/`feat-049`/`feat-050` fechadas; `feat-047`, `feat-051`, `feat-052` no backlog.
+**Estado:** `feat-046`/`feat-048`/`feat-049`/`feat-050`/`feat-052` fechadas; `feat-047` (aguarda decisão) e `feat-051` no backlog.
+
+## `feat-052` fechada — tooltip dos gráficos no tema ativo (2026-09-24)
+
+Story SV-630 (SV-631/632), PR #211. `themedTooltip()` nos 2 builders de `core/chart-theme.ts`.
 
 ## `feat-049` fechada — tela já carregada não repete o loading (2026-09-24)
 

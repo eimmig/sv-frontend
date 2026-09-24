@@ -8,6 +8,15 @@ export function readCssColor(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
+/** Tooltip box in the active theme's surface, border and text tokens. */
+export function themedTooltip(): { backgroundColor: string; borderColor: string; textStyle: { color: string } } {
+  return {
+    backgroundColor: readCssColor('--color-surface-elevated'),
+    borderColor: readCssColor('--color-border'),
+    textStyle: { color: readCssColor('--color-text-primary') },
+  };
+}
+
 /** Adds alpha to a `#rrggbb` token for chart area-fill gradients. */
 export function withAlpha(hexColor: string, alpha: number): string {
   const value = hexColor.replace('#', '');
@@ -39,7 +48,7 @@ export function buildLineChartOption(
   const { smooth = true, splitNumber = 2 } = style;
   return {
     grid: { top: 16, right: 16, bottom: 24, left: 48 },
-    tooltip: { trigger: 'axis' },
+    tooltip: { trigger: 'axis', ...themedTooltip() },
     xAxis: {
       type: 'category',
       data: categories,
@@ -117,7 +126,7 @@ export function buildComparisonLineChartOption(
 ): EChartsCoreOption {
   return {
     grid: { top: 16, right: 16, bottom: 24, left: 48 },
-    tooltip: { trigger: 'axis' },
+    tooltip: { trigger: 'axis', ...themedTooltip() },
     xAxis: {
       type: 'category',
       data: categories,
