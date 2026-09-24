@@ -8,7 +8,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 
 import { buildLineChartOption, readCssColor } from '../../core/chart-theme';
-import { formatDay } from '../../core/date-format';
+import { formatDay, spansMoreThanOneYear } from '../../core/date-format';
 import { Language } from '../../core/language';
 import { StatisticsTimelinePoint } from '../../core/statistics-search-api';
 import { Theme } from '../../core/theme';
@@ -25,7 +25,8 @@ function buildChartOption(
   borderColor: string,
   labelColor: string,
 ): EChartsCoreOption {
-  const labels = timeline.map((point) => formatDay(point.date, locale));
+  const withYear = timeline.length > 1 && spansMoreThanOneYear(timeline[0].date, timeline[timeline.length - 1].date);
+  const labels = timeline.map((point) => formatDay(point.date, locale, withYear));
   const cumulativeProfit = timeline.map((point) => point.cumulativeProfit);
   return buildLineChartOption(labels, cumulativeProfit, brandColor, borderColor, labelColor);
 }

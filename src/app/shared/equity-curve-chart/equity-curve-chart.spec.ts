@@ -79,4 +79,23 @@ describe('EquityCurveChart', () => {
 
     expect(() => fixture.detectChanges()).not.toThrow();
   });
+
+  it('adds the year to the dates only when the timeline spans more than one year', () => {
+    const fixture = TestBed.createComponent(EquityCurveChart);
+    const categories = () =>
+      (fixture.componentInstance['chartOptions']() as { xAxis: { data: string[] } }).xAxis.data;
+
+    fixture.componentRef.setInput('data', [
+      { date: '2024-01-01', cumulativeProfit: 30 },
+      { date: '2026-01-02', cumulativeProfit: -10 },
+    ]);
+    expect(categories()[0]).toContain('2024');
+    expect(categories()[1]).toContain('2026');
+
+    fixture.componentRef.setInput('data', [
+      { date: '2026-01-03', cumulativeProfit: 30 },
+      { date: '2026-03-07', cumulativeProfit: -10 },
+    ]);
+    expect(categories().some((label) => label.includes('2026'))).toBe(false);
+  });
 });
