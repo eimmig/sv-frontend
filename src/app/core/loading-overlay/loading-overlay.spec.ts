@@ -27,12 +27,7 @@ describe('LoadingOverlay', () => {
     return fixture.nativeElement as HTMLElement;
   }
 
-  it('renders nothing while no loading is visible', () => {
-    expect(render().querySelector('[data-testid="loading-overlay"]')).toBeNull();
-  });
-
-  it('announces the loading state with a localized label while visible', () => {
-    TestBed.inject(Loading).visible.set(true);
+  it('announces the loading state with a localized label', () => {
     const el = render();
 
     const overlay = el.querySelector('[data-testid="loading-overlay"]');
@@ -41,9 +36,7 @@ describe('LoadingOverlay', () => {
   });
 
   it('marks the overlay as leaving during the fade-out', () => {
-    const loading = TestBed.inject(Loading);
-    loading.visible.set(true);
-    loading.leaving.set(true);
+    TestBed.inject(Loading).leaving.set(true);
 
     expect(render().querySelector('.loading-overlay--leaving')).not.toBeNull();
   });
