@@ -3378,11 +3378,37 @@
           ],
           "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-619"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechado em 2026-09-24 por feat-046.1/feat-046.2 (story SV-617). Valores Periodo A/B das linhas de KPI do comparativo passaram a ficar a direita, sob os cabecalhos (antes a esquerda, ~56px de desvio).",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #198 (SV-618): text-align:right em .comparison-metric-row__value (shared/comparison-metric-row.scss); mobile <600px continua rotulado a esquerda. E2E novo em e2e/period-comparison.spec.ts compara a borda direita do texto (Range) de cada cabecalho com a do valor A/B/delta, tolerancia 1px."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "E2E novo falhou antes do fix (55,8px) e passou depois.",
+              "./init.sh do app (ng build + ng test, cobertura 92,5%) e da raiz verdes; suite E2E completa 90/90.",
+              "QA visual por screenshot nos 2 temas, 1440px e 390px.",
+              "Delivery Reviewer (self-conduzido): PASS. Test Suite Auditor (self-conduzido): PASS - oraculo geometrico com contrafactual real, localizadores por data-testid."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Nada. Nenhum apontamento fora de escopo encontrado.",
+              "Vault: docs/services/web.md secao 'Comparativo de periodos' - alinhamento a direita e gotcha do boundingBox de item de grid em E2E de alinhamento."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-047",
