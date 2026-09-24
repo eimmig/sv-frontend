@@ -3336,6 +3336,71 @@
           }
         ]
       }
+    },
+    {
+      "id": "feat-046",
+      "name": "Alinhamento dos cabecalhos do comparativo de periodos",
+      "goal": "Alinhar os cabecalhos das colunas Periodo A e Periodo B com os respectivos valores exibidos na tabela de comparacao.",
+      "scope": "Tabela e layout responsivo da tela de comparativo de periodos; nao altera os calculos nem os dados apresentados.",
+      "description": "Achado visual reportado pelo usuario em 2026-09-24, com captura de tela: no comparativo de periodos, os cabecalhos 'Periodo A' e 'Periodo B' estao desalinhados horizontalmente em relacao aos valores das colunas. Ajustar o layout para que cada cabecalho fique sobre a coluna correspondente, preservando o alinhamento da coluna 'Diferenca' e dos demais rotulos.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-047",
+      "name": "Menu flutuante da tela de times",
+      "goal": "Padronizar a tela de Times com o menu flutuante usado nas demais telas, permitindo escolher entre o dashboard e o cadastro de times.",
+      "scope": "Navegacao e menu flutuante da tela de Times; reutilizar o padrao visual e comportamental existente nas outras telas.",
+      "description": "Apontamento do usuario em 2026-09-24: a tela de Times nao possui o mesmo funcionamento das outras telas, pois nao exibe o menu flutuante para escolher entre acessar o dashboard de times ou cadastrar um novo time. Implementar essa navegacao mantendo o padrao existente de posicionamento, interacao, responsividade e estados visuais.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-048",
+      "name": "Ano no tooltip de graficos de estatisticas",
+      "goal": "Tornar inequivocas as datas exibidas no grafico da tela de buscar estatisticas quando o periodo visualizado superar um ano.",
+      "scope": "Formatacao das datas exibidas ao passar o mouse no grafico de estatisticas, incluindo a deteccao de intervalos superiores a um ano.",
+      "description": "Apontamento do usuario em 2026-09-24: ao buscar estatisticas sem informar um periodo, o grafico pode abranger mais de um ano, mas o tooltip exibe apenas dia e mes. Isso torna pontos de anos diferentes confusos. Quando o intervalo dos dados superar um ano, exibir dia, mes e ano no tooltip; manter o formato compacto atual para intervalos de ate um ano, se isso preservar a legibilidade.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-049",
+      "name": "Evitar loading repetido em dados ja carregados",
+      "goal": "Exibir o loading apenas durante a primeira busca efetiva dos dados e evitar sua repeticao ao retornar a telas que ja possuem os dados carregados.",
+      "scope": "Ciclo de carregamento e reutilizacao dos dados das telas de Visao geral, Dashboard e demais telas que compartilham dados ja obtidos; manter o loading em buscas novas, refetches e apos invalidacao dos dados.",
+      "description": "Apontamento do usuario em 2026-09-24: ao acessar repetidamente telas como Visao geral, Dashboard e outras, o loading aparece toda vez, mesmo quando os dados ja foram carregados. Validar o fluxo e ajustar a estrategia de estado/cache para que o loading continue aparecendo na primeira busca efetiva, mas nao seja exibido novamente ao navegar para uma tela cujos dados ainda estejam disponiveis. O loading atual foi considerado adequado e deve ser preservado para requisicoes reais posteriores.",
+      "dependencies": ["feat-044"],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-050",
+      "name": "Icone de odd media quebrado",
+      "goal": "Exibir corretamente o icone de odd media em todos os pontos em que ele e apresentado, sem quebrar o tema visual da tela.",
+      "scope": "Iconografia e renderizacao do componente de odd media no frontend; validao em tema claro/escuro, estados vazios e diferentes telas onde o item e usado.",
+      "description": "Apontamento do usuario em 2026-09-24: o icone de odd media nao aparece e parece estar quebrado. Validar se o recurso foi removido, se o nome do icone/asset esta incorreto, se o CSS do tema esta ocultando o elemento ou se houve regressao no componente que renderiza a odd media. A correcao deve manter a padronizacao visual das odds e funcionar sem depender de dados externos ou fallback quebrado.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
     }
   ]
 }
