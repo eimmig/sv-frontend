@@ -37,6 +37,9 @@ test.describe('dashboard panel layout (RNF01, docs/DESIGN-SYSTEM.md "Layout em p
       liveCount: 0,
       avgOdd: 1.9,
     };
+    await page.route('**/api/v1/statistics/daily*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) }),
+    );
     await page.route('**/api/v1/statistics*', (route) =>
       route.fulfill({
         status: 200,
@@ -109,6 +112,9 @@ test.describe('dashboard panel layout (RNF01, docs/DESIGN-SYSTEM.md "Layout em p
       liveCount: 0,
       avgOdd: 1.9,
     };
+    await page.route('**/api/v1/statistics/daily*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) }),
+    );
     await page.route('**/api/v1/statistics*', (route) =>
       route.fulfill({
         status: 200,
