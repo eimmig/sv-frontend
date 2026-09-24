@@ -3479,7 +3479,7 @@
           ],
           "validation": "Gate completo do PR story->develop verde.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-623"
         }
       ],
@@ -3508,7 +3508,8 @@
               "Ano aparece tambem no eixo (aceito no plan review: tooltip trigger 'axis' reaproveita a categoria).",
               "E2E do tooltip acrescentado (plano previa so unitario: o tooltip do ECharts e HTML, nao canvas).",
               "Apontamentos fora de escopo viraram feature: feat-051 (flake login-layout) e feat-052 (tooltip branco no tema escuro).",
-              "Vault: docs/sistema-de-design.md item 6 - regra da data com ano e tooltip verificavel em E2E."
+              "Vault: docs/sistema-de-design.md item 6 - regra da data com ano e tooltip verificavel em E2E.",
+              "Gate do PR story->develop #203 reprovou por typescript:S7755 (ultimo ponto por indice); corrigido em feat-048.3 (SV-623) com .at(-1) + guarda; regra registrada em docs/testes.md 'CI e SonarCloud'."
             ]
           }
         ]
