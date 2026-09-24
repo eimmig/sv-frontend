@@ -2773,7 +2773,7 @@
       "scope": "`shared/monthly-profit-chart` (serie diaria ou mensal) e `pages/dashboard` (busca `/statistics/daily` so quando o periodo tem ate 31 dias).",
       "description": "Pedido do usuario em uso real (2026-09-22, mesma sessao de feat-038/039/040): na tela de dashboard, o grafico app-monthly-profit-chart deveria virar semanal ou diario quando o filtro aplicado cobre menos de 1 mes, em vez de continuar agrupando por mes (o que produz um grafico com 1 unico ponto/pouco informativo pra filtros curtos). Feature nasceu como nota de sessao (usuario pediu so para registrar, nao implementar agora).",
       "dependencies": [],
-      "status": "done",
+      "status": "in-progress",
       "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Challenge independente como self-review (independencia reduzida, UI sem contrato novo). Confirmado por leitura: StatisticsApi.getDaily aceita os mesmos 7 filtros de get(); addDays/toDateOnly (period-preset-filter.ts) e buildDailyTable (period-report) ja resolvem preenchimento de dias esparsos; chart usado so em dashboard.html. 2 MINOR incorporados: (1) dashboard.spec.ts usa expectOne(DAILY_STATISTICS_URL) (hoje so o monthly-drawdown-grid chama /daily) - com o novo request quebraria; trocar por match() distinguindo por params; (2) contagem/preenchimento de dias reusa addDays/toDateOnly (datas locais), sem aritmetica UTC nova que deslocaria um dia no fuso BR. Residual aceito: preset 'Hoje' gera grafico de 1 ponto (consequencia direta da regra do usuario). Decisao do usuario: <=31 dias diario, acima mensal, sem nivel semanal.",
       "jira": "SV-599",
       "subtasks": [
@@ -2808,6 +2808,20 @@
           "owner": "agente",
           "status": "done",
           "jira": "SV-601"
+        },
+        {
+          "id": "feat-041.3",
+          "name": "Corrigir apontamento SonarCloud typescript:S2699 no dashboard.spec",
+          "detail": "Gate do PR story->develop (#185) reprovou: o teste de periodo >31 dias so usava httpMock.expectNone, que o SonarCloud nao reconhece como assertion.",
+          "checklist": [
+            "Teste passa a afirmar com expect(httpMock.match(...)).toHaveLength(0)",
+            "dashboard.spec verde",
+            "CI do PR story->develop com SonarCloud zero apontamentos"
+          ],
+          "validation": "Gate completo do PR story->develop verde.",
+          "owner": "agente",
+          "status": "in-progress",
+          "jira": "SV-602"
         }
       ],
       "evidence": {
