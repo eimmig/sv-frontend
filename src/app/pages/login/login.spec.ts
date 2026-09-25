@@ -98,4 +98,28 @@ describe('Login', () => {
     expect(component['errorMessage']()).toBe('E-mail ou senha incorretos.');
     expect(router.navigateByUrl).not.toHaveBeenCalled();
   });
+
+  it('tells the user the session expired, and clears the notice on the next sign-in attempt', () => {
+    const auth = TestBed.inject(Auth);
+    auth.sessionExpired.set(true);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('[data-testid="login-session-expired"]')).toBeTruthy();
+
+    component['form'].setValue({ slug: 'acme', email: 'ana@acme', password: 'secret' });
+    component['submit']();
+    fixture.detectChanges();
+
+    expect(auth.sessionExpired()).toBe(false);
+    expect(fixture.nativeElement.querySelector('[data-testid="login-session-expired"]')).toBeNull();
+    httpMock
+      .expectOne(`${environment.apiGatewayUrl}/api/v1/auth/login`)
+      .flush({ token: 't', userId: 'u', role: 'MEMBER', mustChangePassword: false });
+  });
+
+  it('shows no expiry notice on a regular visit', () => {
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('[data-testid="login-session-expired"]')).toBeNull();
+  });
 });

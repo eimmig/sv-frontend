@@ -18,29 +18,45 @@ export class Loading {
   readonly leaving = signal(false);
 
   private pending = 0;
+  private epoch = 0;
   private shownAt = 0;
   private showTimer: ReturnType<typeof setTimeout> | undefined;
   private hideTimer: ReturnType<typeof setTimeout> | undefined;
 
-  begin(): void {
+  begin(): number {
     this.pending++;
     if (this.hideTimer !== undefined) {
       clearTimeout(this.hideTimer);
       this.hideTimer = undefined;
       this.leaving.set(false);
-      return;
+      return this.epoch;
     }
     if (this.visible() || this.showTimer !== undefined) {
-      return;
+      return this.epoch;
     }
     this.showTimer = setTimeout(() => {
       this.showTimer = undefined;
       this.shownAt = Date.now();
       this.visible.set(true);
     }, SHOW_DELAY_MS);
+    return this.epoch;
   }
 
-  end(): void {
+  reset(): void {
+    clearTimeout(this.showTimer);
+    clearTimeout(this.hideTimer);
+    this.showTimer = undefined;
+    this.hideTimer = undefined;
+    this.pending = 0;
+    this.epoch++;
+    this.leaving.set(false);
+    this.visible.set(false);
+  }
+
+  end(epoch = this.epoch): void {
+    if (epoch !== this.epoch) {
+      return;
+    }
     this.pending = Math.max(0, this.pending - 1);
     if (this.pending > 0) {
       return;

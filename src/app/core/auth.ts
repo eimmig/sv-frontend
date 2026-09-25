@@ -48,6 +48,7 @@ export class Auth {
   readonly isAuthenticated = computed(() => this.session() !== null);
   readonly isAdmin = computed(() => this.session()?.role === 'ADMIN');
   readonly mustChangePassword = computed(() => this.session()?.mustChangePassword ?? false);
+  readonly sessionExpired = signal(false);
 
   login(tenantSlug: string, email: string, password: string): Observable<LoginResponse> {
     return this.http
@@ -83,6 +84,18 @@ export class Auth {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
     }
+  }
+
+  expireSession(): void {
+    if (!this.session()) {
+      return;
+    }
+    this.logout();
+    this.sessionExpired.set(true);
+  }
+
+  clearSessionExpired(): void {
+    this.sessionExpired.set(false);
   }
 
   logout(): void {

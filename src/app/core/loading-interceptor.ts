@@ -9,6 +9,6 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
   const loading = inject(Loading);
-  loading.begin();
-  return next(req).pipe(finalize(() => loading.end()));
+  const epoch = loading.begin();
+  return next(req).pipe(finalize(() => loading.end(epoch)));
 };
