@@ -4191,6 +4191,73 @@
           }
         ]
       }
+    },
+    {
+      "id": "feat-058",
+      "name": "Drawdown mensal: escala Y compartilhada e reaproveitar filtro geral do dashboard",
+      "goal": "O grafico de drawdown mensal (aba do dashboard) fica comparavel entre meses e usa o mesmo filtro geral da tela, sem pedir data duas vezes.",
+      "scope": "`shared/monthly-drawdown-chart`, `pages/dashboard/monthly-drawdown-grid`, `core/chart-theme.ts` (min/max opcional no eixo Y das duas funcoes de line chart), `pages/dashboard/dashboard.ts`/`.html` (passar filtro geral para o grid); i18n nos 3 locales (remocao das chaves do filtro proprio); e2e/unitarios do componente. Nenhuma mudanca de backend (stats-service/api-gateway) - GET /api/v1/statistics/daily ja aceita os filtros necessarios.",
+      "description": "epic-037 da raiz. Achado do usuario em uso real (2026-09-25, com captura de tela): (1) cada mini-grafico mensal auto-escala o proprio eixo Y (buildLineChartOption sem min/max explicito), entao o mes com lucro acumulado menor (tipicamente o mes corrente, ainda incompleto) fica com um teto mais baixo e a curva parece maior/mais inclinada que a dos outros meses - quebra a comparacao visual entre meses, que e o proposito do grafico. (2) monthly-drawdown-grid tem datepicker de mes inicial/final + botao aplicar proprios, redundante com o filtro geral do dashboard (period-preset-filter + esporte/casa/mercado/liga/tipster ja montados em dashboard.ts applyFilter()) - usuario filtra duas vezes pra ver o drawdown de um periodo. Decisao a confirmar no plan review: forma exata de threading do filtro (StatisticsFilter completo como @Input vs. so from/to) e se o calculo do range Y compartilhado (min/max entre todos os meses renderizados) fica em monthly-drawdown-metrics.ts (puro, testavel) ou no componente.",
+      "dependencies": [],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-25: READY WITH CONCERNS. Self-review unico (execucao + adversarial). 4 MINOR incorporados ao plano antes de codificar: (1) arredondar o range Y compartilhado para passo 'redondo' (1 casa decimal, floor/ceil) em vez de min/max brutos, senao os rotulos do eixo ficam com decimais feios; (2) resolveMonthRange fica sem consumidor (so o proprio grid e o spec dele usavam) - remover em vez de deixar orfao; (3) guarda do effect() do grid precisa checar ausencia de filter.from/filter.to (undefined antes do primeiro applyFilter do dashboard), nao so 'to < from'; (4) o corte por dia final (to) em buildMonthlyDrawdown precisa se aplicar independente do corte por 'hoje' - endDay do ultimo mes e min(toDay, diasNoMes, hoje se for o mes corrente), nao so um ou outro, senao um filtro geral terminando no meio de um mes passado plotaria ate o fim do mes.",
+      "jira": "SV-654",
+      "subtasks": [
+        {
+          "id": "feat-058.1",
+          "name": "Escala Y compartilhada entre os mini-graficos mensais",
+          "detail": "Eixo Y auto-escalado por grafico faz o mes com lucro acumulado menor (ex. mes corrente incompleto) parecer maior/mais inclinado que os outros - quebra a comparacao visual entre meses.",
+          "checklist": [
+            "monthly-drawdown-metrics.ts: computeSharedYRange(months) - min/max entre todos os days nao-null de todos os meses, iniciando em 0 (baseline), arredondado pra fora em 1 casa decimal (floor/ceil); retorna null se nao houver valor numerico",
+            "chart-theme.ts: LineChartStyleOptions ganha yMin?/yMax? opcionais; buildLineChartOption seta yAxis.min/max so quando fornecidos (buildComparisonLineChartOption e outros consumidores continuam auto-scale)",
+            "monthly-drawdown-chart.ts: input yRange = input<{min,max}|null>(null), repassado pro buildChartOption/buildLineChartOption",
+            "monthly-drawdown-grid.ts: computed a partir de months() chamando computeSharedYRange, [yRange] em cada app-monthly-drawdown-chart",
+            "Testes unitarios: computeSharedYRange (varios meses, all-null, arredondamento) e buildLineChartOption com/sem yMin/yMax"
+          ],
+          "validation": "ng test verde cobrindo computeSharedYRange e o novo parametro de buildLineChartOption.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-655"
+        },
+        {
+          "id": "feat-058.2",
+          "name": "Reaproveitar o filtro geral do dashboard em vez do datepicker proprio",
+          "detail": "monthly-drawdown-grid tem form/datepicker/botao proprios (so from/to, ignora esporte/casa/mercado/etc.) redundantes com o filtro geral ja montado em dashboard.ts - usuario filtra duas vezes.",
+          "checklist": [
+            "monthly-drawdown-metrics.ts: buildMonthlyDrawdown aceita from/to nao alinhados a mes inteiro (primeiro mes comeca no dia real de from, ultimo mes termina em min(dia real de to, dias no mes, hoje se for o mes corrente)); remover resolveMonthRange (sem consumidor apos o refactor) e seu describe no spec",
+            "monthly-drawdown-grid.ts: remover FormGroup/datepicker/apply e os imports associados (ReactiveFormsModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatButtonModule, FormBuilder, Validators); novos input.required<StatisticsFilter>() filter, input.required<number>() bankrollNow e unitPercent; effect() no construtor reage aos 3 inputs, guarda ausencia de filter.from/filter.to (months vazio, sem chamada HTTP), senao statisticsApi.getDaily(filter()) -> buildMonthlyDrawdown",
+            "monthly-drawdown-grid.html/.scss: remover o <form> e o bloco .monthly-drawdown-grid__filter",
+            "dashboard.ts: signal appliedFilter, setado em applyFilter() junto do filter local ja construido; dashboard.html passa [filter]=\"appliedFilter()\" [bankrollNow]=\"dashboardData().bankrollNow\" [unitPercent]=\"dashboardData().unitPercent\" pro app-monthly-drawdown-grid",
+            "i18n: remover monthlyDrawdown.fromLabel/toLabel/apply dos 3 locales (pt-BR/en-US/es), manter emptyResult/genericError",
+            "Reescrever monthly-drawdown-grid.spec.ts em torno de fixture.componentRef.setInput(...) (sem form/HTTP de month-range); estender monthly-drawdown-metrics.spec.ts com casos de from/to nao alinhados ao mes"
+          ],
+          "validation": "ng test verde; grid nao dispara HTTP sem filter.from/to; buildMonthlyDrawdown respeita from/to parciais de mes.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-656"
+        },
+        {
+          "id": "feat-058.3",
+          "name": "E2E, QA visual e verificacao final",
+          "detail": "Prova no navegador e fechamento da feature.",
+          "checklist": [
+            "e2e/dashboard.spec.ts bloco 'epic-020 - monthly drawdown grid': trocar cliques em monthly-drawdown-from/to-toggle/apply (removidos) por period-preset-select -> custom -> period-preset-custom-from/to, cobrindo o caso de 3 meses e o caso de range vazio/invertido",
+            "QA visual dos mini-graficos (escala compartilhada visivel) nos 2 temas, desktop e mobile",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-657"
+        }
+      ],
+      "evidence": ""
     }
   ]
 }

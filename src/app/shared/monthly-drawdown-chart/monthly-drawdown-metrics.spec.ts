@@ -1,5 +1,9 @@
 import { DailyBetMetrics } from '../../core/statistics-api';
-import { buildMonthlyDrawdown, resolveMonthRange } from './monthly-drawdown-metrics';
+import { buildMonthlyDrawdown, computeSharedYRange, MonthlyDrawdownMonth, resolveMonthRange } from './monthly-drawdown-metrics';
+
+function month(year: number, monthNum: number, days: (number | null)[]): MonthlyDrawdownMonth {
+  return { year, month: monthNum, days };
+}
 
 function day(date: string, netProfit: number): DailyBetMetrics {
   return { date, netProfit, totalStaked: 0, roi: 0, betCount: 1 };
@@ -85,5 +89,39 @@ describe('buildMonthlyDrawdown', () => {
       { year: 2026, month: 12, days: Array(31).fill(0) },
       { year: 2027, month: 1, days: Array(31).fill(0) },
     ]);
+  });
+});
+
+describe('computeSharedYRange', () => {
+  it('returns null when every day in every month is null (denominator 0)', () => {
+    expect(computeSharedYRange([month(2026, 1, [null, null])])).toBeNull();
+  });
+
+  it('returns null for an empty months array', () => {
+    expect(computeSharedYRange([])).toBeNull();
+  });
+
+  it('spans the min and max across all months, always including 0 as baseline', () => {
+    const range = computeSharedYRange([month(2026, 1, [1, 2, 3]), month(2026, 2, [0.5, -0.5])]);
+
+    expect(range).toEqual({ min: -0.5, max: 3 });
+  });
+
+  it('keeps the baseline at 0 when every value is positive', () => {
+    const range = computeSharedYRange([month(2026, 1, [1, 2])]);
+
+    expect(range).toEqual({ min: 0, max: 2 });
+  });
+
+  it('rounds outward to 1 decimal place so axis labels stay legible', () => {
+    const range = computeSharedYRange([month(2026, 1, [-1.23, 3.456])]);
+
+    expect(range).toEqual({ min: -1.3, max: 3.5 });
+  });
+
+  it('ignores null days while still scanning the rest of the month', () => {
+    const range = computeSharedYRange([month(2026, 1, [null, 2, null, -1])]);
+
+    expect(range).toEqual({ min: -1, max: 2 });
   });
 });

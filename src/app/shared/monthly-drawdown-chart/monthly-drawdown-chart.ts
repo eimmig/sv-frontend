@@ -10,12 +10,13 @@ import { buildLineChartOption, readCssColor } from '../../core/chart-theme';
 import { formatMonth } from '../../core/date-format';
 import { Language } from '../../core/language';
 import { Theme } from '../../core/theme';
-import { MonthlyDrawdownMonth } from './monthly-drawdown-metrics';
+import { MonthlyDrawdownMonth, MonthlyDrawdownYRange } from './monthly-drawdown-metrics';
 
 echarts.use([LineChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
 function buildChartOption(
   month: MonthlyDrawdownMonth,
+  yRange: MonthlyDrawdownYRange | null,
   brandColor: string,
   borderColor: string,
   labelColor: string,
@@ -24,6 +25,8 @@ function buildChartOption(
   return buildLineChartOption(categories, [...month.days], brandColor, borderColor, labelColor, {
     smooth: false,
     splitNumber: 4,
+    yMin: yRange?.min,
+    yMax: yRange?.max,
   });
 }
 
@@ -39,6 +42,7 @@ export class MonthlyDrawdownChart {
   private readonly language = inject(Language);
 
   readonly month = input.required<MonthlyDrawdownMonth>();
+  readonly yRange = input<MonthlyDrawdownYRange | null>(null);
 
   protected readonly title = computed(() => formatMonth(this.month().year, this.month().month, this.language.current()));
 
@@ -46,6 +50,7 @@ export class MonthlyDrawdownChart {
     this.theme.current();
     return buildChartOption(
       this.month(),
+      this.yRange(),
       readCssColor('--color-brand'),
       readCssColor('--color-border'),
       readCssColor('--color-text-secondary'),
