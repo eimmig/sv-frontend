@@ -4008,7 +4008,7 @@
       "scope": "`shared/panel` (modo recolhivel), `shared/panel-layout` (colunas no tablet), as 5 telas com painel de filtros de 320px (`dashboard`, `search-statistics`, `period-report`, `period-comparison`, `catalog-dashboard`), i18n nos 3 locales; nenhuma mudanca de API.",
       "description": "Pedido do usuario (2026-09-25): minimizar os menus de filtro de data ao lado da sidebar nos dashboards para dar mais espaco a renderizacao dos graficos. Estrategia escolhida pelo usuario (AskUserQuestion, entre painel recolhivel / barra de filtros no topo / gaveta sob demanda): painel recolhivel - botao no cabecalho do painel recolhe para uma faixa estreita (~48px, icone de filtro + contador de filtros ativos), estado lembrado por tela. Mantem o padrao de paineis lado a lado (docs/sistema-de-design.md 'Layout em paineis').",
       "dependencies": [],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-25: READY WITH CONCERNS. Self-review unico (execucao + adversarial, independencia reduzida, UI isolada sem contrato de backend). Confirmado por leitura: panel__body sem display proprio (atributo hidden funciona e preserva estado do period-preset-filter e dos selects); panel-layout usa --panel-columns e forca repeat(2,1fr) no tablet; e2e/panel-layout.spec.ts nao afirma colunas no tablet; ngx-echarts 22 autoResize via ResizeObserver com throttleTime(100, trailing) - grafico acompanha a largura sem codigo extra. 5 MINOR incorporados: (1) collapseKey do catalog-dashboard por segmento (6 rotas, estado por tela); (2) id do body unico por instancia para aria-controls; (3) badge = selects de catalogo nao nulos no ultimo apply/search, sem datas, oculto quando 0; (4) recolher esconde tambem o form de % da unidade (admin) no dashboard - aceito; (5) conferir apps/web/DESIGN.md junto com o vault. Residuais aceitos: um resize intermediario do grafico durante a transicao de 200ms; localStorage com a mesma guarda typeof de app-side-nav.",
       "jira": "SV-647",
       "subtasks": [
@@ -4080,7 +4080,7 @@
           {
             "titulo": "Como foi verificado",
             "itens": [
-              "./init.sh do app verde (349 testes unitarios apos remover o spec trivial de `applied-filters`, cobertura ~92,7%); ./init.sh da raiz: web OK, falhas so em servicos Java/Python que dependem de Docker (desligado), sem relacao com esta feature.",
+              "./init.sh do app verde (348 testes unitarios apos remover o spec trivial de `applied-filters`, cobertura 92,68%); ./init.sh da raiz: web OK, falhas so em servicos Java/Python que dependem de Docker (desligado), sem relacao com esta feature.",
               "E2E completa 99/99; E2E novo 12/12 com `--repeat-each=3 --workers=4`: graficos ficam >200px mais largos ao recolher, reload mantem recolhido, reabrir preserva o filtro escolhido, cada tela guarda o proprio estado, mobile 390px vira barra sem overflow, rotulos em en-US.",
               "QA visual: claro/escuro x 1440/900/390, aberto e recolhido.",
               "Plan Reviewer: READY WITH CONCERNS (5 MINOR incorporados). /code-review por subtask: 3 achados corrigidos (painel sem titulo preso recolhido, plural com 1 filtro, datas de Buscar Estatisticas fora da contagem). Delivery Reviewer (self-conduzido): CONCERNS com 2 P3 - spec trivial removido; largura do tablet aceita. Test Suite Auditor (self-conduzido): PASS."
