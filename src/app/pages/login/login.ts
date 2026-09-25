@@ -27,7 +27,7 @@ import { LoginBorderTrace } from './login-border-trace/login-border-trace';
   templateUrl: './login.html',
 })
 export class Login implements OnInit {
-  private readonly auth = inject(Auth);
+  protected readonly auth = inject(Auth);
   private readonly router = inject(Router);
   private readonly formBuilder = inject(FormBuilder);
   private readonly transloco = inject(TranslocoService);
@@ -52,6 +52,7 @@ export class Login implements OnInit {
     if (this.form.invalid || this.submitting()) {
       return;
     }
+    this.auth.clearSessionExpired();
     const { slug, email, password } = this.form.getRawValue();
     submitForm(
       this.auth.login(slug, email, password),

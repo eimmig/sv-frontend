@@ -59,6 +59,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-648](https://stakevault.atlassian.net/browse/SV-648) - Panel recolhivel e colunas do tablet
 - [SV-649](https://stakevault.atlassian.net/browse/SV-649) - Aplicar o painel recolhivel nas 5 telas
 - [SV-650](https://stakevault.atlassian.net/browse/SV-650) - E2E, QA visual e verificacao final
+- [SV-651](https://stakevault.atlassian.net/browse/SV-651) - Sessao expirada volta direto para o login
+- [SV-652](https://stakevault.atlassian.net/browse/SV-652) - Detectar sessao expirada e voltar ao login
+- [SV-653](https://stakevault.atlassian.net/browse/SV-653) - E2E, QA visual e verificacao final
 
 ## [0.1.0] - 2026-09-23
 

@@ -4103,12 +4103,64 @@
       "name": "Web no cluster sem rollout automatico (imagem antiga no ar)",
       "goal": "O app web que roda no cluster reflete o que esta em main.",
       "scope": "Rollout do deployment `web` (manual via tunel SSH, ou a automacao do job `deploy` quando a decisao pendente de infra for tomada); nenhum codigo de produto.",
-      "description": "Achado em 2026-09-25 (sessao de feat-055, investigando uma animacao de logo antes do login que o codigo atual nao tem desde feat-044): o job `deploy` de main segue falhando (`127.0.0.1:6443 connection refused`, run 36070299775). Causa e decisao ja documentadas em docs/services/infra.md ('Disparo real do primeiro rollout'): o KUBE_CONFIG aponta para o tunel SSH local; o usuario decidiu 'deixar como esta por agora'. Consequencia para o web: a imagem `ghcr.io/eimmig/sv-frontend:latest` e publicada, mas o pod so atualiza com `kubectl rollout restart deployment/web` manual - provavelmente o cluster ainda roda a Splash de boot removida em feat-044. Acao: rollout manual e reteste do login pelo usuario; automacao depende da decisao pendente em infra, nao de mudanca neste repositorio.",
+      "description": "Achado em 2026-09-25 (sessao de feat-055, investigando uma animacao de logo antes do login que o codigo atual nao tem desde feat-044): o job `deploy` de main segue falhando (`127.0.0.1:6443 connection refused`, run 36070299775). Causa e decisao ja documentadas em docs/services/infra.md ('Disparo real do primeiro rollout'): o KUBE_CONFIG aponta para o tunel SSH local; o usuario decidiu 'deixar como esta por agora'. Consequencia para o web: a imagem `ghcr.io/eimmig/sv-frontend:latest` e publicada, mas o pod so atualiza com `kubectl rollout restart deployment/web` manual (a animacao de logo relatada pelo usuario era outro problema, sessao expirada - ver feat-057). Acao: rollout manual e reteste do login pelo usuario; automacao depende da decisao pendente em infra, nao de mudanca neste repositorio.",
       "dependencies": [],
       "status": "not-started",
       "plan_review": "",
       "jira": "",
       "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-057",
+      "name": "Sessao expirada volta direto para o login",
+      "goal": "Com o token expirado, o app nao fica preso no overlay de carregamento sobre uma tela com erro: limpa a sessao e leva direto ao login, avisando que a sessao expirou.",
+      "scope": "`core/auth-interceptor`, `core/auth`, `core/loading` (encerrar o overlay na expiracao), tela de login (aviso), i18n nos 3 locales; nenhuma mudanca de backend.",
+      "description": "Pedido do usuario (2026-09-25, com captura de tela): ao abrir o sistema com um token expirado salvo no localStorage, `authGuard` so olha se existe sessao, entao a rota `/overview` abre, dispara GETs em `/api/`, o overlay de logo (feat-044) toca e as requisicoes voltam 401 do api-gateway (`type` `https://docs/errors/invalid-token`, PasetoAuthenticationFilter); nada trata 401, entao a tela fica com erro atras do overlay em vez de voltar ao login. O token e PASETO v4.local (cifrado, sem expiracao legivel no cliente), entao a deteccao tem de ser pela resposta. Cuidado: `POST /api/v1/auth/change-password` com senha atual errada tambem devolve 401 com token presente (`current-password-mismatch`) e nao pode deslogar - discriminar pelo `type` do problema, nao so pelo status.",
+      "dependencies": [],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-25: READY WITH CONCERNS. Self-review unico (execucao + adversarial, independencia reduzida). Confirmado por leitura: gateway grava type https://docs/errors/invalid-token (ProblemDetailMessages.typeSlug + FilterProblemWriter); change-password com senha errada devolve 401 com outro type (CurrentPasswordMismatchException); producao na mesma origem (apiGatewayUrl '') e CorsFilter antes do filtro PASETO - corpo do 401 legivel; ordem dos interceptors acceptLanguage, httpCache, loading, auth; Loading sem reset hoje. 3 MINOR incorporados: (1) E2E existente de senha errada passa a mandar type current-password-mismatch e afirmar que continua em /change-password (prova do 'nao desloga', sem teste novo); (2) 401 sem corpo RFC 7807 (proxy/ingress) nao expira - residual aceito, fallback e o comportamento atual; (3) ordem fixa no interceptor: expireSession -> loading.reset -> navigate, 401 concorrentes param na guarda de sessao.",
+      "jira": "SV-651",
+      "subtasks": [
+        {
+          "id": "feat-057.1",
+          "name": "Detectar sessao expirada e voltar ao login",
+          "detail": "Resposta 401 de token invalido do gateway encerra a sessao, apaga o overlay e leva ao login com aviso.",
+          "checklist": [
+            "`core/auth`: `sessionExpired`, `expireSession()`, `clearSessionExpired()`",
+            "`core/auth-interceptor`: com token anexado, 401 com `type` terminando em `/invalid-token` -> expireSession, loading.reset, navigateByUrl('/login'); relanca o erro",
+            "`core/loading`: `reset()`",
+            "Login: aviso neutro em `<output>` quando a sessao expirou, limpo ao enviar",
+            "`login.sessionExpired` nos 3 locales",
+            "Testes unitarios: interceptor (invalid-token, senha errada, 401 sem token, 500, varias 401), Auth, Loading, Login"
+          ],
+          "validation": "ng test verde cobrindo os casos do interceptor.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-652"
+        },
+        {
+          "id": "feat-057.2",
+          "name": "E2E, QA visual e verificacao final",
+          "detail": "Prova no navegador e fechamento da feature.",
+          "checklist": [
+            "E2E: sessao salva + /api/ respondendo 401 invalid-token com atraso de ~800ms -> /login com aviso e sem overlay",
+            "E2E de change-password: mock com type current-password-mismatch e URL continua em /change-password",
+            "QA visual do aviso nos 2 temas, desktop e mobile",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit; incluir docs/contratos-de-api.md (web depende do type invalid-token)",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-653"
+        }
+      ],
       "evidence": ""
     }
   ]

@@ -12,6 +12,10 @@
     <span class="login__tagline">{{ 'login.tagline' | transloco }}</span>
   </div>
 
+  @if (auth.sessionExpired()) {
+    <output class="login__notice" data-testid="login-session-expired">{{ 'login.sessionExpired' | transloco }}</output>
+  }
+
   <div class="login__card-wrap">
     <app-login-border-trace />
     <app-panel [title]="'login.title' | transloco">
