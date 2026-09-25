@@ -6,6 +6,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { forkJoin, map } from 'rxjs';
 
 import { loadInto } from '../../core/api-request';
+import { countAppliedFilters } from '../../core/applied-filters';
 import { BankrollApi } from '../../core/bankroll-api';
 import { BettingHouse, BettingHousesApi } from '../../core/betting-houses-api';
 import { CatalogEntry, catalogApi } from '../../core/catalog-api';
@@ -111,6 +112,7 @@ export class PeriodComparison implements OnInit {
   protected readonly options = signal<Options>(EMPTY_OPTIONS);
   protected readonly optionsError = signal<string | null>(null);
 
+  protected readonly appliedFilterCount = signal(0);
   protected readonly periodA = signal<PeriodRange>(resolvePreset('today', new Date()));
   protected readonly periodB = signal<PeriodRange>(resolvePreset('today', new Date()));
 
@@ -236,6 +238,7 @@ export class PeriodComparison implements OnInit {
 
   protected applyFilter(): void {
     const raw = this.filterForm.getRawValue();
+    this.appliedFilterCount.set(countAppliedFilters(Object.values(raw)));
     const filter = {
       bettingHouseId: raw.bettingHouseId || undefined,
       sportId: raw.sportId || undefined,

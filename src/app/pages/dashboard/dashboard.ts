@@ -9,6 +9,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { forkJoin, map, of } from 'rxjs';
 
 import { loadInto, submitForm } from '../../core/api-request';
+import { countAppliedFilters } from '../../core/applied-filters';
 import { Auth } from '../../core/auth';
 import { BankrollApi } from '../../core/bankroll-api';
 import { BettingHouse, BettingHousesApi } from '../../core/betting-houses-api';
@@ -100,6 +101,7 @@ export class Dashboard implements OnInit {
   protected readonly optionsError = signal<string | null>(null);
 
   protected readonly period = signal<PeriodRange>({ from: '', to: '' });
+  protected readonly appliedFilterCount = signal(0);
 
   protected readonly dashboardData = signal<DashboardData>(EMPTY_DASHBOARD_DATA);
   protected readonly dashboardError = signal<string | null>(null);
@@ -169,6 +171,7 @@ export class Dashboard implements OnInit {
   protected applyFilter(): void {
     const raw = this.filterForm.getRawValue();
     const period = this.period();
+    this.appliedFilterCount.set(countAppliedFilters(Object.values(raw)));
     const filter = {
       bettingHouseId: raw.bettingHouseId || undefined,
       sportId: raw.sportId || undefined,

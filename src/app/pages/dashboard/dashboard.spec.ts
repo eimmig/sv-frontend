@@ -183,6 +183,7 @@ describe('Dashboard', () => {
 
   afterEach(() => {
     httpMock.verify();
+    localStorage.removeItem('stakevault.panelCollapsed.dashboard');
   });
 
   it('loads options and overall metrics on creation, defaulting to the "Hoje" period', () => {
@@ -323,6 +324,10 @@ describe('Dashboard', () => {
     }
     httpMock.expectOne((req) => req.url === SETTINGS_URL).flush({ unitPercent: 0.01 });
     httpMock.expectOne((req) => req.url === DAILY_STATISTICS_URL).flush([]);
+
+    fixture.nativeElement.querySelector('[data-testid="panel-collapse-toggle"]').click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[data-testid="panel-badge"]').textContent.trim()).toBe('1');
   });
 
   it('shows the RFC 7807 detail when the statistics request fails', () => {

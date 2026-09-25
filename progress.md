@@ -2,8 +2,16 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-09-24
-**Estado:** `feat-046`..`feat-052`/`feat-054` fechadas; `feat-053` no backlog.
+**Última atualização:** 2026-09-25
+**Estado:** `feat-055` fechada; `feat-053` e `feat-056` no backlog.
+
+## `feat-055` fechada — painel de filtros recolhível (2026-09-25)
+
+Story SV-647 (SV-648..650), PRs #228/#229 + SV-650. Pedido do usuário; estratégia escolhida entre 3
+(painel recolhível). Desenho em `docs/sistema-de-design.md` ("Painel de filtros recolhível").
+Achado fora de escopo: `feat-056` (deploy de `main` não reinicia o pod web). Pedido de remover a
+"animação de logo antes do login" ficou em stand-by pelo usuário — o código atual não tem splash
+desde `feat-044`; suspeita é imagem antiga no cluster (`feat-056`).
 
 ## `feat-047` fechada — dashboard e menu flutuante de Times (2026-09-24)
 

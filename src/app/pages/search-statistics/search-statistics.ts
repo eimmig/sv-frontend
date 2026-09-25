@@ -9,6 +9,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
 
 import { loadInto } from '../../core/api-request';
+import { countAppliedFilters } from '../../core/applied-filters';
 import { BettingHouse, BettingHousesApi } from '../../core/betting-houses-api';
 import { CatalogEntry, catalogApi } from '../../core/catalog-api';
 import { formatBrl } from '../../core/currency';
@@ -71,6 +72,7 @@ export class SearchStatistics implements OnInit {
   protected readonly teamsError = signal<string | null>(null);
 
   protected readonly hasSearched = signal(false);
+  protected readonly appliedFilterCount = signal(0);
   protected readonly result = signal<StatisticsSearchResult | null>(null);
   protected readonly resultError = signal<string | null>(null);
 
@@ -166,6 +168,18 @@ export class SearchStatistics implements OnInit {
     }
     this.hasSearched.set(true);
     const raw = this.filterForm.getRawValue();
+    this.appliedFilterCount.set(
+      countAppliedFilters([
+        raw.sportId,
+        raw.leagueId,
+        raw.teamId,
+        raw.bettingHouseId,
+        raw.marketId,
+        raw.tipsterId,
+        raw.betType,
+        raw.from ?? raw.to,
+      ]),
+    );
     loadInto(
       this.statisticsSearchApi.search({
         sportId: raw.sportId,

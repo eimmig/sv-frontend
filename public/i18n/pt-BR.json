@@ -370,5 +370,11 @@
     "markWon": "Ganha",
     "markLost": "Perdida",
     "markVoid": "Devolvida"
+  },
+  "panel": {
+    "collapse": "Recolher painel",
+    "expand": "Expandir painel",
+    "activeFilter": "1 filtro aplicado",
+    "activeFilters": "{{count}} filtros aplicados"
   }
 }

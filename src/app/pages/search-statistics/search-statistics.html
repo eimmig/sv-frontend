@@ -1,5 +1,10 @@
-<app-panel-layout columns="320px 1fr">
-  <app-panel [title]="'searchStatistics.filtersTitle' | transloco">
+<app-panel-layout columns="auto 1fr" tabletColumns="auto 1fr">
+  <app-panel
+    [title]="'searchStatistics.filtersTitle' | transloco"
+    [collapsible]="true"
+    collapseKey="search-statistics"
+    [badge]="appliedFilterCount()"
+  >
     @if (optionsError(); as message) {
       <p class="search-statistics__error" role="alert" data-testid="search-statistics-options-error">{{ message }}</p>
     } @else {

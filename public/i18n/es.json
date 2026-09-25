@@ -370,5 +370,11 @@
     "markWon": "Ganada",
     "markLost": "Perdida",
     "markVoid": "Anulada"
+  },
+  "panel": {
+    "collapse": "Contraer panel",
+    "expand": "Expandir panel",
+    "activeFilter": "1 filtro aplicado",
+    "activeFilters": "{{count}} filtros aplicados"
   }
 }

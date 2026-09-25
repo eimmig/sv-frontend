@@ -4000,6 +4000,116 @@
           }
         ]
       }
+    },
+    {
+      "id": "feat-055",
+      "name": "Painel de filtros recolhivel nos dashboards",
+      "goal": "Dar mais espaco aos graficos: o painel de filtros das telas de dashboard pode ser recolhido para uma faixa estreita e reaberto quando preciso.",
+      "scope": "`shared/panel` (modo recolhivel), `shared/panel-layout` (colunas no tablet), as 5 telas com painel de filtros de 320px (`dashboard`, `search-statistics`, `period-report`, `period-comparison`, `catalog-dashboard`), i18n nos 3 locales; nenhuma mudanca de API.",
+      "description": "Pedido do usuario (2026-09-25): minimizar os menus de filtro de data ao lado da sidebar nos dashboards para dar mais espaco a renderizacao dos graficos. Estrategia escolhida pelo usuario (AskUserQuestion, entre painel recolhivel / barra de filtros no topo / gaveta sob demanda): painel recolhivel - botao no cabecalho do painel recolhe para uma faixa estreita (~48px, icone de filtro + contador de filtros ativos), estado lembrado por tela. Mantem o padrao de paineis lado a lado (docs/sistema-de-design.md 'Layout em paineis').",
+      "dependencies": [],
+      "status": "done",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-25: READY WITH CONCERNS. Self-review unico (execucao + adversarial, independencia reduzida, UI isolada sem contrato de backend). Confirmado por leitura: panel__body sem display proprio (atributo hidden funciona e preserva estado do period-preset-filter e dos selects); panel-layout usa --panel-columns e forca repeat(2,1fr) no tablet; e2e/panel-layout.spec.ts nao afirma colunas no tablet; ngx-echarts 22 autoResize via ResizeObserver com throttleTime(100, trailing) - grafico acompanha a largura sem codigo extra. 5 MINOR incorporados: (1) collapseKey do catalog-dashboard por segmento (6 rotas, estado por tela); (2) id do body unico por instancia para aria-controls; (3) badge = selects de catalogo nao nulos no ultimo apply/search, sem datas, oculto quando 0; (4) recolher esconde tambem o form de % da unidade (admin) no dashboard - aceito; (5) conferir apps/web/DESIGN.md junto com o vault. Residuais aceitos: um resize intermediario do grafico durante a transicao de 200ms; localStorage com a mesma guarda typeof de app-side-nav.",
+      "jira": "SV-647",
+      "subtasks": [
+        {
+          "id": "feat-055.1",
+          "name": "Panel recolhivel e colunas do tablet",
+          "detail": "Capacidade de recolher no componente de painel compartilhado, para qualquer tela usar sem logica propria.",
+          "checklist": [
+            "`shared/panel`: inputs `collapsible`, `collapseKey`, `badge`; estado em localStorage `stakevault.panelCollapsed.<key>`",
+            "Botao no cabecalho com `aria-expanded`/`aria-controls` (id unico por instancia) e rotulo i18n",
+            "Recolhido: faixa de 56px com titulo vertical e badge; no mobile, barra horizontal; corpo com `hidden` (sem `@if`)",
+            "Transicao de largura desligada com `prefers-reduced-motion`",
+            "`shared/panel-layout`: input `tabletColumns` via `--panel-columns-tablet`",
+            "Chaves `panel.*` nos 3 locales",
+            "Testes unitarios de panel e panel-layout"
+          ],
+          "validation": "ng test verde cobrindo toggle, persistencia, aria, conteudo preservado e badge.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-648"
+        },
+        {
+          "id": "feat-055.2",
+          "name": "Aplicar o painel recolhivel nas 5 telas",
+          "detail": "Liga o painel recolhivel nas telas de dashboard e mostra quantos filtros estao aplicados.",
+          "checklist": [
+            "`dashboard`, `search-statistics`, `period-report`, `period-comparison`, `catalog-dashboard` com `columns`/`tabletColumns` = `auto 1fr` e `collapsible`",
+            "`collapseKey` por tela (`catalog-dashboard.<segment>`)",
+            "`appliedFilterCount` em dashboard, period-comparison e search-statistics (selects de catalogo nao nulos, sem datas)",
+            "Testes unitarios das telas para o badge"
+          ],
+          "validation": "ng test verde; as 5 telas recolhem e reabrem.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-649"
+        },
+        {
+          "id": "feat-055.3",
+          "name": "E2E, QA visual e verificacao final",
+          "detail": "Prova no navegador e fechamento da feature.",
+          "checklist": [
+            "E2E: recolher amplia o painel dos graficos, reload mantem recolhido, reabrir preserva os filtros; desktop e 390px; idioma trocado",
+            "QA visual nos 2 temas (desktop, tablet, mobile)",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit; incluir apps/web/DESIGN.md",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-650"
+        }
+      ],
+      "evidence": {
+        "resumo": "Fechado em 2026-09-25 por feat-055.1..feat-055.3 (story SV-647). O painel de filtros das telas de dashboard recolhe para uma faixa de 56px e libera a largura para os graficos, com estado lembrado por tela.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #228 (SV-648): `shared/panel` ganhou `collapsible`, `collapseKey` e `badge` - corpo com `hidden` (estado preservado), `aria-expanded`/`aria-controls` com id unico, rotulo i18n com a contagem (singular/plural), faixa vertical no desktop e barra horizontal no mobile, transicao desligada com reduced-motion. `shared/panel-layout` ganhou `tabletColumns`. Chaves `panel.*` nos 3 locales.",
+              "PR #229 (SV-649): Dashboard, Buscar Estatisticas, Relatorio do periodo, Comparativo de periodos e `catalog-dashboard` (6 rotas, chave por segmento) com `columns`/`tabletColumns` = `auto 1fr`. Badge = selects de catalogo preenchidos na ultima busca.",
+              "SV-650: E2E `e2e/collapsible-filter-panel.spec.ts` (4 testes), QA visual, vault."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "./init.sh do app verde (348 testes unitarios apos remover o spec trivial de `applied-filters`, cobertura 92,68%); ./init.sh da raiz: web OK, falhas so em servicos Java/Python que dependem de Docker (desligado), sem relacao com esta feature.",
+              "E2E completa 99/99; E2E novo 12/12 com `--repeat-each=3 --workers=4`: graficos ficam >200px mais largos ao recolher, reload mantem recolhido, reabrir preserva o filtro escolhido, cada tela guarda o proprio estado, mobile 390px vira barra sem overflow, rotulos em en-US.",
+              "QA visual: claro/escuro x 1440/900/390, aberto e recolhido.",
+              "Plan Reviewer: READY WITH CONCERNS (5 MINOR incorporados). /code-review por subtask: 3 achados corrigidos (painel sem titulo preso recolhido, plural com 1 filtro, datas de Buscar Estatisticas fora da contagem). Delivery Reviewer (self-conduzido): CONCERNS com 2 P3 - spec trivial removido; largura do tablet aceita. Test Suite Auditor (self-conduzido): PASS."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Badge em Buscar Estatisticas conta o intervalo de datas como 1 filtro (plano dizia 'sem datas'): la as datas sao opcionais e restringem o resultado; nos dashboards o periodo sempre existe e continua fora da conta.",
+              "No tablet com o painel aberto o filtro passou de 50/50 para 320px fixos (graficos ~35px mais estreitos enquanto aberto) - aceito como residual.",
+              "Vault: `docs/sistema-de-design.md` ('Painel de filtros recolhivel'), `docs/testes.md` (bundle de /statistics com todos os arrays de segmento no E2E), `docs/services/web.md`, `apps/web/DESIGN.md`.",
+              "Achado fora de escopo registrado como `feat-056`: job `deploy` de main falha desde 2026-09-17 (runner nao alcanca o cluster), o pod web nao reinicia - provavel causa da animacao de logo antes do login relatada pelo usuario."
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "feat-056",
+      "name": "Web no cluster sem rollout automatico (imagem antiga no ar)",
+      "goal": "O app web que roda no cluster reflete o que esta em main.",
+      "scope": "Rollout do deployment `web` (manual via tunel SSH, ou a automacao do job `deploy` quando a decisao pendente de infra for tomada); nenhum codigo de produto.",
+      "description": "Achado em 2026-09-25 (sessao de feat-055, investigando uma animacao de logo antes do login que o codigo atual nao tem desde feat-044): o job `deploy` de main segue falhando (`127.0.0.1:6443 connection refused`, run 36070299775). Causa e decisao ja documentadas em docs/services/infra.md ('Disparo real do primeiro rollout'): o KUBE_CONFIG aponta para o tunel SSH local; o usuario decidiu 'deixar como esta por agora'. Consequencia para o web: a imagem `ghcr.io/eimmig/sv-frontend:latest` e publicada, mas o pod so atualiza com `kubectl rollout restart deployment/web` manual - provavelmente o cluster ainda roda a Splash de boot removida em feat-044. Acao: rollout manual e reteste do login pelo usuario; automacao depende da decisao pendente em infra, nao de mudanca neste repositorio.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
     }
   ]
 }

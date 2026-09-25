@@ -1,11 +1,34 @@
 <section class="panel">
   @if (title(); as panelTitle) {
     <header class="panel__header">
+      @if (collapsible()) {
+        <button
+          mat-icon-button
+          type="button"
+          class="panel__collapse-toggle"
+          data-testid="panel-collapse-toggle"
+          [attr.aria-expanded]="!isCollapsed()"
+          [attr.aria-controls]="bodyId"
+          [attr.aria-label]="
+            isCollapsed() && badge()
+              ? ('panel.expand' | transloco) +
+                ', ' +
+                (badge() === 1 ? ('panel.activeFilter' | transloco) : ('panel.activeFilters' | transloco: { count: badge() }))
+              : ((isCollapsed() ? 'panel.expand' : 'panel.collapse') | transloco)
+          "
+          (click)="toggleCollapsed()"
+        >
+          <mat-icon fontSet="material-symbols-outlined">{{ isCollapsed() ? 'filter_list' : 'left_panel_close' }}</mat-icon>
+        </button>
+      }
       <h2>{{ panelTitle }}</h2>
+      @if (isCollapsed() && badge(); as count) {
+        <span class="panel__badge" data-testid="panel-badge" aria-hidden="true">{{ count }}</span>
+      }
       <ng-content select="[panel-actions]" />
     </header>
   }
-  <div class="panel__body" data-testid="panel-body">
+  <div class="panel__body" data-testid="panel-body" [id]="bodyId" [hidden]="isCollapsed()">
     <ng-content />
   </div>
 </section>
