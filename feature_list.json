@@ -4042,7 +4042,7 @@
           ],
           "validation": "ng test verde; as 5 telas recolhem e reabrem.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-649"
         },
         {
