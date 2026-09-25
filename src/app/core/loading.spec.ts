@@ -92,4 +92,44 @@ describe('Loading', () => {
 
     expect(loading.visible()).toBe(false);
   });
+
+  it('reset() hides a visible overlay at once and forgets pending requests', () => {
+    loading.begin();
+    vi.advanceTimersByTime(SHOW_DELAY_MS);
+    expect(loading.visible()).toBe(true);
+
+    loading.reset();
+
+    expect(loading.visible()).toBe(false);
+    expect(loading.leaving()).toBe(false);
+
+    loading.end();
+    vi.advanceTimersByTime(SEQUENCE_MS + FADE_MS);
+    expect(loading.visible()).toBe(false);
+  });
+
+  it('reset() cancels an overlay that was about to show', () => {
+    loading.begin();
+
+    loading.reset();
+    vi.advanceTimersByTime(SHOW_DELAY_MS);
+
+    expect(loading.visible()).toBe(false);
+  });
+
+  it('ignores the end of a request that started before reset()', () => {
+    const stale = loading.begin();
+    loading.reset();
+    const current = loading.begin();
+    vi.advanceTimersByTime(SHOW_DELAY_MS);
+    expect(loading.visible()).toBe(true);
+
+    loading.end(stale);
+    vi.advanceTimersByTime(SEQUENCE_MS + FADE_MS);
+    expect(loading.visible()).toBe(true);
+
+    loading.end(current);
+    vi.advanceTimersByTime(SEQUENCE_MS + FADE_MS);
+    expect(loading.visible()).toBe(false);
+  });
 });

@@ -211,7 +211,8 @@
     "emailLabel": "Correo electrónico",
     "passwordLabel": "Contraseña",
     "submit": "Iniciar sesión",
-    "genericError": "No se pudo iniciar sesión. Inténtalo de nuevo."
+    "genericError": "No se pudo iniciar sesión. Inténtalo de nuevo.",
+    "sessionExpired": "Tu sesión ha expirado. Inicia sesión de nuevo."
   },
   "nav": {
     "overview": "Visión general",

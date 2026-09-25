@@ -211,7 +211,8 @@
     "emailLabel": "Email",
     "passwordLabel": "Password",
     "submit": "Sign in",
-    "genericError": "Could not sign in. Please try again."
+    "genericError": "Could not sign in. Please try again.",
+    "sessionExpired": "Your session has expired. Please sign in again."
   },
   "nav": {
     "overview": "Overview",

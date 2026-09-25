@@ -211,7 +211,8 @@
     "emailLabel": "E-mail",
     "passwordLabel": "Senha",
     "submit": "Entrar",
-    "genericError": "Não foi possível entrar. Tente novamente."
+    "genericError": "Não foi possível entrar. Tente novamente.",
+    "sessionExpired": "Sua sessão expirou. Entre novamente."
   },
   "nav": {
     "overview": "Visão geral",
