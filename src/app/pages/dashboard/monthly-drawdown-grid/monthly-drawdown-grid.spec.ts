@@ -134,6 +134,22 @@ describe('MonthlyDrawdownGrid', () => {
     request.flush([]);
   });
 
+  it('recomputes displayed months from bankrollNow/unitPercent without a new HTTP request when only those change (the filter reference is unchanged)', () => {
+    const filter: StatisticsFilter = { from: '2026-09-01', to: '2026-09-01' };
+    setInputs(filter, 1000, 0.01);
+    fixture.detectChanges();
+    httpMock.expectOne((req) => req.url === DAILY_URL).flush([{ date: '2026-09-01', netProfit: 100, totalStaked: 100, roi: 1, betCount: 1 }]);
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance['months']()[0].days[0]).toBeCloseTo(10);
+
+    setInputs(filter, 2000, 0.01);
+    fixture.detectChanges();
+
+    httpMock.expectNone((req) => req.url === DAILY_URL);
+    expect(fixture.componentInstance['months']()[0].days[0]).toBeCloseTo(5);
+  });
+
   it('shows the empty-result message when the filter resolves to no months (to before from)', () => {
     setInputs({ from: '2026-06-01', to: '2026-01-01' });
     fixture.detectChanges();
