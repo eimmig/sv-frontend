@@ -4027,7 +4027,7 @@
           ],
           "validation": "ng test verde cobrindo toggle, persistencia, aria, conteudo preservado e badge.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-648"
         },
         {
