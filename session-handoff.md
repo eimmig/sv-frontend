@@ -7,11 +7,12 @@
 
 ## Objetivo atual
 
-`feat-055` fechada (painel de filtros recolhível). Em aberto: `feat-053` (conexão recusada pelo dev server, mantida no backlog por decisão do usuário) e `feat-056` (deploy de `main` não reinicia o pod web). Stand-by do usuário: "loading de logo antes do login" — retestar depois de `kubectl rollout restart deployment/web`.
+`feat-055` (painel de filtros recolhível) e `feat-057` (sessão expirada volta ao login) fechadas. Em aberto: `feat-053` (conexão recusada pelo dev server, mantida no backlog por decisão do usuário) e `feat-056` (deploy de `main` não reinicia o pod web).
 
 ## Concluído nesta sessão (2026-09-25)
 
 - [x] **`feat-055` fechada** — painel de filtros recolhível nas telas de dashboard. Story SV-647.
+- [x] **`feat-057` fechada** — 401 `invalid-token` limpa a sessão e volta ao login com aviso. Story SV-651.
 
 ## Concluído em 2026-09-24
 
