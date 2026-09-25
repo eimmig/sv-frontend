@@ -36,7 +36,7 @@
 
 ## Bloqueios / Riscos
 
-- Deploy (`feat-056`): push em `main` publica a imagem mas não reinicia o deployment `web`; o cluster pode estar rodando versão antiga.
+- Deploy (`feat-056`): push em `main` publica a imagem mas não reinicia o deployment `web` (limitação conhecida, `docs/services/infra.md`); o cluster pode estar rodando versão antiga — rollout manual via túnel SSH.
 
 - Cache de GET (`feat-049`): dado novo vindo do Telegram/outra aba só aparece após 5 min ou após
   uma mutação no próprio web.
