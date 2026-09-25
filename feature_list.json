@@ -4062,11 +4062,41 @@
           ],
           "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-650"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechado em 2026-09-25 por feat-055.1..feat-055.3 (story SV-647). O painel de filtros das telas de dashboard recolhe para uma faixa de 56px e libera a largura para os graficos, com estado lembrado por tela.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #228 (SV-648): `shared/panel` ganhou `collapsible`, `collapseKey` e `badge` - corpo com `hidden` (estado preservado), `aria-expanded`/`aria-controls` com id unico, rotulo i18n com a contagem (singular/plural), faixa vertical no desktop e barra horizontal no mobile, transicao desligada com reduced-motion. `shared/panel-layout` ganhou `tabletColumns`. Chaves `panel.*` nos 3 locales.",
+              "PR #229 (SV-649): Dashboard, Buscar Estatisticas, Relatorio do periodo, Comparativo de periodos e `catalog-dashboard` (6 rotas, chave por segmento) com `columns`/`tabletColumns` = `auto 1fr`. Badge = selects de catalogo preenchidos na ultima busca.",
+              "SV-650: E2E `e2e/collapsible-filter-panel.spec.ts` (4 testes), QA visual, vault."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "./init.sh do app verde (349 testes unitarios apos remover o spec trivial de `applied-filters`, cobertura ~92,7%); ./init.sh da raiz: web OK, falhas so em servicos Java/Python que dependem de Docker (desligado), sem relacao com esta feature.",
+              "E2E completa 99/99; E2E novo 12/12 com `--repeat-each=3 --workers=4`: graficos ficam >200px mais largos ao recolher, reload mantem recolhido, reabrir preserva o filtro escolhido, cada tela guarda o proprio estado, mobile 390px vira barra sem overflow, rotulos em en-US.",
+              "QA visual: claro/escuro x 1440/900/390, aberto e recolhido.",
+              "Plan Reviewer: READY WITH CONCERNS (5 MINOR incorporados). /code-review por subtask: 3 achados corrigidos (painel sem titulo preso recolhido, plural com 1 filtro, datas de Buscar Estatisticas fora da contagem). Delivery Reviewer (self-conduzido): CONCERNS com 2 P3 - spec trivial removido; largura do tablet aceita. Test Suite Auditor (self-conduzido): PASS."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Badge em Buscar Estatisticas conta o intervalo de datas como 1 filtro (plano dizia 'sem datas'): la as datas sao opcionais e restringem o resultado; nos dashboards o periodo sempre existe e continua fora da conta.",
+              "No tablet com o painel aberto o filtro passou de 50/50 para 320px fixos (graficos ~35px mais estreitos enquanto aberto) - aceito como residual.",
+              "Vault: `docs/sistema-de-design.md` ('Painel de filtros recolhivel'), `docs/testes.md` (bundle de /statistics com todos os arrays de segmento no E2E), `docs/services/web.md`, `apps/web/DESIGN.md`.",
+              "Achado fora de escopo registrado como `feat-056`: job `deploy` de main falha desde 2026-09-17 (runner nao alcanca o cluster), o pod web nao reinicia - provavel causa da animacao de logo antes do login relatada pelo usuario."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-056",
