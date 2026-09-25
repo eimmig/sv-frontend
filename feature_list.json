@@ -4000,6 +4000,86 @@
           }
         ]
       }
+    },
+    {
+      "id": "feat-055",
+      "name": "Painel de filtros recolhivel nos dashboards",
+      "goal": "Dar mais espaco aos graficos: o painel de filtros das telas de dashboard pode ser recolhido para uma faixa estreita e reaberto quando preciso.",
+      "scope": "`shared/panel` (modo recolhivel), `shared/panel-layout` (colunas no tablet), as 5 telas com painel de filtros de 320px (`dashboard`, `search-statistics`, `period-report`, `period-comparison`, `catalog-dashboard`), i18n nos 3 locales; nenhuma mudanca de API.",
+      "description": "Pedido do usuario (2026-09-25): minimizar os menus de filtro de data ao lado da sidebar nos dashboards para dar mais espaco a renderizacao dos graficos. Estrategia escolhida pelo usuario (AskUserQuestion, entre painel recolhivel / barra de filtros no topo / gaveta sob demanda): painel recolhivel - botao no cabecalho do painel recolhe para uma faixa estreita (~48px, icone de filtro + contador de filtros ativos), estado lembrado por tela. Mantem o padrao de paineis lado a lado (docs/sistema-de-design.md 'Layout em paineis').",
+      "dependencies": [],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-25: READY WITH CONCERNS. Self-review unico (execucao + adversarial, independencia reduzida, UI isolada sem contrato de backend). Confirmado por leitura: panel__body sem display proprio (atributo hidden funciona e preserva estado do period-preset-filter e dos selects); panel-layout usa --panel-columns e forca repeat(2,1fr) no tablet; e2e/panel-layout.spec.ts nao afirma colunas no tablet; ngx-echarts 22 autoResize via ResizeObserver com throttleTime(100, trailing) - grafico acompanha a largura sem codigo extra. 5 MINOR incorporados: (1) collapseKey do catalog-dashboard por segmento (6 rotas, estado por tela); (2) id do body unico por instancia para aria-controls; (3) badge = selects de catalogo nao nulos no ultimo apply/search, sem datas, oculto quando 0; (4) recolher esconde tambem o form de % da unidade (admin) no dashboard - aceito; (5) conferir apps/web/DESIGN.md junto com o vault. Residuais aceitos: um resize intermediario do grafico durante a transicao de 200ms; localStorage com a mesma guarda typeof de app-side-nav.",
+      "jira": "SV-647",
+      "subtasks": [
+        {
+          "id": "feat-055.1",
+          "name": "Panel recolhivel e colunas do tablet",
+          "detail": "Capacidade de recolher no componente de painel compartilhado, para qualquer tela usar sem logica propria.",
+          "checklist": [
+            "`shared/panel`: inputs `collapsible`, `collapseKey`, `badge`; estado em localStorage `stakevault.panelCollapsed.<key>`",
+            "Botao no cabecalho com `aria-expanded`/`aria-controls` (id unico por instancia) e rotulo i18n",
+            "Recolhido: faixa de 56px com titulo vertical e badge; no mobile, barra horizontal; corpo com `hidden` (sem `@if`)",
+            "Transicao de largura desligada com `prefers-reduced-motion`",
+            "`shared/panel-layout`: input `tabletColumns` via `--panel-columns-tablet`",
+            "Chaves `panel.*` nos 3 locales",
+            "Testes unitarios de panel e panel-layout"
+          ],
+          "validation": "ng test verde cobrindo toggle, persistencia, aria, conteudo preservado e badge.",
+          "owner": "agente",
+          "status": "in-progress",
+          "jira": "SV-648"
+        },
+        {
+          "id": "feat-055.2",
+          "name": "Aplicar o painel recolhivel nas 5 telas",
+          "detail": "Liga o painel recolhivel nas telas de dashboard e mostra quantos filtros estao aplicados.",
+          "checklist": [
+            "`dashboard`, `search-statistics`, `period-report`, `period-comparison`, `catalog-dashboard` com `columns`/`tabletColumns` = `auto 1fr` e `collapsible`",
+            "`collapseKey` por tela (`catalog-dashboard.<segment>`)",
+            "`appliedFilterCount` em dashboard, period-comparison e search-statistics (selects de catalogo nao nulos, sem datas)",
+            "Testes unitarios das telas para o badge"
+          ],
+          "validation": "ng test verde; as 5 telas recolhem e reabrem.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-649"
+        },
+        {
+          "id": "feat-055.3",
+          "name": "E2E, QA visual e verificacao final",
+          "detail": "Prova no navegador e fechamento da feature.",
+          "checklist": [
+            "E2E: recolher amplia o painel dos graficos, reload mantem recolhido, reabrir preserva os filtros; desktop e 390px; idioma trocado",
+            "QA visual nos 2 temas (desktop, tablet, mobile)",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit; incluir apps/web/DESIGN.md",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-650"
+        }
+      ],
+      "evidence": ""
+    },
+    {
+      "id": "feat-056",
+      "name": "Deploy da main nao reinicia o deployment web",
+      "goal": "Push em main volta a atualizar o app que roda no cluster.",
+      "scope": "Job `deploy` de `.github/workflows/ci.yml` (acesso do runner ao cluster); nenhum codigo de produto.",
+      "description": "Achado em 2026-09-25 (sessao de feat-055, investigando uma animacao de logo antes do login que o codigo atual nao tem desde feat-044): o job `deploy` falha em todo push de main desde 2026-09-17 (runs 35175086126..36070299775) com `The connection to the server 127.0.0.1:6443 was refused` no passo `kubectl rollout restart deployment/web`. A imagem `ghcr.io/eimmig/sv-frontend:latest` e publicada, mas o deployment nunca reinicia - o cluster segue com imagem antiga (provavelmente ainda com a Splash de boot removida em feat-044). Workaround manual: `kubectl rollout restart deployment/web` com o cluster local de pe. Verificar se os outros repositorios tem o mesmo job e a mesma falha, e decidir entre runner self-hosted, kubeconfig real ou remover o passo de deploy do CI.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
     }
   ]
 }

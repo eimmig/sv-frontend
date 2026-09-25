@@ -55,6 +55,10 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-644](https://stakevault.atlassian.net/browse/SV-644) - Menu flutuante da tela de times
 - [SV-645](https://stakevault.atlassian.net/browse/SV-645) - Dashboard de times
 - [SV-646](https://stakevault.atlassian.net/browse/SV-646) - Menu flutuante de Times e verificacao final
+- [SV-647](https://stakevault.atlassian.net/browse/SV-647) - Painel de filtros recolhivel nos dashboards
+- [SV-648](https://stakevault.atlassian.net/browse/SV-648) - Panel recolhivel e colunas do tablet
+- [SV-649](https://stakevault.atlassian.net/browse/SV-649) - Aplicar o painel recolhivel nas 5 telas
+- [SV-650](https://stakevault.atlassian.net/browse/SV-650) - E2E, QA visual e verificacao final
 
 ## [0.1.0] - 2026-09-23
 
