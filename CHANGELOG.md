@@ -7,6 +7,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-25
+
 - [SV-647](https://stakevault.atlassian.net/browse/SV-647) - Painel de filtros recolhivel nos dashboards
 - [SV-648](https://stakevault.atlassian.net/browse/SV-648) - Panel recolhivel e colunas do tablet
 - [SV-649](https://stakevault.atlassian.net/browse/SV-649) - Aplicar o painel recolhivel nas 5 telas
