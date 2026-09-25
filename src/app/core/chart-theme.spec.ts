@@ -71,6 +71,24 @@ describe('axis label contrast', () => {
   });
 });
 
+describe('buildLineChartOption y-axis bounds', () => {
+  it('leaves min/max undefined (auto-scale) when yMin/yMax are not given', () => {
+    const option = buildLineChartOption(['jan'], [1], '#2fa85c', '#dce3e0', '#5c6b72') as { yAxis: { min?: number; max?: number } };
+
+    expect(option.yAxis.min).toBeUndefined();
+    expect(option.yAxis.max).toBeUndefined();
+  });
+
+  it('sets explicit min/max when yMin/yMax are given (shared scale across charts)', () => {
+    const option = buildLineChartOption(['jan'], [1], '#2fa85c', '#dce3e0', '#5c6b72', { yMin: -1.2, yMax: 3.5 }) as {
+      yAxis: { min?: number; max?: number };
+    };
+
+    expect(option.yAxis.min).toBe(-1.2);
+    expect(option.yAxis.max).toBe(3.5);
+  });
+});
+
 describe('tooltip theme', () => {
   const tokens = { '--color-surface-elevated': '#1d2a36', '--color-border': '#24323f', '--color-text-primary': '#f2f7f5' };
   const expected = { trigger: 'axis', backgroundColor: '#1d2a36', borderColor: '#24323f', textStyle: { color: '#f2f7f5' } };

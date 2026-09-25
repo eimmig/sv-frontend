@@ -4191,6 +4191,101 @@
           }
         ]
       }
+    },
+    {
+      "id": "feat-058",
+      "name": "Drawdown mensal: escala Y compartilhada e reaproveitar filtro geral do dashboard",
+      "goal": "O grafico de drawdown mensal (aba do dashboard) fica comparavel entre meses e usa o mesmo filtro geral da tela, sem pedir data duas vezes.",
+      "scope": "`shared/monthly-drawdown-chart`, `pages/dashboard/monthly-drawdown-grid`, `core/chart-theme.ts` (min/max opcional no eixo Y das duas funcoes de line chart), `pages/dashboard/dashboard.ts`/`.html` (passar filtro geral para o grid); i18n nos 3 locales (remocao das chaves do filtro proprio); e2e/unitarios do componente. Nenhuma mudanca de backend (stats-service/api-gateway) - GET /api/v1/statistics/daily ja aceita os filtros necessarios.",
+      "description": "epic-037 da raiz. Achado do usuario em uso real (2026-09-25, com captura de tela): (1) cada mini-grafico mensal auto-escala o proprio eixo Y (buildLineChartOption sem min/max explicito), entao o mes com lucro acumulado menor (tipicamente o mes corrente, ainda incompleto) fica com um teto mais baixo e a curva parece maior/mais inclinada que a dos outros meses - quebra a comparacao visual entre meses, que e o proposito do grafico. (2) monthly-drawdown-grid tem datepicker de mes inicial/final + botao aplicar proprios, redundante com o filtro geral do dashboard (period-preset-filter + esporte/casa/mercado/liga/tipster ja montados em dashboard.ts applyFilter()) - usuario filtra duas vezes pra ver o drawdown de um periodo. Decisao a confirmar no plan review: forma exata de threading do filtro (StatisticsFilter completo como @Input vs. so from/to) e se o calculo do range Y compartilhado (min/max entre todos os meses renderizados) fica em monthly-drawdown-metrics.ts (puro, testavel) ou no componente.",
+      "dependencies": [],
+      "status": "done",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-25: READY WITH CONCERNS. Self-review unico (execucao + adversarial). 4 MINOR incorporados ao plano antes de codificar: (1) arredondar o range Y compartilhado para passo 'redondo' (1 casa decimal, floor/ceil) em vez de min/max brutos, senao os rotulos do eixo ficam com decimais feios; (2) resolveMonthRange fica sem consumidor (so o proprio grid e o spec dele usavam) - remover em vez de deixar orfao; (3) guarda do effect() do grid precisa checar ausencia de filter.from/filter.to (undefined antes do primeiro applyFilter do dashboard), nao so 'to < from'; (4) o corte por dia final (to) em buildMonthlyDrawdown precisa se aplicar independente do corte por 'hoje' - endDay do ultimo mes e min(toDay, diasNoMes, hoje se for o mes corrente), nao so um ou outro, senao um filtro geral terminando no meio de um mes passado plotaria ate o fim do mes.",
+      "jira": "SV-654",
+      "subtasks": [
+        {
+          "id": "feat-058.1",
+          "name": "Escala Y compartilhada entre os mini-graficos mensais",
+          "detail": "Eixo Y auto-escalado por grafico faz o mes com lucro acumulado menor (ex. mes corrente incompleto) parecer maior/mais inclinado que os outros - quebra a comparacao visual entre meses.",
+          "checklist": [
+            "monthly-drawdown-metrics.ts: computeSharedYRange(months) - min/max entre todos os days nao-null de todos os meses, iniciando em 0 (baseline), arredondado pra fora em 1 casa decimal (floor/ceil); retorna null se nao houver valor numerico",
+            "chart-theme.ts: LineChartStyleOptions ganha yMin?/yMax? opcionais; buildLineChartOption seta yAxis.min/max so quando fornecidos (buildComparisonLineChartOption e outros consumidores continuam auto-scale)",
+            "monthly-drawdown-chart.ts: input yRange = input<{min,max}|null>(null), repassado pro buildChartOption/buildLineChartOption",
+            "monthly-drawdown-grid.ts: computed a partir de months() chamando computeSharedYRange, [yRange] em cada app-monthly-drawdown-chart",
+            "Testes unitarios: computeSharedYRange (varios meses, all-null, arredondamento) e buildLineChartOption com/sem yMin/yMax"
+          ],
+          "validation": "ng test verde cobrindo computeSharedYRange e o novo parametro de buildLineChartOption.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-655"
+        },
+        {
+          "id": "feat-058.2",
+          "name": "Reaproveitar o filtro geral do dashboard em vez do datepicker proprio",
+          "detail": "monthly-drawdown-grid tem form/datepicker/botao proprios (so from/to, ignora esporte/casa/mercado/etc.) redundantes com o filtro geral ja montado em dashboard.ts - usuario filtra duas vezes.",
+          "checklist": [
+            "monthly-drawdown-metrics.ts: buildMonthlyDrawdown aceita from/to nao alinhados a mes inteiro (primeiro mes comeca no dia real de from, ultimo mes termina em min(dia real de to, dias no mes, hoje se for o mes corrente)); remover resolveMonthRange (sem consumidor apos o refactor) e seu describe no spec",
+            "monthly-drawdown-grid.ts: remover FormGroup/datepicker/apply e os imports associados (ReactiveFormsModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatButtonModule, FormBuilder, Validators); novos input.required<StatisticsFilter>() filter, input.required<number>() bankrollNow e unitPercent; effect() no construtor reage aos 3 inputs, guarda ausencia de filter.from/filter.to (months vazio, sem chamada HTTP), senao statisticsApi.getDaily(filter()) -> buildMonthlyDrawdown",
+            "monthly-drawdown-grid.html/.scss: remover o <form> e o bloco .monthly-drawdown-grid__filter",
+            "dashboard.ts: signal appliedFilter, setado em applyFilter() junto do filter local ja construido; dashboard.html passa [filter]=\"appliedFilter()\" [bankrollNow]=\"dashboardData().bankrollNow\" [unitPercent]=\"dashboardData().unitPercent\" pro app-monthly-drawdown-grid",
+            "i18n: remover monthlyDrawdown.fromLabel/toLabel/apply dos 3 locales (pt-BR/en-US/es), manter emptyResult/genericError",
+            "Reescrever monthly-drawdown-grid.spec.ts em torno de fixture.componentRef.setInput(...) (sem form/HTTP de month-range); estender monthly-drawdown-metrics.spec.ts com casos de from/to nao alinhados ao mes"
+          ],
+          "validation": "ng test verde; grid nao dispara HTTP sem filter.from/to; buildMonthlyDrawdown respeita from/to parciais de mes.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-656"
+        },
+        {
+          "id": "feat-058.3",
+          "name": "E2E, QA visual e verificacao final",
+          "detail": "Prova no navegador e fechamento da feature.",
+          "checklist": [
+            "e2e/dashboard.spec.ts bloco 'epic-020 - monthly drawdown grid': trocar cliques em monthly-drawdown-from/to-toggle/apply (removidos) por period-preset-select -> custom -> period-preset-custom-from/to, cobrindo o caso de 3 meses e o caso de range vazio/invertido",
+            "QA visual dos mini-graficos (escala compartilhada visivel) nos 2 temas, desktop e mobile",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-657"
+        }
+      ],
+      "evidence": {
+        "resumo": "Fechado em 2026-09-25 por feat-058.1/feat-058.2/feat-058.3 (story SV-654). Grafico de drawdown mensal fica comparavel entre meses (escala Y compartilhada) e usa o mesmo filtro geral do dashboard (sem pedir data/segmento duas vezes).",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "SV-655 (feat-058.1): `computeSharedYRange` (`monthly-drawdown-metrics.ts`) calcula min/max compartilhado entre todos os meses renderizados (baseline 0, arredondado pra fora em 1 casa decimal); `core/chart-theme.ts` ganhou `yMin`/`yMax` opcionais em `buildLineChartOption`, setados so quando fornecidos (outros consumidores, ex. `monthly-profit-chart`, continuam auto-scale); `monthly-drawdown-chart.ts` ganhou o input `yRange`.",
+              "SV-656 (feat-058.2): `monthly-drawdown-grid` perdeu o form/datepicker/botao proprio e passou a receber `filter` (o `StatisticsFilter` completo ja montado em `dashboard.applyFilter()`, incluindo os filtros de segmento - antes ignorados por este componente), `bankrollNow` e `unitPercent` como `input.required<...>()` de `dashboard.ts`. `buildMonthlyDrawdown` deixou de assumir `from`/`to` alinhados a mes inteiro; `resolveMonthRange` removida (sem consumidor). Fetch (`effect()`) depende so de `filter`; `months`/`yRange` exibidos sao `computed()` a partir de `daily`+`bankrollNow`+`unitPercent` - evita refetch redundante quando so saldo/unitPercent mudam (achado real corrigido, nao so hipotetico - ver teste dedicado abaixo).",
+              "SV-657 (feat-058.3): e2e/dashboard.spec.ts bloco 'epic-020' reescrito para 'epic-037', dirigindo o filtro geral (period-preset-select -> custom) em vez dos testids removidos; QA visual real (screenshots Playwright, 2 temas x desktop/mobile) confirmou a escala Y compartilhada (Jan/Fev no mesmo eixo 0-26) e a ausencia do filtro proprio. Vault atualizado: docs/services/web.md, docs/estatisticas.md e docs/sistema-de-design.md corrigidos (descreviam o desenho antigo - filtro proprio, `startView=\"year\"` sem consumidor - como se ainda fosse atual); docs/convencoes.md ganhou 2 mecanismos reaproveitaveis (escala Y compartilhada entre instancias de ngx-echarts; separacao effect-de-fetch vs. computed-de-render em componente @Input-driven)."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "Plan Reviewer (2026-09-25): READY WITH CONCERNS, 4 MINOR incorporados antes de codificar (arredondamento do range Y, remocao de resolveMonthRange, guarda de filter.from/to ausente, corte por to combinado com corte por hoje).",
+              "Delivery Reviewer: PASS, sem achado (revisao unica, autor mesma sessao com verificacao direta contra suite completa).",
+              "Test Suite Auditor: PASS apos a propria auditoria encontrar 2 lacunas reais e mandar fechar antes do veredito - (1) nenhum teste provava a correcao central de feat-058.2 (bankrollNow/unitPercent mudando sozinhos nao deveriam refazer o fetch) - teste novo adicionado provando httpMock.expectNone + valor recalculado; (2) so uma direcao do corte combinado to/hoje estava testada - segunda direcao adicionada.",
+              "372/372 testes unitarios (`ng test`), 101/101 e2e (`npx playwright test`, suite completa), `ng build` limpo, `validate-i18n-keys.py` (302 chaves em sincronia nos 3 locales), `./init.sh` do app e da raiz verdes."
+            ]
+          },
+          {
+            "titulo": "Residuais aceitos",
+            "itens": [
+              "Flash cosmetico de grafico zerado no primeiro render apos filtro valido, antes da resposta real chegar (computed() usa daily=[] ate o fetch resolver) - momentaneo, sem regressao funcional.",
+              "Fetch de drawdown continua sem limite de intervalo de dias (igual ao comportamento anterior do filtro proprio) - diferente do grafico de lucro mensal, que cai pra granularidade mensal acima de 31 dias."
+            ]
+          }
+        ]
+      }
     }
   ]
 }

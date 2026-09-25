@@ -62,6 +62,10 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-651](https://stakevault.atlassian.net/browse/SV-651) - Sessao expirada volta direto para o login
 - [SV-652](https://stakevault.atlassian.net/browse/SV-652) - Detectar sessao expirada e voltar ao login
 - [SV-653](https://stakevault.atlassian.net/browse/SV-653) - E2E, QA visual e verificacao final
+- [SV-654](https://stakevault.atlassian.net/browse/SV-654) - Drawdown mensal: escala Y compartilhada e reaproveitar filtro geral do dashboard
+- [SV-655](https://stakevault.atlassian.net/browse/SV-655) - Escala Y compartilhada entre os mini-graficos mensais
+- [SV-656](https://stakevault.atlassian.net/browse/SV-656) - Reaproveitar o filtro geral do dashboard em vez do datepicker proprio
+- [SV-657](https://stakevault.atlassian.net/browse/SV-657) - E2E, QA visual e verificacao final
 
 ## [0.1.0] - 2026-09-23
 
