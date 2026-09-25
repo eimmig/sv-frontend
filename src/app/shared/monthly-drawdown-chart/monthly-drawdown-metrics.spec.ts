@@ -1,5 +1,5 @@
 import { DailyBetMetrics } from '../../core/statistics-api';
-import { buildMonthlyDrawdown, computeSharedYRange, MonthlyDrawdownMonth, resolveMonthRange } from './monthly-drawdown-metrics';
+import { buildMonthlyDrawdown, computeSharedYRange, MonthlyDrawdownMonth } from './monthly-drawdown-metrics';
 
 function month(year: number, monthNum: number, days: (number | null)[]): MonthlyDrawdownMonth {
   return { year, month: monthNum, days };
@@ -8,20 +8,6 @@ function month(year: number, monthNum: number, days: (number | null)[]): Monthly
 function day(date: string, netProfit: number): DailyBetMetrics {
   return { date, netProfit, totalStaked: 0, roi: 0, betCount: 1 };
 }
-
-describe('resolveMonthRange', () => {
-  it('locks to day 01 of the start month and the last day of the end month', () => {
-    expect(resolveMonthRange('2026-02', '2026-02')).toEqual({ from: '2026-02-01', to: '2026-02-28' });
-  });
-
-  it('resolves a leap-year February correctly', () => {
-    expect(resolveMonthRange('2028-01', '2028-02')).toEqual({ from: '2028-01-01', to: '2028-02-29' });
-  });
-
-  it('resolves a 31-day end month correctly', () => {
-    expect(resolveMonthRange('2026-01', '2026-01')).toEqual({ from: '2026-01-01', to: '2026-01-31' });
-  });
-});
 
 describe('buildMonthlyDrawdown', () => {
   it('accumulates day by day within a month and resets to 0 at the next month', () => {
@@ -89,6 +75,46 @@ describe('buildMonthlyDrawdown', () => {
       { year: 2026, month: 12, days: Array(31).fill(0) },
       { year: 2027, month: 1, days: Array(31).fill(0) },
     ]);
+  });
+
+  it('starts the first month at the real day of a from that is not the 1st (general dashboard filter, not a whole month)', () => {
+    const daily = [day('2026-03-20', 100)];
+
+    const months = buildMonthlyDrawdown(daily, '2026-03-18', '2026-03-20', 1000, 0.01, new Date(2026, 8, 10));
+
+    expect(months).toHaveLength(1);
+    expect(months[0].days).toHaveLength(3);
+    expect(months[0].days[2]).toBeCloseTo(10);
+  });
+
+  it('ends a past month at the real day of to instead of padding to the end of the month', () => {
+    const months = buildMonthlyDrawdown([], '2026-03-01', '2026-03-10', 1000, 0.01, new Date(2026, 8, 10));
+
+    expect(months[0].days).toHaveLength(10);
+  });
+
+  it('a single-day range in the middle of a past month plots exactly 1 day', () => {
+    const daily = [day('2026-03-15', 30)];
+
+    const months = buildMonthlyDrawdown(daily, '2026-03-15', '2026-03-15', 1000, 0.01, new Date(2026, 8, 10));
+
+    expect(months).toHaveLength(1);
+    expect(months[0].days).toEqual([3]);
+  });
+
+  it('a range spanning parts of 2 months (e.g. a 15-day preset) keeps the real from/to on the edge months, full days in the middle', () => {
+    const months = buildMonthlyDrawdown([], '2026-02-20', '2026-03-10', 1000, 0.01, new Date(2026, 8, 10));
+
+    expect(months).toEqual([
+      { year: 2026, month: 2, days: Array(9).fill(0) },
+      { year: 2026, month: 3, days: Array(10).fill(0) },
+    ]);
+  });
+
+  it('the to-day cap still combines with the today cap on the current month', () => {
+    const months = buildMonthlyDrawdown([], '2026-09-05', '2026-09-30', 1000, 0.01, new Date(2026, 8, 10));
+
+    expect(months[0].days).toHaveLength(6);
   });
 });
 
