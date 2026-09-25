@@ -23,4 +23,17 @@ describe('PanelLayout', () => {
     const grid = (fixture.nativeElement as HTMLElement).querySelector('.panel-layout') as HTMLElement;
     expect(grid.style.getPropertyValue('--panel-columns')).toBe('1fr');
   });
+
+  it('exposes the tablet columns input as a CSS custom property, unset by default', () => {
+    const fixture = TestBed.createComponent(PanelLayout);
+    fixture.detectChanges();
+    const grid = (fixture.nativeElement as HTMLElement).querySelector('.panel-layout') as HTMLElement;
+
+    expect(grid.style.getPropertyValue('--panel-columns-tablet')).toBe('');
+
+    fixture.componentRef.setInput('tabletColumns', 'auto 1fr');
+    fixture.detectChanges();
+
+    expect(grid.style.getPropertyValue('--panel-columns-tablet')).toBe('auto 1fr');
+  });
 });
