@@ -82,7 +82,27 @@ describe('CatalogDashboard', () => {
     }).compileComponents();
   });
 
-  afterEach(() => httpMock.verify());
+  afterEach(() => {
+    httpMock.verify();
+    localStorage.removeItem('stakevault.panelCollapsed.catalog-dashboard.bySport');
+    localStorage.removeItem('stakevault.panelCollapsed.catalog-dashboard.byLeague');
+  });
+
+  it('remembers the collapsed filter panel per segment, not across all catalog dashboards', () => {
+    createComponent('bySport', 'catalogDashboard.sportNameLabel');
+    flushBundle();
+    fixture.nativeElement.querySelector('[data-testid="panel-collapse-toggle"]').click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[data-testid="panel-body"]').hidden).toBe(true);
+
+    createComponent('byLeague', 'catalogDashboard.leagueNameLabel');
+    flushBundle();
+    expect(fixture.nativeElement.querySelector('[data-testid="panel-body"]').hidden).toBe(false);
+
+    createComponent('bySport', 'catalogDashboard.sportNameLabel');
+    flushBundle();
+    expect(fixture.nativeElement.querySelector('[data-testid="panel-body"]').hidden).toBe(true);
+  });
 
   it('ranks rows by ROI descending, regardless of the order the API returned them in', () => {
     createComponent('bySport', 'catalogDashboard.sportNameLabel');
