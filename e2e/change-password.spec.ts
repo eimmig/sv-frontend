@@ -40,7 +40,11 @@ test.describe('feat-035 - "Change password" page', () => {
       route.fulfill({
         status: 401,
         contentType: 'application/json',
-        body: JSON.stringify({ detail: 'La contraseña actual proporcionada no coincide.' }),
+        body: JSON.stringify({
+          type: 'https://docs/errors/current-password-mismatch',
+          status: 401,
+          detail: 'La contraseña actual proporcionada no coincide.',
+        }),
       }),
     );
 
@@ -52,6 +56,8 @@ test.describe('feat-035 - "Change password" page', () => {
     await page.getByTestId('change-password-submit').click();
 
     await expect(page.getByTestId('change-password-error')).toContainText('no coincide');
+    await expect(page).toHaveURL(/\/change-password$/);
+    expect(await page.evaluate(() => localStorage.getItem('stakevault.auth'))).not.toBeNull();
   });
 
   test('side nav and the mustChangePassword banner both link to the page', async ({ page }) => {

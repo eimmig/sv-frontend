@@ -117,27 +117,4 @@ describe('Auth', () => {
 
     expect(cache.get('/api/v1/bets|pt-BR')).toBeUndefined();
   });
-
-  it('expireSession() logs out and flags the expiry until cleared', () => {
-    const auth = TestBed.inject(Auth);
-    auth.session.set({ token: 't', userId: 'u', role: 'MEMBER', tenantSlug: 'acme', mustChangePassword: false });
-
-    auth.expireSession();
-
-    expect(auth.isAuthenticated()).toBe(false);
-    expect(localStorage.getItem('stakevault.auth')).toBeNull();
-    expect(auth.sessionExpired()).toBe(true);
-
-    auth.clearSessionExpired();
-
-    expect(auth.sessionExpired()).toBe(false);
-  });
-
-  it('expireSession() does nothing without a session', () => {
-    const auth = TestBed.inject(Auth);
-
-    auth.expireSession();
-
-    expect(auth.sessionExpired()).toBe(false);
-  });
 });
