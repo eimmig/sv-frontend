@@ -4136,7 +4136,7 @@
           ],
           "validation": "ng test verde cobrindo os casos do interceptor.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-652"
         },
         {
