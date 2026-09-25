@@ -4233,7 +4233,7 @@
           ],
           "validation": "ng test verde; grid nao dispara HTTP sem filter.from/to; buildMonthlyDrawdown respeita from/to parciais de mes.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-656"
         },
         {

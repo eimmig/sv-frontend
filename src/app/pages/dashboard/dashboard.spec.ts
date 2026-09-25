@@ -148,6 +148,14 @@ describe('Dashboard', () => {
     for (const request of httpMock.match((req) => req.url === DAILY_STATISTICS_URL)) {
       request.flush([]);
     }
+    drainDailyRequests();
+  }
+
+  function drainDailyRequests() {
+    fixture.detectChanges();
+    for (const request of httpMock.match((req) => req.url === DAILY_STATISTICS_URL)) {
+      request.flush([]);
+    }
   }
 
   function createComponent() {
@@ -296,7 +304,7 @@ describe('Dashboard', () => {
     for (const request of httpMock.match((req) => req.url === DAILY_STATISTICS_URL)) {
       request.flush([]);
     }
-    fixture.detectChanges();
+    drainDailyRequests();
 
     expect(cardValue('dashboard-units-staked')).not.toMatch(/\d/);
   });
@@ -324,6 +332,7 @@ describe('Dashboard', () => {
     }
     httpMock.expectOne((req) => req.url === SETTINGS_URL).flush({ unitPercent: 0.01 });
     httpMock.expectOne((req) => req.url === DAILY_STATISTICS_URL).flush([]);
+    drainDailyRequests();
 
     fixture.nativeElement.querySelector('[data-testid="panel-collapse-toggle"]').click();
     fixture.detectChanges();
@@ -346,7 +355,7 @@ describe('Dashboard', () => {
         request.flush({});
       }
     }
-    fixture.detectChanges();
+    drainDailyRequests();
 
     expect(fixture.componentInstance['dashboardError']()).toBe('Filtro inválido.');
   });

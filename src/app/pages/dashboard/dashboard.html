@@ -269,7 +269,11 @@
         </mat-tab>
 
         <mat-tab [label]="'dashboard.monthlyDrawdownTitle' | transloco">
-          <app-monthly-drawdown-grid />
+          <app-monthly-drawdown-grid
+            [filter]="appliedFilter()"
+            [bankrollNow]="dashboardData().bankrollNow"
+            [unitPercent]="dashboardData().unitPercent"
+          />
         </mat-tab>
       </mat-tab-group>
     }

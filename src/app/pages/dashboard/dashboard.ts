@@ -25,6 +25,7 @@ import {
   SegmentedBetMetrics,
   StatisticsApi,
   StatisticsDashboard,
+  StatisticsFilter,
 } from '../../core/statistics-api';
 import { KpiCard, KpiCardSign, kpiSign } from '../../shared/kpi-card/kpi-card';
 import { MonthlyProfitChart, isDailyGranularity } from '../../shared/monthly-profit-chart/monthly-profit-chart';
@@ -105,6 +106,7 @@ export class Dashboard implements OnInit {
 
   protected readonly dashboardData = signal<DashboardData>(EMPTY_DASHBOARD_DATA);
   protected readonly dashboardError = signal<string | null>(null);
+  protected readonly appliedFilter = signal<StatisticsFilter>({});
 
   protected readonly unidadesApostadas = computed(() => {
     const data = this.dashboardData();
@@ -181,6 +183,7 @@ export class Dashboard implements OnInit {
       from: period.from || undefined,
       to: period.to || undefined,
     };
+    this.appliedFilter.set(filter);
     loadInto(
       forkJoin({
         dashboard: this.statisticsApi.get(filter),
