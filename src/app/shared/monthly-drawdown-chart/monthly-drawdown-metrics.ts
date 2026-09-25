@@ -6,6 +6,39 @@ export interface MonthlyDrawdownMonth {
   readonly days: readonly (number | null)[];
 }
 
+export interface MonthlyDrawdownYRange {
+  readonly min: number;
+  readonly max: number;
+}
+
+function roundStep(value: number, round: (value: number) => number): number {
+  return round(value * 10) / 10;
+}
+
+export function computeSharedYRange(months: readonly MonthlyDrawdownMonth[]): MonthlyDrawdownYRange | null {
+  let min = 0;
+  let max = 0;
+  let hasValue = false;
+  for (const month of months) {
+    for (const value of month.days) {
+      if (value === null) {
+        continue;
+      }
+      hasValue = true;
+      if (value < min) {
+        min = value;
+      }
+      if (value > max) {
+        max = value;
+      }
+    }
+  }
+  if (!hasValue) {
+    return null;
+  }
+  return { min: roundStep(min, Math.floor), max: roundStep(max, Math.ceil) };
+}
+
 function daysInMonth(year: number, month: number): number {
   return new Date(year, month, 0).getDate();
 }

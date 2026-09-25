@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -13,7 +13,12 @@ import { SettingsApi } from '../../../core/settings-api';
 import { StatisticsApi } from '../../../core/statistics-api';
 import { ChartFrame } from '../../../shared/chart-frame/chart-frame';
 import { MonthlyDrawdownChart } from '../../../shared/monthly-drawdown-chart/monthly-drawdown-chart';
-import { buildMonthlyDrawdown, MonthlyDrawdownMonth, resolveMonthRange } from '../../../shared/monthly-drawdown-chart/monthly-drawdown-metrics';
+import {
+  buildMonthlyDrawdown,
+  computeSharedYRange,
+  MonthlyDrawdownMonth,
+  resolveMonthRange,
+} from '../../../shared/monthly-drawdown-chart/monthly-drawdown-metrics';
 
 function firstOfMonth(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), 1);
@@ -52,6 +57,7 @@ export class MonthlyDrawdownGrid implements OnInit {
 
   protected readonly months = signal<MonthlyDrawdownMonth[]>([]);
   protected readonly loadError = signal<string | null>(null);
+  protected readonly yRange = computed(() => computeSharedYRange(this.months()));
 
   ngOnInit(): void {
     this.reload();

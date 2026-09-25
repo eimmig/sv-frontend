@@ -53,7 +53,7 @@
   } @else {
     <div class="monthly-drawdown-grid__grid" data-testid="monthly-drawdown-grid">
       @for (month of months(); track trackMonth($index, month)) {
-        <app-monthly-drawdown-chart [month]="month" />
+        <app-monthly-drawdown-chart [month]="month" [yRange]="yRange()" />
       }
     </div>
   }
