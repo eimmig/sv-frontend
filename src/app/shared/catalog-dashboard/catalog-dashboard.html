@@ -1,5 +1,9 @@
-<app-panel-layout columns="320px 1fr">
-  <app-panel [title]="'catalogDashboard.filtersTitle' | transloco">
+<app-panel-layout columns="auto 1fr" tabletColumns="auto 1fr">
+  <app-panel
+    [title]="'catalogDashboard.filtersTitle' | transloco"
+    [collapsible]="true"
+    [collapseKey]="'catalog-dashboard.' + segment()"
+  >
     <app-period-preset-filter (rangeChange)="onPeriodChange($event)" />
   </app-panel>
 

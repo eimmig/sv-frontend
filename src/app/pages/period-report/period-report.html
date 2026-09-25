@@ -1,5 +1,5 @@
-<app-panel-layout columns="320px 1fr">
-  <app-panel [title]="'periodReport.filtersTitle' | transloco">
+<app-panel-layout columns="auto 1fr" tabletColumns="auto 1fr">
+  <app-panel [title]="'periodReport.filtersTitle' | transloco" [collapsible]="true" collapseKey="period-report">
     <app-period-preset-filter (rangeChange)="onPeriodChange($event)" />
   </app-panel>
 

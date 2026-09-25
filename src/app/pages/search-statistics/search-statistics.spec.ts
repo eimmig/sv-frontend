@@ -133,6 +133,7 @@ describe('SearchStatistics', () => {
 
   afterEach(() => {
     httpMock.verify();
+    localStorage.removeItem('stakevault.panelCollapsed.search-statistics');
   });
 
   it('shows the "never searched" empty state before any submit', () => {
@@ -242,6 +243,10 @@ describe('SearchStatistics', () => {
       summary: { betCount: 0, totalStaked: 0, netProfit: 0, roi: 0, winRate: 0, avgOdd: 0, maxDrawdown: 0, sharpeRatio: null },
       timeline: [],
     });
+
+    fixture.nativeElement.querySelector('[data-testid="panel-collapse-toggle"]').click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[data-testid="panel-badge"]').textContent.trim()).toBe('3');
   });
 
   it('sends betType only when a bet type is chosen', () => {

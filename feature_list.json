@@ -4000,6 +4000,292 @@
           }
         ]
       }
+    },
+    {
+      "id": "feat-055",
+      "name": "Painel de filtros recolhivel nos dashboards",
+      "goal": "Dar mais espaco aos graficos: o painel de filtros das telas de dashboard pode ser recolhido para uma faixa estreita e reaberto quando preciso.",
+      "scope": "`shared/panel` (modo recolhivel), `shared/panel-layout` (colunas no tablet), as 5 telas com painel de filtros de 320px (`dashboard`, `search-statistics`, `period-report`, `period-comparison`, `catalog-dashboard`), i18n nos 3 locales; nenhuma mudanca de API.",
+      "description": "Pedido do usuario (2026-09-25): minimizar os menus de filtro de data ao lado da sidebar nos dashboards para dar mais espaco a renderizacao dos graficos. Estrategia escolhida pelo usuario (AskUserQuestion, entre painel recolhivel / barra de filtros no topo / gaveta sob demanda): painel recolhivel - botao no cabecalho do painel recolhe para uma faixa estreita (~48px, icone de filtro + contador de filtros ativos), estado lembrado por tela. Mantem o padrao de paineis lado a lado (docs/sistema-de-design.md 'Layout em paineis').",
+      "dependencies": [],
+      "status": "done",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-25: READY WITH CONCERNS. Self-review unico (execucao + adversarial, independencia reduzida, UI isolada sem contrato de backend). Confirmado por leitura: panel__body sem display proprio (atributo hidden funciona e preserva estado do period-preset-filter e dos selects); panel-layout usa --panel-columns e forca repeat(2,1fr) no tablet; e2e/panel-layout.spec.ts nao afirma colunas no tablet; ngx-echarts 22 autoResize via ResizeObserver com throttleTime(100, trailing) - grafico acompanha a largura sem codigo extra. 5 MINOR incorporados: (1) collapseKey do catalog-dashboard por segmento (6 rotas, estado por tela); (2) id do body unico por instancia para aria-controls; (3) badge = selects de catalogo nao nulos no ultimo apply/search, sem datas, oculto quando 0; (4) recolher esconde tambem o form de % da unidade (admin) no dashboard - aceito; (5) conferir apps/web/DESIGN.md junto com o vault. Residuais aceitos: um resize intermediario do grafico durante a transicao de 200ms; localStorage com a mesma guarda typeof de app-side-nav.",
+      "jira": "SV-647",
+      "subtasks": [
+        {
+          "id": "feat-055.1",
+          "name": "Panel recolhivel e colunas do tablet",
+          "detail": "Capacidade de recolher no componente de painel compartilhado, para qualquer tela usar sem logica propria.",
+          "checklist": [
+            "`shared/panel`: inputs `collapsible`, `collapseKey`, `badge`; estado em localStorage `stakevault.panelCollapsed.<key>`",
+            "Botao no cabecalho com `aria-expanded`/`aria-controls` (id unico por instancia) e rotulo i18n",
+            "Recolhido: faixa de 56px com titulo vertical e badge; no mobile, barra horizontal; corpo com `hidden` (sem `@if`)",
+            "Transicao de largura desligada com `prefers-reduced-motion`",
+            "`shared/panel-layout`: input `tabletColumns` via `--panel-columns-tablet`",
+            "Chaves `panel.*` nos 3 locales",
+            "Testes unitarios de panel e panel-layout"
+          ],
+          "validation": "ng test verde cobrindo toggle, persistencia, aria, conteudo preservado e badge.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-648"
+        },
+        {
+          "id": "feat-055.2",
+          "name": "Aplicar o painel recolhivel nas 5 telas",
+          "detail": "Liga o painel recolhivel nas telas de dashboard e mostra quantos filtros estao aplicados.",
+          "checklist": [
+            "`dashboard`, `search-statistics`, `period-report`, `period-comparison`, `catalog-dashboard` com `columns`/`tabletColumns` = `auto 1fr` e `collapsible`",
+            "`collapseKey` por tela (`catalog-dashboard.<segment>`)",
+            "`appliedFilterCount` em dashboard, period-comparison e search-statistics (selects de catalogo nao nulos, sem datas)",
+            "Testes unitarios das telas para o badge"
+          ],
+          "validation": "ng test verde; as 5 telas recolhem e reabrem.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-649"
+        },
+        {
+          "id": "feat-055.3",
+          "name": "E2E, QA visual e verificacao final",
+          "detail": "Prova no navegador e fechamento da feature.",
+          "checklist": [
+            "E2E: recolher amplia o painel dos graficos, reload mantem recolhido, reabrir preserva os filtros; desktop e 390px; idioma trocado",
+            "QA visual nos 2 temas (desktop, tablet, mobile)",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit; incluir apps/web/DESIGN.md",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-650"
+        }
+      ],
+      "evidence": {
+        "resumo": "Fechado em 2026-09-25 por feat-055.1..feat-055.3 (story SV-647). O painel de filtros das telas de dashboard recolhe para uma faixa de 56px e libera a largura para os graficos, com estado lembrado por tela.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #228 (SV-648): `shared/panel` ganhou `collapsible`, `collapseKey` e `badge` - corpo com `hidden` (estado preservado), `aria-expanded`/`aria-controls` com id unico, rotulo i18n com a contagem (singular/plural), faixa vertical no desktop e barra horizontal no mobile, transicao desligada com reduced-motion. `shared/panel-layout` ganhou `tabletColumns`. Chaves `panel.*` nos 3 locales.",
+              "PR #229 (SV-649): Dashboard, Buscar Estatisticas, Relatorio do periodo, Comparativo de periodos e `catalog-dashboard` (6 rotas, chave por segmento) com `columns`/`tabletColumns` = `auto 1fr`. Badge = selects de catalogo preenchidos na ultima busca.",
+              "SV-650: E2E `e2e/collapsible-filter-panel.spec.ts` (4 testes), QA visual, vault."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "./init.sh do app verde (348 testes unitarios apos remover o spec trivial de `applied-filters`, cobertura 92,68%); ./init.sh da raiz: web OK, falhas so em servicos Java/Python que dependem de Docker (desligado), sem relacao com esta feature.",
+              "E2E completa 99/99; E2E novo 12/12 com `--repeat-each=3 --workers=4`: graficos ficam >200px mais largos ao recolher, reload mantem recolhido, reabrir preserva o filtro escolhido, cada tela guarda o proprio estado, mobile 390px vira barra sem overflow, rotulos em en-US.",
+              "QA visual: claro/escuro x 1440/900/390, aberto e recolhido.",
+              "Plan Reviewer: READY WITH CONCERNS (5 MINOR incorporados). /code-review por subtask: 3 achados corrigidos (painel sem titulo preso recolhido, plural com 1 filtro, datas de Buscar Estatisticas fora da contagem). Delivery Reviewer (self-conduzido): CONCERNS com 2 P3 - spec trivial removido; largura do tablet aceita. Test Suite Auditor (self-conduzido): PASS."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Badge em Buscar Estatisticas conta o intervalo de datas como 1 filtro (plano dizia 'sem datas'): la as datas sao opcionais e restringem o resultado; nos dashboards o periodo sempre existe e continua fora da conta.",
+              "No tablet com o painel aberto o filtro passou de 50/50 para 320px fixos (graficos ~35px mais estreitos enquanto aberto) - aceito como residual.",
+              "Vault: `docs/sistema-de-design.md` ('Painel de filtros recolhivel'), `docs/testes.md` (bundle de /statistics com todos os arrays de segmento no E2E), `docs/services/web.md`, `apps/web/DESIGN.md`.",
+              "Achado fora de escopo registrado como `feat-056`: job `deploy` de main falha desde 2026-09-17 (runner nao alcanca o cluster), o pod web nao reinicia - provavel causa da animacao de logo antes do login relatada pelo usuario."
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "feat-056",
+      "name": "Web no cluster sem rollout automatico (imagem antiga no ar)",
+      "goal": "O app web que roda no cluster reflete o que esta em main.",
+      "scope": "Rollout do deployment `web` (manual via tunel SSH, ou a automacao do job `deploy` quando a decisao pendente de infra for tomada); nenhum codigo de produto.",
+      "description": "Achado em 2026-09-25 (sessao de feat-055, investigando uma animacao de logo antes do login que o codigo atual nao tem desde feat-044): o job `deploy` de main segue falhando (`127.0.0.1:6443 connection refused`, run 36070299775). Causa e decisao ja documentadas em docs/services/infra.md ('Disparo real do primeiro rollout'): o KUBE_CONFIG aponta para o tunel SSH local; o usuario decidiu 'deixar como esta por agora'. Consequencia para o web: a imagem `ghcr.io/eimmig/sv-frontend:latest` e publicada, mas o pod so atualiza com `kubectl rollout restart deployment/web` manual (a animacao de logo relatada pelo usuario era outro problema, sessao expirada - ver feat-057). Acao: rollout manual e reteste do login pelo usuario; automacao depende da decisao pendente em infra, nao de mudanca neste repositorio.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-057",
+      "name": "Sessao expirada volta direto para o login",
+      "goal": "Com o token expirado, o app nao fica preso no overlay de carregamento sobre uma tela com erro: limpa a sessao e leva direto ao login, avisando que a sessao expirou.",
+      "scope": "`core/auth-interceptor`, `core/auth`, `core/loading` (encerrar o overlay na expiracao), tela de login (aviso), i18n nos 3 locales; nenhuma mudanca de backend.",
+      "description": "Pedido do usuario (2026-09-25, com captura de tela): ao abrir o sistema com um token expirado salvo no localStorage, `authGuard` so olha se existe sessao, entao a rota `/overview` abre, dispara GETs em `/api/`, o overlay de logo (feat-044) toca e as requisicoes voltam 401 do api-gateway (`type` `https://docs/errors/invalid-token`, PasetoAuthenticationFilter); nada trata 401, entao a tela fica com erro atras do overlay em vez de voltar ao login. O token e PASETO v4.local (cifrado, sem expiracao legivel no cliente), entao a deteccao tem de ser pela resposta. Cuidado: `POST /api/v1/auth/change-password` com senha atual errada tambem devolve 401 com token presente (`current-password-mismatch`) e nao pode deslogar - discriminar pelo `type` do problema, nao so pelo status.",
+      "dependencies": [],
+      "status": "done",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-25: READY WITH CONCERNS. Self-review unico (execucao + adversarial, independencia reduzida). Confirmado por leitura: gateway grava type https://docs/errors/invalid-token (ProblemDetailMessages.typeSlug + FilterProblemWriter); change-password com senha errada devolve 401 com outro type (CurrentPasswordMismatchException); producao na mesma origem (apiGatewayUrl '') e CorsFilter antes do filtro PASETO - corpo do 401 legivel; ordem dos interceptors acceptLanguage, httpCache, loading, auth; Loading sem reset hoje. 3 MINOR incorporados: (1) E2E existente de senha errada passa a mandar type current-password-mismatch e afirmar que continua em /change-password (prova do 'nao desloga', sem teste novo); (2) 401 sem corpo RFC 7807 (proxy/ingress) nao expira - residual aceito, fallback e o comportamento atual; (3) ordem fixa no interceptor: expireSession -> loading.reset -> navigate, 401 concorrentes param na guarda de sessao.",
+      "jira": "SV-651",
+      "subtasks": [
+        {
+          "id": "feat-057.1",
+          "name": "Detectar sessao expirada e voltar ao login",
+          "detail": "Resposta 401 de token invalido do gateway encerra a sessao, apaga o overlay e leva ao login com aviso.",
+          "checklist": [
+            "`core/auth`: `sessionExpired`, `expireSession()`, `clearSessionExpired()`",
+            "`core/auth-interceptor`: com token anexado, 401 com `type` terminando em `/invalid-token` -> expireSession, loading.reset, navigateByUrl('/login'); relanca o erro",
+            "`core/loading`: `reset()`",
+            "Login: aviso neutro em `<output>` quando a sessao expirou, limpo ao enviar",
+            "`login.sessionExpired` nos 3 locales",
+            "Testes unitarios: interceptor (invalid-token, senha errada, 401 sem token, 500, varias 401), Auth, Loading, Login"
+          ],
+          "validation": "ng test verde cobrindo os casos do interceptor.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-652"
+        },
+        {
+          "id": "feat-057.2",
+          "name": "E2E, QA visual e verificacao final",
+          "detail": "Prova no navegador e fechamento da feature.",
+          "checklist": [
+            "E2E: sessao salva + /api/ respondendo 401 invalid-token com atraso de ~800ms -> /login com aviso e sem overlay",
+            "E2E de change-password: mock com type current-password-mismatch e URL continua em /change-password",
+            "QA visual do aviso nos 2 temas, desktop e mobile",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit; incluir docs/contratos-de-api.md (web depende do type invalid-token)",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-653"
+        }
+      ],
+      "evidence": {
+        "resumo": "Fechado em 2026-09-25 por feat-057.1/feat-057.2 (story SV-651). Com token expirado, o app limpa a sessao, tira o overlay de carregamento na hora e abre o login com o aviso 'Sua sessao expirou'.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #232 (SV-652): `core/auth-interceptor` trata 401 com `type` `.../invalid-token` do gateway, so em requisicao que levou o token atual - `Auth.expireSession()` (logout + flag), `Loading.reset()`, navegacao para `/login`. `Loading.begin()` devolve a epoca e `end()` de requisicao anterior ao reset e ignorado. Login mostra o aviso em `<output>` ate a proxima tentativa. `login.sessionExpired` nos 3 locales.",
+              "SV-653: E2E `e2e/session-expired.spec.ts`; E2E de senha errada em `e2e/change-password.spec.ts` passa a mandar o `type` real e afirmar que a sessao continua; vault."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "./init.sh do app verde (360 testes unitarios, cobertura 92,75%); ./init.sh da raiz: web OK (servicos Java/Python dependem de Docker, desligado, sem relacao).",
+              "E2E completa 100/100; E2E novos e ajustados 12/12 com `--repeat-each=3`. Contrafactual: com o interceptor do develop o E2E de sessao expirada falha em `toHaveURL(/login/)`.",
+              "QA visual do aviso: claro/escuro x desktop/mobile.",
+              "Plan Reviewer: READY WITH CONCERNS (3 MINOR incorporados). /code-review: 2 achados corrigidos (401 atrasado derrubando sessao nova; `end()` antigo apagando overlay novo). Delivery Reviewer (self-conduzido): CONCERNS com 1 P3 - testes duplicados em auth.spec removidos. Test Suite Auditor (self-conduzido): PASS."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Acrescentado apos o /code-review: comparacao do token capturado e epoca no Loading (nao estavam no plano).",
+              "Testes de `Auth.expireSession()` previstos no plano sairam por duplicarem o que o interceptor ja prova.",
+              "Vault: `docs/contratos-de-api.md` (web depende do type invalid-token), `docs/sistema-de-design.md` item 17 (reset/epoca do overlay), `docs/services/web.md`.",
+              "Residual aceito: 401 sem corpo RFC 7807 (proxy/ingress) nao expira a sessao."
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "feat-058",
+      "name": "Drawdown mensal: escala Y compartilhada e reaproveitar filtro geral do dashboard",
+      "goal": "O grafico de drawdown mensal (aba do dashboard) fica comparavel entre meses e usa o mesmo filtro geral da tela, sem pedir data duas vezes.",
+      "scope": "`shared/monthly-drawdown-chart`, `pages/dashboard/monthly-drawdown-grid`, `core/chart-theme.ts` (min/max opcional no eixo Y das duas funcoes de line chart), `pages/dashboard/dashboard.ts`/`.html` (passar filtro geral para o grid); i18n nos 3 locales (remocao das chaves do filtro proprio); e2e/unitarios do componente. Nenhuma mudanca de backend (stats-service/api-gateway) - GET /api/v1/statistics/daily ja aceita os filtros necessarios.",
+      "description": "epic-037 da raiz. Achado do usuario em uso real (2026-09-25, com captura de tela): (1) cada mini-grafico mensal auto-escala o proprio eixo Y (buildLineChartOption sem min/max explicito), entao o mes com lucro acumulado menor (tipicamente o mes corrente, ainda incompleto) fica com um teto mais baixo e a curva parece maior/mais inclinada que a dos outros meses - quebra a comparacao visual entre meses, que e o proposito do grafico. (2) monthly-drawdown-grid tem datepicker de mes inicial/final + botao aplicar proprios, redundante com o filtro geral do dashboard (period-preset-filter + esporte/casa/mercado/liga/tipster ja montados em dashboard.ts applyFilter()) - usuario filtra duas vezes pra ver o drawdown de um periodo. Decisao a confirmar no plan review: forma exata de threading do filtro (StatisticsFilter completo como @Input vs. so from/to) e se o calculo do range Y compartilhado (min/max entre todos os meses renderizados) fica em monthly-drawdown-metrics.ts (puro, testavel) ou no componente.",
+      "dependencies": [],
+      "status": "done",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-25: READY WITH CONCERNS. Self-review unico (execucao + adversarial). 4 MINOR incorporados ao plano antes de codificar: (1) arredondar o range Y compartilhado para passo 'redondo' (1 casa decimal, floor/ceil) em vez de min/max brutos, senao os rotulos do eixo ficam com decimais feios; (2) resolveMonthRange fica sem consumidor (so o proprio grid e o spec dele usavam) - remover em vez de deixar orfao; (3) guarda do effect() do grid precisa checar ausencia de filter.from/filter.to (undefined antes do primeiro applyFilter do dashboard), nao so 'to < from'; (4) o corte por dia final (to) em buildMonthlyDrawdown precisa se aplicar independente do corte por 'hoje' - endDay do ultimo mes e min(toDay, diasNoMes, hoje se for o mes corrente), nao so um ou outro, senao um filtro geral terminando no meio de um mes passado plotaria ate o fim do mes.",
+      "jira": "SV-654",
+      "subtasks": [
+        {
+          "id": "feat-058.1",
+          "name": "Escala Y compartilhada entre os mini-graficos mensais",
+          "detail": "Eixo Y auto-escalado por grafico faz o mes com lucro acumulado menor (ex. mes corrente incompleto) parecer maior/mais inclinado que os outros - quebra a comparacao visual entre meses.",
+          "checklist": [
+            "monthly-drawdown-metrics.ts: computeSharedYRange(months) - min/max entre todos os days nao-null de todos os meses, iniciando em 0 (baseline), arredondado pra fora em 1 casa decimal (floor/ceil); retorna null se nao houver valor numerico",
+            "chart-theme.ts: LineChartStyleOptions ganha yMin?/yMax? opcionais; buildLineChartOption seta yAxis.min/max so quando fornecidos (buildComparisonLineChartOption e outros consumidores continuam auto-scale)",
+            "monthly-drawdown-chart.ts: input yRange = input<{min,max}|null>(null), repassado pro buildChartOption/buildLineChartOption",
+            "monthly-drawdown-grid.ts: computed a partir de months() chamando computeSharedYRange, [yRange] em cada app-monthly-drawdown-chart",
+            "Testes unitarios: computeSharedYRange (varios meses, all-null, arredondamento) e buildLineChartOption com/sem yMin/yMax"
+          ],
+          "validation": "ng test verde cobrindo computeSharedYRange e o novo parametro de buildLineChartOption.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-655"
+        },
+        {
+          "id": "feat-058.2",
+          "name": "Reaproveitar o filtro geral do dashboard em vez do datepicker proprio",
+          "detail": "monthly-drawdown-grid tem form/datepicker/botao proprios (so from/to, ignora esporte/casa/mercado/etc.) redundantes com o filtro geral ja montado em dashboard.ts - usuario filtra duas vezes.",
+          "checklist": [
+            "monthly-drawdown-metrics.ts: buildMonthlyDrawdown aceita from/to nao alinhados a mes inteiro (primeiro mes comeca no dia real de from, ultimo mes termina em min(dia real de to, dias no mes, hoje se for o mes corrente)); remover resolveMonthRange (sem consumidor apos o refactor) e seu describe no spec",
+            "monthly-drawdown-grid.ts: remover FormGroup/datepicker/apply e os imports associados (ReactiveFormsModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatButtonModule, FormBuilder, Validators); novos input.required<StatisticsFilter>() filter, input.required<number>() bankrollNow e unitPercent; effect() no construtor reage aos 3 inputs, guarda ausencia de filter.from/filter.to (months vazio, sem chamada HTTP), senao statisticsApi.getDaily(filter()) -> buildMonthlyDrawdown",
+            "monthly-drawdown-grid.html/.scss: remover o <form> e o bloco .monthly-drawdown-grid__filter",
+            "dashboard.ts: signal appliedFilter, setado em applyFilter() junto do filter local ja construido; dashboard.html passa [filter]=\"appliedFilter()\" [bankrollNow]=\"dashboardData().bankrollNow\" [unitPercent]=\"dashboardData().unitPercent\" pro app-monthly-drawdown-grid",
+            "i18n: remover monthlyDrawdown.fromLabel/toLabel/apply dos 3 locales (pt-BR/en-US/es), manter emptyResult/genericError",
+            "Reescrever monthly-drawdown-grid.spec.ts em torno de fixture.componentRef.setInput(...) (sem form/HTTP de month-range); estender monthly-drawdown-metrics.spec.ts com casos de from/to nao alinhados ao mes"
+          ],
+          "validation": "ng test verde; grid nao dispara HTTP sem filter.from/to; buildMonthlyDrawdown respeita from/to parciais de mes.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-656"
+        },
+        {
+          "id": "feat-058.3",
+          "name": "E2E, QA visual e verificacao final",
+          "detail": "Prova no navegador e fechamento da feature.",
+          "checklist": [
+            "e2e/dashboard.spec.ts bloco 'epic-020 - monthly drawdown grid': trocar cliques em monthly-drawdown-from/to-toggle/apply (removidos) por period-preset-select -> custom -> period-preset-custom-from/to, cobrindo o caso de 3 meses e o caso de range vazio/invertido",
+            "QA visual dos mini-graficos (escala compartilhada visivel) nos 2 temas, desktop e mobile",
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-657"
+        }
+      ],
+      "evidence": {
+        "resumo": "Fechado em 2026-09-25 por feat-058.1/feat-058.2/feat-058.3 (story SV-654). Grafico de drawdown mensal fica comparavel entre meses (escala Y compartilhada) e usa o mesmo filtro geral do dashboard (sem pedir data/segmento duas vezes).",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "SV-655 (feat-058.1): `computeSharedYRange` (`monthly-drawdown-metrics.ts`) calcula min/max compartilhado entre todos os meses renderizados (baseline 0, arredondado pra fora em 1 casa decimal); `core/chart-theme.ts` ganhou `yMin`/`yMax` opcionais em `buildLineChartOption`, setados so quando fornecidos (outros consumidores, ex. `monthly-profit-chart`, continuam auto-scale); `monthly-drawdown-chart.ts` ganhou o input `yRange`.",
+              "SV-656 (feat-058.2): `monthly-drawdown-grid` perdeu o form/datepicker/botao proprio e passou a receber `filter` (o `StatisticsFilter` completo ja montado em `dashboard.applyFilter()`, incluindo os filtros de segmento - antes ignorados por este componente), `bankrollNow` e `unitPercent` como `input.required<...>()` de `dashboard.ts`. `buildMonthlyDrawdown` deixou de assumir `from`/`to` alinhados a mes inteiro; `resolveMonthRange` removida (sem consumidor). Fetch (`effect()`) depende so de `filter`; `months`/`yRange` exibidos sao `computed()` a partir de `daily`+`bankrollNow`+`unitPercent` - evita refetch redundante quando so saldo/unitPercent mudam (achado real corrigido, nao so hipotetico - ver teste dedicado abaixo).",
+              "SV-657 (feat-058.3): e2e/dashboard.spec.ts bloco 'epic-020' reescrito para 'epic-037', dirigindo o filtro geral (period-preset-select -> custom) em vez dos testids removidos; QA visual real (screenshots Playwright, 2 temas x desktop/mobile) confirmou a escala Y compartilhada (Jan/Fev no mesmo eixo 0-26) e a ausencia do filtro proprio. Vault atualizado: docs/services/web.md, docs/estatisticas.md e docs/sistema-de-design.md corrigidos (descreviam o desenho antigo - filtro proprio, `startView=\"year\"` sem consumidor - como se ainda fosse atual); docs/convencoes.md ganhou 2 mecanismos reaproveitaveis (escala Y compartilhada entre instancias de ngx-echarts; separacao effect-de-fetch vs. computed-de-render em componente @Input-driven)."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "Plan Reviewer (2026-09-25): READY WITH CONCERNS, 4 MINOR incorporados antes de codificar (arredondamento do range Y, remocao de resolveMonthRange, guarda de filter.from/to ausente, corte por to combinado com corte por hoje).",
+              "Delivery Reviewer: PASS, sem achado (revisao unica, autor mesma sessao com verificacao direta contra suite completa).",
+              "Test Suite Auditor: PASS apos a propria auditoria encontrar 2 lacunas reais e mandar fechar antes do veredito - (1) nenhum teste provava a correcao central de feat-058.2 (bankrollNow/unitPercent mudando sozinhos nao deveriam refazer o fetch) - teste novo adicionado provando httpMock.expectNone + valor recalculado; (2) so uma direcao do corte combinado to/hoje estava testada - segunda direcao adicionada.",
+              "372/372 testes unitarios (`ng test`), 101/101 e2e (`npx playwright test`, suite completa), `ng build` limpo, `validate-i18n-keys.py` (302 chaves em sincronia nos 3 locales), `./init.sh` do app e da raiz verdes."
+            ]
+          },
+          {
+            "titulo": "Residuais aceitos",
+            "itens": [
+              "Flash cosmetico de grafico zerado no primeiro render apos filtro valido, antes da resposta real chegar (computed() usa daily=[] ate o fetch resolver) - momentaneo, sem regressao funcional.",
+              "Fetch de drawdown continua sem limite de intervalo de dias (igual ao comportamento anterior do filtro proprio) - diferente do grafico de lucro mensal, que cai pra granularidade mensal acima de 31 dias."
+            ]
+          }
+        ]
+      }
     }
   ]
 }

@@ -26,6 +26,8 @@ export function withAlpha(hexColor: string, alpha: number): string {
 export interface LineChartStyleOptions {
   readonly smooth?: boolean;
   readonly splitNumber?: number;
+  readonly yMin?: number;
+  readonly yMax?: number;
 }
 
 export function buildLineChartOption(
@@ -36,7 +38,7 @@ export function buildLineChartOption(
   labelColor: string,
   style: LineChartStyleOptions = {},
 ): EChartsCoreOption {
-  const { smooth = true, splitNumber = 2 } = style;
+  const { smooth = true, splitNumber = 2, yMin, yMax } = style;
   return {
     grid: { top: 16, right: 16, bottom: 24, left: 48 },
     tooltip: { trigger: 'axis', ...themedTooltip() },
@@ -50,6 +52,8 @@ export function buildLineChartOption(
     yAxis: {
       type: 'value',
       splitNumber,
+      min: yMin,
+      max: yMax,
       axisLabel: { color: labelColor },
       splitLine: { lineStyle: { color: borderColor, width: 1 } },
     },

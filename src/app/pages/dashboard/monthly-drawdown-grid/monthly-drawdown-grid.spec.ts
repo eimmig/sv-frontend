@@ -1,10 +1,10 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideNativeDateAdapter } from '@angular/material/core';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { MonthlyDrawdownGrid } from './monthly-drawdown-grid';
+import { StatisticsFilter } from '../../../core/statistics-api';
 import { environment } from '../../../../environments/environment';
 
 class ResizeObserverStub {
@@ -41,8 +41,6 @@ function stubCanvasContext(): void {
 }
 
 const DAILY_URL = `${environment.apiGatewayUrl}/api/v1/statistics/daily`;
-const BANKROLL_URL = `${environment.apiGatewayUrl}/api/v1/bankroll/balance`;
-const SETTINGS_URL = `${environment.apiGatewayUrl}/api/v1/settings`;
 
 describe('MonthlyDrawdownGrid', () => {
   let fixture: ComponentFixture<MonthlyDrawdownGrid>;
@@ -51,19 +49,11 @@ describe('MonthlyDrawdownGrid', () => {
   const langs = {
     'pt-BR': {
       monthlyDrawdown: {
-        fromLabel: 'Mês inicial',
-        toLabel: 'Mês final',
         emptyResult: 'Nenhum mês no intervalo selecionado.',
         genericError: 'Não foi possível completar a operação. Tente novamente.',
       },
     },
   };
-
-  function flushLoad(daily: { date: string; netProfit: number; totalStaked: number; roi: number; betCount: number }[] = []) {
-    httpMock.expectOne((req) => req.url === DAILY_URL).flush(daily);
-    httpMock.expectOne((req) => req.url === BANKROLL_URL && !req.params.has('at')).flush({ at: 'now', balance: 1000 });
-    httpMock.expectOne((req) => req.url === SETTINGS_URL).flush({ unitPercent: 0.01 });
-  }
 
   beforeEach(async () => {
     (globalThis as { ResizeObserver?: unknown }).ResizeObserver = ResizeObserverStub;
@@ -76,7 +66,7 @@ describe('MonthlyDrawdownGrid', () => {
           translocoConfig: { availableLangs: ['pt-BR'], defaultLang: 'pt-BR' },
         }),
       ],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideNativeDateAdapter()],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MonthlyDrawdownGrid);
@@ -87,32 +77,40 @@ describe('MonthlyDrawdownGrid', () => {
     httpMock.verify();
   });
 
-  it('loads the current month by default and requests the whole-month range', () => {
+  function setInputs(filter: StatisticsFilter, bankrollNow = 1000, unitPercent = 0.01): void {
+    fixture.componentRef.setInput('filter', filter);
+    fixture.componentRef.setInput('bankrollNow', bankrollNow);
+    fixture.componentRef.setInput('unitPercent', unitPercent);
+  }
+
+  it('does not call the daily endpoint while the filter has no from/to yet (before the dashboard applies one)', () => {
+    setInputs({});
+    fixture.detectChanges();
+
+    httpMock.expectNone((req) => req.url === DAILY_URL);
+    expect(fixture.nativeElement.querySelector('[data-testid="monthly-drawdown-empty"]')).toBeTruthy();
+  });
+
+  it('requests the daily endpoint with the exact from/to of the inherited filter, including segment filters', () => {
+    setInputs({ from: '2026-09-01', to: '2026-09-30', sportId: 'sp-1' });
     fixture.detectChanges();
 
     const request = httpMock.expectOne((req) => req.url === DAILY_URL);
-    const from = request.request.params.get('from')!;
-    const to = request.request.params.get('to')!;
-    expect(from.endsWith('-01')).toBe(true);
-    expect(from.slice(0, 7)).toBe(to.slice(0, 7));
-
+    expect(request.request.params.get('from')).toBe('2026-09-01');
+    expect(request.request.params.get('to')).toBe('2026-09-30');
+    expect(request.request.params.get('sportId')).toBe('sp-1');
     request.flush([]);
-    httpMock.expectOne((req) => req.url === BANKROLL_URL && !req.params.has('at')).flush({ at: 'now', balance: 1000 });
-    httpMock.expectOne((req) => req.url === SETTINGS_URL).flush({ unitPercent: 0.01 });
     fixture.detectChanges();
 
     const charts = fixture.nativeElement.querySelectorAll('[data-testid="monthly-drawdown-chart-title"]');
     expect(charts).toHaveLength(1);
   });
 
-  it('renders one mini-chart per month across a multi-month range', () => {
-    fixture.detectChanges();
-    flushLoad();
+  it('renders one mini-chart per calendar month spanned by a multi-month filter', () => {
+    setInputs({ from: '2026-01-01', to: '2026-03-31' });
     fixture.detectChanges();
 
-    fixture.componentInstance['filterForm'].setValue({ fromMonth: new Date(2026, 0, 1), toMonth: new Date(2026, 2, 1) });
-    fixture.componentInstance['applyFilter']();
-    flushLoad([{ date: '2026-02-10', netProfit: 50, totalStaked: 100, roi: 0.5, betCount: 1 }]);
+    httpMock.expectOne((req) => req.url === DAILY_URL).flush([{ date: '2026-02-10', netProfit: 50, totalStaked: 100, roi: 0.5, betCount: 1 }]);
     fixture.detectChanges();
 
     const charts = fixture.nativeElement.querySelectorAll('[data-testid="monthly-drawdown-chart-title"]');
@@ -121,74 +119,52 @@ describe('MonthlyDrawdownGrid', () => {
     expect(frame.querySelectorAll('[data-testid="monthly-drawdown-chart-frame-legend"] li')).toHaveLength(1);
   });
 
-  it('changing the range issues a new request with the recalculated from/to only after applyFilter()', () => {
+  it('reloads with a new request when the inherited filter changes', () => {
+    setInputs({ from: '2026-06-01', to: '2026-06-30' });
     fixture.detectChanges();
-    flushLoad();
+    httpMock.expectOne((req) => req.url === DAILY_URL).flush([]);
     fixture.detectChanges();
 
-    fixture.componentInstance['filterForm'].setValue({ fromMonth: new Date(2026, 5, 1), toMonth: new Date(2026, 5, 1) });
-    httpMock.expectNone((req) => req.url === DAILY_URL);
+    setInputs({ from: '2026-07-01', to: '2026-07-31' });
+    fixture.detectChanges();
 
-    fixture.componentInstance['applyFilter']();
     const request = httpMock.expectOne((req) => req.url === DAILY_URL);
-    expect(request.request.params.get('from')).toBe('2026-06-01');
-    expect(request.request.params.get('to')).toBe('2026-06-30');
+    expect(request.request.params.get('from')).toBe('2026-07-01');
+    expect(request.request.params.get('to')).toBe('2026-07-31');
     request.flush([]);
-    httpMock.expectOne((req) => req.url === BANKROLL_URL && !req.params.has('at')).flush({ at: 'now', balance: 1000 });
-    httpMock.expectOne((req) => req.url === SETTINGS_URL).flush({ unitPercent: 0.01 });
   });
 
-  it('shows the empty-result message when the range resolves to no months (end before start)', () => {
+  it('recomputes displayed months from bankrollNow/unitPercent without a new HTTP request when only those change (the filter reference is unchanged)', () => {
+    const filter: StatisticsFilter = { from: '2026-09-01', to: '2026-09-01' };
+    setInputs(filter, 1000, 0.01);
     fixture.detectChanges();
-    flushLoad();
+    httpMock.expectOne((req) => req.url === DAILY_URL).flush([{ date: '2026-09-01', netProfit: 100, totalStaked: 100, roi: 1, betCount: 1 }]);
     fixture.detectChanges();
 
-    fixture.componentInstance['filterForm'].setValue({ fromMonth: new Date(2026, 5, 1), toMonth: new Date(2026, 0, 1) });
-    fixture.componentInstance['applyFilter']();
-    flushLoad();
+    expect(fixture.componentInstance['months']()[0].days[0]).toBeCloseTo(10);
+
+    setInputs(filter, 2000, 0.01);
+    fixture.detectChanges();
+
+    httpMock.expectNone((req) => req.url === DAILY_URL);
+    expect(fixture.componentInstance['months']()[0].days[0]).toBeCloseTo(5);
+  });
+
+  it('shows the empty-result message when the filter resolves to no months (to before from)', () => {
+    setInputs({ from: '2026-06-01', to: '2026-01-01' });
+    fixture.detectChanges();
+
+    httpMock.expectOne((req) => req.url === DAILY_URL).flush([]);
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('[data-testid="monthly-drawdown-empty"]')).toBeTruthy();
   });
 
-  it('does not reload while the form is invalid (a required field cleared)', () => {
-    fixture.detectChanges();
-    flushLoad();
-    fixture.detectChanges();
-
-    fixture.componentInstance['filterForm'].patchValue({ fromMonth: null as unknown as Date });
-    fixture.componentInstance['applyFilter']();
-
-    expect(fixture.componentInstance['filterForm'].invalid).toBe(true);
-    httpMock.expectNone((req) => req.url === DAILY_URL);
-  });
-
-  it('setting a month via the datepicker updates the control and closes the picker', () => {
-    fixture.detectChanges();
-    flushLoad();
-    fixture.detectChanges();
-
-    let closed = false;
-    fixture.componentInstance['onMonthSelected'](new Date(2026, 4, 15), { close: () => (closed = true) }, 'fromMonth');
-
-    expect(closed).toBe(true);
-    const value = fixture.componentInstance['filterForm'].controls.fromMonth.value;
-    expect(value.getFullYear()).toBe(2026);
-    expect(value.getMonth()).toBe(4);
-    expect(value.getDate()).toBe(1);
-  });
-
   it('shows the RFC 7807 detail when the daily statistics request fails', () => {
+    setInputs({ from: '2026-09-01', to: '2026-09-30' });
     fixture.detectChanges();
 
-    httpMock
-      .expectOne((req) => req.url === DAILY_URL)
-      .flush({ detail: 'Intervalo inválido.' }, { status: 400, statusText: 'Bad Request' });
-    for (const request of httpMock.match(() => true)) {
-      if (!request.cancelled) {
-        request.flush({});
-      }
-    }
+    httpMock.expectOne((req) => req.url === DAILY_URL).flush({ detail: 'Intervalo inválido.' }, { status: 400, statusText: 'Bad Request' });
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('[data-testid="monthly-drawdown-error"]').textContent).toContain('Intervalo inválido.');

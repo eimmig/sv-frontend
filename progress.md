@@ -2,8 +2,37 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-09-24
-**Estado:** `feat-046`..`feat-052`/`feat-054` fechadas; `feat-053` no backlog.
+**Última atualização:** 2026-09-25
+**Estado:** `feat-055`, `feat-057` e `feat-058` fechadas; `feat-053` e `feat-056` no backlog.
+
+## `feat-058` fechada — drawdown mensal: escala Y compartilhada + filtro geral (2026-09-25)
+
+Story SV-654 (SV-655/656/657), PRs #235/#236/#237 (este). `epic-037` da raiz. 2 achados do usuário
+com captura de tela: (1) cada mini-gráfico mensal auto-escalava o próprio eixo Y, mês com lucro
+acumulado menor parecia maior/mais inclinado que os outros — `computeSharedYRange` +
+`yMin`/`yMax` opcionais em `buildLineChartOption` corrigem. (2) grid tinha datepicker/filtro
+próprio (só from/to, ignorava esporte/casa/etc.) redundante com o filtro geral do dashboard —
+componente virou `@Input`-driven (`filter`/`bankrollNow`/`unitPercent` de `dashboard.ts`), fetch
+via `effect()` só depende de `filter` (não refaz a chamada quando só saldo/unitPercent mudam,
+`months`/`yRange` são `computed()`). Test Suite Auditor achou 2 lacunas reais (a correção central
+de refetch redundante não tinha teste; só 1 direção do corte to/hoje combinado testada) — ambas
+fechadas antes do veredito. Vault: `docs/services/web.md`, `docs/estatisticas.md`,
+`docs/sistema-de-design.md` corrigidos (descreviam o filtro próprio como atual);
+`docs/convencoes.md` ganhou 2 mecanismos reaproveitáveis. Detalhe completo em `feature_list.json`
+(`evidence` de `feat-058`).
+
+## `feat-057` fechada — sessão expirada volta ao login (2026-09-25)
+
+Story SV-651 (SV-652/653), PR #232 + SV-653. Era este o "loading antes do login" do usuário: token
+expirado salvo abria `/overview`, o overlay tocava e as 401 não eram tratadas. Detecção pelo
+`type` `invalid-token` do gateway (senha errada também é 401). Detalhe em `docs/services/web.md`.
+
+## `feat-055` fechada — painel de filtros recolhível (2026-09-25)
+
+Story SV-647 (SV-648..650), PRs #228/#229 + SV-650. Pedido do usuário; estratégia escolhida entre 3
+(painel recolhível). Desenho em `docs/sistema-de-design.md` ("Painel de filtros recolhível").
+Achado fora de escopo: `feat-056` (deploy de `main` não reinicia o pod web). A "animação de logo
+antes do login" era sessão expirada, resolvida em `feat-057`.
 
 ## `feat-047` fechada — dashboard e menu flutuante de Times (2026-09-24)
 

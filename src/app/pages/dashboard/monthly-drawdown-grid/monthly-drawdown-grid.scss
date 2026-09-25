@@ -2,30 +2,6 @@
   display: block;
 }
 
-.monthly-drawdown-grid__filter {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 16px;
-  margin-top: 16px;
-
-  mat-form-field {
-    flex: 1 1 140px;
-    min-width: 140px;
-    max-width: 200px;
-  }
-
-  input[type='month'] {
-    height: 24px;
-    line-height: 24px;
-  }
-
-  button {
-    margin-top: 4px;
-  }
-}
-
 .monthly-drawdown-grid__error {
   margin: 0;
   color: var(--color-negative);

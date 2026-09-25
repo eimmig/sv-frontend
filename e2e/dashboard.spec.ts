@@ -243,49 +243,69 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
     await expect(page.getByTestId('dashboard-unit-percent-success')).toBeVisible();
   });
 
-  test.describe('epic-020 - monthly drawdown grid', () => {
+  test.describe('epic-037 - monthly drawdown grid follows the dashboard general filter', () => {
     test.beforeEach(async ({ page }) => {
       await page.route('**/api/v1/statistics*', (route) =>
         route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(statisticsBundle()) }),
       );
     });
 
-    test('renders one mini-chart for the default current-month range', async ({ page }) => {
+    test('renders one mini-chart for the default "Today" period, with no filter of its own', async ({ page }) => {
       await page.goto('/dashboard');
       await expect(page.getByTestId('dashboard-total-staked')).toContainText('R$');
 
       await page.getByRole('tab', { name: 'Monthly drawdown' }).click();
 
       await expect(page.getByTestId('monthly-drawdown-chart-title')).toHaveCount(1);
+      await expect(page.getByTestId('monthly-drawdown-from-toggle')).toHaveCount(0);
     });
 
-    test('applying a 3-month range renders 3 mini-charts, one per month', async ({ page }) => {
+    test('a 3-month custom range on the general filter renders 3 mini-charts, one per month', async ({ page }) => {
       await page.goto('/dashboard');
       await expect(page.getByTestId('dashboard-total-staked')).toContainText('R$');
       await page.getByRole('tab', { name: 'Monthly drawdown' }).click();
       await expect(page.getByTestId('monthly-drawdown-chart-title')).toHaveCount(1);
 
-      await page.getByTestId('monthly-drawdown-from-toggle').click();
-      await page.getByRole('button', { name: 'January 2026', exact: true }).click();
-      await page.getByTestId('monthly-drawdown-to-toggle').click();
-      await page.getByRole('button', { name: 'March 2026', exact: true }).click();
-      await page.getByTestId('monthly-drawdown-apply').click();
+      await page.getByTestId('period-preset-select').click();
+      await page.getByRole('option', { name: 'Custom' }).click();
+      await page.getByTestId('period-preset-custom-from').pressSequentially('01012026');
+      await page.getByTestId('period-preset-custom-to').pressSequentially('03312026');
+      await page.getByTestId('period-preset-custom-to').blur();
 
       await expect(page.getByTestId('monthly-drawdown-chart-title')).toHaveCount(3);
     });
 
-    test('shows the empty-result message when the end month is before the start month', async ({ page }) => {
+    test('an inverted custom range (end before start) shows the empty-result message', async ({ page }) => {
       await page.goto('/dashboard');
       await expect(page.getByTestId('dashboard-total-staked')).toContainText('R$');
       await page.getByRole('tab', { name: 'Monthly drawdown' }).click();
 
-      await page.getByTestId('monthly-drawdown-from-toggle').click();
-      await page.getByRole('button', { name: 'June 2026', exact: true }).click();
-      await page.getByTestId('monthly-drawdown-to-toggle').click();
-      await page.getByRole('button', { name: 'January 2026', exact: true }).click();
-      await page.getByTestId('monthly-drawdown-apply').click();
+      await page.getByTestId('period-preset-select').click();
+      await page.getByRole('option', { name: 'Custom' }).click();
+      await page.getByTestId('period-preset-custom-from').pressSequentially('06012026');
+      await page.getByTestId('period-preset-custom-to').pressSequentially('01012026');
+      await page.getByTestId('period-preset-custom-to').blur();
 
       await expect(page.getByTestId('monthly-drawdown-empty')).toBeVisible();
+    });
+
+    test('applying a segment filter (sport) on the general filter also scopes the drawdown request', async ({ page }) => {
+      let lastSportId: string | null = null;
+      await page.route('**/api/v1/statistics/daily*', (route) => {
+        lastSportId = new URL(route.request().url()).searchParams.get('sportId');
+        return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) });
+      });
+
+      await page.goto('/dashboard');
+      await expect(page.getByTestId('dashboard-total-staked')).toContainText('R$');
+      await page.getByRole('tab', { name: 'Monthly drawdown' }).click();
+      await expect(page.getByTestId('monthly-drawdown-chart-title')).toHaveCount(1);
+
+      await page.getByTestId('dashboard-filter-sport').click();
+      await page.getByRole('option', { name: 'Futebol' }).click();
+      await page.getByTestId('dashboard-filter-apply').click();
+
+      await expect.poll(() => lastSportId).toBe('sp-1');
     });
   });
 });

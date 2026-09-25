@@ -83,9 +83,6 @@
     "genericError": "Não foi possível completar a operação. Tente novamente."
   },
   "monthlyDrawdown": {
-    "fromLabel": "Mês inicial",
-    "toLabel": "Mês final",
-    "apply": "Aplicar",
     "emptyResult": "Nenhum mês no intervalo selecionado.",
     "genericError": "Não foi possível completar a operação. Tente novamente."
   },
@@ -211,7 +208,8 @@
     "emailLabel": "E-mail",
     "passwordLabel": "Senha",
     "submit": "Entrar",
-    "genericError": "Não foi possível entrar. Tente novamente."
+    "genericError": "Não foi possível entrar. Tente novamente.",
+    "sessionExpired": "Sua sessão expirou. Entre novamente."
   },
   "nav": {
     "overview": "Visão geral",
@@ -370,5 +368,11 @@
     "markWon": "Ganha",
     "markLost": "Perdida",
     "markVoid": "Devolvida"
+  },
+  "panel": {
+    "collapse": "Recolher painel",
+    "expand": "Expandir painel",
+    "activeFilter": "1 filtro aplicado",
+    "activeFilters": "{{count}} filtros aplicados"
   }
 }

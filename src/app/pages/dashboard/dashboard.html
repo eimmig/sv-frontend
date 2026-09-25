@@ -1,5 +1,10 @@
-<app-panel-layout columns="320px 1fr">
-  <app-panel [title]="'dashboard.filtersTitle' | transloco">
+<app-panel-layout columns="auto 1fr" tabletColumns="auto 1fr">
+  <app-panel
+    [title]="'dashboard.filtersTitle' | transloco"
+    [collapsible]="true"
+    collapseKey="dashboard"
+    [badge]="appliedFilterCount()"
+  >
     @if (optionsError(); as message) {
       <p class="dashboard__error" role="alert" data-testid="dashboard-options-error">{{ message }}</p>
     } @else {
@@ -264,7 +269,11 @@
         </mat-tab>
 
         <mat-tab [label]="'dashboard.monthlyDrawdownTitle' | transloco">
-          <app-monthly-drawdown-grid />
+          <app-monthly-drawdown-grid
+            [filter]="appliedFilter()"
+            [bankrollNow]="dashboardData().bankrollNow"
+            [unitPercent]="dashboardData().unitPercent"
+          />
         </mat-tab>
       </mat-tab-group>
     }

@@ -81,4 +81,15 @@ describe('MonthlyDrawdownChart', () => {
     expect(options.series[0].smooth).toBe(false);
     expect(options.yAxis.splitNumber).toBe(4);
   });
+
+  it('applies the shared yRange input as explicit yAxis min/max, for comparable scale across months', () => {
+    const fixture = TestBed.createComponent(MonthlyDrawdownChart);
+    fixture.componentRef.setInput('month', { year: 2026, month: 3, days: [0, 5, 2, 8] });
+    fixture.componentRef.setInput('yRange', { min: -1, max: 10 });
+    fixture.detectChanges();
+
+    const options = fixture.componentInstance['chartOptions']() as { yAxis: { min?: number; max?: number } };
+    expect(options.yAxis.min).toBe(-1);
+    expect(options.yAxis.max).toBe(10);
+  });
 });

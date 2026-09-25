@@ -131,7 +131,8 @@ Inventário completo (17 itens mapeados) em `docs/DESIGN-SYSTEM.md` seção "Inv
 componentes" — destaques:
 
 - **`app-panel`**: container `surface`, raio grande, cabeçalho opcional (título + ações),
-  rolagem interna própria.
+  rolagem interna própria. Opcionalmente recolhível (`collapsible`): faixa de 56px com ícone,
+  título vertical e badge azul de filtros aplicados — usado no painel de filtros dos dashboards.
 - **Gráfico de linha** (`ngx-echarts`): traço `brand`, gradiente suave até transparente
   (opacidade ~0.12), ponto de destaque no último valor, 3 linhas de grade sutis (`border`).
 - **Botão CTA primário**: pill full-width, `actionNeutral` por padrão (não `brand`/verde) —

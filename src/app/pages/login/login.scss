@@ -69,6 +69,17 @@
   font-size: 14px;
 }
 
+.login__notice {
+  display: block;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-action-neutral) 12%, transparent);
+  color: var(--color-text-primary);
+  font-size: 14px;
+  text-align: center;
+}
+
 .login__card-wrap {
   position: relative;
 }

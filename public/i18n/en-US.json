@@ -83,9 +83,6 @@
     "genericError": "Could not complete the operation. Please try again."
   },
   "monthlyDrawdown": {
-    "fromLabel": "Start month",
-    "toLabel": "End month",
-    "apply": "Apply",
     "emptyResult": "No month in the selected range.",
     "genericError": "Could not complete the operation. Please try again."
   },
@@ -211,7 +208,8 @@
     "emailLabel": "Email",
     "passwordLabel": "Password",
     "submit": "Sign in",
-    "genericError": "Could not sign in. Please try again."
+    "genericError": "Could not sign in. Please try again.",
+    "sessionExpired": "Your session has expired. Please sign in again."
   },
   "nav": {
     "overview": "Overview",
@@ -370,5 +368,11 @@
     "markWon": "Won",
     "markLost": "Lost",
     "markVoid": "Void"
+  },
+  "panel": {
+    "collapse": "Collapse panel",
+    "expand": "Expand panel",
+    "activeFilter": "1 filter applied",
+    "activeFilters": "{{count}} filters applied"
   }
 }

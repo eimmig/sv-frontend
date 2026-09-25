@@ -166,6 +166,7 @@ describe('PeriodComparison', () => {
 
   afterEach(() => {
     httpMock.verify();
+    localStorage.removeItem('stakevault.panelCollapsed.period-comparison');
     vi.useRealTimers();
     delete (navigator as { language?: string }).language;
   });
@@ -257,6 +258,10 @@ describe('PeriodComparison', () => {
       request.flush(EMPTY_DASHBOARD);
     }
     drainComparisonRequests();
+
+    fixture.nativeElement.querySelector('[data-testid="panel-collapse-toggle"]').click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[data-testid="panel-badge"]').textContent.trim()).toBe('1');
   });
 
   it('shows the RFC 7807 detail when a comparison request fails', () => {

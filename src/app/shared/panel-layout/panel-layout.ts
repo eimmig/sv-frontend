@@ -7,4 +7,5 @@ import { Component, input } from '@angular/core';
 })
 export class PanelLayout {
   readonly columns = input<string>('1fr');
+  readonly tabletColumns = input<string>();
 }

@@ -9,6 +9,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { forkJoin, map, of } from 'rxjs';
 
 import { loadInto, submitForm } from '../../core/api-request';
+import { countAppliedFilters } from '../../core/applied-filters';
 import { Auth } from '../../core/auth';
 import { BankrollApi } from '../../core/bankroll-api';
 import { BettingHouse, BettingHousesApi } from '../../core/betting-houses-api';
@@ -24,6 +25,7 @@ import {
   SegmentedBetMetrics,
   StatisticsApi,
   StatisticsDashboard,
+  StatisticsFilter,
 } from '../../core/statistics-api';
 import { KpiCard, KpiCardSign, kpiSign } from '../../shared/kpi-card/kpi-card';
 import { MonthlyProfitChart, isDailyGranularity } from '../../shared/monthly-profit-chart/monthly-profit-chart';
@@ -100,9 +102,11 @@ export class Dashboard implements OnInit {
   protected readonly optionsError = signal<string | null>(null);
 
   protected readonly period = signal<PeriodRange>({ from: '', to: '' });
+  protected readonly appliedFilterCount = signal(0);
 
   protected readonly dashboardData = signal<DashboardData>(EMPTY_DASHBOARD_DATA);
   protected readonly dashboardError = signal<string | null>(null);
+  protected readonly appliedFilter = signal<StatisticsFilter>({});
 
   protected readonly unidadesApostadas = computed(() => {
     const data = this.dashboardData();
@@ -169,6 +173,7 @@ export class Dashboard implements OnInit {
   protected applyFilter(): void {
     const raw = this.filterForm.getRawValue();
     const period = this.period();
+    this.appliedFilterCount.set(countAppliedFilters(Object.values(raw)));
     const filter = {
       bettingHouseId: raw.bettingHouseId || undefined,
       sportId: raw.sportId || undefined,
@@ -178,6 +183,7 @@ export class Dashboard implements OnInit {
       from: period.from || undefined,
       to: period.to || undefined,
     };
+    this.appliedFilter.set(filter);
     loadInto(
       forkJoin({
         dashboard: this.statisticsApi.get(filter),

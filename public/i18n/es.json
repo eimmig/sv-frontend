@@ -83,9 +83,6 @@
     "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
   },
   "monthlyDrawdown": {
-    "fromLabel": "Mes inicial",
-    "toLabel": "Mes final",
-    "apply": "Aplicar",
     "emptyResult": "Ningún mes en el intervalo seleccionado.",
     "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
   },
@@ -211,7 +208,8 @@
     "emailLabel": "Correo electrónico",
     "passwordLabel": "Contraseña",
     "submit": "Iniciar sesión",
-    "genericError": "No se pudo iniciar sesión. Inténtalo de nuevo."
+    "genericError": "No se pudo iniciar sesión. Inténtalo de nuevo.",
+    "sessionExpired": "Tu sesión ha expirado. Inicia sesión de nuevo."
   },
   "nav": {
     "overview": "Visión general",
@@ -370,5 +368,11 @@
     "markWon": "Ganada",
     "markLost": "Perdida",
     "markVoid": "Anulada"
+  },
+  "panel": {
+    "collapse": "Contraer panel",
+    "expand": "Expandir panel",
+    "activeFilter": "1 filtro aplicado",
+    "activeFilters": "{{count}} filtros aplicados"
   }
 }
