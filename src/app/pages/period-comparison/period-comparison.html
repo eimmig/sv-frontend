@@ -1,5 +1,10 @@
-<app-panel-layout columns="320px 1fr">
-  <app-panel [title]="'periodComparison.filtersTitle' | transloco">
+<app-panel-layout columns="auto 1fr" tabletColumns="auto 1fr">
+  <app-panel
+    [title]="'periodComparison.filtersTitle' | transloco"
+    [collapsible]="true"
+    collapseKey="period-comparison"
+    [badge]="appliedFilterCount()"
+  >
     @if (optionsError(); as message) {
       <p class="period-comparison__error" role="alert" data-testid="period-comparison-options-error">{{ message }}</p>
     } @else {
