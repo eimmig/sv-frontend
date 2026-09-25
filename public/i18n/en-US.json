@@ -370,5 +370,11 @@
     "markWon": "Won",
     "markLost": "Lost",
     "markVoid": "Void"
+  },
+  "panel": {
+    "collapse": "Collapse panel",
+    "expand": "Expand panel",
+    "activeFilter": "1 filter applied",
+    "activeFilters": "{{count}} filters applied"
   }
 }
