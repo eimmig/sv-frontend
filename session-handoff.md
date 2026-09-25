@@ -7,12 +7,18 @@
 
 ## Objetivo atual
 
-`feat-055` (painel de filtros recolhível) e `feat-057` (sessão expirada volta ao login) fechadas. Em aberto: `feat-053` (conexão recusada pelo dev server, mantida no backlog por decisão do usuário) e `feat-056` (deploy de `main` não reinicia o pod web).
+`feat-055` (painel de filtros recolhível), `feat-057` (sessão expirada volta ao login) e `feat-058`
+(drawdown mensal: escala Y compartilhada + filtro geral) fechadas. Em aberto: `feat-053` (conexão
+recusada pelo dev server, mantida no backlog por decisão do usuário) e `feat-056` (deploy de `main`
+não reinicia o pod web).
 
 ## Concluído nesta sessão (2026-09-25)
 
 - [x] **`feat-055` fechada** — painel de filtros recolhível nas telas de dashboard. Story SV-647.
 - [x] **`feat-057` fechada** — 401 `invalid-token` limpa a sessão e volta ao login com aviso. Story SV-651.
+- [x] **`feat-058` fechada** — grafico de drawdown mensal ganha escala Y compartilhada entre os
+      mini-graficos e passa a reaproveitar o filtro geral do dashboard, sem datepicker proprio.
+      Story SV-654 (`epic-037` da raiz). Ver `progress.md` para o detalhe.
 
 ## Concluído em 2026-09-24
 

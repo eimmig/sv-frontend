@@ -3,7 +3,23 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-25
-**Estado:** `feat-055` e `feat-057` fechadas; `feat-053` e `feat-056` no backlog.
+**Estado:** `feat-055`, `feat-057` e `feat-058` fechadas; `feat-053` e `feat-056` no backlog.
+
+## `feat-058` fechada — drawdown mensal: escala Y compartilhada + filtro geral (2026-09-25)
+
+Story SV-654 (SV-655/656/657), PRs #235/#236/#237 (este). `epic-037` da raiz. 2 achados do usuário
+com captura de tela: (1) cada mini-gráfico mensal auto-escalava o próprio eixo Y, mês com lucro
+acumulado menor parecia maior/mais inclinado que os outros — `computeSharedYRange` +
+`yMin`/`yMax` opcionais em `buildLineChartOption` corrigem. (2) grid tinha datepicker/filtro
+próprio (só from/to, ignorava esporte/casa/etc.) redundante com o filtro geral do dashboard —
+componente virou `@Input`-driven (`filter`/`bankrollNow`/`unitPercent` de `dashboard.ts`), fetch
+via `effect()` só depende de `filter` (não refaz a chamada quando só saldo/unitPercent mudam,
+`months`/`yRange` são `computed()`). Test Suite Auditor achou 2 lacunas reais (a correção central
+de refetch redundante não tinha teste; só 1 direção do corte to/hoje combinado testada) — ambas
+fechadas antes do veredito. Vault: `docs/services/web.md`, `docs/estatisticas.md`,
+`docs/sistema-de-design.md` corrigidos (descreviam o filtro próprio como atual);
+`docs/convencoes.md` ganhou 2 mecanismos reaproveitáveis. Detalhe completo em `feature_list.json`
+(`evidence` de `feat-058`).
 
 ## `feat-057` fechada — sessão expirada volta ao login (2026-09-25)
 

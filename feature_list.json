@@ -4253,11 +4253,39 @@
           ],
           "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-657"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechado em 2026-09-25 por feat-058.1/feat-058.2/feat-058.3 (story SV-654). Grafico de drawdown mensal fica comparavel entre meses (escala Y compartilhada) e usa o mesmo filtro geral do dashboard (sem pedir data/segmento duas vezes).",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "SV-655 (feat-058.1): `computeSharedYRange` (`monthly-drawdown-metrics.ts`) calcula min/max compartilhado entre todos os meses renderizados (baseline 0, arredondado pra fora em 1 casa decimal); `core/chart-theme.ts` ganhou `yMin`/`yMax` opcionais em `buildLineChartOption`, setados so quando fornecidos (outros consumidores, ex. `monthly-profit-chart`, continuam auto-scale); `monthly-drawdown-chart.ts` ganhou o input `yRange`.",
+              "SV-656 (feat-058.2): `monthly-drawdown-grid` perdeu o form/datepicker/botao proprio e passou a receber `filter` (o `StatisticsFilter` completo ja montado em `dashboard.applyFilter()`, incluindo os filtros de segmento - antes ignorados por este componente), `bankrollNow` e `unitPercent` como `input.required<...>()` de `dashboard.ts`. `buildMonthlyDrawdown` deixou de assumir `from`/`to` alinhados a mes inteiro; `resolveMonthRange` removida (sem consumidor). Fetch (`effect()`) depende so de `filter`; `months`/`yRange` exibidos sao `computed()` a partir de `daily`+`bankrollNow`+`unitPercent` - evita refetch redundante quando so saldo/unitPercent mudam (achado real corrigido, nao so hipotetico - ver teste dedicado abaixo).",
+              "SV-657 (feat-058.3): e2e/dashboard.spec.ts bloco 'epic-020' reescrito para 'epic-037', dirigindo o filtro geral (period-preset-select -> custom) em vez dos testids removidos; QA visual real (screenshots Playwright, 2 temas x desktop/mobile) confirmou a escala Y compartilhada (Jan/Fev no mesmo eixo 0-26) e a ausencia do filtro proprio. Vault atualizado: docs/services/web.md, docs/estatisticas.md e docs/sistema-de-design.md corrigidos (descreviam o desenho antigo - filtro proprio, `startView=\"year\"` sem consumidor - como se ainda fosse atual); docs/convencoes.md ganhou 2 mecanismos reaproveitaveis (escala Y compartilhada entre instancias de ngx-echarts; separacao effect-de-fetch vs. computed-de-render em componente @Input-driven)."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "Plan Reviewer (2026-09-25): READY WITH CONCERNS, 4 MINOR incorporados antes de codificar (arredondamento do range Y, remocao de resolveMonthRange, guarda de filter.from/to ausente, corte por to combinado com corte por hoje).",
+              "Delivery Reviewer: PASS, sem achado (revisao unica, autor mesma sessao com verificacao direta contra suite completa).",
+              "Test Suite Auditor: PASS apos a propria auditoria encontrar 2 lacunas reais e mandar fechar antes do veredito - (1) nenhum teste provava a correcao central de feat-058.2 (bankrollNow/unitPercent mudando sozinhos nao deveriam refazer o fetch) - teste novo adicionado provando httpMock.expectNone + valor recalculado; (2) so uma direcao do corte combinado to/hoje estava testada - segunda direcao adicionada.",
+              "372/372 testes unitarios (`ng test`), 101/101 e2e (`npx playwright test`, suite completa), `ng build` limpo, `validate-i18n-keys.py` (302 chaves em sincronia nos 3 locales), `./init.sh` do app e da raiz verdes."
+            ]
+          },
+          {
+            "titulo": "Residuais aceitos",
+            "itens": [
+              "Flash cosmetico de grafico zerado no primeiro render apos filtro valido, antes da resposta real chegar (computed() usa daily=[] ate o fetch resolver) - momentaneo, sem regressao funcional.",
+              "Fetch de drawdown continua sem limite de intervalo de dias (igual ao comportamento anterior do filtro proprio) - diferente do grafico de lucro mensal, que cai pra granularidade mensal acima de 31 dias."
+            ]
+          }
+        ]
+      }
     }
   ]
 }

@@ -111,10 +111,16 @@ describe('buildMonthlyDrawdown', () => {
     ]);
   });
 
-  it('the to-day cap still combines with the today cap on the current month', () => {
+  it('the to-day cap still combines with the today cap on the current month (today is later than to)', () => {
     const months = buildMonthlyDrawdown([], '2026-09-05', '2026-09-30', 1000, 0.01, new Date(2026, 8, 10));
 
     expect(months[0].days).toHaveLength(6);
+  });
+
+  it('on the current month, a to earlier than today wins over the today cap (filter ends before today)', () => {
+    const months = buildMonthlyDrawdown([], '2026-09-01', '2026-09-05', 1000, 0.01, new Date(2026, 8, 10));
+
+    expect(months[0].days).toHaveLength(5);
   });
 });
 
