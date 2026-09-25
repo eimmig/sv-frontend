@@ -4157,11 +4157,40 @@
           ],
           "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-653"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechado em 2026-09-25 por feat-057.1/feat-057.2 (story SV-651). Com token expirado, o app limpa a sessao, tira o overlay de carregamento na hora e abre o login com o aviso 'Sua sessao expirou'.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #232 (SV-652): `core/auth-interceptor` trata 401 com `type` `.../invalid-token` do gateway, so em requisicao que levou o token atual - `Auth.expireSession()` (logout + flag), `Loading.reset()`, navegacao para `/login`. `Loading.begin()` devolve a epoca e `end()` de requisicao anterior ao reset e ignorado. Login mostra o aviso em `<output>` ate a proxima tentativa. `login.sessionExpired` nos 3 locales.",
+              "SV-653: E2E `e2e/session-expired.spec.ts`; E2E de senha errada em `e2e/change-password.spec.ts` passa a mandar o `type` real e afirmar que a sessao continua; vault."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "./init.sh do app verde (360 testes unitarios, cobertura 92,75%); ./init.sh da raiz: web OK (servicos Java/Python dependem de Docker, desligado, sem relacao).",
+              "E2E completa 100/100; E2E novos e ajustados 12/12 com `--repeat-each=3`. Contrafactual: com o interceptor do develop o E2E de sessao expirada falha em `toHaveURL(/login/)`.",
+              "QA visual do aviso: claro/escuro x desktop/mobile.",
+              "Plan Reviewer: READY WITH CONCERNS (3 MINOR incorporados). /code-review: 2 achados corrigidos (401 atrasado derrubando sessao nova; `end()` antigo apagando overlay novo). Delivery Reviewer (self-conduzido): CONCERNS com 1 P3 - testes duplicados em auth.spec removidos. Test Suite Auditor (self-conduzido): PASS."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Acrescentado apos o /code-review: comparacao do token capturado e epoca no Loading (nao estavam no plano).",
+              "Testes de `Auth.expireSession()` previstos no plano sairam por duplicarem o que o interceptor ja prova.",
+              "Vault: `docs/contratos-de-api.md` (web depende do type invalid-token), `docs/sistema-de-design.md` item 17 (reset/epoca do overlay), `docs/services/web.md`.",
+              "Residual aceito: 401 sem corpo RFC 7807 (proxy/ingress) nao expira a sessao."
+            ]
+          }
+        ]
+      }
     }
   ]
 }
