@@ -2,8 +2,18 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-09-25
-**Estado:** `feat-055`, `feat-057` e `feat-058` fechadas; `feat-053` e `feat-056` no backlog.
+**Última atualização:** 2026-09-28
+**Estado:** `feat-053` fechada; `feat-056` no backlog (unico item restante).
+
+## `feat-053` fechada — conexao recusada pelo dev server na suite E2E (2026-09-28)
+
+Story SV-658 (SV-659/660), PR #240. Achado durante `feat-051`: `ERR_CONNECTION_REFUSED`
+intermitente (1 em 9 rodadas completas). Causa raiz confirmada: hosts do Windows resolve
+`localhost` tanto pra `127.0.0.1` quanto `::1` (dual-stack real), o dev server so escuta numa
+familia, e sob carga paralela (16 workers) o Chromium as vezes bate na errada.
+`playwright.config.ts` pina `baseURL`/`webServer.url`/`webServer.command --host` em `127.0.0.1` -
+sem mexer em workers nem timeout. Validado com 10 rodadas completas seguidas (101/101, 0
+ECONNREFUSED). Gotcha registrado em `docs/testes.md`.
 
 ## `feat-058` fechada — drawdown mensal: escala Y compartilhada + filtro geral (2026-09-25)
 
