@@ -3954,11 +3954,37 @@
           ],
           "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-660"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechado em 2026-09-28 por feat-053.1/feat-053.2 (story SV-658). Causa raiz do ECONNREFUSED intermitente confirmada (localhost dual-stack no Windows) e corrigida em playwright.config.ts, sem mexer em workers nem timeouts.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #240 (SV-659): playwright.config.ts - use.baseURL, webServer.url e webServer.command (--host 127.0.0.1) pinados em 127.0.0.1 no lugar de 'localhost'. Comentarios curtos explicando a razao (nao obvia: corrida IPv4/IPv6 em hosts dual-stack)."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "Confirmado C:\\Windows\\System32\\drivers\\etc\\hosts com 127.0.0.1 e ::1 mapeados pra 'localhost'; 'ng serve --help' confirma --host default 'localhost'.",
+              "Suite E2E completa (mesma carga fullyParallel/16 workers do relato original) rodada 10x seguidas: 101/101 em todas, 0 ECONNREFUSED.",
+              "./init.sh do app (cobertura 92,86%) e da raiz verdes.",
+              "Delivery Reviewer (self-conduzido): PASS, sem achado."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Nada. Nenhum apontamento fora de escopo.",
+              "Vault: docs/testes.md ganhou o gotcha (localhost dual-stack no Windows causando ECONNREFUSED intermitente em Playwright + Angular dev server)."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-054",

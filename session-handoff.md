@@ -3,16 +3,22 @@
 > Estado atual, não histórico. O diário cronológico é o `progress.md` — este arquivo é reescrito
 > a cada sessão para responder "o que a próxima sessão precisa saber agora".
 
-**Última atualização:** 2026-09-25
+**Última atualização:** 2026-09-28
 
 ## Objetivo atual
 
-`feat-055` (painel de filtros recolhível), `feat-057` (sessão expirada volta ao login) e `feat-058`
-(drawdown mensal: escala Y compartilhada + filtro geral) fechadas. Em aberto: `feat-053` (conexão
-recusada pelo dev server, mantida no backlog por decisão do usuário) e `feat-056` (deploy de `main`
-não reinicia o pod web).
+`feat-053` (conexão recusada pelo dev server na suite E2E) fechada. Em aberto só `feat-056`
+(deploy de `main` não reinicia o pod web — passo manual/infra, sem código de produto neste repo).
 
-## Concluído nesta sessão (2026-09-25)
+## Concluído nesta sessão (2026-09-28)
+
+- [x] **`feat-053` fechada** — causa raiz confirmada (hosts dual-stack do Windows, `localhost`
+      resolvendo pra `127.0.0.1` e `::1`, dev server ambíguo sob carga paralela).
+      `playwright.config.ts` pina `baseURL`/`webServer.url`/`webServer.command --host` em
+      `127.0.0.1`. Validado com 10 rodadas completas da suite (101/101, 0 ECONNREFUSED). Story
+      SV-658. Gotcha em `docs/testes.md`.
+
+## Concluído em 2026-09-25
 
 - [x] **`feat-055` fechada** — painel de filtros recolhível nas telas de dashboard. Story SV-647.
 - [x] **`feat-057` fechada** — 401 `invalid-token` limpa a sessão e volta ao login com aviso. Story SV-651.
@@ -58,7 +64,8 @@ não reinicia o pod web).
 ## Próxima sessão — por onde começar
 
 1. Rodar `./init.sh` (deve sair `0`).
-2. Próxima feature `not-started` do `feature_list.json` (`feat-053` ou `feat-056`).
+2. Única feature `not-started` restante: `feat-056` (rollout manual/infra, sem código deste repo —
+   confirmar com o usuário antes, já que a ação é fora do escopo de código).
 3. Se for mexer em `services/api-gateway`/serviços Java localmente (fora de Docker): `.env` não
    carrega sozinho em `mvn spring-boot:run` — precisa `SPRING_PROFILES_ACTIVE=dev` exportado, e o
    CORS default do gateway libera só `localhost:4200`, não a porta real do `ng serve` (`4300`)
