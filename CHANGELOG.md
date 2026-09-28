@@ -18,6 +18,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-655](https://stakevault.atlassian.net/browse/SV-655) - Escala Y compartilhada entre os mini-graficos mensais
 - [SV-656](https://stakevault.atlassian.net/browse/SV-656) - Reaproveitar o filtro geral do dashboard em vez do datepicker proprio
 - [SV-657](https://stakevault.atlassian.net/browse/SV-657) - E2E, QA visual e verificacao final
+- [SV-658](https://stakevault.atlassian.net/browse/SV-658) - Conexao recusada pelo dev server na suite E2E completa
+- [SV-659](https://stakevault.atlassian.net/browse/SV-659) - Pinar dev server e baseURL em 127.0.0.1
+- [SV-660](https://stakevault.atlassian.net/browse/SV-660) - CHANGELOG e verificacao final
 
 ## [1.0.0] - 2026-09-24
 
