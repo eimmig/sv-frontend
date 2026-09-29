@@ -38,6 +38,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-693](https://stakevault.atlassian.net/browse/SV-693) - Identificar o significado dos eixos dos graficos (rotulos de eixo X/Y)
 - [SV-694](https://stakevault.atlassian.net/browse/SV-694) - Nomes de eixo nos 2 builders + i18n + 4 componentes
 - [SV-695](https://stakevault.atlassian.net/browse/SV-695) - CHANGELOG e verificacao final
+- [SV-700](https://stakevault.atlassian.net/browse/SV-700) - Simplificar campos da tela de login (2 campos, nao 3)
+- [SV-701](https://stakevault.atlassian.net/browse/SV-701) - Login 2 campos + criacao de usuario por username
+- [SV-702](https://stakevault.atlassian.net/browse/SV-702) - CHANGELOG e verificacao final
 
 ## [1.0.0] - 2026-09-24
 

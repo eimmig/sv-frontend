@@ -37,7 +37,6 @@ test.describe('RF01/RF02 - authentication and tenant user management', () => {
     await mockLogin(page, { token: 'v4.local.token', userId: 'u1', role: 'ADMIN', mustChangePassword: false });
     await page.goto('/login');
 
-    await page.getByTestId('login-slug').fill('acme');
     await page.getByTestId('login-email').fill('ana@acme');
     await page.getByTestId('login-password').fill('secret');
     await page.getByTestId('login-submit').click();
@@ -59,7 +58,6 @@ test.describe('RF01/RF02 - authentication and tenant user management', () => {
     );
     await page.goto('/login');
 
-    await page.getByTestId('login-slug').fill('acme');
     await page.getByTestId('login-email').fill('ana@acme');
     await page.getByTestId('login-password').fill('wrong');
     await page.getByTestId('login-submit').click();
@@ -85,7 +83,6 @@ test.describe('RF01/RF02 - authentication and tenant user management', () => {
 
     await expect(page.getByTestId('login-submit')).toHaveText('Sign in');
 
-    await page.getByTestId('login-slug').fill('acme');
     await page.getByTestId('login-email').fill('ana@acme');
     await page.getByTestId('login-password').fill('wrong');
     await page.getByTestId('login-submit').click();

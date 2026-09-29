@@ -37,7 +37,6 @@ export class Login implements OnInit {
   protected readonly errorMessage = signal<string | null>(null);
 
   protected readonly form = this.formBuilder.nonNullable.group({
-    slug: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   });
@@ -53,9 +52,9 @@ export class Login implements OnInit {
       return;
     }
     this.auth.clearSessionExpired();
-    const { slug, email, password } = this.form.getRawValue();
+    const { email, password } = this.form.getRawValue();
     submitForm(
-      this.auth.login(slug, email, password),
+      this.auth.login(email, password),
       this.submitting,
       this.errorMessage,
       () => this.transloco.translate('login.genericError'),

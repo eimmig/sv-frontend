@@ -28,10 +28,10 @@ describe('Auth', () => {
   it('login() stores the session and marks the user authenticated', () => {
     const auth = TestBed.inject(Auth);
     const httpMock = TestBed.inject(HttpTestingController);
-    auth.login('acme', 'ana@acme', 'secret').subscribe();
+    auth.login('ana@acme', 'secret').subscribe();
 
     const request = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/auth/login`);
-    expect(request.request.body).toEqual({ slug: 'acme', email: 'ana@acme', password: 'secret' });
+    expect(request.request.body).toEqual({ email: 'ana@acme', password: 'secret' });
     request.flush({ token: 'v4.local.token', userId: 'user-1', role: 'ADMIN', mustChangePassword: false });
 
     expect(auth.isAuthenticated()).toBe(true);
@@ -97,7 +97,7 @@ describe('Auth', () => {
   it('logout() clears the session and localStorage', () => {
     const auth = TestBed.inject(Auth);
     const httpMock = TestBed.inject(HttpTestingController);
-    auth.login('acme', 'ana@acme', 'secret').subscribe();
+    auth.login('ana@acme', 'secret').subscribe();
     httpMock
       .expectOne(`${environment.apiGatewayUrl}/api/v1/auth/login`)
       .flush({ token: 't', userId: 'u', role: 'MEMBER', mustChangePassword: false });

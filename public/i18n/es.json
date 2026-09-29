@@ -212,7 +212,6 @@
   "login": {
     "title": "Iniciar sesión",
     "tagline": "Gestión de banca",
-    "slugLabel": "Organización",
     "emailLabel": "Correo electrónico",
     "passwordLabel": "Contraseña",
     "submit": "Iniciar sesión",
@@ -258,6 +257,8 @@
     "listTitle": "Usuarios del tenant",
     "nameLabel": "Nombre",
     "emailLabel": "Correo electrónico",
+    "usernameLabel": "Usuario",
+    "usernameHint": "Se completa con @{{slug}}",
     "passwordLabel": "Contraseña",
     "roleLabel": "Rol",
     "create": "Crear usuario",
