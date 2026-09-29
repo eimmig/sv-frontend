@@ -4,8 +4,19 @@
 
 **Última atualização:** 2026-09-29
 **Estado:** `epic-039` (raiz) em andamento - 7 achados reais de UX recuperados de sessão nunca
-commitada (2026-09-25/29). `feat-064` fechada nesta sessão. Restam `feat-060`, `feat-061`,
-`feat-062`, `feat-063`, `feat-065`, `feat-066` (todos `not-started`, dependências já `done`).
+commitada (2026-09-25/29). `feat-064` e `feat-066` fechadas nesta sessão. Restam `feat-060`,
+`feat-061`, `feat-062`, `feat-063`, `feat-065` (todos `not-started`, dependências já `done`).
+
+## `feat-066` fechada — datas fora do padrão BR no Relatório do período (2026-09-29)
+
+Story SV-684 (SV-685/686), PRs #249/#250/#251. Parte de `epic-039` (raiz). `period-report.html`
+era o único lugar do app ainda interpolando a string ISO crua da API (`{{ row.date }}`). Nova
+`formatDayNumeric` em `core/date-format.ts` (numérico dd/MM, reaproveita o `parseDay`
+timezone-safe já usado por `formatDay`), ano condicional via `spansMoreThanOneYear` (mesmo padrão
+de `equity-curve-chart.ts`). 2 testes existentes (unitário + E2E) travavam o bug afirmando a
+string ISO crua - corrigidos pro valor formatado real. Gotcha/regra documentada em
+`docs/convencoes.md` (repo raiz): toda data nova exibida na UI passa por `core/date-format.ts`,
+nunca interpolação crua.
 
 ## `feat-064` fechada — ações desalinhadas na linha de aposta resolvida (2026-09-29)
 
