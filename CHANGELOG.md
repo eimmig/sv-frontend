@@ -32,6 +32,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-687](https://stakevault.atlassian.net/browse/SV-687) - Tamanho consistente dos graficos de drawdown (ultimo item maior que os demais)
 - [SV-688](https://stakevault.atlassian.net/browse/SV-688) - auto-fit -> auto-fill no grid de drawdown + teste de largura
 - [SV-689](https://stakevault.atlassian.net/browse/SV-689) - CHANGELOG e verificacao final
+- [SV-690](https://stakevault.atlassian.net/browse/SV-690) - Loading indevido, lento e desalinhado do tempo de resposta real
+- [SV-691](https://stakevault.atlassian.net/browse/SV-691) - Overlay global so pra GET + fim imediato ao terminar a requisicao
+- [SV-692](https://stakevault.atlassian.net/browse/SV-692) - CHANGELOG e verificacao final
 
 ## [1.0.0] - 2026-09-24
 
