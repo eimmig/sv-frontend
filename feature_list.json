@@ -4510,11 +4510,11 @@
           ],
           "validation": "feature_list.json com status done e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-686"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-29. Story SV-684 (subtasks SV-685/SV-686), PRs #249 (subtask->story) + story->develop a seguir. Causa raiz: period-report.html era o unico lugar do app ainda interpolando a data ISO crua da API sem formatacao de locale. Corrigido com formatDayNumeric (nova funcao em core/date-format.ts, numerico dd/MM, reaproveita o parseDay timezone-safe ja usado por formatDay) + period.formatDate como wrapper, ano condicional via spansMoreThanOneYear (mesmo padrao de equity-curve-chart.ts). 2 testes existentes (unitario period-report.spec.ts + e2e period-report.spec.ts) afirmavam a string ISO crua, travando o bug ate agora - corrigidos pro valor formatado real (locale padrao do Chromium/JSDOM neste projeto e en-US sem override explicito -> '09/11'). 3 testes unitarios novos pra formatDayNumeric (pt-BR/en-US/es, com/sem ano). ./init.sh verde (build+ng test, cobertura 92%+), 5/5 e2e/period-report.spec.ts. Delivery Reviewer (self-conduzido, mudanca de baixo risco, so formatacao de exibicao, sem contrato/i18n/logica de negocio alterados): PASS, sem achados bloqueantes. Vault: docs/convencoes.md (repo raiz) ganhou a regra de sempre passar por core/date-format.ts pra data nova exibida, e quando usar formatDay vs formatDayNumeric."
     },
     {
       "id": "feat-059",
