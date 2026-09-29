@@ -4386,11 +4386,11 @@
           ],
           "validation": "feature_list.json com status done e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-692"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-29. Story SV-690 (subtasks SV-691/692), PR #255 (subtask->story) + story->develop a seguir. Achado original tinha 2 partes: (a) overlay global acionando em telas sem necessidade (POST de register-bet), (b) overlay demorando mais que a resposta real (minimo artificial de 2.1s). Escalado ao usuario 2x (AskUserQuestion) por colidir com decisao de design explicita e recente (feat-044, 2026-09-24: 'animacao cortada no meio le como bug'). 1a rodada: usuario decidiu reverter a garantia de sequencia completa. Ao implementar o fix de gatilho sugerido pelo achado original ('so GET aciona overlay'), descoberta real durante a implementacao: login tambem usa POST e o overlay durante login e cenario documentado E testado de proposito (e2e/loading-overlay.spec.ts) - um filtro por metodo desligaria o overlay do login tambem. 2a rodada: usuario decidiu manter o interceptor inalterado (todo /api/ aciona, qualquer metodo) e corrigir so a duracao. Fix final: loading.ts end() nao espera mais SEQUENCE_MS, inicia o fade no instante em que a requisicao termina (removida a constante morta e o campo shownAt); loading-interceptor.ts fica intocado. Isso resolve a parte (b) diretamente e a parte (a) na pratica (POSTs tipicos respondem rapido, sem o minimo artificial o overlay quando aparece desaparece quase junto). ./init.sh verde (build+ng test, cobertura 92%+, 15/15 nos specs de loading), e2e/loading-overlay.spec.ts + session-expired + overview + smoke (10/10, incluindo o cenario de login lento). Delivery Reviewer (self-conduzido, mudanca de timing pura sem contrato/logica alterados, grep confirmou nenhum outro teste acoplado ao timing antigo): PASS, sem achados bloqueantes. Vault: docs/sistema-de-design.md (repo raiz) secao 17 atualizada registrando a reversao da regra de sequencia completa."
     },
     {
       "id": "feat-061",
