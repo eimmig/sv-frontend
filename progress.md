@@ -4,8 +4,24 @@
 
 **Última atualização:** 2026-09-29
 **Estado:** `epic-039` (raiz) em andamento - 7 achados reais de UX recuperados de sessão nunca
-commitada (2026-09-25/29). `feat-064`, `feat-066` e `feat-061` fechadas nesta sessão. Restam
-`feat-060`, `feat-062`, `feat-063`, `feat-065` (todos `not-started`, dependências já `done`).
+commitada (2026-09-25/29). `feat-064`, `feat-066`, `feat-061` e `feat-060` fechadas nesta sessão.
+Restam `feat-062`, `feat-063`, `feat-065` (todos `not-started`, dependências já `done`).
+
+## `feat-060` fechada — loading indevido/lento, desalinhado do tempo de resposta real (2026-09-29)
+
+Story SV-690 (SV-691/692), PRs #255/#256/#257. Parte de `epic-039` (raiz). Colidiu com decisão de
+design explícita e recente (`feat-044`, 2026-09-24: "animação cortada no meio lê como bug") -
+escalado ao usuário via `AskUserQuestion` em **2 rodadas**: a 1ª decidiu reverter a garantia de
+sequência completa; ao implementar o fix de gatilho sugerido pelo achado original (filtrar o
+interceptor por método HTTP, só GET), descoberta real durante a implementação de que isso
+desligaria também o overlay do login (cenário documentado E testado de propósito,
+`e2e/loading-overlay.spec.ts`) - 2ª rodada confirmou manter o interceptor inalterado (qualquer
+`/api/` aciona, qualquer método) e corrigir só a duração. Fix: `loading.ts` `end()` inicia o fade
+no instante em que a requisição termina, sem esperar os 2,1s da animação (constante `SEQUENCE_MS`
+e campo `shownAt` removidos). `docs/sistema-de-design.md` seção 17 atualizada registrando a
+reversão. Lição: um fix "óbvio" sugerido por um achado recuperado pode ter efeito colateral em
+outra tela não mencionada - vale conferir todos os consumidores de um mecanismo compartilhado
+antes de aplicar um filtro amplo.
 
 ## `feat-061` fechada — último gráfico do grid de drawdown maior que os demais (2026-09-29)
 
