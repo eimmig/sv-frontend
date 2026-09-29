@@ -35,6 +35,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-690](https://stakevault.atlassian.net/browse/SV-690) - Loading indevido, lento e desalinhado do tempo de resposta real
 - [SV-691](https://stakevault.atlassian.net/browse/SV-691) - Overlay global so pra GET + fim imediato ao terminar a requisicao
 - [SV-692](https://stakevault.atlassian.net/browse/SV-692) - CHANGELOG e verificacao final
+- [SV-693](https://stakevault.atlassian.net/browse/SV-693) - Identificar o significado dos eixos dos graficos (rotulos de eixo X/Y)
+- [SV-694](https://stakevault.atlassian.net/browse/SV-694) - Nomes de eixo nos 2 builders + i18n + 4 componentes
+- [SV-695](https://stakevault.atlassian.net/browse/SV-695) - CHANGELOG e verificacao final
 
 ## [1.0.0] - 2026-09-24
 

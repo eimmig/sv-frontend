@@ -1,4 +1,5 @@
 import { Component, computed, inject, input } from '@angular/core';
+import { TranslocoService } from '@jsverse/transloco';
 import { LineChart } from 'echarts/charts';
 import { GridComponent, TooltipComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';
@@ -20,6 +21,8 @@ function buildChartOption(
   brandColor: string,
   borderColor: string,
   labelColor: string,
+  xAxisName: string,
+  yAxisName: string,
 ): EChartsCoreOption {
   const categories = month.days.map((_, index) => String(index + 1));
   return buildLineChartOption(categories, [...month.days], brandColor, borderColor, labelColor, {
@@ -27,6 +30,8 @@ function buildChartOption(
     splitNumber: 4,
     yMin: yRange?.min,
     yMax: yRange?.max,
+    xAxisName,
+    yAxisName,
   });
 }
 
@@ -40,6 +45,7 @@ function buildChartOption(
 export class MonthlyDrawdownChart {
   private readonly theme = inject(Theme);
   private readonly language = inject(Language);
+  private readonly transloco = inject(TranslocoService);
 
   readonly month = input.required<MonthlyDrawdownMonth>();
   readonly yRange = input<MonthlyDrawdownYRange | null>(null);
@@ -48,12 +54,15 @@ export class MonthlyDrawdownChart {
 
   protected readonly chartOptions = computed<EChartsCoreOption>(() => {
     this.theme.current();
+    this.language.current();
     return buildChartOption(
       this.month(),
       this.yRange(),
       readCssColor('--color-brand'),
       readCssColor('--color-border'),
       readCssColor('--color-text-secondary'),
+      this.transloco.translate('charts.drawdown.xAxisLabel'),
+      this.transloco.translate('charts.drawdown.yAxisLabel'),
     );
   });
 }

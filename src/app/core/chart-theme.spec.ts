@@ -89,6 +89,58 @@ describe('buildLineChartOption y-axis bounds', () => {
   });
 });
 
+describe('axis names', () => {
+  it('leaves xAxis.name/yAxis.name unset (and the default grid margins) when no axis name is given', () => {
+    const option = buildLineChartOption(['jan'], [1], '#2fa85c', '#dce3e0', '#5c6b72') as {
+      xAxis: { name?: string };
+      yAxis: { name?: string };
+      grid: { bottom: number; left: number };
+    };
+
+    expect(option.xAxis.name).toBeUndefined();
+    expect(option.yAxis.name).toBeUndefined();
+    expect(option.grid).toEqual({ top: 16, right: 16, bottom: 24, left: 48 });
+  });
+
+  it('sets xAxis.name/yAxis.name and widens the grid margins when axis names are given', () => {
+    const option = buildLineChartOption(['jan'], [1], '#2fa85c', '#dce3e0', '#5c6b72', {
+      xAxisName: 'Data',
+      yAxisName: 'Lucro (R$)',
+    }) as {
+      xAxis: { name?: string };
+      yAxis: { name?: string };
+      grid: { bottom: number; left: number };
+    };
+
+    expect(option.xAxis.name).toBe('Data');
+    expect(option.yAxis.name).toBe('Lucro (R$)');
+    expect(option.grid).toEqual({ top: 16, right: 16, bottom: 40, left: 64 });
+  });
+
+  it('sets comparison axis names when given, leaving them unset by default', () => {
+    const withoutNames = buildComparisonLineChartOption(
+      ['1'],
+      { name: 'A', color: '#2fa85c', data: [1] },
+      { name: 'B', color: '#2e70a0', data: [2] },
+      '#dce3e0',
+      '#5c6b72',
+    ) as { xAxis: { name?: string }; yAxis: { name?: string } };
+    expect(withoutNames.xAxis.name).toBeUndefined();
+    expect(withoutNames.yAxis.name).toBeUndefined();
+
+    const withNames = buildComparisonLineChartOption(
+      ['1'],
+      { name: 'A', color: '#2fa85c', data: [1] },
+      { name: 'B', color: '#2e70a0', data: [2] },
+      '#dce3e0',
+      '#5c6b72',
+      { xAxisName: 'Dia do período', yAxisName: 'Lucro acumulado (unidades)' },
+    ) as { xAxis: { name?: string }; yAxis: { name?: string } };
+    expect(withNames.xAxis.name).toBe('Dia do período');
+    expect(withNames.yAxis.name).toBe('Lucro acumulado (unidades)');
+  });
+});
+
 describe('tooltip theme', () => {
   const tokens = { '--color-surface-elevated': '#1d2a36', '--color-border': '#24323f', '--color-text-primary': '#f2f7f5' };
   const expected = { trigger: 'axis', backgroundColor: '#1d2a36', borderColor: '#24323f', textStyle: { color: '#f2f7f5' } };

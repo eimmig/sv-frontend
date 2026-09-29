@@ -40,6 +40,8 @@ describe('EquityCurveChart', () => {
   beforeEach(() => {
     (globalThis as { ResizeObserver?: unknown }).ResizeObserver = ResizeObserverStub;
     stubCanvasContext();
+    localStorage.removeItem('stakevault.language');
+    Object.defineProperty(navigator, 'language', { value: 'pt-BR', configurable: true });
     TestBed.configureTestingModule({
       imports: [
         EquityCurveChart,
@@ -49,6 +51,10 @@ describe('EquityCurveChart', () => {
         }),
       ],
     });
+  });
+
+  afterEach(() => {
+    delete (navigator as { language?: string }).language;
   });
 
   it('frames the chart with a title, a help toggle and a 1-entry legend', () => {
@@ -96,5 +102,14 @@ describe('EquityCurveChart', () => {
       { date: '2026-03-07', cumulativeProfit: -10 },
     ]);
     expect(categories().some((label) => label.includes('2026'))).toBe(false);
+  });
+
+  it('labels the axes with the chart-specific translation keys', () => {
+    const fixture = TestBed.createComponent(EquityCurveChart);
+    fixture.detectChanges();
+
+    const options = fixture.componentInstance['chartOptions']() as { xAxis: { name?: string }; yAxis: { name?: string } };
+    expect(options.xAxis.name).toBe('charts.equity.xAxisLabel');
+    expect(options.yAxis.name).toBe('charts.equity.yAxisLabel');
   });
 });
