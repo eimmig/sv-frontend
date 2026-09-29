@@ -1,47 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
+import { ResizeObserverStub, restoreLocale, stubBrazilianLocale, stubCanvasContext } from '../../core/chart-theme.testing';
 import { MonthlyDrawdownChart } from './monthly-drawdown-chart';
-
-class ResizeObserverStub {
-  observe(): void {}
-  unobserve(): void {}
-  disconnect(): void {}
-}
-
-function stubCanvasContext(): void {
-  const noop = () => {};
-  const context: Record<string, unknown> = {};
-  const proxy = new Proxy(context, {
-    get: (target, prop) => {
-      if (prop === 'canvas' || prop in target) {
-        return target[prop as string];
-      }
-      if (prop === 'createLinearGradient' || prop === 'createRadialGradient') {
-        return () => ({ addColorStop: noop });
-      }
-      if (prop === 'measureText') {
-        return () => ({ width: 0 });
-      }
-      return noop;
-    },
-    set: (target, prop, value) => {
-      target[prop as string] = value;
-      return true;
-    },
-  });
-  HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement) {
-    context['canvas'] = this;
-    return proxy;
-  } as unknown as typeof HTMLCanvasElement.prototype.getContext;
-}
 
 describe('MonthlyDrawdownChart', () => {
   beforeEach(() => {
     (globalThis as { ResizeObserver?: unknown }).ResizeObserver = ResizeObserverStub;
     stubCanvasContext();
-    localStorage.removeItem('stakevault.language');
-    Object.defineProperty(navigator, 'language', { value: 'pt-BR', configurable: true });
+    stubBrazilianLocale();
     TestBed.configureTestingModule({
       imports: [
         MonthlyDrawdownChart,
@@ -54,7 +21,7 @@ describe('MonthlyDrawdownChart', () => {
   });
 
   afterEach(() => {
-    delete (navigator as { language?: string }).language;
+    restoreLocale();
   });
 
   it('renders the month title and the echarts host without error', () => {
