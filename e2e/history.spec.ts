@@ -213,7 +213,7 @@ test.describe('RF12 - update bet status', () => {
     await expect(settledRow).toContainText('Lost');
     await expect(settledRow.getByTestId('history-bets-mark-won')).toHaveCount(0);
 
-    const settledTd = settledRow.locator('td.history__actions');
+    const settledTd = settledRow.getByTestId('history-bets-actions-cell');
     const settledTdBox = await settledTd.boundingBox();
     const settledRowBox = await settledRow.boundingBox();
     expect(settledTdBox?.height).toBeCloseTo(settledRowBox?.height ?? -1, 0);

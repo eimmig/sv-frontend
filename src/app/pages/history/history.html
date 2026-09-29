@@ -92,7 +92,7 @@
                     }}</span>
                   </td>
                   <td>{{ formatDateTime(bet.betDate) }}</td>
-                  <td class="history__actions">
+                  <td class="history__actions" data-testid="history-bets-actions-cell">
                     <div class="history__actions-inner">
                       @if (bet.status === 'pending') {
                         <button
