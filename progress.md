@@ -2,8 +2,21 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-09-28
-**Estado:** `feat-053` fechada; `feat-056` no backlog (unico item restante).
+**Última atualização:** 2026-09-29
+**Estado:** `epic-039` (raiz) em andamento - 7 achados reais de UX recuperados de sessão nunca
+commitada (2026-09-25/29). `feat-064` fechada nesta sessão. Restam `feat-060`, `feat-061`,
+`feat-062`, `feat-063`, `feat-065`, `feat-066` (todos `not-started`, dependências já `done`).
+
+## `feat-064` fechada — ações desalinhadas na linha de aposta resolvida (2026-09-29)
+
+Story SV-681 (SV-682/683), PRs #246/#247/#248. Parte de `epic-039` (raiz). Causa raiz confirmada
+empiricamente (medição via Playwright, com/sem o fix, não só leitura de código): `display:flex`
+direto na `<td class="history__actions">` impedia a célula de esticar até a altura da `<tr>`
+(17px vs 41px numa linha resolvida vazia) - a `<td>` parava de participar do algoritmo normal de
+table layout. Corrigido movendo o flex pra um `<div class="history__actions-inner">` interno.
+Teste de regressão usa `data-testid` (não classe CSS) como locator. Gotcha documentado em
+`docs/convencoes.md` (repo raiz) - reaproveitável por qualquer tabela futura com conteúdo
+condicional por linha.
 
 ## `feat-053` fechada — conexao recusada pelo dev server na suite E2E (2026-09-28)
 
