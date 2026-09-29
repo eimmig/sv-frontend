@@ -4416,7 +4416,7 @@
       "dependencies": [
         "feat-004"
       ],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "Plan Reviewer (self-conduzido, risco baixo, 1 revisor) em 2026-09-29. Verdict: READY. history.scss:71-75 e history.html:95-125 lidos e conferidos - causa raiz bate exatamente com a descricao (display:flex na <td class=\"history__actions\">, td fica vazia e sem flex quando resolvida). Plano aprovado sem alteracao: mover display:flex/gap/flex-wrap de .history__actions (td) para um .history__actions-inner (div interno que envolve os 3 botoes), td volta a se comportar como table-cell normal em altura/alinhamento vertical, pending e resolvida incluidos. Sem mudanca de logica/estado. Teste de regressao: e2e/history.spec.ts ja tem um cenario com 2 linhas (pendente 'Bet365' + resolvida 'Lost') carregadas juntas (linhas 206-214) - adicionar ali (antes do click) uma asercao de boundingBox comparando altura das duas linhas, mais barato que criar cenario novo. Sem risco cross-service, sem mudanca de contrato/i18n novo (nenhuma string nova).",
       "jira": "SV-681",
       "subtasks": [
@@ -4450,7 +4450,7 @@
           "jira": "SV-683"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-29. Story SV-681 (subtasks SV-682/SV-683), PRs #246/#247 (subtask->story), CI verde nos dois. Causa raiz confirmada empiricamente (medicao Playwright com/sem o fix, nao so leitura de codigo): display:flex direto na <td class=\"history__actions\"> impedia a celula de esticar ate a altura da <tr> (17px vs 41px numa linha resolvida vazia) - a td parava de participar do algoritmo normal de table layout. Corrigido movendo o flex pra um <div class=\"history__actions-inner\"> interno; a <td> volta a table-cell normal. Teste de regressao em e2e/history.spec.ts (locator data-testid, nao classe CSS) compara altura da td.history-bets-actions-cell com a da propria <tr> na linha resolvida - reproduzido o bug revertendo o fix antes de escrever a asercao definitiva. ./init.sh verde (build + ng test, cobertura 92%+), 6/6 e2e/history.spec.ts. Delivery Reviewer e Test Suite Auditor (self-conduzidos, mudanca de baixo risco so CSS/template, sem contrato/i18n/logica alterados): sem achados bloqueantes. Vault: docs/convencoes.md (repo raiz) ganhou o gotcha reaproveitavel (display:flex quebra o esticamento de <td>) - qualquer tabela futura com conteudo condicional por linha deve evitar o mesmo erro."
     },
     {
       "id": "feat-065",
