@@ -14,15 +14,16 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>{{ 'users.emailLabel' | transloco }}</mat-label>
+        <mat-label>{{ 'users.usernameLabel' | transloco }}</mat-label>
         <input
           matInput
-          id="users-email-input"
-          type="email"
-          formControlName="email"
-          data-testid="users-email"
-          [attr.aria-label]="'users.emailLabel' | transloco"
+          id="users-username-input"
+          type="text"
+          formControlName="username"
+          data-testid="users-username"
+          [attr.aria-label]="'users.usernameLabel' | transloco"
         />
+        <mat-hint>{{ 'users.usernameHint' | transloco: { slug: auth.session()?.tenantSlug ?? '' } }}</mat-hint>
       </mat-form-field>
 
       <mat-form-field appearance="outline">

@@ -26,7 +26,6 @@ test.describe('feat-044 - loading overlay', () => {
     });
     await page.goto('/login');
 
-    await page.getByTestId('login-slug').fill('acme');
     await page.getByTestId('login-email').fill('ana@acme');
     await page.getByTestId('login-password').fill('secret');
     await page.getByTestId('login-submit').click();

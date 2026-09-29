@@ -34,7 +34,7 @@ describe('UsersApi', () => {
   });
 
   it('create() POSTs /api/v1/users with the given input', () => {
-    const input = { name: 'Bob', email: 'bob@acme', password: 'secret' };
+    const input = { name: 'Bob', username: 'bob', password: 'secret' };
 
     api.create(input).subscribe();
 

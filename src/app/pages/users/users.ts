@@ -6,9 +6,12 @@ import { MatInputModule } from '@angular/material/input';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 import { loadInto, submitForm } from '../../core/api-request';
+import { Auth } from '../../core/auth';
 import { UserSummary, UsersApi } from '../../core/users-api';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
+
+const USERNAME_PATTERN = /^[a-zA-Z0-9._-]{1,64}$/;
 
 @Component({
   imports: [
@@ -28,6 +31,7 @@ export class Users {
   private readonly usersApi = inject(UsersApi);
   private readonly formBuilder = inject(FormBuilder);
   private readonly transloco = inject(TranslocoService);
+  protected readonly auth = inject(Auth);
 
   protected readonly users = signal<UserSummary[]>([]);
   protected readonly loadError = signal<string | null>(null);
@@ -36,7 +40,7 @@ export class Users {
 
   protected readonly form = this.formBuilder.nonNullable.group({
     name: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]],
+    username: ['', [Validators.required, Validators.pattern(USERNAME_PATTERN)]],
     password: ['', Validators.required],
   });
 
