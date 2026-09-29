@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 
-import { FADE_MS, Loading, SEQUENCE_MS, SHOW_DELAY_MS } from './loading';
+import { FADE_MS, Loading, SHOW_DELAY_MS } from './loading';
 
 describe('Loading', () => {
   let loading: Loading;
@@ -38,17 +38,13 @@ describe('Loading', () => {
     expect(loading.visible()).toBe(true);
   });
 
-  it('keeps the overlay until the logo sequence finishes, then fades out', () => {
+  it('starts fading out as soon as the request ends, with no artificial minimum', () => {
     loading.begin();
     vi.advanceTimersByTime(SHOW_DELAY_MS + 100);
     loading.end();
 
-    vi.advanceTimersByTime(SEQUENCE_MS - 101);
-    expect(loading.visible()).toBe(true);
-    expect(loading.leaving()).toBe(false);
-
-    vi.advanceTimersByTime(1);
     expect(loading.leaving()).toBe(true);
+    expect(loading.visible()).toBe(true);
 
     vi.advanceTimersByTime(FADE_MS);
     expect(loading.visible()).toBe(false);
@@ -60,7 +56,7 @@ describe('Loading', () => {
     loading.begin();
     vi.advanceTimersByTime(SHOW_DELAY_MS);
     loading.end();
-    vi.advanceTimersByTime(SEQUENCE_MS + FADE_MS);
+    vi.advanceTimersByTime(FADE_MS);
 
     expect(loading.visible()).toBe(true);
 
@@ -73,7 +69,6 @@ describe('Loading', () => {
     loading.begin();
     vi.advanceTimersByTime(SHOW_DELAY_MS);
     loading.end();
-    vi.advanceTimersByTime(SEQUENCE_MS);
     expect(loading.leaving()).toBe(true);
 
     loading.begin();
@@ -83,7 +78,7 @@ describe('Loading', () => {
     expect(loading.leaving()).toBe(false);
   });
 
-  it('hides right away under prefers-reduced-motion, with no sequence to wait for', () => {
+  it('hides right away under prefers-reduced-motion, with no fade to wait for', () => {
     mockReducedMotion(true);
     loading.begin();
     vi.advanceTimersByTime(SHOW_DELAY_MS);
@@ -104,7 +99,7 @@ describe('Loading', () => {
     expect(loading.leaving()).toBe(false);
 
     loading.end();
-    vi.advanceTimersByTime(SEQUENCE_MS + FADE_MS);
+    vi.advanceTimersByTime(FADE_MS);
     expect(loading.visible()).toBe(false);
   });
 
@@ -125,11 +120,11 @@ describe('Loading', () => {
     expect(loading.visible()).toBe(true);
 
     loading.end(stale);
-    vi.advanceTimersByTime(SEQUENCE_MS + FADE_MS);
+    vi.advanceTimersByTime(FADE_MS);
     expect(loading.visible()).toBe(true);
 
     loading.end(current);
-    vi.advanceTimersByTime(SEQUENCE_MS + FADE_MS);
+    vi.advanceTimersByTime(FADE_MS);
     expect(loading.visible()).toBe(false);
   });
 });
