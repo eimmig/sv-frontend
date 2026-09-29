@@ -4483,11 +4483,11 @@
           ],
           "validation": "feature_list.json com status done e evidence preenchida; epic-040 da raiz done.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-702"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-29. Story SV-700 (subtasks SV-701/702), PR #261 (subtask->story) + story->develop a seguir. Espelha services/auth-service feat-023 (done, mergeado). Login vira 2 campos (email+senha); core/auth.ts deriva tenantSlug do dominio do email digitado (email.split('@')[1]) pro objeto Session local, sem precisar mudanca no contrato de resposta do backend (nunca devolveu tenantSlug). Criacao de usuario troca email livre por username (CreateUserInput), com hint mostrando o sufixo @<slug do tenant atual>. Achado real de QA visual (dev server, screenshots): o hint de 2 linhas sobrepunha o campo de senha (Material so reserva altura pra 1 linha no subscript wrapper) - corrigido encurtando o texto nos 3 locales, nao mexendo em CSS. ./init.sh verde (build+ng test, cobertura 92%+), 17/17 e2e (auth+loading-overlay+session-expired+overview+smoke). Delivery Reviewer (self-conduzido, grep confirmou nenhuma referencia residual a slug/email antigo em src/e2e): PASS, sem achados bloqueantes. Vault: docs/services/web.md (repo raiz) secao 'Modelo de tenant (UI)' atualizada, incluindo o gotcha do mat-hint de 1 linha. epic-040 da raiz fecha nesta feature (ultimo harness pendente)."
     },
     {
       "id": "feat-063",
