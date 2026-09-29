@@ -130,7 +130,7 @@ describe('PeriodReport', () => {
 
     const rows = fixture.nativeElement.querySelectorAll('[data-testid="period-report-daily-row"]');
     expect(rows).toHaveLength(1);
-    expect(rows[0].textContent).toContain('2026-09-11');
+    expect(rows[0].textContent).toContain('09/11');
   });
 
   it('changing the period issues a new set of requests with the new range', () => {
