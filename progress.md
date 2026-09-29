@@ -4,8 +4,28 @@
 
 **Última atualização:** 2026-09-29
 **Estado:** `epic-039` (raiz) em andamento - 7 achados reais de UX recuperados de sessão nunca
-commitada (2026-09-25/29). `feat-064`, `feat-066`, `feat-061` e `feat-060` fechadas nesta sessão.
-Restam `feat-062`, `feat-063`, `feat-065` (todos `not-started`, dependências já `done`).
+commitada (2026-09-25/29). `feat-064`, `feat-066`, `feat-061`, `feat-060` e `feat-065` fechadas
+nesta sessão. Restam `feat-062` (login por slug+email, pode exigir decisão de contrato com
+auth-service) e `feat-063` (editar aposta pelo histórico), ambas `not-started`, dependências já
+`done`.
+
+## `feat-065` fechada — eixos dos gráficos sem rótulo (2026-09-29)
+
+Story SV-693 (SV-694/695), PRs #258/#259/#260. Parte de `epic-039` (raiz). Mapeados todos os
+gráficos do app (só 4 existem) - `xAxisName`/`yAxisName` opcionais nos 2 builders de
+`core/chart-theme.ts`, unidades por gráfico confirmadas contra o código real (R$ vs unidades).
+**3 rodadas de correção no PR story->develop** (achado real de processo): a primeira leva de
+testes novos duplicava ~30 linhas de boilerplate (`ResizeObserverStub`/`stubCanvasContext`) quase
+identicamente em 4 specs, reprovando o gate `new_duplicated_lines_density` do SonarCloud (11.3%
+contra o limite de 3%) - corrigido extraindo pra `chart-theme.testing.ts` compartilhado, o que por
+sua vez expôs duplicação dentro do próprio `chart-theme.ts` (os 2 builders repetiam o mesmo bloco
+de eixo/grid, 45%) e um gap de cobertura no arquivo novo (`new_coverage` 60%) - ambos corrigidos
+(extração de `namedGrid`/`categoryAxis`/`namedValueAxisStyle`, spec dedicado pro helper). Por fim,
+um comentário `// no-op: ...` adicionado pra silenciar `typescript:S1186` (métodos vazios) foi
+revertido a pedido do usuário (regra já estabelecida contra comentários de racional em código,
+6ª recorrência - ver memória `feedback_code_comments`) e substituído por arrow functions com corpo
+de expressão (`observe = (): void => undefined`), que não geram bloco vazio pro linter apontar.
+Gotcha de testabilidade do ECharts documentado em `docs/convencoes.md` (repo raiz).
 
 ## `feat-060` fechada — loading indevido/lento, desalinhado do tempo de resposta real (2026-09-29)
 
