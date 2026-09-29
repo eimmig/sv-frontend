@@ -21,6 +21,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-658](https://stakevault.atlassian.net/browse/SV-658) - Conexao recusada pelo dev server na suite E2E completa
 - [SV-659](https://stakevault.atlassian.net/browse/SV-659) - Pinar dev server e baseURL em 127.0.0.1
 - [SV-660](https://stakevault.atlassian.net/browse/SV-660) - CHANGELOG e verificacao final
+- [SV-677](https://stakevault.atlassian.net/browse/SV-677) - Validar SonarCloud tambem em push pra main (nao so pull_request)
+- [SV-678](https://stakevault.atlassian.net/browse/SV-678) - ci.yml: push so pra main habilita os 2 steps de SonarCloud, com continue-on-error
 
 ## [1.0.0] - 2026-09-24
 

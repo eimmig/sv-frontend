@@ -3344,826 +3344,18 @@
       "scope": "Tabela e layout responsivo da tela de comparativo de periodos; nao altera os calculos nem os dados apresentados.",
       "description": "Achado visual reportado pelo usuario em 2026-09-24, com captura de tela: no comparativo de periodos, os cabecalhos 'Periodo A' e 'Periodo B' estao desalinhados horizontalmente em relacao aos valores das colunas. Ajustar o layout para que cada cabecalho fique sobre a coluna correspondente, preservando o alinhamento da coluna 'Diferenca' e dos demais rotulos.",
       "dependencies": [],
-      "status": "done",
-      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (independencia reduzida, risco baixo: CSS local). Causa raiz confirmada: .period-comparison__rows-header alinha os spans 2..4 a direita, mas .comparison-metric-row__value (shared/comparison-metric-row) nao tem text-align e fica a esquerda; delta ja a direita nos dois; mesmo grid (1.4fr 1fr 1fr 1.2fr, gap 8px). Fix: text-align:right em __value no desktop (mobile <600px ja sobrescreve para left e o cabecalho some). comparison-metric-row so e usado em period-comparison. segment-comparison-table ja alinhado (th/td left) - fora do escopo. 1 MINOR: boundingBox do span nao detecta o defeito (item de grid ocupa a celula inteira) - E2E mede a borda direita do texto via Range.getBoundingClientRect e precisa falhar antes do fix.",
-      "jira": "SV-617",
-      "subtasks": [
-        {
-          "id": "feat-046.1",
-          "name": "Alinhar valores A/B com o cabecalho",
-          "detail": "Valores numericos das linhas de KPI passam a ficar a direita, como os cabecalhos e a Diferenca.",
-          "checklist": [
-            "`text-align: right` em `.comparison-metric-row__value` (desktop); mobile continua a esquerda",
-            "E2E em `e2e/period-comparison.spec.ts` compara a borda direita do texto (Range) de cada cabecalho com a do valor da primeira linha, tolerancia 1px",
-            "E2E falha antes do fix e passa depois"
-          ],
-          "validation": "ng test e E2E do comparativo verdes.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-618"
-        },
-        {
-          "id": "feat-046.2",
-          "name": "QA visual, CHANGELOG e verificacao final",
-          "detail": "Prova visual nos 2 temas e 2 larguras e fechamento.",
-          "checklist": [
-            "QA visual por screenshot nos 2 temas, desktop e mobile",
-            "Entrada em CHANGELOG.md (Unreleased)",
-            "./init.sh do app e da raiz verdes; suite E2E completa",
-            "Delivery Reviewer/Test Suite Auditor rodados",
-            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
-            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
-            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
-            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
-          ],
-          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-619"
-        }
-      ],
-      "evidence": {
-        "resumo": "Fechado em 2026-09-24 por feat-046.1/feat-046.2 (story SV-617). Valores Periodo A/B das linhas de KPI do comparativo passaram a ficar a direita, sob os cabecalhos (antes a esquerda, ~56px de desvio).",
-        "secoes": [
-          {
-            "titulo": "O que foi feito",
-            "itens": [
-              "PR #198 (SV-618): text-align:right em .comparison-metric-row__value (shared/comparison-metric-row.scss); mobile <600px continua rotulado a esquerda. E2E novo em e2e/period-comparison.spec.ts compara a borda direita do texto (Range) de cada cabecalho com a do valor A/B/delta, tolerancia 1px."
-            ]
-          },
-          {
-            "titulo": "Como foi verificado",
-            "itens": [
-              "E2E novo falhou antes do fix (55,8px) e passou depois.",
-              "./init.sh do app (ng build + ng test, cobertura 92,5%) e da raiz verdes; suite E2E completa 90/90.",
-              "QA visual por screenshot nos 2 temas, 1440px e 390px.",
-              "Delivery Reviewer (self-conduzido): PASS. Test Suite Auditor (self-conduzido): PASS - oraculo geometrico com contrafactual real, localizadores por data-testid."
-            ]
-          },
-          {
-            "titulo": "O que divergiu do plano",
-            "itens": [
-              "Nada. Nenhum apontamento fora de escopo encontrado.",
-              "Vault: docs/services/web.md secao 'Comparativo de periodos' - alinhamento a direita e gotcha do boundingBox de item de grid em E2E de alinhamento."
-            ]
-          }
-        ]
-      }
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
     },
     {
       "id": "feat-047",
       "name": "Menu flutuante da tela de times",
       "goal": "Padronizar a tela de Times com o menu flutuante usado nas demais telas, permitindo escolher entre o dashboard e o cadastro de times.",
       "scope": "Navegacao e menu flutuante da tela de Times; reutilizar o padrao visual e comportamental existente nas outras telas.",
-      "description": "Apontamento do usuario em 2026-09-24: a tela de Times nao possui o mesmo funcionamento das outras telas, pois nao exibe o menu flutuante para escolher entre acessar o dashboard de times ou cadastrar um novo time. Implementar essa navegacao mantendo o padrao existente de posicionamento, interacao, responsividade e estados visuais. Decisao do usuario 2026-09-24 (AskUserQuestion): epic cross-service (epic-036 da raiz) - stats-service feat-025 (done) expoe byTeam no bundle; esta feature cria o dashboard de times e o menu.",
-      "dependencies": [],
-      "status": "done",
-      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (risco baixo: navegacao + tela nova montada com componentes existentes). Confirmado: CATALOG_DASHBOARD_RESOURCES e shared/catalog-dashboard ja servem 5 segmentos iguais; resources do app-side-nav geram o mat-menu Cadastrar/Dashboard; so app-side-nav.spec usa o testid nav-teams; byTeam (stats-service feat-025) em develop. Decisao: byTeam em StatisticsDashboard/EMPTY; CatalogSegment 'byTeam'; rota teams-dashboard; i18n catalogDashboard.teamNameLabel (Time/Team/Equipo); Times sai de catalogLinks e entra por ultimo em resources (menu nav-teams-menu/-register/-dashboard); catalogLinks e o bloco do template removidos. 2 MINOR: (1) deploys independentes - web em producao antes do stats-service quebraria a tela; catalog-dashboard trata segmento ausente como [] (com teste); (2) Times por ultimo em resources, mesma posicao visual.",
-      "jira": "SV-644",
-      "subtasks": [
-        {
-          "id": "feat-047.1",
-          "name": "Dashboard de times",
-          "detail": "Tela de ranking por time no mesmo componente dos outros catalogos.",
-          "checklist": [
-            "`byTeam` em `StatisticsDashboard` e `EMPTY_STATISTICS_DASHBOARD`",
-            "`CatalogSegment` com `byTeam`; segmento ausente tratado como lista vazia (unit)",
-            "Rota `teams-dashboard` e `catalogDashboard.teamNameLabel` nos 3 locales"
-          ],
-          "validation": "ng test verde.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-645"
-        },
-        {
-          "id": "feat-047.2",
-          "name": "Menu flutuante de Times e verificacao final",
-          "detail": "Times ganha o menu Cadastrar/Dashboard e a feature fecha.",
-          "checklist": [
-            "Times em `resources` do `app-side-nav` (ultimo); `catalogLinks` e bloco do template removidos; `app-side-nav.spec` atualizado",
-            "E2E: menu de Times abre o dashboard de times (ranking por ROI) e Cadastrar leva a `/teams`",
-            "QA visual nos 2 temas, desktop e mobile",
-            "Entrada em CHANGELOG.md (Unreleased)",
-            "./init.sh do app e da raiz verdes; suite E2E completa",
-            "Delivery Reviewer/Test Suite Auditor rodados",
-            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
-            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
-            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
-            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
-          ],
-          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-646"
-        }
-      ],
-      "evidence": {
-        "resumo": "Fechado em 2026-09-24 por feat-047.1/feat-047.2 (story SV-644, epic-036 da raiz). Times ganhou o menu flutuante Cadastrar/Dashboard das outras telas e a tela /teams-dashboard (ranking por time), sobre o byTeam de stats-service feat-025.",
-        "secoes": [
-          {
-            "titulo": "O que foi feito",
-            "itens": [
-              "PR #222 (SV-645): byTeam em StatisticsDashboard/EMPTY; 'byTeam' em CatalogSegment; catalog-dashboard trata segmento ausente como lista vazia (deploys independentes); rota /teams-dashboard; catalogDashboard.teamNameLabel (Time/Team/Equipo).",
-              "SV-646: Times como ultimo item de resources no app-side-nav (menu nav-teams-menu/-register/-dashboard); catalogLinks e o bloco do template removidos."
-            ]
-          },
-          {
-            "titulo": "Como foi verificado",
-            "itens": [
-              "E2E: menu de Times abre o ranking ordenado por ROI (Flamengo 25% antes de Vasco -10%) e Cadastrar leva a /teams.",
-              "Unit: segmento ausente mostra estado vazio (falha sem o guard); menu de Times com hrefs /teams e /teams-dashboard.",
-              "./init.sh do app (338 testes, cobertura 92,6%) e da raiz verdes; suite E2E completa 95/95.",
-              "QA visual por screenshot nos 2 temas, 1440px e 390px: menu identico ao dos outros catalogos.",
-              "Delivery Reviewer (self-conduzido): PASS. Test Suite Auditor (self-conduzido): PASS."
-            ]
-          },
-          {
-            "titulo": "O que divergiu do plano",
-            "itens": [
-              "Nada. Nenhum apontamento novo fora de escopo.",
-              "Vault: docs/services/web.md secao 'Dashboard de times'."
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "id": "feat-048",
-      "name": "Ano no tooltip de graficos de estatisticas",
-      "goal": "Tornar inequivocas as datas exibidas no grafico da tela de buscar estatisticas quando o periodo visualizado superar um ano.",
-      "scope": "Formatacao das datas exibidas ao passar o mouse no grafico de estatisticas, incluindo a deteccao de intervalos superiores a um ano.",
-      "description": "Apontamento do usuario em 2026-09-24: ao buscar estatisticas sem informar um periodo, o grafico pode abranger mais de um ano, mas o tooltip exibe apenas dia e mes. Isso torna pontos de anos diferentes confusos. Quando o intervalo dos dados superar um ano, exibir dia, mes e ano no tooltip; manter o formato compacto atual para intervalos de ate um ano, se isso preservar a legibilidade.",
-      "dependencies": [],
-      "status": "done",
-      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (risco baixo, so UI). Evidencia: shared/equity-curve-chart so usado em search-statistics; tooltip trigger 'axis' mostra a categoria do eixo, montada por formatDay (core/date-format.ts, dia + mes curto, sem ano); timeline vem ordenada por data (contrato). Decisao: formatDay ganha withYear opcional; helper puro spansMoreThanOneYear(primeiro, ultimo) (ultimo > primeiro + 1 ano calendario); equity-curve-chart passa withYear so nesse caso; monthly-profit-chart (ate 31 dias) inalterado. 2 MINOR: (1) ano aparece tambem no rotulo do eixo, nao so no tooltip - separar exigiria tooltip.formatter proprio e perderia o estilo padrao; aceito e registrado em docs/sistema-de-design.md item 6; (2) timeline com menos de 2 pontos nunca inclui ano. Testes unitarios (canvas): date-format (withYear, fronteira exatamente 1 ano = false, +1 dia = true) e equity-curve-chart.spec lendo chartOptions().xAxis.data.",
-      "jira": "SV-620",
-      "subtasks": [
-        {
-          "id": "feat-048.1",
-          "name": "Ano nas datas do grafico acima de 1 ano",
-          "detail": "Datas do grafico de Buscar Estatisticas ficam inequivocas quando os dados cobrem mais de um ano.",
-          "checklist": [
-            "`formatDay(value, locale, withYear)` e `spansMoreThanOneYear(first, last)` em `core/date-format.ts`",
-            "`equity-curve-chart` inclui o ano so quando a timeline passa de 1 ano; menos de 2 pontos nunca inclui",
-            "Testes: fronteira de 1 ano em `date-format.spec.ts`; `xAxis.data` com e sem ano em `equity-curve-chart.spec.ts`"
-          ],
-          "validation": "ng test verde.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-621"
-        },
-        {
-          "id": "feat-048.2",
-          "name": "QA visual, CHANGELOG e verificacao final",
-          "detail": "Prova visual do tooltip nos 2 temas e fechamento.",
-          "checklist": [
-            "QA visual por screenshot do tooltip nos 2 temas (timeline de mais de 1 ano)",
-            "Entrada em CHANGELOG.md (Unreleased)",
-            "./init.sh do app e da raiz verdes; suite E2E completa",
-            "Delivery Reviewer/Test Suite Auditor rodados",
-            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
-            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
-            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
-            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
-          ],
-          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-622"
-        },
-        {
-          "id": "feat-048.3",
-          "name": "Corrigir apontamento SonarCloud typescript:S7755 no equity-curve-chart",
-          "detail": "Gate do PR story->develop (#203) reprovou: ultimo ponto da timeline lido por indice `[length - 1]` em vez de `.at(-1)`.",
-          "checklist": [
-            "Ultimo ponto lido com `.at(-1)`, sem non-null assertion",
-            "equity-curve-chart.spec verde",
-            "CI do PR story->develop com SonarCloud zero apontamentos",
-            "Regra registrada em docs/testes.md 'CI e SonarCloud'"
-          ],
-          "validation": "Gate completo do PR story->develop verde.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-623"
-        }
-      ],
-      "evidence": {
-        "resumo": "Fechado em 2026-09-24 por feat-048.1/feat-048.2 (story SV-620). Quando a serie do grafico de Buscar Estatisticas passa de 1 ano, as datas (eixo e tooltip) mostram o ano; ate 1 ano continuam compactas (dia + mes).",
-        "secoes": [
-          {
-            "titulo": "O que foi feito",
-            "itens": [
-              "PR #201 (SV-621): formatDay(value, locale, withYear) e spansMoreThanOneYear(primeiro, ultimo) em core/date-format.ts; equity-curve-chart inclui o ano so quando a timeline passa de 1 ano (menos de 2 pontos nunca inclui). Testes unitarios de fronteira (exatamente 1 ano = sem ano, +1 dia = com ano) e de xAxis.data.",
-              "SV-622: E2E em e2e/search-statistics.spec.ts - hover no grafico com timeline 2024-06..2026-01 e o tooltip (HTML) mostra 2025."
-            ]
-          },
-          {
-            "titulo": "Como foi verificado",
-            "itens": [
-              "E2E novo falhou com o fix revertido e passou com ele.",
-              "./init.sh do app (cobertura 92,5%) e da raiz verdes; suite E2E completa 90/91 - a falha (login-layout, fora do diff) passou 45/45 isolada, registrada como feat-051.",
-              "QA visual por screenshot do tooltip nos 2 temas: 'Jun 15, 2025'.",
-              "Delivery Reviewer (self-conduzido): PASS. Test Suite Auditor (self-conduzido): PASS - fronteira unitaria + E2E com contrafactual."
-            ]
-          },
-          {
-            "titulo": "O que divergiu do plano",
-            "itens": [
-              "Ano aparece tambem no eixo (aceito no plan review: tooltip trigger 'axis' reaproveita a categoria).",
-              "E2E do tooltip acrescentado (plano previa so unitario: o tooltip do ECharts e HTML, nao canvas).",
-              "Apontamentos fora de escopo viraram feature: feat-051 (flake login-layout) e feat-052 (tooltip branco no tema escuro).",
-              "Vault: docs/sistema-de-design.md item 6 - regra da data com ano e tooltip verificavel em E2E.",
-              "Gate do PR story->develop #203 reprovou por typescript:S7755 (ultimo ponto por indice); corrigido em feat-048.3 (SV-623) com .at(-1) + guarda; regra registrada em docs/testes.md 'CI e SonarCloud'."
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "id": "feat-049",
-      "name": "Evitar loading repetido em dados ja carregados",
-      "goal": "Exibir o loading apenas durante a primeira busca efetiva dos dados e evitar sua repeticao ao retornar a telas que ja possuem os dados carregados.",
-      "scope": "Ciclo de carregamento e reutilizacao dos dados das telas de Visao geral, Dashboard e demais telas que compartilham dados ja obtidos; manter o loading em buscas novas, refetches e apos invalidacao dos dados.",
-      "description": "Apontamento do usuario em 2026-09-24: ao acessar repetidamente telas como Visao geral, Dashboard e outras, o loading aparece toda vez, mesmo quando os dados ja foram carregados. Validar o fluxo e ajustar a estrategia de estado/cache para que o loading continue aparecendo na primeira busca efetiva, mas nao seja exibido novamente ao navegar para uma tela cujos dados ainda estejam disponiveis. O loading atual foi considerado adequado e deve ser preservado para requisicoes reais posteriores.",
-      "dependencies": [
-        "feat-044"
-      ],
-      "status": "done",
-      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: REVISE, 2 MAJOR + 1 MINOR corrigidos no plano antes de codificar. Self-review em 2 passes distintos (simulacao de execucao, adversarial) - independencia reduzida. Evidencia: loadingInterceptor mostra o overlay em toda chamada /api/ acima de 250ms; telas buscam no ngOnInit via forkJoin (stale-while-revalidate com 2 emissoes rejeitado: forkJoin so emite no complete); sem polling; login e POST, logout local. Desenho: core/http-cache.ts (TTL 5 min, geracao, clear) + httpCacheInterceptor primeiro da cadeia - GET /api/ fresco devolve copia sem chegar ao loading; so 2xx gravado; nao-GET em /api/ limpa o cache; chave = url com params + idioma; Auth.logout limpa (isolamento entre usuarios/tenants). MAJOR 1: limpar no finalize e tarde (roda depois do next do assinante) - limpar ao enviar e em tap(next HttpResponse/error). MAJOR 2: GET em voo durante mutacao gravaria resposta velha - contador de geracao, grava so se nao mudou. MINOR: corpo compartilhado por referencia - structuredClone no acerto. Riscos aceitos: aposta via Telegram so aparece apos TTL ou mutacao no web; lag de consistencia eventual logo apos mutacao pode ficar cacheado ate o TTL - documentados no vault.",
-      "jira": "SV-627",
-      "subtasks": [
-        {
-          "id": "feat-049.1",
-          "name": "Cache de GET em memoria com invalidacao",
-          "detail": "Tela ja carregada volta sem nova requisicao, entao sem overlay; buscas novas e dados alterados continuam indo a rede.",
-          "checklist": [
-            "`core/http-cache.ts`: get/set/clear, geracao, TTL 5 min",
-            "`httpCacheInterceptor` primeiro na cadeia de `app.config.ts`: acerto devolve `structuredClone` do corpo; so 2xx gravado e so se a geracao nao mudou; nao-GET em `/api/` limpa ao enviar e na resposta/erro via `tap`",
-            "Chave: url com params + idioma ativo",
-            "`Auth.logout` limpa o cache",
-            "Testes: acerto, falta, TTL, erro nao cacheado, mutacao limpa antes do assinante, GET em voo nao grava apos limpeza, logout limpa, copia independente"
-          ],
-          "validation": "ng test verde.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-628"
-        },
-        {
-          "id": "feat-049.2",
-          "name": "E2E, QA visual e verificacao final",
-          "detail": "Prova da navegacao sem overlay e fechamento.",
-          "checklist": [
-            "E2E: overview -> dashboard -> overview sem nova requisicao nem overlay na volta; filtro novo continua disparando requisicao (RN08); mutacao seguida de recarga busca de novo",
-            "QA visual da navegacao nos 2 temas",
-            "Entrada em CHANGELOG.md (Unreleased)",
-            "./init.sh do app e da raiz verdes; suite E2E completa",
-            "Delivery Reviewer/Test Suite Auditor rodados",
-            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
-            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
-            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
-            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
-          ],
-          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-629"
-        }
-      ],
-      "evidence": {
-        "resumo": "Fechado em 2026-09-24 por feat-049.1/feat-049.2 (story SV-627). Respostas GET a /api/ ficam em cache em memoria; voltar a uma tela ja carregada nao faz requisicao nem mostra o overlay. Primeira busca, filtro novo e dados alterados continuam indo a rede com o loading.",
-        "secoes": [
-          {
-            "titulo": "O que foi feito",
-            "itens": [
-              "PR #208 (SV-628): core/http-cache.ts (TTL 5 min, contador de geracao, 10s sem gravar depois de uma limpeza, structuredClone) e core/http-cache-interceptor.ts antes do interceptor de loading (ordem: acceptLanguage, httpCache, loading, auth); chave = url com params + Accept-Language; so 2xx gravado; nao-GET em /api/ limpa ao enviar e na resposta/erro via tap; Auth.logout limpa.",
-              "SV-629: E2E em e2e/overview.spec.ts - Visao geral -> Dashboard -> Visao geral com /statistics atrasado 400ms: overlay na 1a visita, a volta nao faz requisicao nem mostra overlay."
-            ]
-          },
-          {
-            "titulo": "Como foi verificado",
-            "itens": [
-              "E2E novo falhou com o interceptor fora da cadeia e passou com ele.",
-              "Unitarios: acerto, falta, TTL, erro nao cacheado, chave por params/idioma, mutacao limpa antes do assinante (inclusive em erro), GET em voo nao grava, janela pos-limpeza, copia independente, logout limpa.",
-              "E2E ja existentes seguem verdes sob o cache: filtro do dashboard dispara nova requisicao (RN08); criar casa de apostas recarrega a lista.",
-              "./init.sh do app (335 testes, cobertura 92,6%) e da raiz verdes; suite E2E completa 92/93 - a falha (login-layout, troca de idioma no login, sem /api/) passou 54/54 isolada em develop e na branch; anexada a feat-051.",
-              "Sem UI nova: QA visual se resume ao comportamento do overlay, provado pelo E2E.",
-              "/code-review (medium) achou estatistica velha presa apos mutacao (consistencia eventual) - corrigido com a janela de 10s. Delivery Reviewer (self-conduzido): PASS. Test Suite Auditor (self-conduzido): PASS."
-            ]
-          },
-          {
-            "titulo": "O que divergiu do plano",
-            "itens": [
-              "Janela de 10s sem gravar apos limpeza, acrescentada depois do /code-review.",
-              "Idioma na chave via header Accept-Language (interceptor de cache depois do acceptLanguageInterceptor) em vez de injetar o servico Language.",
-              "Limite aceito e documentado: aposta via Telegram ou em outra aba so aparece no web depois do TTL ou de uma mutacao no proprio web.",
-              "Vault: docs/sistema-de-design.md item 17 - regra do cache e seus limites."
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "id": "feat-050",
-      "name": "Icone de odd media quebrado",
-      "goal": "Exibir corretamente o icone de odd media em todos os pontos em que ele e apresentado, sem quebrar o tema visual da tela.",
-      "scope": "Iconografia e renderizacao do componente de odd media no frontend; validao em tema claro/escuro, estados vazios e diferentes telas onde o item e usado.",
-      "description": "Apontamento do usuario em 2026-09-24: o icone de odd media nao aparece e parece estar quebrado. Validar se o recurso foi removido, se o nome do icone/asset esta incorreto, se o CSS do tema esta ocultando o elemento ou se houve regressao no componente que renderiza a odd media. A correcao deve manter a padronizacao visual das odds e funcionar sem depender de dados externos ou fallback quebrado.",
-      "dependencies": [],
-      "status": "done",
-      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (risco baixo, so UI). Causa raiz confirmada: shared/kpi-card renderiza <mat-icon> sem fontSet (fonte classica Material Icons, index.html); dashboard.html usa icon='target', ausente dos 2235 codepoints oficiais de MaterialIcons-Regular (existe so em Material Symbols) - a ligadura nao resolve. Varredura de todos os icones em fonte classica: 'target' e o unico ausente. Decisao: trocar para local_offer (mesmo icone de odd media de Buscar Estatisticas - padroniza as odds); fontSet de Symbols no kpi-card rejeitado (mudaria o traco de todos os cards). 1 MINOR: E2E depende do Google Fonts (Playwright roda so local) - espera document.fonts.ready e afirma em todos os cards do dashboard e de Buscar Estatisticas (sem fonte todos quebram: nao ha falso verde).",
-      "jira": "SV-624",
-      "subtasks": [
-        {
-          "id": "feat-050.1",
-          "name": "Icone valido para odd media",
-          "detail": "Odd media do dashboard usa o mesmo icone de Buscar Estatisticas, existente na fonte classica.",
-          "checklist": [
-            "`icon=\"local_offer\"` no card de odd media de `dashboard.html`",
-            "E2E: todo `mat-icon` de `.kpi-card` no dashboard e em Buscar Estatisticas renderiza como glifo (apos `document.fonts.ready`, `scrollWidth <= clientWidth`)",
-            "E2E falha antes do fix e passa depois"
-          ],
-          "validation": "E2E do dashboard verde.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-625"
-        },
-        {
-          "id": "feat-050.2",
-          "name": "QA visual, CHANGELOG e verificacao final",
-          "detail": "Prova visual nos 2 temas e fechamento.",
-          "checklist": [
-            "QA visual por screenshot do card nos 2 temas",
-            "Entrada em CHANGELOG.md (Unreleased)",
-            "./init.sh do app e da raiz verdes; suite E2E completa",
-            "Delivery Reviewer/Test Suite Auditor rodados",
-            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
-            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
-            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
-            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
-          ],
-          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-626"
-        }
-      ],
-      "evidence": {
-        "resumo": "Fechado em 2026-09-24 por feat-050.1/feat-050.2 (story SV-624). O card de odd media do dashboard pedia o icone 'target', que nao existe na fonte classica Material Icons usada pelo kpi-card; passou a usar local_offer, o mesmo de Buscar Estatisticas.",
-        "secoes": [
-          {
-            "titulo": "O que foi feito",
-            "itens": [
-              "PR #205 (SV-625): icon='local_offer' no card de odd media de dashboard.html. E2E novo no dashboard e assercao no golden path de Buscar Estatisticas: todo mat-icon de app-kpi-card renderiza como glifo (scrollWidth <= clientWidth apos document.fonts.ready)."
-            ]
-          },
-          {
-            "titulo": "Como foi verificado",
-            "itens": [
-              "Causa confirmada contra os 2235 codepoints oficiais de MaterialIcons-Regular (google/material-design-icons): 'target' era o unico nome ausente entre os icones do app em fonte classica.",
-              "E2E falhou antes do fix com ['target'] e passou depois.",
-              "./init.sh do app (cobertura 92,5%) e da raiz verdes; suite E2E completa 92/92.",
-              "QA visual por screenshot do card nos 2 temas.",
-              "Delivery Reviewer (self-conduzido): PASS. Test Suite Auditor (self-conduzido): PASS."
-            ]
-          },
-          {
-            "titulo": "O que divergiu do plano",
-            "itens": [
-              "Nada. Nenhum apontamento novo fora de escopo.",
-              "Vault: docs/sistema-de-design.md 'Fonte de icone' - fora da sidebar o nome tem que existir no Material Icons classico, e como os E2E verificam."
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "id": "feat-051",
-      "name": "Flake do login-layout na suite E2E completa",
-      "goal": "Suite E2E completa verde de forma deterministica, sem falha intermitente no teste de sobreposicao do login.",
-      "scope": "`e2e/login-layout.spec.ts` (teste 'language selector and theme toggle never overlap the login card, even on a short viewport') e o que ele espera da tela de login.",
-      "description": "Achado durante feat-048 (2026-09-24): na suite completa (91 testes, workers paralelos) o teste falhou 1 vez com `getByTestId('language-selector')` nao encontrado em 5s; isolado passou 45/45 (--repeat-each=5). Investigar a causa (carga no dev server, lazy load do seletor na tela de login, ordem de navegacao) e tornar o teste deterministico sem so aumentar timeout. Reincidencia em feat-049 (2026-09-24): outro teste do mesmo spec ('language selector and theme toggle are reachable and operable by keyboard') falhou 1 vez na suite completa com o botao ainda em 'Iniciar sesion' em vez de 'Sign in' (troca de idioma atrasada) e 1 vez em 27 repeticoes isoladas; 54/54 depois, tanto em develop quanto na branch.",
-      "dependencies": [],
-      "status": "done",
-      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (so teste). Causa reproduzida (22/40 com --repeat-each=40): Language.current = storedLocale ?? browserLocale e o Playwright roda com navegador en-US (sem locale no config) - o app abre em ingles, nao pt-BR como o teste assume; ArrowDown a partir de English vai para Espanol, e o teste so passava quando a tecla chegava antes de o key manager do mat-select ativar a opcao selecionada (a tecla se perdia). Correcao: fixar 'stakevault.language'=pt-BR via addInitScript; afirmar 'Entrar' no inicio; abrir com Enter; esperar aria-activedescendant do combobox apontar para Portugues antes do ArrowDown e para English antes do Enter; afirmar 'Sign in'. Prova: --repeat-each=40 sem falha. Modo 1 ('language-selector' nao encontrado em 5s, 1 ocorrencia na suite completa): sem inicializador bloqueando o bootstrap, nao reproduz isolado; rodar a suite completa 3x com --trace=retain-on-failure e diagnosticar pelo trace se reaparecer, sem aumentar timeout as cegas.",
-      "jira": "SV-633",
-      "subtasks": [
-        {
-          "id": "feat-051.1",
-          "name": "Teste de teclado do seletor de idioma deterministico",
-          "detail": "Remove a premissa de idioma errada e a corrida com o key manager do mat-select.",
-          "checklist": [
-            "Idioma inicial fixado em pt-BR no teste (`stakevault.language`) e afirmado ('Entrar')",
-            "Espera `aria-activedescendant` apontar para a opcao certa antes de cada tecla",
-            "`--repeat-each=40` sem falha"
-          ],
-          "validation": "40/40 isolado.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-634"
-        },
-        {
-          "id": "feat-051.3",
-          "name": "Portao no E2E do overlay da Visao geral",
-          "detail": "Descoberto ao repetir a suite completa: o E2E de feat-049 afirma o overlay numa janela de ~150ms (250ms de atraso do overlay ate a resposta de 400ms) e perde a janela quando o goto retorna tarde.",
-          "checklist": [
-            "Resposta de /statistics segura por um portao ate o overlay ser afirmado, depois liberada",
-            "E2E passa com --repeat-each=20"
-          ],
-          "validation": "20/20 isolado.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-636"
-        },
-        {
-          "id": "feat-051.4",
-          "name": "Mock de /statistics/daily nos specs com stub generico",
-          "detail": "Descoberto ao repetir a suite: side-nav, change-password e telegram-link abrem /dashboard com o stub generico '**/api/**' -> {}; /statistics/daily recebe {} em vez de array, o MonthlyProfitChart lanca 'daily.map is not a function' a cada change detection e o overlay de loading fica congelado sobre o app (cliques interceptados). side-nav falhava 5/20 com --repeat-each=10; com o mock, 20/20.",
-          "checklist": [
-            "Mock de `/statistics/daily` retornando `[]` em `side-nav.spec.ts`, `change-password.spec.ts` e `telegram-link.spec.ts`",
-            "Os 3 specs com --repeat-each=10 sem falha"
-          ],
-          "validation": "Os 3 specs repetidos sem falha.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-637"
-        },
-        {
-          "id": "feat-051.2",
-          "name": "Suite completa repetida e verificacao final",
-          "detail": "Confirma o modo 1 do flake e fecha a feature.",
-          "checklist": [
-            "Suite E2E completa 3x com `--trace=retain-on-failure`; se o modo 1 reaparecer, diagnosticar pelo trace",
-            "Entrada em CHANGELOG.md (Unreleased)",
-            "./init.sh do app e da raiz verdes",
-            "Delivery Reviewer/Test Suite Auditor rodados",
-            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
-            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
-            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
-            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
-          ],
-          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-635"
-        }
-      ],
-      "evidence": {
-        "resumo": "Fechado em 2026-09-24 por feat-051.1/.3/.4/.2 (story SV-633). Suite E2E completa verde 3 vezes seguidas (94/94) depois de corrigir 3 causas de flake, nenhuma delas de produto.",
-        "secoes": [
-          {
-            "titulo": "O que foi feito",
-            "itens": [
-              "PR #214 (SV-634): teste de teclado do login - o Playwright roda com navegador en-US, entao o app abria em ingles e o ArrowDown ia para Espanol (so passava quando a tecla se perdia antes de o mat-select ativar a opcao). Idioma pinado em pt-BR, estado inicial afirmado e espera do aria-activedescendant antes de cada tecla.",
-              "PR #215 (SV-636): E2E de feat-049 afirmava o overlay numa janela de ~150ms; primeira carga agora segura por um portao ate o overlay ser afirmado.",
-              "PR #216 (SV-637): side-nav, change-password e telegram-link abriam /dashboard com stub generico -> {}; /statistics/daily recebia {} (o glob statistics* nao casa /daily), o MonthlyProfitChart lancava a cada change detection e o overlay congelava sobre o app. Mock de /daily -> [] nos 3 specs."
-            ]
-          },
-          {
-            "titulo": "Como foi verificado",
-            "itens": [
-              "Teclado: 22/40 falhas -> 40/40. Portao: 20/20. side-nav: 5/20 falhas (0/20 no commit anterior a feat-049) -> 80/80 nos 3 specs, sem 'daily.map' no log.",
-              "Estado do overlay congelado lido via ng.getComponent: Loading.visible=false, pending=0, mas o <output> continuava no DOM.",
-              "Suite E2E completa 3x seguidas: 94/94 em todas. ./init.sh do app e da raiz verdes.",
-              "Delivery Reviewer (self-conduzido): CONCERNS -> corrigido (descricao da feat-053 atribuia ao dev server um timeout que era o overlay congelado). Test Suite Auditor (self-conduzido): PASS."
-            ]
-          },
-          {
-            "titulo": "O que divergiu do plano",
-            "itens": [
-              "Subtasks 051.3 e 051.4 descobertas repetindo a suite completa (acrescentadas ao array e ao Jira).",
-              "O modo 1 original ('language-selector' nao encontrado) nao reapareceu em 6 rodadas completas - registrado como nao reproduzido.",
-              "Apontamentos fora de escopo viraram feature: feat-053 (ERR_CONNECTION_REFUSED do dev server, 1 em 9 rodadas) e feat-054 (erro de render congela o overlay de loading - fragilidade do produto desde feat-044).",
-              "Vault: docs/testes.md - 3 gotchas de E2E (idioma do navegador Playwright e teclado em mat-select; estado transitorio com portao; stub generico nao cobre /statistics/daily)."
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "id": "feat-052",
-      "name": "Tooltip dos graficos segue o tema escuro",
-      "goal": "Tooltip dos graficos ECharts com fundo, borda e texto do tema ativo, sem caixa branca no tema escuro.",
-      "scope": "Opcao `tooltip` dos builders de `core/chart-theme.ts` e os graficos que os usam.",
-      "description": "Achado na QA visual de feat-048 (2026-09-24): no tema escuro o tooltip do grafico de Buscar Estatisticas aparece com o fundo branco padrao do ECharts, fora da paleta de docs/sistema-de-design.md (que nao define tooltip de grafico). Aplicar tokens de superficie/texto/borda do tema e registrar a regra no item 6 do sistema de design.",
-      "dependencies": [],
-      "status": "done",
-      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (risco baixo, so UI). Evidencia: tooltip so existe nos 2 builders de core/chart-theme.ts (linhas 42/120), usados pelos 4 graficos; os 4 montam a option num computed que le theme.current(), entao a troca de tema recalcula. Decisao: themedTooltip() em chart-theme.ts le os tokens (--color-surface-elevated fundo, --color-border borda, --color-text-primary texto) e e espalhado nos 2 builders - sem parametro novo (nenhum chamador muda; limite Sonar de 7 parametros). Contraste WCAG texto/fundo: 15,47:1 claro, 13,50:1 escuro. 2 MINOR: unit define e remove os tokens no documentElement (readCssColor tem fallback fixo fora do navegador); contraste registrado na evidence e no vault.",
-      "jira": "SV-630",
-      "subtasks": [
-        {
-          "id": "feat-052.1",
-          "name": "Tooltip com tokens do tema",
-          "detail": "Tooltip dos graficos usa superficie, borda e texto do tema ativo.",
-          "checklist": [
-            "`themedTooltip()` em `core/chart-theme.ts` usado pelos 2 builders",
-            "Unit em `chart-theme.spec.ts`: tooltip dos 2 builders com os tokens",
-            "E2E: tooltip do grafico de Buscar Estatisticas no tema escuro com fundo `rgb(29, 42, 54)`"
-          ],
-          "validation": "ng test e E2E verdes.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-631"
-        },
-        {
-          "id": "feat-052.2",
-          "name": "QA visual, CHANGELOG e verificacao final",
-          "detail": "Prova visual nos 2 temas e fechamento.",
-          "checklist": [
-            "QA visual por screenshot do tooltip nos 2 temas",
-            "Entrada em CHANGELOG.md (Unreleased)",
-            "./init.sh do app e da raiz verdes; suite E2E completa",
-            "Delivery Reviewer/Test Suite Auditor rodados",
-            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
-            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
-            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
-            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
-          ],
-          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-632"
-        }
-      ],
-      "evidence": {
-        "resumo": "Fechado em 2026-09-24 por feat-052.1/feat-052.2 (story SV-630). Tooltip dos 4 graficos usa os tokens do tema ativo (fundo --color-surface-elevated, borda --color-border, texto --color-text-primary) em vez da caixa branca padrao do ECharts.",
-        "secoes": [
-          {
-            "titulo": "O que foi feito",
-            "itens": [
-              "PR #211 (SV-631): themedTooltip() em core/chart-theme.ts espalhado nos 2 builders (unicos pontos com tooltip); nenhum chamador mudou. Unit nos 2 builders; E2E em search-statistics.spec - tooltip no tema escuro com fundo rgb(29, 42, 54)."
-            ]
-          },
-          {
-            "titulo": "Como foi verificado",
-            "itens": [
-              "E2E falhou com o fix revertido (fundo rgb(255, 255, 255)) e passou com ele.",
-              "Contraste WCAG texto/fundo: 15,47:1 claro, 13,50:1 escuro.",
-              "./init.sh do app (cobertura 92,6%) e da raiz verdes; suite E2E completa 94/94.",
-              "QA visual por screenshot do tooltip nos 2 temas.",
-              "Delivery Reviewer (self-conduzido): PASS. Test Suite Auditor (self-conduzido): PASS."
-            ]
-          },
-          {
-            "titulo": "O que divergiu do plano",
-            "itens": [
-              "Nada. Nenhum apontamento novo fora de escopo.",
-              "Vault: docs/sistema-de-design.md item 6 - regra do tooltip e localizador da caixa raiz em E2E."
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "id": "feat-053",
-      "name": "Conexao recusada pelo dev server na suite E2E completa",
-      "goal": "Suite E2E completa sem falha de infraestrutura local (conexao recusada pelo ng serve) sob execucao paralela.",
-      "scope": "`playwright.config.ts` (webServer, workers, modo de servir o app) e o que a suite exige do ambiente local; nenhum teste de produto.",
-      "description": "Achado durante feat-051 (2026-09-24): em 1 de 9 rodadas completas da suite, `page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4300/change-password` - o teste passa isolado e nao reapareceu depois. A suite roda contra `ng serve` (dev server Vite) com workers paralelos. (O 'click timeout' em side-nav observado na mesma investigacao tinha outra causa - overlay congelado pelo stub {} de /statistics/daily, corrigido em feat-051.4; a fragilidade do produto e feat-054.) Investigar se o dev server recusa conexao sob carga (backlog de socket, IPv4/IPv6 em localhost no Windows) e se servir o build de producao ou limitar workers elimina, sem so aumentar timeouts.",
-      "dependencies": [],
-      "status": "done",
-      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-28: READY WITH CONCERNS. Self-review unico (risco baixo: so playwright.config.ts, sem teste de produto). Confirmado hosts do Windows com 'localhost' dual-stack (127.0.0.1 e ::1); 'ng serve --help' confirma --host (default 'localhost', string ambigua); grep em e2e/ sem nenhum hardcode de 'localhost' (23 specs usam baseURL relativo, troca e transparente); suite roda so local (CI nao tem job de Playwright); e2e e 100% page.route-mocked, sem chamada real ao api-gateway (CORS default localhost:4200 nao entra em jogo). Causa raiz: baseURL/webServer.url em 'localhost' + dev server sem --host explicito deixam a familia (IPv4/IPv6) ambigua; sob carga paralela (16 workers) o Chromium as vezes bate na familia sem listener e leva ECONNREFUSED. Fix: pinar use.baseURL, webServer.url e webServer.command (--host) em 127.0.0.1 - elimina a ambiguidade sem tocar em workers nem trocar pra build de producao. 1 MINOR: reuseExistingServer com um 'ng serve' manual pre-existente na porta 4300 sem --host 127.0.0.1 poderia divergir - edge case (npm start usa porta 4200 por padrao), comentario no config orienta usar a mesma flag manualmente. Validacao: sem reproducao deterministica do flake 1/9 - suite completa rodada N vezes seguidas (mesma carga fullyParallel) contando ECONNREFUSED, registrado na evidence.",
-      "jira": "SV-658",
-      "subtasks": [
-        {
-          "id": "feat-053.1",
-          "name": "Pinar dev server e baseURL em 127.0.0.1",
-          "detail": "Elimina a ambiguidade IPv4/IPv6 de 'localhost' que causa o ECONNREFUSED intermitente.",
-          "checklist": [
-            "`use.baseURL` e `webServer.url` de `http://localhost:4300` para `http://127.0.0.1:4300`",
-            "`webServer.command` ganha `--host 127.0.0.1`",
-            "Comentario curto no config explicando a razao (nao obvia: corrida IPv4/IPv6 em 'localhost')",
-            "Suite E2E completa rodada N vezes seguidas (mesma carga fullyParallel) sem nenhum ECONNREFUSED"
-          ],
-          "validation": "N rodadas completas de `npx playwright test` verdes, 0 ECONNREFUSED.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-659"
-        },
-        {
-          "id": "feat-053.2",
-          "name": "CHANGELOG e verificacao final",
-          "detail": "Fechamento formal da feature.",
-          "checklist": [
-            "Entrada em CHANGELOG.md (Unreleased)",
-            "./init.sh do app e da raiz verdes; suite E2E completa",
-            "Delivery Reviewer/Test Suite Auditor rodados",
-            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
-            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
-            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
-            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
-          ],
-          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-660"
-        }
-      ],
-      "evidence": {
-        "resumo": "Fechado em 2026-09-28 por feat-053.1/feat-053.2 (story SV-658). Causa raiz do ECONNREFUSED intermitente confirmada (localhost dual-stack no Windows) e corrigida em playwright.config.ts, sem mexer em workers nem timeouts.",
-        "secoes": [
-          {
-            "titulo": "O que foi feito",
-            "itens": [
-              "PR #240 (SV-659): playwright.config.ts - use.baseURL, webServer.url e webServer.command (--host 127.0.0.1) pinados em 127.0.0.1 no lugar de 'localhost'. Comentarios curtos explicando a razao (nao obvia: corrida IPv4/IPv6 em hosts dual-stack)."
-            ]
-          },
-          {
-            "titulo": "Como foi verificado",
-            "itens": [
-              "Confirmado C:\\Windows\\System32\\drivers\\etc\\hosts com 127.0.0.1 e ::1 mapeados pra 'localhost'; 'ng serve --help' confirma --host default 'localhost'.",
-              "Suite E2E completa (mesma carga fullyParallel/16 workers do relato original) rodada 10x seguidas: 101/101 em todas, 0 ECONNREFUSED.",
-              "./init.sh do app (cobertura 92,86%) e da raiz verdes.",
-              "Delivery Reviewer (self-conduzido): PASS, sem achado."
-            ]
-          },
-          {
-            "titulo": "O que divergiu do plano",
-            "itens": [
-              "Nada. Nenhum apontamento fora de escopo.",
-              "Vault: docs/testes.md ganhou o gotcha (localhost dual-stack no Windows causando ECONNREFUSED intermitente em Playwright + Angular dev server)."
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "id": "feat-054",
-      "name": "Erro de render nao pode congelar o overlay de loading",
-      "goal": "Um erro de renderizacao num componente nao deixa o overlay de loading preso sobre o app inteiro.",
-      "scope": "`core/loading-overlay`, `app.html` (`[inert]`) e o tratamento de erro de change detection no modo zoneless; nenhuma mudanca de dado.",
-      "description": "Achado durante feat-051 (2026-09-24): com /statistics/daily devolvendo {} (stub de teste), o MonthlyProfitChart lanca TypeError a cada change detection; depois disso Loading.visible vira false mas o <output data-testid=loading-overlay> continua no DOM (lido via ng.getComponent: visible=false, pending=0, overlayDom=true) e o .app-shell segue inert - o app fica inutilizavel. Na API real o campo e sempre array, mas qualquer erro de template em qualquer tela teria o mesmo efeito desde feat-044. Investigar por que o tick zoneless deixa de atualizar a view do overlay apos o erro e tornar o overlay/inert resilientes a isso.",
-      "dependencies": [],
-      "status": "done",
-      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-24: READY WITH CONCERNS. Self-review unico (so UI). Causa comprovada por teste unitario deterministico no App (rota cujo computed lanca; overlay visivel; no mesmo detectChanges a tela quebra e loading.visible vira false): o <output> do overlay continuava no DOM. Ordem de refresh do Angular: template do App (onde fica [inert]) -> views dos containers (router-outlet) -> componentes filhos (onde estava o @if do overlay); o erro da tela abortava o ciclo antes do overlay. Correcao: @if (loading.visible()) { <app-loading-overlay /> } em app.html (executa no template do App, antes das views da rota); overlay renderiza o <output> sem @if; teste 'renders nothing while no loading is visible' do overlay sai (coberto pelo App spec 'opens straight to the app, with no overlay'). 1 MINOR (processo): correcao prototipada durante a investigacao de feat-051 antes deste plan review - validada com teste que falha antes e passa depois; commit so depois de story e branch.",
-      "jira": "SV-638",
-      "subtasks": [
-        {
-          "id": "feat-054.1",
-          "name": "Overlay decidido pelo template do App",
-          "detail": "A decisao de mostrar o overlay sai do componente filho e vai para o template do App, que executa antes das telas da rota.",
-          "checklist": [
-            "`@if (loading.visible())` em `app.html`; `loading-overlay.html` sem `@if`",
-            "Teste no `app.spec.ts`: tela da rota lanca no mesmo ciclo em que o overlay some -> overlay removido e `.app-shell` sem `inert`",
-            "Teste falha antes da correcao e passa depois"
-          ],
-          "validation": "ng test verde.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-639"
-        },
-        {
-          "id": "feat-054.2",
-          "name": "E2E, QA visual e verificacao final",
-          "detail": "Prova no app real e fechamento.",
-          "checklist": [
-            "Tentar E2E que provoque o erro no ciclo em que o overlay some; se nao reproduzir de forma deterministica, registrar que a prova e o teste unitario",
-            "QA visual do overlay nos 2 temas",
-            "Entrada em CHANGELOG.md (Unreleased)",
-            "./init.sh do app e da raiz verdes; suite E2E completa",
-            "Delivery Reviewer/Test Suite Auditor rodados",
-            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
-            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
-            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
-            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
-          ],
-          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-640"
-        }
-      ],
-      "evidence": {
-        "resumo": "Fechado em 2026-09-24 por feat-054.1/feat-054.2 (story SV-638). Um erro de render numa tela nao deixa mais o overlay de loading preso sobre o app: a decisao de mostrar o overlay passou para o template do App.",
-        "secoes": [
-          {
-            "titulo": "O que foi feito",
-            "itens": [
-              "PR #219 (SV-639): @if (loading.visible()) movido de loading-overlay.html para app.html. O Angular atualiza o template do App, depois as views das rotas, e por ultimo os componentes filhos - com o @if no filho, um erro numa tela abortava o ciclo antes de o overlay sumir. Teste novo no App spec; teste obsoleto do overlay removido (coberto pelo App)."
-            ]
-          },
-          {
-            "titulo": "Como foi verificado",
-            "itens": [
-              "Teste do App (tela da rota lanca no mesmo ciclo em que o overlay some): falhou antes da correcao (<output> continuava no DOM) e passa depois, com .app-shell sem inert.",
-              "./init.sh do app (337 testes, cobertura 92,6%) e da raiz verdes; suite E2E completa 94/94.",
-              "QA visual do overlay nos 2 temas: identico ao anterior.",
-              "Delivery Reviewer (self-conduzido): PASS. Test Suite Auditor (self-conduzido): PASS."
-            ]
-          },
-          {
-            "titulo": "O que divergiu do plano",
-            "itens": [
-              "Desvio de processo: a correcao foi prototipada durante a investigacao de feat-051 antes do plan review; o codigo ficou em stash ate plan_review, story e branch existirem, e so entao foi commitado.",
-              "E2E deterministico do congelamento nao reproduziu (depende de o ECharts marcar a view do grafico entre os timers do overlay); a prova e o teste unitario do App.",
-              "Vault: docs/sistema-de-design.md item 17 - por que o @if do overlay fica no App."
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "id": "feat-055",
-      "name": "Painel de filtros recolhivel nos dashboards",
-      "goal": "Dar mais espaco aos graficos: o painel de filtros das telas de dashboard pode ser recolhido para uma faixa estreita e reaberto quando preciso.",
-      "scope": "`shared/panel` (modo recolhivel), `shared/panel-layout` (colunas no tablet), as 5 telas com painel de filtros de 320px (`dashboard`, `search-statistics`, `period-report`, `period-comparison`, `catalog-dashboard`), i18n nos 3 locales; nenhuma mudanca de API.",
-      "description": "Pedido do usuario (2026-09-25): minimizar os menus de filtro de data ao lado da sidebar nos dashboards para dar mais espaco a renderizacao dos graficos. Estrategia escolhida pelo usuario (AskUserQuestion, entre painel recolhivel / barra de filtros no topo / gaveta sob demanda): painel recolhivel - botao no cabecalho do painel recolhe para uma faixa estreita (~48px, icone de filtro + contador de filtros ativos), estado lembrado por tela. Mantem o padrao de paineis lado a lado (docs/sistema-de-design.md 'Layout em paineis').",
-      "dependencies": [],
-      "status": "done",
-      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-25: READY WITH CONCERNS. Self-review unico (execucao + adversarial, independencia reduzida, UI isolada sem contrato de backend). Confirmado por leitura: panel__body sem display proprio (atributo hidden funciona e preserva estado do period-preset-filter e dos selects); panel-layout usa --panel-columns e forca repeat(2,1fr) no tablet; e2e/panel-layout.spec.ts nao afirma colunas no tablet; ngx-echarts 22 autoResize via ResizeObserver com throttleTime(100, trailing) - grafico acompanha a largura sem codigo extra. 5 MINOR incorporados: (1) collapseKey do catalog-dashboard por segmento (6 rotas, estado por tela); (2) id do body unico por instancia para aria-controls; (3) badge = selects de catalogo nao nulos no ultimo apply/search, sem datas, oculto quando 0; (4) recolher esconde tambem o form de % da unidade (admin) no dashboard - aceito; (5) conferir apps/web/DESIGN.md junto com o vault. Residuais aceitos: um resize intermediario do grafico durante a transicao de 200ms; localStorage com a mesma guarda typeof de app-side-nav.",
-      "jira": "SV-647",
-      "subtasks": [
-        {
-          "id": "feat-055.1",
-          "name": "Panel recolhivel e colunas do tablet",
-          "detail": "Capacidade de recolher no componente de painel compartilhado, para qualquer tela usar sem logica propria.",
-          "checklist": [
-            "`shared/panel`: inputs `collapsible`, `collapseKey`, `badge`; estado em localStorage `stakevault.panelCollapsed.<key>`",
-            "Botao no cabecalho com `aria-expanded`/`aria-controls` (id unico por instancia) e rotulo i18n",
-            "Recolhido: faixa de 56px com titulo vertical e badge; no mobile, barra horizontal; corpo com `hidden` (sem `@if`)",
-            "Transicao de largura desligada com `prefers-reduced-motion`",
-            "`shared/panel-layout`: input `tabletColumns` via `--panel-columns-tablet`",
-            "Chaves `panel.*` nos 3 locales",
-            "Testes unitarios de panel e panel-layout"
-          ],
-          "validation": "ng test verde cobrindo toggle, persistencia, aria, conteudo preservado e badge.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-648"
-        },
-        {
-          "id": "feat-055.2",
-          "name": "Aplicar o painel recolhivel nas 5 telas",
-          "detail": "Liga o painel recolhivel nas telas de dashboard e mostra quantos filtros estao aplicados.",
-          "checklist": [
-            "`dashboard`, `search-statistics`, `period-report`, `period-comparison`, `catalog-dashboard` com `columns`/`tabletColumns` = `auto 1fr` e `collapsible`",
-            "`collapseKey` por tela (`catalog-dashboard.<segment>`)",
-            "`appliedFilterCount` em dashboard, period-comparison e search-statistics (selects de catalogo nao nulos, sem datas)",
-            "Testes unitarios das telas para o badge"
-          ],
-          "validation": "ng test verde; as 5 telas recolhem e reabrem.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-649"
-        },
-        {
-          "id": "feat-055.3",
-          "name": "E2E, QA visual e verificacao final",
-          "detail": "Prova no navegador e fechamento da feature.",
-          "checklist": [
-            "E2E: recolher amplia o painel dos graficos, reload mantem recolhido, reabrir preserva os filtros; desktop e 390px; idioma trocado",
-            "QA visual nos 2 temas (desktop, tablet, mobile)",
-            "Entrada em CHANGELOG.md (Unreleased)",
-            "./init.sh do app e da raiz verdes; suite E2E completa",
-            "Delivery Reviewer/Test Suite Auditor rodados",
-            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit; incluir apps/web/DESIGN.md",
-            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
-            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
-            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
-          ],
-          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-650"
-        }
-      ],
-      "evidence": {
-        "resumo": "Fechado em 2026-09-25 por feat-055.1..feat-055.3 (story SV-647). O painel de filtros das telas de dashboard recolhe para uma faixa de 56px e libera a largura para os graficos, com estado lembrado por tela.",
-        "secoes": [
-          {
-            "titulo": "O que foi feito",
-            "itens": [
-              "PR #228 (SV-648): `shared/panel` ganhou `collapsible`, `collapseKey` e `badge` - corpo com `hidden` (estado preservado), `aria-expanded`/`aria-controls` com id unico, rotulo i18n com a contagem (singular/plural), faixa vertical no desktop e barra horizontal no mobile, transicao desligada com reduced-motion. `shared/panel-layout` ganhou `tabletColumns`. Chaves `panel.*` nos 3 locales.",
-              "PR #229 (SV-649): Dashboard, Buscar Estatisticas, Relatorio do periodo, Comparativo de periodos e `catalog-dashboard` (6 rotas, chave por segmento) com `columns`/`tabletColumns` = `auto 1fr`. Badge = selects de catalogo preenchidos na ultima busca.",
-              "SV-650: E2E `e2e/collapsible-filter-panel.spec.ts` (4 testes), QA visual, vault."
-            ]
-          },
-          {
-            "titulo": "Como foi verificado",
-            "itens": [
-              "./init.sh do app verde (348 testes unitarios apos remover o spec trivial de `applied-filters`, cobertura 92,68%); ./init.sh da raiz: web OK, falhas so em servicos Java/Python que dependem de Docker (desligado), sem relacao com esta feature.",
-              "E2E completa 99/99; E2E novo 12/12 com `--repeat-each=3 --workers=4`: graficos ficam >200px mais largos ao recolher, reload mantem recolhido, reabrir preserva o filtro escolhido, cada tela guarda o proprio estado, mobile 390px vira barra sem overflow, rotulos em en-US.",
-              "QA visual: claro/escuro x 1440/900/390, aberto e recolhido.",
-              "Plan Reviewer: READY WITH CONCERNS (5 MINOR incorporados). /code-review por subtask: 3 achados corrigidos (painel sem titulo preso recolhido, plural com 1 filtro, datas de Buscar Estatisticas fora da contagem). Delivery Reviewer (self-conduzido): CONCERNS com 2 P3 - spec trivial removido; largura do tablet aceita. Test Suite Auditor (self-conduzido): PASS."
-            ]
-          },
-          {
-            "titulo": "O que divergiu do plano",
-            "itens": [
-              "Badge em Buscar Estatisticas conta o intervalo de datas como 1 filtro (plano dizia 'sem datas'): la as datas sao opcionais e restringem o resultado; nos dashboards o periodo sempre existe e continua fora da conta.",
-              "No tablet com o painel aberto o filtro passou de 50/50 para 320px fixos (graficos ~35px mais estreitos enquanto aberto) - aceito como residual.",
-              "Vault: `docs/sistema-de-design.md` ('Painel de filtros recolhivel'), `docs/testes.md` (bundle de /statistics com todos os arrays de segmento no E2E), `docs/services/web.md`, `apps/web/DESIGN.md`.",
-              "Achado fora de escopo registrado como `feat-056`: job `deploy` de main falha desde 2026-09-17 (runner nao alcanca o cluster), o pod web nao reinicia - provavel causa da animacao de logo antes do login relatada pelo usuario."
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "id": "feat-056",
-      "name": "Web no cluster sem rollout automatico (imagem antiga no ar)",
-      "goal": "O app web que roda no cluster reflete o que esta em main.",
-      "scope": "Rollout do deployment `web` (manual via tunel SSH, ou a automacao do job `deploy` quando a decisao pendente de infra for tomada); nenhum codigo de produto.",
-      "description": "Achado em 2026-09-25 (sessao de feat-055, investigando uma animacao de logo antes do login que o codigo atual nao tem desde feat-044): o job `deploy` de main segue falhando (`127.0.0.1:6443 connection refused`, run 36070299775). Causa e decisao ja documentadas em docs/services/infra.md ('Disparo real do primeiro rollout'): o KUBE_CONFIG aponta para o tunel SSH local; o usuario decidiu 'deixar como esta por agora'. Consequencia para o web: a imagem `ghcr.io/eimmig/sv-frontend:latest` e publicada, mas o pod so atualiza com `kubectl rollout restart deployment/web` manual (a animacao de logo relatada pelo usuario era outro problema, sessao expirada - ver feat-057). Acao: rollout manual e reteste do login pelo usuario; automacao depende da decisao pendente em infra, nao de mudanca neste repositorio.",
+      "description": "Apontamento do usuario em 2026-09-24: a tela de Times nao possui o mesmo funcionamento das outras telas, pois nao exibe o menu flutuante para escolher entre acessar o dashboard de times ou cadastrar um novo time. Implementar essa navegacao mantendo o padrao existente de posicionamento, interacao, responsividade e estados visuais.",
       "dependencies": [],
       "status": "not-started",
       "plan_review": "",
@@ -4172,180 +3364,164 @@
       "evidence": ""
     },
     {
-      "id": "feat-057",
-      "name": "Sessao expirada volta direto para o login",
-      "goal": "Com o token expirado, o app nao fica preso no overlay de carregamento sobre uma tela com erro: limpa a sessao e leva direto ao login, avisando que a sessao expirou.",
-      "scope": "`core/auth-interceptor`, `core/auth`, `core/loading` (encerrar o overlay na expiracao), tela de login (aviso), i18n nos 3 locales; nenhuma mudanca de backend.",
-      "description": "Pedido do usuario (2026-09-25, com captura de tela): ao abrir o sistema com um token expirado salvo no localStorage, `authGuard` so olha se existe sessao, entao a rota `/overview` abre, dispara GETs em `/api/`, o overlay de logo (feat-044) toca e as requisicoes voltam 401 do api-gateway (`type` `https://docs/errors/invalid-token`, PasetoAuthenticationFilter); nada trata 401, entao a tela fica com erro atras do overlay em vez de voltar ao login. O token e PASETO v4.local (cifrado, sem expiracao legivel no cliente), entao a deteccao tem de ser pela resposta. Cuidado: `POST /api/v1/auth/change-password` com senha atual errada tambem devolve 401 com token presente (`current-password-mismatch`) e nao pode deslogar - discriminar pelo `type` do problema, nao so pelo status.",
+      "id": "feat-048",
+      "name": "Ano no tooltip de graficos de estatisticas",
+      "goal": "Tornar inequivocas as datas exibidas no grafico da tela de buscar estatisticas quando o periodo visualizado superar um ano.",
+      "scope": "Formatacao das datas exibidas ao passar o mouse no grafico de estatisticas, incluindo a deteccao de intervalos superiores a um ano.",
+      "description": "Apontamento do usuario em 2026-09-24: ao buscar estatisticas sem informar um periodo, o grafico pode abranger mais de um ano, mas o tooltip exibe apenas dia e mes. Isso torna pontos de anos diferentes confusos. Quando o intervalo dos dados superar um ano, exibir dia, mes e ano no tooltip; manter o formato compacto atual para intervalos de ate um ano, se isso preservar a legibilidade.",
       "dependencies": [],
-      "status": "done",
-      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-25: READY WITH CONCERNS. Self-review unico (execucao + adversarial, independencia reduzida). Confirmado por leitura: gateway grava type https://docs/errors/invalid-token (ProblemDetailMessages.typeSlug + FilterProblemWriter); change-password com senha errada devolve 401 com outro type (CurrentPasswordMismatchException); producao na mesma origem (apiGatewayUrl '') e CorsFilter antes do filtro PASETO - corpo do 401 legivel; ordem dos interceptors acceptLanguage, httpCache, loading, auth; Loading sem reset hoje. 3 MINOR incorporados: (1) E2E existente de senha errada passa a mandar type current-password-mismatch e afirmar que continua em /change-password (prova do 'nao desloga', sem teste novo); (2) 401 sem corpo RFC 7807 (proxy/ingress) nao expira - residual aceito, fallback e o comportamento atual; (3) ordem fixa no interceptor: expireSession -> loading.reset -> navigate, 401 concorrentes param na guarda de sessao.",
-      "jira": "SV-651",
-      "subtasks": [
-        {
-          "id": "feat-057.1",
-          "name": "Detectar sessao expirada e voltar ao login",
-          "detail": "Resposta 401 de token invalido do gateway encerra a sessao, apaga o overlay e leva ao login com aviso.",
-          "checklist": [
-            "`core/auth`: `sessionExpired`, `expireSession()`, `clearSessionExpired()`",
-            "`core/auth-interceptor`: com token anexado, 401 com `type` terminando em `/invalid-token` -> expireSession, loading.reset, navigateByUrl('/login'); relanca o erro",
-            "`core/loading`: `reset()`",
-            "Login: aviso neutro em `<output>` quando a sessao expirou, limpo ao enviar",
-            "`login.sessionExpired` nos 3 locales",
-            "Testes unitarios: interceptor (invalid-token, senha errada, 401 sem token, 500, varias 401), Auth, Loading, Login"
-          ],
-          "validation": "ng test verde cobrindo os casos do interceptor.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-652"
-        },
-        {
-          "id": "feat-057.2",
-          "name": "E2E, QA visual e verificacao final",
-          "detail": "Prova no navegador e fechamento da feature.",
-          "checklist": [
-            "E2E: sessao salva + /api/ respondendo 401 invalid-token com atraso de ~800ms -> /login com aviso e sem overlay",
-            "E2E de change-password: mock com type current-password-mismatch e URL continua em /change-password",
-            "QA visual do aviso nos 2 temas, desktop e mobile",
-            "Entrada em CHANGELOG.md (Unreleased)",
-            "./init.sh do app e da raiz verdes; suite E2E completa",
-            "Delivery Reviewer/Test Suite Auditor rodados",
-            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit; incluir docs/contratos-de-api.md (web depende do type invalid-token)",
-            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
-            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
-            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
-          ],
-          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-653"
-        }
-      ],
-      "evidence": {
-        "resumo": "Fechado em 2026-09-25 por feat-057.1/feat-057.2 (story SV-651). Com token expirado, o app limpa a sessao, tira o overlay de carregamento na hora e abre o login com o aviso 'Sua sessao expirou'.",
-        "secoes": [
-          {
-            "titulo": "O que foi feito",
-            "itens": [
-              "PR #232 (SV-652): `core/auth-interceptor` trata 401 com `type` `.../invalid-token` do gateway, so em requisicao que levou o token atual - `Auth.expireSession()` (logout + flag), `Loading.reset()`, navegacao para `/login`. `Loading.begin()` devolve a epoca e `end()` de requisicao anterior ao reset e ignorado. Login mostra o aviso em `<output>` ate a proxima tentativa. `login.sessionExpired` nos 3 locales.",
-              "SV-653: E2E `e2e/session-expired.spec.ts`; E2E de senha errada em `e2e/change-password.spec.ts` passa a mandar o `type` real e afirmar que a sessao continua; vault."
-            ]
-          },
-          {
-            "titulo": "Como foi verificado",
-            "itens": [
-              "./init.sh do app verde (360 testes unitarios, cobertura 92,75%); ./init.sh da raiz: web OK (servicos Java/Python dependem de Docker, desligado, sem relacao).",
-              "E2E completa 100/100; E2E novos e ajustados 12/12 com `--repeat-each=3`. Contrafactual: com o interceptor do develop o E2E de sessao expirada falha em `toHaveURL(/login/)`.",
-              "QA visual do aviso: claro/escuro x desktop/mobile.",
-              "Plan Reviewer: READY WITH CONCERNS (3 MINOR incorporados). /code-review: 2 achados corrigidos (401 atrasado derrubando sessao nova; `end()` antigo apagando overlay novo). Delivery Reviewer (self-conduzido): CONCERNS com 1 P3 - testes duplicados em auth.spec removidos. Test Suite Auditor (self-conduzido): PASS."
-            ]
-          },
-          {
-            "titulo": "O que divergiu do plano",
-            "itens": [
-              "Acrescentado apos o /code-review: comparacao do token capturado e epoca no Loading (nao estavam no plano).",
-              "Testes de `Auth.expireSession()` previstos no plano sairam por duplicarem o que o interceptor ja prova.",
-              "Vault: `docs/contratos-de-api.md` (web depende do type invalid-token), `docs/sistema-de-design.md` item 17 (reset/epoca do overlay), `docs/services/web.md`.",
-              "Residual aceito: 401 sem corpo RFC 7807 (proxy/ingress) nao expira a sessao."
-            ]
-          }
-        ]
-      }
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
     },
     {
-      "id": "feat-058",
-      "name": "Drawdown mensal: escala Y compartilhada e reaproveitar filtro geral do dashboard",
-      "goal": "O grafico de drawdown mensal (aba do dashboard) fica comparavel entre meses e usa o mesmo filtro geral da tela, sem pedir data duas vezes.",
-      "scope": "`shared/monthly-drawdown-chart`, `pages/dashboard/monthly-drawdown-grid`, `core/chart-theme.ts` (min/max opcional no eixo Y das duas funcoes de line chart), `pages/dashboard/dashboard.ts`/`.html` (passar filtro geral para o grid); i18n nos 3 locales (remocao das chaves do filtro proprio); e2e/unitarios do componente. Nenhuma mudanca de backend (stats-service/api-gateway) - GET /api/v1/statistics/daily ja aceita os filtros necessarios.",
-      "description": "epic-037 da raiz. Achado do usuario em uso real (2026-09-25, com captura de tela): (1) cada mini-grafico mensal auto-escala o proprio eixo Y (buildLineChartOption sem min/max explicito), entao o mes com lucro acumulado menor (tipicamente o mes corrente, ainda incompleto) fica com um teto mais baixo e a curva parece maior/mais inclinada que a dos outros meses - quebra a comparacao visual entre meses, que e o proposito do grafico. (2) monthly-drawdown-grid tem datepicker de mes inicial/final + botao aplicar proprios, redundante com o filtro geral do dashboard (period-preset-filter + esporte/casa/mercado/liga/tipster ja montados em dashboard.ts applyFilter()) - usuario filtra duas vezes pra ver o drawdown de um periodo. Decisao a confirmar no plan review: forma exata de threading do filtro (StatisticsFilter completo como @Input vs. so from/to) e se o calculo do range Y compartilhado (min/max entre todos os meses renderizados) fica em monthly-drawdown-metrics.ts (puro, testavel) ou no componente.",
+      "id": "feat-049",
+      "name": "Exibir loading somente durante buscas efetivas",
+      "goal": "Exibir o loading apenas enquanto dados estao sendo realmente buscados, evitando animacao desnecessaria e encerrando-a assim que as requisicoes terminarem.",
+      "scope": "Ciclo de vida do Loading e reutilizacao dos dados nas telas do app, incluindo Visao geral, Dashboard, registrar aposta e demais rotas; loading em primeira busca/refetch real, sem loading ao reutilizar dados carregados ou em telas sem busca de dados.",
+      "description": "Apontamentos do usuario em 2026-09-24 e 2026-09-25: (1) ao acessar repetidamente telas como Visao geral, Dashboard e outras, o loading aparece mesmo quando os dados ja estao carregados; (2) telas que nao precisam buscar dados, como Registrar aposta, tambem mostram a animacao; (3) a animacao demora mais que a resposta real; (4) assim que a resposta retornar, o loading deve ser finalizado. Validar o fluxo e ajustar a estrategia para que o loading apareca somente quando houver busca efetiva de dados, nao se repita ao reutilizar dados disponiveis e finalize junto com o termino das requisicoes, sem tempo minimo artificial que prolongue a animacao apos a resposta. Preservar o loading durante buscas reais, inclusive refetches ou apos invalidacao dos dados.",
+      "dependencies": [
+        "feat-044"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-050",
+      "name": "Icone de odd media quebrado",
+      "goal": "Exibir corretamente o icone de odd media em todos os pontos em que ele e apresentado, sem quebrar o tema visual da tela.",
+      "scope": "Iconografia e renderizacao do componente de odd media no frontend; validao em tema claro/escuro, estados vazios e diferentes telas onde o item e usado.",
+      "description": "Apontamento do usuario em 2026-09-24: o icone de odd media nao aparece e parece estar quebrado. Validar se o recurso foi removido, se o nome do icone/asset esta incorreto, se o CSS do tema esta ocultando o elemento ou se houve regressao no componente que renderiza a odd media. A correcao deve manter a padronizacao visual das odds e funcionar sem depender de dados externos ou fallback quebrado.",
       "dependencies": [],
-      "status": "done",
-      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-25: READY WITH CONCERNS. Self-review unico (execucao + adversarial). 4 MINOR incorporados ao plano antes de codificar: (1) arredondar o range Y compartilhado para passo 'redondo' (1 casa decimal, floor/ceil) em vez de min/max brutos, senao os rotulos do eixo ficam com decimais feios; (2) resolveMonthRange fica sem consumidor (so o proprio grid e o spec dele usavam) - remover em vez de deixar orfao; (3) guarda do effect() do grid precisa checar ausencia de filter.from/filter.to (undefined antes do primeiro applyFilter do dashboard), nao so 'to < from'; (4) o corte por dia final (to) em buildMonthlyDrawdown precisa se aplicar independente do corte por 'hoje' - endDay do ultimo mes e min(toDay, diasNoMes, hoje se for o mes corrente), nao so um ou outro, senao um filtro geral terminando no meio de um mes passado plotaria ate o fim do mes.",
-      "jira": "SV-654",
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-051",
+      "name": "Tamanho consistente dos graficos de drawdown",
+      "goal": "Manter todos os graficos mensais de drawdown com dimensoes visuais consistentes, inclusive o ultimo grafico da lista.",
+      "scope": "Layout, dimensoes do container e renderizacao dos graficos da lista de drawdown mensal em diferentes temas e larguras de tela.",
+      "description": "Apontamento do usuario em 2026-09-25, acompanhado de captura de tela: o ultimo grafico da lista de drawdown mensal continua ficando maior que os demais. Ajustar o layout para que todos os graficos mantenham dimensoes e area de plotagem consistentes, independentemente dos dados, da escala dos eixos ou de ser o ultimo item da lista.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-052",
+      "name": "Simplificar campos da tela de login",
+      "goal": "Reduzir o formulario de login a identificador de login e senha, resolvendo o slug do tenant a partir do email informado.",
+      "scope": "Formulario e fluxo de autenticacao no frontend, incluindo resolucao do tenant a partir do email e compatibilidade com o contrato de login existente.",
+      "description": "Pedido do usuario em 2026-09-25: preencher tres campos no login e contraprodutivo; a tela deve pedir somente login (email) e senha, obtendo ou resolvendo automaticamente o slug do tenant a partir do email em vez de solicitar um terceiro campo. Validar como essa resolucao funciona com o contrato real de autenticacao e tratar explicitamente emails que nao permitam identificar um tenant de forma univoca, sem enviar um slug incorreto.",
+      "dependencies": [
+        "feat-002"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-053",
+      "name": "Editar aposta pelo historico",
+      "goal": "Permitir editar uma aposta existente a partir da tela de historico do frontend.",
+      "scope": "Acao de edicao na tabela e fluxo de formulario/atualizacao de aposta no historico; confirmar os campos editaveis e o contrato disponivel no backend durante o plan review.",
+      "description": "Apontamento do usuario em 2026-09-25: atualmente nao existe no frontend a opcao de editar uma aposta na tela de historico. Implementar uma acao de edicao acessivel para apostas elegiveis, carregar os dados atuais, permitir a alteracao conforme as regras de negocio e refletir o resultado atualizado na lista, com feedback de sucesso e tratamento de erros.",
+      "dependencies": [
+        "feat-004"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-054",
+      "name": "Alinhar acoes das apostas resolvidas",
+      "goal": "Preservar o alinhamento das linhas da tabela de historico quando uma aposta e marcada como resolvida.",
+      "scope": "Layout das linhas e celula de acoes na tabela de historico antes e depois da atualizacao de status de uma aposta.",
+      "description": "Apontamento do usuario em 2026-09-25: ao marcar uma aposta como resolvida, as linhas dos botoes de acao ficam desalinhadas em relacao ao restante das linhas da tabela. Ajustar a estrutura ou o estilo para manter altura e alinhamento consistentes durante e apos a mudanca de estado, sem deslocar as acoes das demais linhas.",
+      "dependencies": [
+        "feat-004"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-055",
+      "name": "Identificar o significado dos eixos dos graficos",
+      "goal": "Deixar explicito o que cada eixo representa e em que unidade os valores sao apresentados em todos os graficos do app.",
+      "scope": "Rotulos dos eixos X e Y dos graficos de lucro mensal, drawdown mensal, curva de lucro e comparativo de periodos; textos localizados e formatos adequados para desktop e mobile.",
+      "description": "Apontamento do usuario em 2026-09-25: os eixos dos graficos continuam sem legenda que explique o que cada item representa. A feat-040 adicionou titulo, legenda das series e explicacao geral do grafico, mas nao identificacao direta dos eixos. Adicionar rotulos claros para o significado do eixo X (por exemplo, data/dia) e do eixo Y (metrica e unidade correspondente, como lucro em unidades ou moeda), especificos para cada grafico e traduzidos nos tres locales. Evitar depender somente do botao de ajuda ou de uma legenda da serie para explicar os eixos.",
+      "dependencies": [
+        "feat-040"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-056",
+      "name": "Formato brasileiro de datas na Visao geral e no Historico",
+      "goal": "Exibir datas no padrao brasileiro quando o idioma ativo for portugues nas telas de Visao geral e Historico.",
+      "scope": "Formatacao de datas exibidas nos cards/listagens da Visao geral e nas linhas da tela de Historico; nao altera valores enviados ou recebidos pela API nem os formatos de outros idiomas.",
+      "description": "Apontamento do usuario em 2026-09-25: as datas na tela inicial de Visao geral e na tela de Historico, quando em portugues, devem usar o padrao brasileiro (dia/mes/ano, dd/MM/yyyy). Verificar e corrigir a formatacao das datas apresentadas nessas duas telas, respeitando o idioma ativo e preservando os formatos correspondentes quando a interface estiver em ingles ou espanhol.",
+      "dependencies": [
+        "feat-005",
+        "feat-022",
+        "feat-029"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-059",
+      "name": "Validar SonarCloud tambem em push pra main (nao so pull_request)",
+      "goal": "Fechar o mesmo gap de CI ja corrigido em auth-service feat-022: validate-sonar-issues.py e sonar.qualitygate.wait nunca rodavam em push, so em pull_request - nenhum ponto do pipeline revalidava a branch inteira apos merge.",
+      "scope": "ci.yml: push pra main passa a rodar os 2 steps (continue-on-error, nao bloqueia deploy/release); push pra develop continua pulado (API do SonarCloud recusa branch != main com 403). Numeracao pula 057/058 de proposito - ja usados historicamente (ver progress.md), ausentes deste array por um achado de integridade ainda nao investigado, registrado separadamente.",
+      "description": "Achado real do usuario (2026-09-29), parte do epic-038 da raiz: o mesmo gap ja corrigido em services/auth-service feat-022 (e replicado em bets-service/stats-service/api-gateway/telegram-integration) existe aqui tambem - mesma sintaxe ternaria de telegram-integration (sonarqube-scan-action). Correcao identica.",
+      "dependencies": [],
+      "status": "in-progress",
+      "plan_review": "2026-09-29, Plan Reviewer reaproveitado condensado de services/auth-service feat-022 / services/telegram-integration feat-013 (mesma sintaxe ternaria, ja replicada sem achado novo) - mesma correcao de fundo.",
+      "jira": "SV-677",
       "subtasks": [
         {
-          "id": "feat-058.1",
-          "name": "Escala Y compartilhada entre os mini-graficos mensais",
-          "detail": "Eixo Y auto-escalado por grafico faz o mes com lucro acumulado menor (ex. mes corrente incompleto) parecer maior/mais inclinado que os outros - quebra a comparacao visual entre meses.",
+          "id": "feat-059.1",
+          "name": "ci.yml: push so pra main habilita os 2 steps de SonarCloud, com continue-on-error",
+          "status": "in-progress",
+          "jira": "SV-678",
+          "detail": "Mesma correcao de services/auth-service feat-022.2 / services/telegram-integration feat-013.1, aplicada aqui.",
           "checklist": [
-            "monthly-drawdown-metrics.ts: computeSharedYRange(months) - min/max entre todos os days nao-null de todos os meses, iniciando em 0 (baseline), arredondado pra fora em 1 casa decimal (floor/ceil); retorna null se nao houver valor numerico",
-            "chart-theme.ts: LineChartStyleOptions ganha yMin?/yMax? opcionais; buildLineChartOption seta yAxis.min/max so quando fornecidos (buildComparisonLineChartOption e outros consumidores continuam auto-scale)",
-            "monthly-drawdown-chart.ts: input yRange = input<{min,max}|null>(null), repassado pro buildChartOption/buildLineChartOption",
-            "monthly-drawdown-grid.ts: computed a partir de months() chamando computeSharedYRange, [yRange] em cada app-monthly-drawdown-chart",
-            "Testes unitarios: computeSharedYRange (varios meses, all-null, arredondamento) e buildLineChartOption com/sem yMin/yMax"
+            "Expressao ternaria/condicao do step SonarCloud: so pula quando push E ref_name==develop.",
+            "Step 'Validar zero issues no SonarCloud': mesma condicao.",
+            "continue-on-error: true nos 2 steps quando github.event_name == 'push'.",
+            "CHANGELOG.md: entrada em [Unreleased]."
           ],
-          "validation": "ng test verde cobrindo computeSharedYRange e o novo parametro de buildLineChartOption.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-655"
-        },
-        {
-          "id": "feat-058.2",
-          "name": "Reaproveitar o filtro geral do dashboard em vez do datepicker proprio",
-          "detail": "monthly-drawdown-grid tem form/datepicker/botao proprios (so from/to, ignora esporte/casa/mercado/etc.) redundantes com o filtro geral ja montado em dashboard.ts - usuario filtra duas vezes.",
-          "checklist": [
-            "monthly-drawdown-metrics.ts: buildMonthlyDrawdown aceita from/to nao alinhados a mes inteiro (primeiro mes comeca no dia real de from, ultimo mes termina em min(dia real de to, dias no mes, hoje se for o mes corrente)); remover resolveMonthRange (sem consumidor apos o refactor) e seu describe no spec",
-            "monthly-drawdown-grid.ts: remover FormGroup/datepicker/apply e os imports associados (ReactiveFormsModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatButtonModule, FormBuilder, Validators); novos input.required<StatisticsFilter>() filter, input.required<number>() bankrollNow e unitPercent; effect() no construtor reage aos 3 inputs, guarda ausencia de filter.from/filter.to (months vazio, sem chamada HTTP), senao statisticsApi.getDaily(filter()) -> buildMonthlyDrawdown",
-            "monthly-drawdown-grid.html/.scss: remover o <form> e o bloco .monthly-drawdown-grid__filter",
-            "dashboard.ts: signal appliedFilter, setado em applyFilter() junto do filter local ja construido; dashboard.html passa [filter]=\"appliedFilter()\" [bankrollNow]=\"dashboardData().bankrollNow\" [unitPercent]=\"dashboardData().unitPercent\" pro app-monthly-drawdown-grid",
-            "i18n: remover monthlyDrawdown.fromLabel/toLabel/apply dos 3 locales (pt-BR/en-US/es), manter emptyResult/genericError",
-            "Reescrever monthly-drawdown-grid.spec.ts em torno de fixture.componentRef.setInput(...) (sem form/HTTP de month-range); estender monthly-drawdown-metrics.spec.ts com casos de from/to nao alinhados ao mes"
-          ],
-          "validation": "ng test verde; grid nao dispara HTTP sem filter.from/to; buildMonthlyDrawdown respeita from/to parciais de mes.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-656"
-        },
-        {
-          "id": "feat-058.3",
-          "name": "E2E, QA visual e verificacao final",
-          "detail": "Prova no navegador e fechamento da feature.",
-          "checklist": [
-            "e2e/dashboard.spec.ts bloco 'epic-020 - monthly drawdown grid': trocar cliques em monthly-drawdown-from/to-toggle/apply (removidos) por period-preset-select -> custom -> period-preset-custom-from/to, cobrindo o caso de 3 meses e o caso de range vazio/invertido",
-            "QA visual dos mini-graficos (escala compartilhada visivel) nos 2 temas, desktop e mobile",
-            "Entrada em CHANGELOG.md (Unreleased)",
-            "./init.sh do app e da raiz verdes; suite E2E completa",
-            "Delivery Reviewer/Test Suite Auditor rodados",
-            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
-            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
-            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
-            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
-          ],
-          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
-          "owner": "agente",
-          "status": "done",
-          "jira": "SV-657"
+          "validation": "yaml.safe_load no ci.yml; PR subtask->story com CI verde; PR story->develop confirma SonarCloud Code Analysis pass.",
+          "owner": "agente"
         }
       ],
-      "evidence": {
-        "resumo": "Fechado em 2026-09-25 por feat-058.1/feat-058.2/feat-058.3 (story SV-654). Grafico de drawdown mensal fica comparavel entre meses (escala Y compartilhada) e usa o mesmo filtro geral do dashboard (sem pedir data/segmento duas vezes).",
-        "secoes": [
-          {
-            "titulo": "O que foi feito",
-            "itens": [
-              "SV-655 (feat-058.1): `computeSharedYRange` (`monthly-drawdown-metrics.ts`) calcula min/max compartilhado entre todos os meses renderizados (baseline 0, arredondado pra fora em 1 casa decimal); `core/chart-theme.ts` ganhou `yMin`/`yMax` opcionais em `buildLineChartOption`, setados so quando fornecidos (outros consumidores, ex. `monthly-profit-chart`, continuam auto-scale); `monthly-drawdown-chart.ts` ganhou o input `yRange`.",
-              "SV-656 (feat-058.2): `monthly-drawdown-grid` perdeu o form/datepicker/botao proprio e passou a receber `filter` (o `StatisticsFilter` completo ja montado em `dashboard.applyFilter()`, incluindo os filtros de segmento - antes ignorados por este componente), `bankrollNow` e `unitPercent` como `input.required<...>()` de `dashboard.ts`. `buildMonthlyDrawdown` deixou de assumir `from`/`to` alinhados a mes inteiro; `resolveMonthRange` removida (sem consumidor). Fetch (`effect()`) depende so de `filter`; `months`/`yRange` exibidos sao `computed()` a partir de `daily`+`bankrollNow`+`unitPercent` - evita refetch redundante quando so saldo/unitPercent mudam (achado real corrigido, nao so hipotetico - ver teste dedicado abaixo).",
-              "SV-657 (feat-058.3): e2e/dashboard.spec.ts bloco 'epic-020' reescrito para 'epic-037', dirigindo o filtro geral (period-preset-select -> custom) em vez dos testids removidos; QA visual real (screenshots Playwright, 2 temas x desktop/mobile) confirmou a escala Y compartilhada (Jan/Fev no mesmo eixo 0-26) e a ausencia do filtro proprio. Vault atualizado: docs/services/web.md, docs/estatisticas.md e docs/sistema-de-design.md corrigidos (descreviam o desenho antigo - filtro proprio, `startView=\"year\"` sem consumidor - como se ainda fosse atual); docs/convencoes.md ganhou 2 mecanismos reaproveitaveis (escala Y compartilhada entre instancias de ngx-echarts; separacao effect-de-fetch vs. computed-de-render em componente @Input-driven)."
-            ]
-          },
-          {
-            "titulo": "Como foi verificado",
-            "itens": [
-              "Plan Reviewer (2026-09-25): READY WITH CONCERNS, 4 MINOR incorporados antes de codificar (arredondamento do range Y, remocao de resolveMonthRange, guarda de filter.from/to ausente, corte por to combinado com corte por hoje).",
-              "Delivery Reviewer: PASS, sem achado (revisao unica, autor mesma sessao com verificacao direta contra suite completa).",
-              "Test Suite Auditor: PASS apos a propria auditoria encontrar 2 lacunas reais e mandar fechar antes do veredito - (1) nenhum teste provava a correcao central de feat-058.2 (bankrollNow/unitPercent mudando sozinhos nao deveriam refazer o fetch) - teste novo adicionado provando httpMock.expectNone + valor recalculado; (2) so uma direcao do corte combinado to/hoje estava testada - segunda direcao adicionada.",
-              "372/372 testes unitarios (`ng test`), 101/101 e2e (`npx playwright test`, suite completa), `ng build` limpo, `validate-i18n-keys.py` (302 chaves em sincronia nos 3 locales), `./init.sh` do app e da raiz verdes."
-            ]
-          },
-          {
-            "titulo": "Residuais aceitos",
-            "itens": [
-              "Flash cosmetico de grafico zerado no primeiro render apos filtro valido, antes da resposta real chegar (computed() usa daily=[] ate o fetch resolver) - momentaneo, sem regressao funcional.",
-              "Fetch de drawdown continua sem limite de intervalo de dias (igual ao comportamento anterior do filtro proprio) - diferente do grafico de lucro mensal, que cai pra granularidade mensal acima de 31 dias."
-            ]
-          }
-        ]
-      }
+      "evidence": ""
     }
   ]
 }
