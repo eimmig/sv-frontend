@@ -1,40 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
+import { ResizeObserverStub, stubCanvasContext } from '../../core/chart-theme.testing';
 import { ComparisonEquityChart } from './comparison-equity-chart';
-
-class ResizeObserverStub {
-  observe(): void {}
-  unobserve(): void {}
-  disconnect(): void {}
-}
-
-function stubCanvasContext(): void {
-  const noop = () => {};
-  const context: Record<string, unknown> = {};
-  const proxy = new Proxy(context, {
-    get: (target, prop) => {
-      if (prop === 'canvas' || prop in target) {
-        return target[prop as string];
-      }
-      if (prop === 'createLinearGradient' || prop === 'createRadialGradient') {
-        return () => ({ addColorStop: noop });
-      }
-      if (prop === 'measureText') {
-        return () => ({ width: 0 });
-      }
-      return noop;
-    },
-    set: (target, prop, value) => {
-      target[prop as string] = value;
-      return true;
-    },
-  });
-  HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement) {
-    context['canvas'] = this;
-    return proxy;
-  } as unknown as typeof HTMLCanvasElement.prototype.getContext;
-}
 
 describe('ComparisonEquityChart', () => {
   beforeEach(() => {
@@ -75,5 +43,14 @@ describe('ComparisonEquityChart', () => {
     fixture.componentRef.setInput('seriesB', [5, null, null]);
 
     expect(() => fixture.detectChanges()).not.toThrow();
+  });
+
+  it('labels the axes with the chart-specific translation keys', () => {
+    const fixture = TestBed.createComponent(ComparisonEquityChart);
+    fixture.detectChanges();
+
+    const options = fixture.componentInstance['chartOptions']() as { xAxis: { name?: string }; yAxis: { name?: string } };
+    expect(options.xAxis.name).toBe('charts.comparison.xAxisLabel');
+    expect(options.yAxis.name).toBe('charts.comparison.yAxisLabel');
   });
 });

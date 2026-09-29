@@ -1,45 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
+import { ResizeObserverStub, restoreLocale, stubBrazilianLocale, stubCanvasContext } from '../../core/chart-theme.testing';
 import { MonthlyDrawdownChart } from './monthly-drawdown-chart';
-
-class ResizeObserverStub {
-  observe(): void {}
-  unobserve(): void {}
-  disconnect(): void {}
-}
-
-function stubCanvasContext(): void {
-  const noop = () => {};
-  const context: Record<string, unknown> = {};
-  const proxy = new Proxy(context, {
-    get: (target, prop) => {
-      if (prop === 'canvas' || prop in target) {
-        return target[prop as string];
-      }
-      if (prop === 'createLinearGradient' || prop === 'createRadialGradient') {
-        return () => ({ addColorStop: noop });
-      }
-      if (prop === 'measureText') {
-        return () => ({ width: 0 });
-      }
-      return noop;
-    },
-    set: (target, prop, value) => {
-      target[prop as string] = value;
-      return true;
-    },
-  });
-  HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement) {
-    context['canvas'] = this;
-    return proxy;
-  } as unknown as typeof HTMLCanvasElement.prototype.getContext;
-}
 
 describe('MonthlyDrawdownChart', () => {
   beforeEach(() => {
     (globalThis as { ResizeObserver?: unknown }).ResizeObserver = ResizeObserverStub;
     stubCanvasContext();
+    stubBrazilianLocale();
     TestBed.configureTestingModule({
       imports: [
         MonthlyDrawdownChart,
@@ -49,6 +18,10 @@ describe('MonthlyDrawdownChart', () => {
         }),
       ],
     });
+  });
+
+  afterEach(() => {
+    restoreLocale();
   });
 
   it('renders the month title and the echarts host without error', () => {
@@ -91,5 +64,15 @@ describe('MonthlyDrawdownChart', () => {
     const options = fixture.componentInstance['chartOptions']() as { yAxis: { min?: number; max?: number } };
     expect(options.yAxis.min).toBe(-1);
     expect(options.yAxis.max).toBe(10);
+  });
+
+  it('labels the axes with the chart-specific translation keys', () => {
+    const fixture = TestBed.createComponent(MonthlyDrawdownChart);
+    fixture.componentRef.setInput('month', { year: 2026, month: 3, days: [0, 5, 2, 8] });
+    fixture.detectChanges();
+
+    const options = fixture.componentInstance['chartOptions']() as { xAxis: { name?: string }; yAxis: { name?: string } };
+    expect(options.xAxis.name).toBe('charts.drawdown.xAxisLabel');
+    expect(options.yAxis.name).toBe('charts.drawdown.yAxisLabel');
   });
 });

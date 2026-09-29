@@ -1,45 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
+import { ResizeObserverStub, restoreLocale, stubBrazilianLocale, stubCanvasContext } from '../../core/chart-theme.testing';
 import { EquityCurveChart } from './equity-curve-chart';
-
-class ResizeObserverStub {
-  observe(): void {}
-  unobserve(): void {}
-  disconnect(): void {}
-}
-
-function stubCanvasContext(): void {
-  const noop = () => {};
-  const context: Record<string, unknown> = {};
-  const proxy = new Proxy(context, {
-    get: (target, prop) => {
-      if (prop === 'canvas' || prop in target) {
-        return target[prop as string];
-      }
-      if (prop === 'createLinearGradient' || prop === 'createRadialGradient') {
-        return () => ({ addColorStop: noop });
-      }
-      if (prop === 'measureText') {
-        return () => ({ width: 0 });
-      }
-      return noop;
-    },
-    set: (target, prop, value) => {
-      target[prop as string] = value;
-      return true;
-    },
-  });
-  HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement) {
-    context['canvas'] = this;
-    return proxy;
-  } as unknown as typeof HTMLCanvasElement.prototype.getContext;
-}
 
 describe('EquityCurveChart', () => {
   beforeEach(() => {
     (globalThis as { ResizeObserver?: unknown }).ResizeObserver = ResizeObserverStub;
     stubCanvasContext();
+    stubBrazilianLocale();
     TestBed.configureTestingModule({
       imports: [
         EquityCurveChart,
@@ -49,6 +18,10 @@ describe('EquityCurveChart', () => {
         }),
       ],
     });
+  });
+
+  afterEach(() => {
+    restoreLocale();
   });
 
   it('frames the chart with a title, a help toggle and a 1-entry legend', () => {
@@ -96,5 +69,14 @@ describe('EquityCurveChart', () => {
       { date: '2026-03-07', cumulativeProfit: -10 },
     ]);
     expect(categories().some((label) => label.includes('2026'))).toBe(false);
+  });
+
+  it('labels the axes with the chart-specific translation keys', () => {
+    const fixture = TestBed.createComponent(EquityCurveChart);
+    fixture.detectChanges();
+
+    const options = fixture.componentInstance['chartOptions']() as { xAxis: { name?: string }; yAxis: { name?: string } };
+    expect(options.xAxis.name).toBe('charts.equity.xAxisLabel');
+    expect(options.yAxis.name).toBe('charts.equity.yAxisLabel');
   });
 });

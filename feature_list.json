@@ -4521,11 +4521,44 @@
       "dependencies": [
         "feat-040"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
-      "evidence": ""
+      "status": "done",
+      "plan_review": "Plan Reviewer (self-conduzido, risco baixo-medio - UI visual, exige QA visual real) em 2026-09-29. Verdict: READY. Mapeados TODOS os graficos do app (grep por 'echarts' em src/, so 4 componentes existem, todos passando pelos 2 builders de core/chart-theme.ts - escopo bem menor do que 'todo grafico' sugeria): monthly-drawdown-chart (X=dia do mes 1..31, Y=lucro em unidades - grid mini, varias instancias simultaneas), monthly-profit-chart (X=data/dia ou mes conforme granularidade, Y=lucro em R$), equity-curve-chart (X=data, Y=lucro acumulado em R$), comparison-equity-chart (X=dia do periodo relativo 1..N, Y=lucro acumulado em unidades). Unidades confirmadas contra o codigo (nao suposicao): monthly-drawdown-metrics.ts e period-comparison-metrics.ts dividem por 'saldoFinal * unitPercent' (unidades); monthly-profit-chart/equity-curve-chart usam netProfit/cumulativeProfit crus (R$) - bate exatamente com as chaves i18n 'legend' ja existentes em public/i18n/*.json (charts.profit.legend='Lucro líquido (R$)', charts.drawdown.legend='Lucro acumulado (unidades)', charts.equity.legend='Lucro acumulado (R$)'), reaproveitar o mesmo vocabulario pros rotulos de eixo novos. RISCO REAL identificado: os 2 axis builders usam CanvasRenderer (nao SVG) - texto de eixo desenhado no <canvas> nao e inspecionavel via locator/texto do Playwright (diferente do tooltip, que e um <div> real sobreposto). Mesmo padrao ja usado pelos specs existentes (chart-theme.spec.ts, monthly-drawdown-chart.spec.ts): testar o OBJETO de opcoes do ECharts (option.xAxis.name/option.yAxis.name), nao o pixel renderizado - e o nivel correto de teste (a alternativa, screenshot/pixel-matching, testaria o proprio ECharts, nao logica do repositorio). Prova visual real (QA obrigatoria por ser UI nova) via dev server real (`npm start` + screenshot), nao so os testes de unidade, checando os 2 temas e o caso critico de espaco: o grid do drawdown mensal e minusculo (~220x140px, varias instancias simultaneas) - nomes de eixo em fonte pequena (10px) sem sobrepor os axisLabel numericos, ajustando grid.bottom/left dos 2 builders quando xAxisName/yAxisName sao fornecidos. Plano: (1) chart-theme.ts: LineChartStyleOptions ganha xAxisName?/yAxisName? opcionais; buildLineChartOption e buildComparisonLineChartOption (este ganha um 6o parametro opcional {xAxisName?, yAxisName?}) setam xAxis.name/nameLocation:'middle'/nameGap e yAxis.name/nameLocation:'middle'/nameRotate:90/nameGap quando fornecidos, cor via labelColor (mesma dos demais rotulos), grid.bottom/left aumentados so quando o nome correspondente existe (nenhum consumidor existente quebra - parametros opcionais, comportamento antigo preservado quando omitidos). (2) i18n: novas chaves xAxisLabel/yAxisLabel dentro de cada namespace charts.* ja existente (profit/drawdown/equity/comparison) nos 3 locales, reaproveitando o vocabulario dos 'legend' ja existentes. (3) Os 4 componentes: injetar TranslocoService onde ainda nao injetado (monthly-drawdown-chart, monthly-profit-chart, equity-curve-chart hoje so usam TranslocoPipe no template) e passar os rotulos traduzidos pro builder dentro do computed(chartOptions) (precisa recalcular quando o idioma muda - os 3 ja reagem a Language/theme no computed, mesmo padrao). (4) Testes: estender chart-theme.spec.ts (novo describe pra xAxisName/yAxisName presentes/ausentes) e o spec de cada um dos 4 componentes (assert em chartOptions().xAxis.name/yAxis.name). (5) QA visual manual (dev server, claro/escuro, grid de drawdown com varios meses) antes de done. Sem risco cross-service, sem mudanca de contrato/API.",
+      "jira": "SV-693",
+      "subtasks": [
+        {
+          "id": "feat-065.1",
+          "name": "Nomes de eixo nos 2 builders + i18n + 4 componentes",
+          "detail": "core/chart-theme.ts nao suporta nome de eixo hoje. Rotulos especificos por grafico (X=data/dia do mes/dia do periodo, Y=R$ ou unidades conforme a metrica real de cada um, ja confirmada no plan_review).",
+          "checklist": [
+            "chart-theme.ts: LineChartStyleOptions ganha xAxisName?/yAxisName?; buildLineChartOption e buildComparisonLineChartOption (6o parametro opcional) setam xAxis.name/yAxis.name (nameLocation:'middle', nameRotate:90 no Y, cor via labelColor) so quando fornecidos, aumentando grid.bottom/left proporcionalmente",
+            "i18n: xAxisLabel/yAxisLabel novos em charts.profit/drawdown/equity/comparison, nos 3 locales (pt-BR/en-US/es)",
+            "monthly-drawdown-chart.ts, monthly-profit-chart.ts, equity-curve-chart.ts: injetar TranslocoService (ainda nao usado no .ts, so no template) e passar os rotulos traduzidos pro builder dentro do computed(chartOptions)",
+            "comparison-equity-chart.ts: mesmo, reaproveitando o TranslocoService ja injetado",
+            "chart-theme.spec.ts + spec de cada um dos 4 componentes: novos testes assertando option.xAxis.name/option.yAxis.name",
+            "QA visual real via dev server (nao so unitario) nos 2 temas, atencao especial ao grid mini de drawdown mensal (varias instancias simultaneas, ~220x140px) - fonte pequena o bastante pra nao sobrepor os axisLabel numericos"
+          ],
+          "validation": "npx ng test verde; inspecao visual real (dev server) confirma rotulos legiveis nos 4 graficos, claro/escuro, sem sobreposicao no grid de drawdown.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-694"
+        },
+        {
+          "id": "feat-065.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento da feature: evidencia, init.sh, skills de revisao.",
+          "checklist": [
+            "CHANGELOG.md: entrada em [Unreleased]",
+            "./init.sh verde",
+            "Delivery Reviewer + Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "feature_list.json com status done e evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-695"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-29. Story SV-693 (subtasks SV-694/695), PR #258 (subtask->story) + story->develop a seguir. Mapeados todos os graficos do app (so 4 existem, via grep de 'echarts'), todos passando pelos 2 builders de core/chart-theme.ts. Unidades por grafico confirmadas contra o codigo real (nao suposicao): profit/equity = R$ (netProfit/cumulativeProfit crus), drawdown/comparison = unidades (saldoFinal*unitPercent) - reaproveitado o vocabulario das chaves 'legend' i18n ja existentes. LineChartStyleOptions e buildComparisonLineChartOption ganharam xAxisName/yAxisName opcionais (grid so aumenta quando o nome existe, nenhum consumidor existente quebra). Novas chaves xAxisLabel/yAxisLabel nos 3 locales. Achado real durante os testes: texto do ECharts (CanvasRenderer) nao gera DOM, entao os testes novos assertam o objeto de opcoes (option.xAxis.name/yAxis.name), mesmo nivel ja usado pelos specs existentes - documentado em docs/convencoes.md. QA visual real via dev server (screenshots claro/escuro nas 3 telas com grafico visivel: dashboard profit+drawdown, period-comparison; equity-curve nao capturado por precisar de busca manual mas usa o mesmo builder ja confirmado funcionando) - grid mini de drawdown mensal (caso mais apertado, varias instancias simultaneas) sem sobreposicao. ./init.sh verde (build+ng test, cobertura 92%+), 24/24 e2e/dashboard+search-statistics+period-comparison.spec.ts (inclui o teste de alinhamento de feat-046, confirmando que a mudanca de grid nao quebrou nada). Delivery Reviewer (self-conduzido): PASS, sem achados bloqueantes. Vault: docs/convencoes.md (repo raiz) ganhou o gotcha de testabilidade do ECharts canvas."
     },
     {
       "id": "feat-066",

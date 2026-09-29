@@ -1,46 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
+import { ResizeObserverStub, restoreLocale, stubBrazilianLocale, stubCanvasContext } from '../../core/chart-theme.testing';
 import { EMPTY_BET_METRICS, MonthlyBetMetrics } from '../../core/statistics-api';
 import { MonthlyProfitChart, buildProfitSeries, isDailyGranularity } from './monthly-profit-chart';
-
-class ResizeObserverStub {
-  observe(): void {}
-  unobserve(): void {}
-  disconnect(): void {}
-}
-
-function stubCanvasContext(): void {
-  const noop = () => {};
-  const context: Record<string, unknown> = {};
-  const proxy = new Proxy(context, {
-    get: (target, prop) => {
-      if (prop === 'canvas' || prop in target) {
-        return target[prop as string];
-      }
-      if (prop === 'createLinearGradient' || prop === 'createRadialGradient') {
-        return () => ({ addColorStop: noop });
-      }
-      if (prop === 'measureText') {
-        return () => ({ width: 0 });
-      }
-      return noop;
-    },
-    set: (target, prop, value) => {
-      target[prop as string] = value;
-      return true;
-    },
-  });
-  HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement) {
-    context['canvas'] = this;
-    return proxy;
-  } as unknown as typeof HTMLCanvasElement.prototype.getContext;
-}
 
 describe('MonthlyProfitChart', () => {
   beforeEach(() => {
     (globalThis as { ResizeObserver?: unknown }).ResizeObserver = ResizeObserverStub;
     stubCanvasContext();
+    stubBrazilianLocale();
     TestBed.configureTestingModule({
       imports: [
         MonthlyProfitChart,
@@ -50,6 +19,10 @@ describe('MonthlyProfitChart', () => {
         }),
       ],
     });
+  });
+
+  afterEach(() => {
+    restoreLocale();
   });
 
   it('frames the chart with a title, a help toggle and a 1-entry legend', () => {
@@ -81,6 +54,15 @@ describe('MonthlyProfitChart', () => {
     ]);
 
     expect(() => fixture.detectChanges()).not.toThrow();
+  });
+
+  it('labels the axes with the chart-specific translation keys', () => {
+    const fixture = TestBed.createComponent(MonthlyProfitChart);
+    fixture.detectChanges();
+
+    const options = fixture.componentInstance['chartOptions']() as { xAxis: { name?: string }; yAxis: { name?: string } };
+    expect(options.xAxis.name).toBe('charts.profit.xAxisLabel');
+    expect(options.yAxis.name).toBe('charts.profit.yAxisLabel');
   });
 });
 
