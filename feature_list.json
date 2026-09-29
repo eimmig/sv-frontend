@@ -4554,11 +4554,11 @@
           ],
           "validation": "feature_list.json com status done e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-695"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-29. Story SV-693 (subtasks SV-694/695), PR #258 (subtask->story) + story->develop a seguir. Mapeados todos os graficos do app (so 4 existem, via grep de 'echarts'), todos passando pelos 2 builders de core/chart-theme.ts. Unidades por grafico confirmadas contra o codigo real (nao suposicao): profit/equity = R$ (netProfit/cumulativeProfit crus), drawdown/comparison = unidades (saldoFinal*unitPercent) - reaproveitado o vocabulario das chaves 'legend' i18n ja existentes. LineChartStyleOptions e buildComparisonLineChartOption ganharam xAxisName/yAxisName opcionais (grid so aumenta quando o nome existe, nenhum consumidor existente quebra). Novas chaves xAxisLabel/yAxisLabel nos 3 locales. Achado real durante os testes: texto do ECharts (CanvasRenderer) nao gera DOM, entao os testes novos assertam o objeto de opcoes (option.xAxis.name/yAxis.name), mesmo nivel ja usado pelos specs existentes - documentado em docs/convencoes.md. QA visual real via dev server (screenshots claro/escuro nas 3 telas com grafico visivel: dashboard profit+drawdown, period-comparison; equity-curve nao capturado por precisar de busca manual mas usa o mesmo builder ja confirmado funcionando) - grid mini de drawdown mensal (caso mais apertado, varias instancias simultaneas) sem sobreposicao. ./init.sh verde (build+ng test, cobertura 92%+), 24/24 e2e/dashboard+search-statistics+period-comparison.spec.ts (inclui o teste de alinhamento de feat-046, confirmando que a mudanca de grid nao quebrou nada). Delivery Reviewer (self-conduzido): PASS, sem achados bloqueantes. Vault: docs/convencoes.md (repo raiz) ganhou o gotcha de testabilidade do ECharts canvas."
     },
     {
       "id": "feat-066",
