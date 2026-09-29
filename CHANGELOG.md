@@ -7,6 +7,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 
+- [SV-679](https://stakevault.atlassian.net/browse/SV-679) - Validar SonarCloud tambem em push pra main (nao so pull_request)
+- [SV-680](https://stakevault.atlassian.net/browse/SV-680) - ci.yml: push so pra main habilita os 2 steps de SonarCloud, com continue-on-error
 - [SV-647](https://stakevault.atlassian.net/browse/SV-647) - Painel de filtros recolhivel nos dashboards
 - [SV-648](https://stakevault.atlassian.net/browse/SV-648) - Panel recolhivel e colunas do tablet
 - [SV-649](https://stakevault.atlassian.net/browse/SV-649) - Aplicar o painel recolhivel nas 5 telas
