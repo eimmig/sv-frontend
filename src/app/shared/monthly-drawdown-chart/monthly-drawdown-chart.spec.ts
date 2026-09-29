@@ -40,6 +40,8 @@ describe('MonthlyDrawdownChart', () => {
   beforeEach(() => {
     (globalThis as { ResizeObserver?: unknown }).ResizeObserver = ResizeObserverStub;
     stubCanvasContext();
+    localStorage.removeItem('stakevault.language');
+    Object.defineProperty(navigator, 'language', { value: 'pt-BR', configurable: true });
     TestBed.configureTestingModule({
       imports: [
         MonthlyDrawdownChart,
@@ -49,6 +51,10 @@ describe('MonthlyDrawdownChart', () => {
         }),
       ],
     });
+  });
+
+  afterEach(() => {
+    delete (navigator as { language?: string }).language;
   });
 
   it('renders the month title and the echarts host without error', () => {
@@ -91,5 +97,15 @@ describe('MonthlyDrawdownChart', () => {
     const options = fixture.componentInstance['chartOptions']() as { yAxis: { min?: number; max?: number } };
     expect(options.yAxis.min).toBe(-1);
     expect(options.yAxis.max).toBe(10);
+  });
+
+  it('labels the axes with the chart-specific translation keys', () => {
+    const fixture = TestBed.createComponent(MonthlyDrawdownChart);
+    fixture.componentRef.setInput('month', { year: 2026, month: 3, days: [0, 5, 2, 8] });
+    fixture.detectChanges();
+
+    const options = fixture.componentInstance['chartOptions']() as { xAxis: { name?: string }; yAxis: { name?: string } };
+    expect(options.xAxis.name).toBe('charts.drawdown.xAxisLabel');
+    expect(options.yAxis.name).toBe('charts.drawdown.yAxisLabel');
   });
 });

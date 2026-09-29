@@ -28,6 +28,12 @@ export interface LineChartStyleOptions {
   readonly splitNumber?: number;
   readonly yMin?: number;
   readonly yMax?: number;
+  readonly xAxisName?: string;
+  readonly yAxisName?: string;
+}
+
+function axisNameStyle(color: string) {
+  return { fontSize: 10, color };
 }
 
 export function buildLineChartOption(
@@ -38,9 +44,14 @@ export function buildLineChartOption(
   labelColor: string,
   style: LineChartStyleOptions = {},
 ): EChartsCoreOption {
-  const { smooth = true, splitNumber = 2, yMin, yMax } = style;
+  const { smooth = true, splitNumber = 2, yMin, yMax, xAxisName, yAxisName } = style;
   return {
-    grid: { top: 16, right: 16, bottom: 24, left: 48 },
+    grid: {
+      top: 16,
+      right: 16,
+      bottom: xAxisName ? 40 : 24,
+      left: yAxisName ? 64 : 48,
+    },
     tooltip: { trigger: 'axis', ...themedTooltip() },
     xAxis: {
       type: 'category',
@@ -48,6 +59,10 @@ export function buildLineChartOption(
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: { color: labelColor },
+      name: xAxisName,
+      nameLocation: 'middle',
+      nameGap: 22,
+      nameTextStyle: axisNameStyle(labelColor),
     },
     yAxis: {
       type: 'value',
@@ -56,6 +71,11 @@ export function buildLineChartOption(
       max: yMax,
       axisLabel: { color: labelColor },
       splitLine: { lineStyle: { color: borderColor, width: 1 } },
+      name: yAxisName,
+      nameLocation: 'middle',
+      nameGap: 40,
+      nameRotate: 90,
+      nameTextStyle: axisNameStyle(labelColor),
     },
     series: [
       {
@@ -103,15 +123,27 @@ function comparisonSeriesOption(style: ComparisonSeriesStyle) {
   };
 }
 
+export interface ComparisonAxisNames {
+  readonly xAxisName?: string;
+  readonly yAxisName?: string;
+}
+
 export function buildComparisonLineChartOption(
   categories: string[],
   seriesA: ComparisonSeriesStyle,
   seriesB: ComparisonSeriesStyle,
   borderColor: string,
   labelColor: string,
+  axisNames: ComparisonAxisNames = {},
 ): EChartsCoreOption {
+  const { xAxisName, yAxisName } = axisNames;
   return {
-    grid: { top: 16, right: 16, bottom: 24, left: 48 },
+    grid: {
+      top: 16,
+      right: 16,
+      bottom: xAxisName ? 40 : 24,
+      left: yAxisName ? 64 : 48,
+    },
     tooltip: { trigger: 'axis', ...themedTooltip() },
     xAxis: {
       type: 'category',
@@ -119,12 +151,21 @@ export function buildComparisonLineChartOption(
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: { color: labelColor },
+      name: xAxisName,
+      nameLocation: 'middle',
+      nameGap: 22,
+      nameTextStyle: axisNameStyle(labelColor),
     },
     yAxis: {
       type: 'value',
       splitNumber: 2,
       axisLabel: { color: labelColor },
       splitLine: { lineStyle: { color: borderColor, width: 1 } },
+      name: yAxisName,
+      nameLocation: 'middle',
+      nameGap: 40,
+      nameRotate: 90,
+      nameTextStyle: axisNameStyle(labelColor),
     },
     series: [comparisonSeriesOption(seriesA), comparisonSeriesOption(seriesB)],
   };

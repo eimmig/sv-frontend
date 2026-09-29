@@ -41,6 +41,8 @@ describe('MonthlyProfitChart', () => {
   beforeEach(() => {
     (globalThis as { ResizeObserver?: unknown }).ResizeObserver = ResizeObserverStub;
     stubCanvasContext();
+    localStorage.removeItem('stakevault.language');
+    Object.defineProperty(navigator, 'language', { value: 'pt-BR', configurable: true });
     TestBed.configureTestingModule({
       imports: [
         MonthlyProfitChart,
@@ -50,6 +52,10 @@ describe('MonthlyProfitChart', () => {
         }),
       ],
     });
+  });
+
+  afterEach(() => {
+    delete (navigator as { language?: string }).language;
   });
 
   it('frames the chart with a title, a help toggle and a 1-entry legend', () => {
@@ -81,6 +87,15 @@ describe('MonthlyProfitChart', () => {
     ]);
 
     expect(() => fixture.detectChanges()).not.toThrow();
+  });
+
+  it('labels the axes with the chart-specific translation keys', () => {
+    const fixture = TestBed.createComponent(MonthlyProfitChart);
+    fixture.detectChanges();
+
+    const options = fixture.componentInstance['chartOptions']() as { xAxis: { name?: string }; yAxis: { name?: string } };
+    expect(options.xAxis.name).toBe('charts.profit.xAxisLabel');
+    expect(options.yAxis.name).toBe('charts.profit.yAxisLabel');
   });
 });
 

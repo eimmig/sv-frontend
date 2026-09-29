@@ -4,7 +4,7 @@ import { GridComponent, TooltipComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { EChartsCoreOption } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 
 import { buildLineChartOption, readCssColor } from '../../core/chart-theme';
@@ -72,6 +72,7 @@ export function buildProfitSeries(
 export class MonthlyProfitChart {
   private readonly theme = inject(Theme);
   private readonly language = inject(Language);
+  private readonly transloco = inject(TranslocoService);
 
   readonly data = input<MonthlyBetMetrics[]>([]);
   readonly daily = input<DailyBetMetrics[]>([]);
@@ -87,6 +88,10 @@ export class MonthlyProfitChart {
       readCssColor('--color-brand'),
       readCssColor('--color-border'),
       readCssColor('--color-text-secondary'),
+      {
+        xAxisName: this.transloco.translate('charts.profit.xAxisLabel'),
+        yAxisName: this.transloco.translate('charts.profit.yAxisLabel'),
+      },
     );
   });
 }

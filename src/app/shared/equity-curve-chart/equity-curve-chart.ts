@@ -4,7 +4,7 @@ import { GridComponent, TooltipComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { EChartsCoreOption } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 
 import { buildLineChartOption, readCssColor } from '../../core/chart-theme';
@@ -22,12 +22,14 @@ function buildChartOption(
   brandColor: string,
   borderColor: string,
   labelColor: string,
+  xAxisName: string,
+  yAxisName: string,
 ): EChartsCoreOption {
   const last = timeline.at(-1);
   const withYear = timeline.length > 1 && last !== undefined && spansMoreThanOneYear(timeline[0].date, last.date);
   const labels = timeline.map((point) => formatDay(point.date, locale, withYear));
   const cumulativeProfit = timeline.map((point) => point.cumulativeProfit);
-  return buildLineChartOption(labels, cumulativeProfit, brandColor, borderColor, labelColor);
+  return buildLineChartOption(labels, cumulativeProfit, brandColor, borderColor, labelColor, { xAxisName, yAxisName });
 }
 
 @Component({
@@ -40,6 +42,7 @@ function buildChartOption(
 export class EquityCurveChart {
   private readonly theme = inject(Theme);
   private readonly language = inject(Language);
+  private readonly transloco = inject(TranslocoService);
 
   readonly data = input<StatisticsTimelinePoint[]>([]);
 
@@ -51,6 +54,8 @@ export class EquityCurveChart {
       readCssColor('--color-brand'),
       readCssColor('--color-border'),
       readCssColor('--color-text-secondary'),
+      this.transloco.translate('charts.equity.xAxisLabel'),
+      this.transloco.translate('charts.equity.yAxisLabel'),
     );
   });
 }

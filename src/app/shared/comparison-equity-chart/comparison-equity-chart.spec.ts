@@ -76,4 +76,13 @@ describe('ComparisonEquityChart', () => {
 
     expect(() => fixture.detectChanges()).not.toThrow();
   });
+
+  it('labels the axes with the chart-specific translation keys', () => {
+    const fixture = TestBed.createComponent(ComparisonEquityChart);
+    fixture.detectChanges();
+
+    const options = fixture.componentInstance['chartOptions']() as { xAxis: { name?: string }; yAxis: { name?: string } };
+    expect(options.xAxis.name).toBe('charts.comparison.xAxisLabel');
+    expect(options.yAxis.name).toBe('charts.comparison.yAxisLabel');
+  });
 });
