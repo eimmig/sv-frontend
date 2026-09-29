@@ -4446,7 +4446,7 @@
           ],
           "validation": "feature_list.json com status done e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-683"
         }
       ],
