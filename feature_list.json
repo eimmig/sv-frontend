@@ -4371,10 +4371,40 @@
       "dependencies": [
         "epic-020"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (self-conduzido, risco baixo, 1 revisor) em 2026-09-29. Verdict: READY. monthly-drawdown-grid.scss:19 lido e confirmado - a causa raiz do JSON bate exatamente: grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)). Com auto-fit, colunas vazias de uma linha incompleta colapsam (largura 0), sobrando espaco que o 1fr do minmax distribui pros itens existentes - o item sozinho na ultima linha incompleta estica. auto-fill mantem as trilhas vazias reservadas (nao remove do grid), entao os itens continuam limitados ao minmax normal. Fix de 1 palavra (auto-fit -> auto-fill), sem mudanca de logica/dados - a escala Y compartilhada (epic-037/feat-058) e um mecanismo totalmente separado, nao tocado. Teste de regressao: e2e/dashboard.spec.ts ja tem o cenario 'a 3-month custom range... renders 3 mini-charts' (3 itens = 2 na primeira linha + 1 sozinho na segunda, contagem impar exercita exatamente o bug) - estender esse teste com uma asercao comparando boundingBox().width do primeiro grafico com o do ultimo (data-testid=monthly-drawdown-chart), mais barato que criar cenario novo. Reproduzir o bug revertendo o fix antes de fechar, mesmo padrao usado em feat-064.",
+      "jira": "SV-687",
+      "subtasks": [
+        {
+          "id": "feat-061.1",
+          "name": "auto-fit -> auto-fill no grid de drawdown + teste de largura",
+          "detail": "Causa raiz confirmada empiricamente, com uma correcao importante sobre a hipotese inicial do JSON: uma coluna do grid (repeat(auto-fit, minmax)) so colapsa quando fica vazia em TODAS as linhas do grid (spec CSS Grid - track e compartilhado entre linhas). No cenario de 3 meses (2 na 1a linha completa + 1 sozinho na 2a) a coluna 2 continua em uso pela 1a linha, entao NAO colapsa e NAO reproduz o bug (medido: ambos os itens com 295.5px, iguais) - a hipotese original de 'linha incompleta' nao se sustenta pra esse caso especifico. O bug real e determinabilistico e reproduzivel com N item(ns) MENOR que a capacidade de colunas do container em TODA a grade (ex.: grid de 1 mes so, capacidade pra 2 colunas): a(s) coluna(s) nunca usada(s) em nenhuma linha colapsam de verdade, e o(s) item(ns) restante(s) recebem TODO o espaco livre via 1fr - medido: item sozinho ocupava 607px (100% do container) com auto-fit, contra 295.5px (a metade reservada normal) com auto-fill. auto-fill nunca colapsa trilha vazia, entao o item nunca estica alem do proprio minmax.",
+          "checklist": [
+            "monthly-drawdown-grid.scss: repeat(auto-fit, ...) vira repeat(auto-fill, ...)",
+            "e2e/dashboard.spec.ts: teste 'renders one mini-chart for the default Today period' (unico item, capacidade sobra) ganhou a asercao real - largura do item < 60% da largura do grid, prova que nao estica pra preencher o container inteiro",
+            "reproduzido o bug revertendo o fix (git stash) antes de escrever a asercao definitiva, mesmo padrao de feat-064 - medido 607px (bug, 100% do container) vs 295.5px (corrigido)"
+          ],
+          "validation": "npx ng test e npx playwright test dashboard.spec.ts verdes (13/13); mini-grafico sozinho nao estica pra preencher o container inteiro.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-688"
+        },
+        {
+          "id": "feat-061.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento da feature: evidencia, init.sh, skills de revisao.",
+          "checklist": [
+            "CHANGELOG.md: entrada em [Unreleased]",
+            "./init.sh verde",
+            "Delivery Reviewer + Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "feature_list.json com status done e evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-689"
+        }
+      ],
       "evidence": ""
     },
     {
