@@ -4371,7 +4371,7 @@
       "dependencies": [
         "epic-020"
       ],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "Plan Reviewer (self-conduzido, risco baixo, 1 revisor) em 2026-09-29. Verdict: READY. monthly-drawdown-grid.scss:19 lido e confirmado - a causa raiz do JSON bate exatamente: grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)). Com auto-fit, colunas vazias de uma linha incompleta colapsam (largura 0), sobrando espaco que o 1fr do minmax distribui pros itens existentes - o item sozinho na ultima linha incompleta estica. auto-fill mantem as trilhas vazias reservadas (nao remove do grid), entao os itens continuam limitados ao minmax normal. Fix de 1 palavra (auto-fit -> auto-fill), sem mudanca de logica/dados - a escala Y compartilhada (epic-037/feat-058) e um mecanismo totalmente separado, nao tocado. Teste de regressao: e2e/dashboard.spec.ts ja tem o cenario 'a 3-month custom range... renders 3 mini-charts' (3 itens = 2 na primeira linha + 1 sozinho na segunda, contagem impar exercita exatamente o bug) - estender esse teste com uma asercao comparando boundingBox().width do primeiro grafico com o do ultimo (data-testid=monthly-drawdown-chart), mais barato que criar cenario novo. Reproduzir o bug revertendo o fix antes de fechar, mesmo padrao usado em feat-064.",
       "jira": "SV-687",
       "subtasks": [
