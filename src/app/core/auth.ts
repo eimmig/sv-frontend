@@ -50,28 +50,22 @@ export class Auth {
   readonly mustChangePassword = computed(() => this.session()?.mustChangePassword ?? false);
   readonly sessionExpired = signal(false);
 
-  login(tenantSlug: string, email: string, password: string): Observable<LoginResponse> {
-    return this.http
-      .post<LoginResponse>(`${environment.apiGatewayUrl}/api/v1/auth/login`, {
-        slug: tenantSlug,
-        email,
-        password,
-      })
-      .pipe(
-        tap((response) => {
-          const session: Session = {
-            token: response.token,
-            userId: response.userId,
-            role: response.role,
-            tenantSlug,
-            mustChangePassword: response.mustChangePassword,
-          };
-          this.session.set(session);
-          if (typeof localStorage !== 'undefined') {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
-          }
-        }),
-      );
+  login(email: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${environment.apiGatewayUrl}/api/v1/auth/login`, { email, password }).pipe(
+      tap((response) => {
+        const session: Session = {
+          token: response.token,
+          userId: response.userId,
+          role: response.role,
+          tenantSlug: email.slice(email.indexOf('@') + 1),
+          mustChangePassword: response.mustChangePassword,
+        };
+        this.session.set(session);
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+        }
+      }),
+    );
   }
 
   clearMustChangePassword(): void {

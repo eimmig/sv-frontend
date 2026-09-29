@@ -212,7 +212,6 @@
   "login": {
     "title": "Entrar",
     "tagline": "Gestão de banca",
-    "slugLabel": "Organização",
     "emailLabel": "E-mail",
     "passwordLabel": "Senha",
     "submit": "Entrar",
@@ -258,6 +257,8 @@
     "listTitle": "Usuários do tenant",
     "nameLabel": "Nome",
     "emailLabel": "E-mail",
+    "usernameLabel": "Usuário",
+    "usernameHint": "Vira @{{slug}} automaticamente",
     "passwordLabel": "Senha",
     "roleLabel": "Papel",
     "create": "Criar usuário",

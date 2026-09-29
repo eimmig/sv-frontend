@@ -32,7 +32,6 @@ describe('Login', () => {
             'pt-BR': {
               login: {
                 title: 'Entrar',
-                slugLabel: 'Organização',
                 emailLabel: 'E-mail',
                 passwordLabel: 'Senha',
                 submit: 'Entrar',
@@ -62,13 +61,13 @@ describe('Login', () => {
   it('keeps submit disabled until all fields are valid', () => {
     expect(component['form'].valid).toBe(false);
 
-    component['form'].setValue({ slug: 'acme', email: 'ana@acme', password: 'secret' });
+    component['form'].setValue({ email: 'ana@acme', password: 'secret' });
 
     expect(component['form'].valid).toBe(true);
   });
 
   it('navigates to /overview on successful login', () => {
-    component['form'].setValue({ slug: 'acme', email: 'ana@acme', password: 'secret' });
+    component['form'].setValue({ email: 'ana@acme', password: 'secret' });
 
     component['submit']();
 
@@ -81,7 +80,7 @@ describe('Login', () => {
   });
 
   it('shows the RFC 7807 detail on invalid credentials', () => {
-    component['form'].setValue({ slug: 'acme', email: 'ana@acme', password: 'wrong' });
+    component['form'].setValue({ email: 'ana@acme', password: 'wrong' });
 
     component['submit']();
 
@@ -106,7 +105,7 @@ describe('Login', () => {
 
     expect(fixture.nativeElement.querySelector('[data-testid="login-session-expired"]')).toBeTruthy();
 
-    component['form'].setValue({ slug: 'acme', email: 'ana@acme', password: 'secret' });
+    component['form'].setValue({ email: 'ana@acme', password: 'secret' });
     component['submit']();
     fixture.detectChanges();
 

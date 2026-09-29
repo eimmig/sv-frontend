@@ -17,6 +17,8 @@ describe('Users', () => {
         listTitle: 'Usuários do tenant',
         nameLabel: 'Nome',
         emailLabel: 'E-mail',
+        usernameLabel: 'Usuário',
+        usernameHint: 'Vira @{{slug}} automaticamente',
         passwordLabel: 'Senha',
         roleLabel: 'Papel',
         create: 'Criar usuário',
@@ -76,7 +78,7 @@ describe('Users', () => {
     httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/users`).flush([]);
     fixture.detectChanges();
 
-    fixture.componentInstance['form'].setValue({ name: 'Bob', email: 'bob@acme', password: 'secret' });
+    fixture.componentInstance['form'].setValue({ name: 'Bob', username: 'bob', password: 'secret' });
     fixture.componentInstance['submit']();
 
     const createRequest = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/users`);
@@ -104,7 +106,7 @@ describe('Users', () => {
     httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/users`).flush([]);
     fixture.detectChanges();
 
-    fixture.componentInstance['form'].setValue({ name: 'Bob', email: 'bob@acme', password: 'secret' });
+    fixture.componentInstance['form'].setValue({ name: 'Bob', username: 'bob', password: 'secret' });
     fixture.componentInstance['submit']();
 
     httpMock

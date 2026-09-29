@@ -212,7 +212,6 @@
   "login": {
     "title": "Sign in",
     "tagline": "Bankroll management",
-    "slugLabel": "Organization",
     "emailLabel": "Email",
     "passwordLabel": "Password",
     "submit": "Sign in",
@@ -258,6 +257,8 @@
     "listTitle": "Tenant users",
     "nameLabel": "Name",
     "emailLabel": "Email",
+    "usernameLabel": "Username",
+    "usernameHint": "Becomes @{{slug}} automatically",
     "passwordLabel": "Password",
     "roleLabel": "Role",
     "create": "Create user",
