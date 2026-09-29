@@ -4,8 +4,21 @@
 
 **Última atualização:** 2026-09-29
 **Estado:** `epic-039` (raiz) em andamento - 7 achados reais de UX recuperados de sessão nunca
-commitada (2026-09-25/29). `feat-064` e `feat-066` fechadas nesta sessão. Restam `feat-060`,
-`feat-061`, `feat-062`, `feat-063`, `feat-065` (todos `not-started`, dependências já `done`).
+commitada (2026-09-25/29). `feat-064`, `feat-066` e `feat-061` fechadas nesta sessão. Restam
+`feat-060`, `feat-062`, `feat-063`, `feat-065` (todos `not-started`, dependências já `done`).
+
+## `feat-061` fechada — último gráfico do grid de drawdown maior que os demais (2026-09-29)
+
+Story SV-687 (SV-688/689), PRs #252/#253/#254. Parte de `epic-039` (raiz). Causa raiz confirmada
+empiricamente, corrigindo a hipótese inicial do achado recuperado: `grid-template-columns:
+repeat(auto-fit, minmax(220px, 1fr))` só colapsa uma coluna quando ela fica vazia em **todas** as
+linhas do grid (track compartilhado entre linhas) - o cenário de "última linha incompleta" (ex.:
+3 itens, 2 colunas) **não** reproduz o bug (medido: larguras iguais). O bug real acontece quando o
+total de itens é menor que a capacidade de colunas em toda a grade (ex.: 1 gráfico só) - a coluna
+nunca usada colapsa de verdade e o item recebe todo o espaço livre via `1fr` (medido: 607px = 100%
+do container, contra 295.5px normal). Fix: `auto-fit` → `auto-fill` (1 palavra, única ocorrência
+no app). Gotcha documentado em `docs/convencoes.md` (repo raiz), incluindo a correção da hipótese
+errada.
 
 ## `feat-066` fechada — datas fora do padrão BR no Relatório do período (2026-09-29)
 
