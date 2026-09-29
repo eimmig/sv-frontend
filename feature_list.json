@@ -4346,6 +4346,36 @@
           }
         ]
       }
+    },
+    {
+      "id": "feat-059",
+      "name": "Validar SonarCloud tambem em push pra main (nao so pull_request)",
+      "goal": "Fechar o mesmo gap de CI ja corrigido em auth-service feat-022: validate-sonar-issues.py e sonar.qualitygate.wait nunca rodavam em push, so em pull_request - nenhum ponto do pipeline revalidava a branch inteira apos merge.",
+      "scope": "ci.yml: push pra main passa a rodar os 2 steps (continue-on-error, nao bloqueia deploy/release); push pra develop continua pulado (API do SonarCloud recusa branch != main com 403).",
+      "description": "Achado real do usuario (2026-09-29), parte do epic-038 da raiz: o mesmo gap ja corrigido em services/auth-service feat-022 (e replicado em bets-service/stats-service/api-gateway/telegram-integration) existe aqui tambem - mesma sintaxe ternaria de telegram-integration (sonarqube-scan-action). Correcao identica. Tambem pinado sonarqube-scan-action pra SHA (era @v4 flutuante) - mesmo achado real que apareceu em infra/feat-009.4 (githubactions:S7637).",
+      "dependencies": [],
+      "status": "in-progress",
+      "plan_review": "2026-09-29, Plan Reviewer reaproveitado condensado de services/auth-service feat-022 / services/telegram-integration feat-013 (mesma sintaxe ternaria, ja replicada sem achado novo) - mesma correcao de fundo.",
+      "jira": "SV-679",
+      "subtasks": [
+        {
+          "id": "feat-059.1",
+          "name": "ci.yml: push so pra main habilita os 2 steps de SonarCloud, com continue-on-error",
+          "status": "done",
+          "jira": "SV-680",
+          "detail": "Mesma correcao de services/auth-service feat-022.2 / services/telegram-integration feat-013.1, aplicada aqui, mais o pin de SHA da action (achado de infra/feat-009.4).",
+          "checklist": [
+            "Expressao ternaria/condicao do step SonarCloud: so pula quando push E ref_name==develop.",
+            "Step 'Validar zero issues no SonarCloud': mesma condicao.",
+            "continue-on-error: true nos 2 steps quando github.event_name == 'push'.",
+            "sonarqube-scan-action pinado por SHA (era @v4).",
+            "CHANGELOG.md: entrada em [Unreleased]."
+          ],
+          "validation": "yaml.safe_load no ci.yml; PR subtask->story com CI verde; PR story->develop confirma SonarCloud Code Analysis pass.",
+          "owner": "agente"
+        }
+      ],
+      "evidence": ""
     }
   ]
 }

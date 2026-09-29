@@ -51,7 +51,8 @@ jobs:
       # 5. Qualidade de codigo e cobertura
       - name: SonarCloud
         if: hashFiles('package-lock.json') != '' && (github.event_name != 'pull_request' || github.base_ref == 'develop' || github.base_ref == 'main')
-        uses: SonarSource/sonarqube-scan-action@v4
+        uses: SonarSource/sonarqube-scan-action@689fb39b34b9aa95ebc5f8f119343ddd51542402 # v4.2.2
+        continue-on-error: ${{ github.event_name == 'push' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -59,11 +60,12 @@ jobs:
           args: >
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
             -Dsonar.host.url=https://sonarcloud.io
-            ${{ github.event_name != 'push' && '-Dsonar.qualitygate.wait=true' || '' }}
+            ${{ !(github.event_name == 'push' && github.ref_name == 'develop') && '-Dsonar.qualitygate.wait=true' || '' }}
 
       # 6. Gate de issue/hotspot do SonarCloud
       - name: Validar zero issues no SonarCloud
-        if: hashFiles('package-lock.json') != '' && (github.event_name != 'pull_request' || github.base_ref == 'develop' || github.base_ref == 'main') && github.event_name != 'push'
+        if: hashFiles('package-lock.json') != '' && (github.event_name != 'pull_request' || github.base_ref == 'develop' || github.base_ref == 'main') && !(github.event_name == 'push' && github.ref_name == 'develop')
+        continue-on-error: ${{ github.event_name == 'push' }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: >
