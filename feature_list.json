@@ -4361,7 +4361,7 @@
         {
           "id": "feat-059.1",
           "name": "ci.yml: push so pra main habilita os 2 steps de SonarCloud, com continue-on-error",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-680",
           "detail": "Mesma correcao de services/auth-service feat-022.2 / services/telegram-integration feat-013.1, aplicada aqui, mais o pin de SHA da action (achado de infra/feat-009.4).",
           "checklist": [
