@@ -18,6 +18,13 @@ export function formatDay(value: string, locale: string, withYear = false): stri
   return new Intl.DateTimeFormat(locale, options).format(parseDay(value));
 }
 
+export function formatDayNumeric(value: string, locale: string, withYear = false): string {
+  const options: Intl.DateTimeFormatOptions = withYear
+    ? { day: '2-digit', month: '2-digit', year: 'numeric' }
+    : { day: '2-digit', month: '2-digit' };
+  return new Intl.DateTimeFormat(locale, options).format(parseDay(value));
+}
+
 export function spansMoreThanOneYear(first: string, last: string): boolean {
   const start = parseDay(first);
   const oneYearLater = new Date(start.getFullYear() + 1, start.getMonth(), start.getDate());
