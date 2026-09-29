@@ -4354,7 +4354,7 @@
       "scope": "ci.yml: push pra main passa a rodar os 2 steps (continue-on-error, nao bloqueia deploy/release); push pra develop continua pulado (API do SonarCloud recusa branch != main com 403).",
       "description": "Achado real do usuario (2026-09-29), parte do epic-038 da raiz: o mesmo gap ja corrigido em services/auth-service feat-022 (e replicado em bets-service/stats-service/api-gateway/telegram-integration) existe aqui tambem - mesma sintaxe ternaria de telegram-integration (sonarqube-scan-action). Correcao identica. Tambem pinado sonarqube-scan-action pra SHA (era @v4 flutuante) - mesmo achado real que apareceu em infra/feat-009.4 (githubactions:S7637).",
       "dependencies": [],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "2026-09-29, Plan Reviewer reaproveitado condensado de services/auth-service feat-022 / services/telegram-integration feat-013 (mesma sintaxe ternaria, ja replicada sem achado novo) - mesma correcao de fundo.",
       "jira": "SV-679",
       "subtasks": [
@@ -4375,7 +4375,7 @@
           "owner": "agente"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-29. 1 subtask (SV-680, story SV-679), PR #244 (subtask->story) + #245 (story->develop). Replica em apps/web a correcao de services/auth-service feat-022 / telegram-integration feat-013, mais o pin de SHA da sonarqube-scan-action (achado real de infra feat-009.4, githubactions:S7637). CI+SonarCloud verdes nos 2 PRs. Achado de processo real durante a implementacao (nao relacionado ao Sonar): a primeira tentativa desta feature corrompeu feature_list.json - a branch local tinha conteudo obsoleto de sessao anterior nunca commitado (working tree sujo havia muito tempo, nunca detectado porque nenhuma sessao rodou git status neste repositorio antes de editar o arquivo), reduzindo 59 features pra 57 e revertendo feat-046 pra not-started. Descoberto pelo tamanho anormal do diff (939 remocoes numa mudanca de 2 linhas de CI), NAO mergeado - PR fechado, branches deletadas e recriadas do zero a partir do develop real (confirmado 58 features, feat-046/057/058 intactos), feature refeita corretamente (diff final: 37 insercoes/3 remocoes). Nenhum dado foi perdido - develop nunca foi tocado pela versao corrompida. Fecha a parte apps/web do epic-038 da raiz."
     }
   ]
 }
