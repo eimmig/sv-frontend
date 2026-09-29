@@ -5,6 +5,7 @@ import { forkJoin, map } from 'rxjs';
 import { loadInto } from '../../core/api-request';
 import { BankrollApi } from '../../core/bankroll-api';
 import { formatBrl } from '../../core/currency';
+import { formatDayNumeric, spansMoreThanOneYear } from '../../core/date-format';
 import { Language } from '../../core/language';
 import { formatOdd } from '../../core/number-format';
 import { formatPercent } from '../../core/percent';
@@ -68,6 +69,11 @@ export class PeriodReport {
 
   protected formatOdd(value: number): string {
     return formatOdd(value, this.language.current());
+  }
+
+  protected formatDate(value: string): string {
+    const period = this.period();
+    return formatDayNumeric(value, this.language.current(), spansMoreThanOneYear(period.from, period.to));
   }
 
   protected sign(value: number): KpiCardSign {

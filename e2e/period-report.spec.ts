@@ -62,7 +62,7 @@ test.describe('epic-017 - "Relatório do período" page', () => {
     await page.goto('/period-report');
 
     await expect(page.getByTestId('period-report-roi-bankroll')).toContainText('22');
-    await expect(page.getByTestId('period-report-daily-row')).toContainText('2026-09-11');
+    await expect(page.getByTestId('period-report-daily-row')).toContainText('09/11');
   });
 
   test('changing the period issues a new set of requests with the new date range', async ({ page }) => {

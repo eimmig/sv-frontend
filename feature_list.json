@@ -4478,10 +4478,42 @@
         "feat-022",
         "feat-029"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (self-conduzido, risco baixo, 1 revisor) em 2026-09-29. Verdict: READY. Lido period-report.html:87 ({{ row.date }} cru), period-report.ts (Language ja injetado, period() com from/to yyyy-MM-dd via toDateOnly, mesmo padrao de formatPercent/formatOdd como wrapper de metodo) e core/date-format.ts (formatDay usa parseDay - split manual do ISO em Y/M/D pra evitar bug de timezone que new Date(stringISO) tem pra data-only; formatDateTime usa new Date(value) direto, NAO reaproveitavel aqui por causa desse risco). Decisao do plan review (a description deixava em aberto): o `goal` da feature pede formato numerico dd/MM, diferente do formatDay existente (usado em graficos, saida 'dia mes-abreviado' tipo '05 mar') - graficos toleram texto porque tem poucos pontos espacados, mas a tabela do Relatorio do periodo pode ter 30+ linhas diarias, onde numerico e mais compacto/escaneavel (mesmo racional de History, que ja usa formato numerico via formatDateTime/Intl dateStyle:short). Reaproveitar o padrao de ano condicional ja usado em equity-curve-chart.ts (spansMoreThanOneYear(timeline[0].date, last.date) -> withYear) em vez de inventar um novo. Plano: (1) core/date-format.ts ganha formatDayNumeric(value, locale, withYear=false) - mesmo parseDay (timezone-safe) + Intl com day/month 2-digit e year numeric condicional. (2) period-report.ts importa formatDayNumeric + spansMoreThanOneYear, adiciona metodo formatDate(value) que chama formatDayNumeric(value, language.current(), spansMoreThanOneYear(period().from, period().to)) - mesmo padrao wrapper dos outros formatters do componente. (3) template troca {{ row.date }} por {{ formatDate(row.date) }}. (4) e2e/period-report.spec.ts:65 hoje afirma o texto ISO cru '2026-09-11' (trava o bug atual!) - precisa virar '11/09' (locale pt-BR default do teste, periodo de 1 dia = sem ano). (5) teste unitario novo em date-format.spec.ts pra formatDayNumeric (pt-BR/en-US/es, com/sem ano) - mesmo padrao dos testes existentes de formatDay/spansMoreThanOneYear ali. Sem risco cross-service, sem mudanca de contrato/i18n de string nova (so formatacao numerica, sem chave de traducao).",
+      "jira": "SV-684",
+      "subtasks": [
+        {
+          "id": "feat-066.1",
+          "name": "formatDayNumeric em core/date-format.ts + uso no Relatorio do periodo",
+          "detail": "Causa raiz: period-report.html:87 interpola a string ISO crua da API sem passar por nenhum formatador de locale, unico lugar do app que ainda faz isso.",
+          "checklist": [
+            "core/date-format.ts: nova funcao formatDayNumeric(value, locale, withYear=false) reaproveitando parseDay (timezone-safe)",
+            "date-format.spec.ts: testes novos pra formatDayNumeric (pt-BR/en-US/es, com/sem ano)",
+            "period-report.ts: metodo formatDate(value) usando formatDayNumeric + spansMoreThanOneYear(period().from, period().to), mesmo padrao de formatPercent/formatOdd",
+            "period-report.html: {{ row.date }} vira {{ formatDate(row.date) }}",
+            "e2e/period-report.spec.ts:65 e pages/period-report/period-report.spec.ts:133: corrigir as 2 asercoes que hoje travam o bug (esperavam a string ISO crua '2026-09-11') para o formato numerico esperado - achado durante a implementacao: o locale padrao do Chromium do Playwright e do JSDOM/Vitest (navigator.language) neste projeto e en-US, nao pt-BR (gotcha ja documentado em docs/convencoes.md pra outro caso), entao o formato correto no teste (sem override explicito de locale) e '09/11' (MM/DD), nao '11/09'"
+          ],
+          "validation": "npx ng test e npx playwright test period-report.spec.ts verdes; tabela diaria mostra data numerica no locale ativo, com ano só quando o periodo cobre mais de 1 ano.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-685"
+        },
+        {
+          "id": "feat-066.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento da feature: evidencia, init.sh, skills de revisao.",
+          "checklist": [
+            "CHANGELOG.md: entrada em [Unreleased]",
+            "./init.sh verde",
+            "Delivery Reviewer + Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "feature_list.json com status done e evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-686"
+        }
+      ],
       "evidence": ""
     },
     {

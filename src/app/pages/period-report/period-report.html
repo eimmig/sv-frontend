@@ -85,7 +85,7 @@
           <tbody>
             @for (row of dailyTable(); track trackDay($index, row)) {
               <tr data-testid="period-report-daily-row">
-                <td>{{ row.date }}</td>
+                <td>{{ formatDate(row.date) }}</td>
                 <td [class]="'period-report__value--' + sign(row.roiPercent)">{{ formatPercent(row.roiPercent) }}</td>
                 <td [class]="row.roiUnidades === null ? '' : 'period-report__value--' + sign(row.roiUnidades)">
                   {{ row.roiUnidades === null ? ('periodReport.indeterminate' | transloco) : formatOdd(row.roiUnidades) }}

@@ -26,6 +26,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-681](https://stakevault.atlassian.net/browse/SV-681) - Alinhar acoes das apostas resolvidas na tabela de historico
 - [SV-682](https://stakevault.atlassian.net/browse/SV-682) - Mover display:flex da td para div interno + teste de alinhamento
 - [SV-683](https://stakevault.atlassian.net/browse/SV-683) - CHANGELOG e verificacao final
+- [SV-684](https://stakevault.atlassian.net/browse/SV-684) - Formato brasileiro de datas no Relatorio do periodo
+- [SV-685](https://stakevault.atlassian.net/browse/SV-685) - formatDayNumeric em core/date-format.ts + uso no Relatorio do periodo
+- [SV-686](https://stakevault.atlassian.net/browse/SV-686) - CHANGELOG e verificacao final
 
 ## [1.0.0] - 2026-09-24
 
