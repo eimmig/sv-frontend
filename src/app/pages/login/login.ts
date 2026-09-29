@@ -43,7 +43,7 @@ export class Login implements OnInit {
 
   ngOnInit(): void {
     if (this.auth.isAuthenticated()) {
-      this.router.navigateByUrl('/overview');
+      void this.router.navigateByUrl('/overview');
     }
   }
 
