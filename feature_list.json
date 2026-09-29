@@ -4356,11 +4356,41 @@
       "dependencies": [
         "feat-049"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
-      "evidence": ""
+      "status": "done",
+      "plan_review": "Plan Reviewer (self-conduzido, risco medio - colide com decisao de design explicita e recente, escalado ao usuario via AskUserQuestion em 2 rodadas antes de codificar) em 2026-09-29. Verdict: READY apos decisao do usuario. Lido core/loading-interceptor.ts (filtra so por URL, nao por metodo), core/loading.ts (SHOW_DELAY_MS=250/SEQUENCE_MS=2100/FADE_MS=400, end() forcava overlay visivel ate shownAt+SEQUENCE_MS mesmo se a resposta ja voltou) e docs/sistema-de-design.md secao 17 'Splash/loading animado' (apps/web feat-044, 2026-09-24, decisao explicita do usuario: 'nao usar loop infinito... se o carregamento terminar antes da animacao, deixa-la concluir e so entao dar fade - animacao cortada no meio le como bug'). CONFLITO REAL identificado: o achado desta feature (recuperado de sessao perdida, MESMO 2026-09-25, um dia depois da decisao de feat-044) pede exatamente o oposto do que feat-044 decidiu de proposito - 'assim que a resposta voltar, o loading deve ser finalizado'. Rodada 1 (AskUserQuestion, 3 opcoes): usuario escolheu reverter a garantia de sequencia completa (aceitando o risco de a animacao parecer cortada em respostas rapidas). Ao implementar o fix de gatilho sugerido pelo achado ('so GET aciona o overlay'), descoberta nova: login tambem usa POST (/api/v1/auth/login) e o overlay durante login e um cenario deliberadamente documentado E testado (e2e/loading-overlay.spec.ts, feat-044) - um filtro por metodo desligaria o overlay do login tambem, nao so do registrar aposta. Rodada 2 (AskUserQuestion, 2 opcoes, com a descoberta explicada): usuario respondeu 'todas as requisicoes ao backend continuam acionando o overlay, mas apenas durante o tempo da requisicao mesmo' - rejeitou o filtro por metodo por completo, mantendo o interceptor como esta (qualquer /api/ aciona), e confirmando que o unico fix real e a DURACAO (sem minimo artificial). Decisao final: (a) core/loading-interceptor.ts fica INALTERADO (sem filtro por metodo) - o achado original sugeria isso como possivel fix, mas o usuario decidiu que nao e o comportamento desejado. (b) core/loading.ts: end() para de calcular 'remaining' a partir de SEQUENCE_MS - inicia o leaving() imediatamente (respeitando so o FADE_MS de saida, ou 0 sob prefers-reduced-motion, que ja e o comportamento atual pra esse caso). Remove o campo shownAt (so existia pra esse calculo) e a constante SEQUENCE_MS (fica morta - as animacoes CSS do SVG continuam hardcoded em 2.1s no loading-overlay.scss, so nao ha mais garantia JS de que completem antes do fade; aceito pelo usuario). Isso ja resolve a percepcao de 'loading indevido' em register-bet na pratica: POSTs tipicamente respondem rapido, e sem o minimo artificial de ~2.5s o overlay (quando aparece, > SHOW_DELAY_MS=250ms) some no exato instante da resposta. (c) core/loading.spec.ts: reescrever os testes que dependiam da espera de SEQUENCE_MS. (d) docs/sistema-de-design.md secao 17: atualizar o paragrafo 'Uso em producao' - a regra 'sequencia de 2.1s termina antes do fade' nao vale mais. Escopo cross-service: nenhum, so apps/web.",
+      "jira": "SV-690",
+      "subtasks": [
+        {
+          "id": "feat-060.1",
+          "name": "Fim imediato do overlay ao terminar a requisicao, sem minimo artificial",
+          "detail": "Causa raiz: end() forcava o overlay a ficar visivel por um minimo de ~2.5s mesmo com a resposta ja tendo voltado, decisao de feat-044 revertida pelo usuario nesta feature (2 rodadas de AskUserQuestion - ver plan_review). O interceptor NAO muda: usuario decidiu manter todo metodo/URL /api/ acionando o overlay, so a duracao muda.",
+          "checklist": [
+            "loading.ts: end() inicia leaving() imediatamente (sem esperar SEQUENCE_MS), remove shownAt e a constante SEQUENCE_MS",
+            "loading.spec.ts: reescrever os testes acoplados ao comportamento antigo de espera",
+            "docs/sistema-de-design.md secao 17: atualizar 'Uso em producao' registrando a reversao da regra de sequencia completa"
+          ],
+          "validation": "npx ng test verde; uma requisicao que demora mais que 250ms mostra o overlay e ele some assim que a resposta chega, sem espera minima; e2e/loading-overlay.spec.ts (login) continua passando sem alteracao.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-691"
+        },
+        {
+          "id": "feat-060.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento da feature: evidencia, init.sh, skills de revisao.",
+          "checklist": [
+            "CHANGELOG.md: entrada em [Unreleased]",
+            "./init.sh verde",
+            "Delivery Reviewer + Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "feature_list.json com status done e evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-692"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-29. Story SV-690 (subtasks SV-691/692), PR #255 (subtask->story) + story->develop a seguir. Achado original tinha 2 partes: (a) overlay global acionando em telas sem necessidade (POST de register-bet), (b) overlay demorando mais que a resposta real (minimo artificial de 2.1s). Escalado ao usuario 2x (AskUserQuestion) por colidir com decisao de design explicita e recente (feat-044, 2026-09-24: 'animacao cortada no meio le como bug'). 1a rodada: usuario decidiu reverter a garantia de sequencia completa. Ao implementar o fix de gatilho sugerido pelo achado original ('so GET aciona overlay'), descoberta real durante a implementacao: login tambem usa POST e o overlay durante login e cenario documentado E testado de proposito (e2e/loading-overlay.spec.ts) - um filtro por metodo desligaria o overlay do login tambem. 2a rodada: usuario decidiu manter o interceptor inalterado (todo /api/ aciona, qualquer metodo) e corrigir so a duracao. Fix final: loading.ts end() nao espera mais SEQUENCE_MS, inicia o fade no instante em que a requisicao termina (removida a constante morta e o campo shownAt); loading-interceptor.ts fica intocado. Isso resolve a parte (b) diretamente e a parte (a) na pratica (POSTs tipicos respondem rapido, sem o minimo artificial o overlay quando aparece desaparece quase junto). ./init.sh verde (build+ng test, cobertura 92%+, 15/15 nos specs de loading), e2e/loading-overlay.spec.ts + session-expired + overview + smoke (10/10, incluindo o cenario de login lento). Delivery Reviewer (self-conduzido, mudanca de timing pura sem contrato/logica alterados, grep confirmou nenhum outro teste acoplado ao timing antigo): PASS, sem achados bloqueantes. Vault: docs/sistema-de-design.md (repo raiz) secao 17 atualizada registrando a reversao da regra de sequencia completa."
     },
     {
       "id": "feat-061",

@@ -54,4 +54,5 @@ describe('loadingInterceptor', () => {
     expect(loading.begin).not.toHaveBeenCalled();
     expect(loading.end).not.toHaveBeenCalled();
   });
+
 });
