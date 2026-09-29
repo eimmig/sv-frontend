@@ -4401,11 +4401,11 @@
           ],
           "validation": "feature_list.json com status done e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-689"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-29. Story SV-687 (subtasks SV-688/689), PR #252 (subtask->story) + story->develop a seguir. Causa raiz confirmada empiricamente, corrigindo a hipotese inicial do JSON: uma coluna do grid (repeat(auto-fit, minmax)) so colapsa quando fica vazia em TODAS as linhas (track compartilhado entre linhas) - o cenario de 'ultima linha incompleta' (3 itens, 2 colunas: 2 completos + 1 sozinho) NAO reproduz o bug (medido: mesma largura). O bug real acontece quando o total de itens e MENOR que a capacidade de colunas em toda a grade (ex.: 1 grafico so) - a coluna nunca usada colapsa de verdade e o item recebe todo o espaco livre via 1fr (medido 607px = 100% do container, contra 295.5px normal). Fix: auto-fit -> auto-fill (1 palavra), unico uso de auto-fit no app (grep confirmou). Teste de regressao no cenario 'Today' (1 grafico) que ja existia - largura do item < 60% da largura do grid, provado com o bug revertido (git stash) antes de escrever a asercao definitiva. ./init.sh verde (build+ng test, cobertura 92%+), 13/13 e2e/dashboard.spec.ts. Delivery Reviewer (self-conduzido, mudanca de 1 palavra CSS + teste, sem contrato/logica/i18n alterados, grep confirmou nenhum outro uso de auto-fit no app pra checar efeito colateral): PASS, sem achados bloqueantes. Vault: docs/convencoes.md (repo raiz) ganhou o gotcha auto-fit vs auto-fill, incluindo a correcao da hipotese inicial errada."
     },
     {
       "id": "feat-062",
