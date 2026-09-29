@@ -23,6 +23,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-658](https://stakevault.atlassian.net/browse/SV-658) - Conexao recusada pelo dev server na suite E2E completa
 - [SV-659](https://stakevault.atlassian.net/browse/SV-659) - Pinar dev server e baseURL em 127.0.0.1
 - [SV-660](https://stakevault.atlassian.net/browse/SV-660) - CHANGELOG e verificacao final
+- [SV-681](https://stakevault.atlassian.net/browse/SV-681) - Alinhar acoes das apostas resolvidas na tabela de historico
+- [SV-682](https://stakevault.atlassian.net/browse/SV-682) - Mover display:flex da td para div interno + teste de alinhamento
+- [SV-683](https://stakevault.atlassian.net/browse/SV-683) - CHANGELOG e verificacao final
 
 ## [1.0.0] - 2026-09-24
 

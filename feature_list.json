@@ -4353,7 +4353,9 @@
       "goal": "Loading so aparece quando ha busca efetiva de dados, nao se repete em dados ja carregados, e termina exatamente junto com a resposta real - sem tempo minimo artificial nem atraso.",
       "scope": "Estrategia de exibicao/duracao do loading nas telas afetadas (Registrar aposta e outras sem fetch, telas com loading mais lento que a resposta real). Nao muda o mecanismo ja corrigido em feat-049 (loading nao se repete em dado ja em cache).",
       "description": "Recuperado de sessao anterior (2026-09-25) que nao chegou a commitar - reconfirmado pelo usuario em 2026-09-29 nestes termos exatos: 'A as telas que nao precisam de loading estao tendo animacao de loading, por exemplo a de registrar aposta' + 'A animacao de loading esta demorando mais do que deveria, seria bom acelerar ela para que tenhamos uma melhor coerencia entre o tempo de resposta e o loading real. Assim que a resposta voltar, o loading deve ser finalizado.' feat-049 (done) corrigiu so o caso de loading repetido ao revisitar dado ja carregado - nao cobre telas sem fetch nenhum (Registrar aposta) nem o descompasso de duracao/timing entre a animacao e a resposta real. CAUSA RAIZ CONFIRMADA (leitura direta do codigo, 2026-09-29): (a) core/loading-interceptor.ts:8 filtra so por req.url.includes('/api/'), sem checar o metodo HTTP - qualquer POST/PUT/DELETE (nao so GET) aciona o overlay global, incluindo o POST de criacao em pages/register-bet/register-bet.ts (que ja tem seu proprio signal 'submitting' pra desabilitar o botao, o overlay global e redundante e indevido ali). (b) core/loading.ts:3-5 define SHOW_DELAY_MS=250/SEQUENCE_MS=2100/FADE_MS=400 - o metodo end() (linhas 56-85) calcula 'remaining = shownAt + SEQUENCE_MS - Date.now()' e forca o overlay a ficar visivel por no minimo ~2.5s (SEQUENCE_MS+FADE_MS) independente da resposta real ter voltado antes. Validar o fluxo completo e ajustar para: (1) telas sem busca de dados nunca mostram loading (ex.: filtrar o interceptor por metodo, so GET dispara o overlay global); (2) loading nao tem tempo minimo artificial que prolongue a animacao alem da resposta; (3) loading termina no exato momento em que a resposta chega, nao antes nem com atraso perceptivel. Decidir no plan review se SEQUENCE_MS existe por motivo de design (evitar flash) que precisa ser preservado de outra forma, ou se pode simplesmente ser removido/reduzido.",
-      "dependencies": ["feat-049"],
+      "dependencies": [
+        "feat-049"
+      ],
       "status": "not-started",
       "plan_review": "",
       "jira": "",
@@ -4366,7 +4368,9 @@
       "goal": "Todos os mini-graficos da grade de drawdown mensal mantem as mesmas dimensoes/area de plotagem, independente de ser o ultimo item da lista.",
       "scope": "Layout/CSS da grade de mini-graficos de drawdown (shared/monthly-drawdown-chart, pages/dashboard/monthly-drawdown-grid). Nao mexe na escala Y compartilhada entre os graficos, ja corrigida em epic-037/feat-058 - este e um problema de TAMANHO/layout, distinto de ESCALA do eixo Y.",
       "description": "Recuperado de sessao anterior (2026-09-25) que nao chegou a commitar - reconfirmado pelo usuario em 2026-09-29: 'o ultimo grafico da lista de graficos do drawndown continua ficando maior que os outros'. epic-037/feat-058 (done) corrigiu a escala Y compartilhada entre os mini-graficos (todos passam a ter o mesmo min/max no eixo Y), mas o usuario relata que o ULTIMO grafico da grade continua com dimensao fisica maior que os demais - problema distinto, de layout CSS, nao de escala de dados. CAUSA RAIZ CONFIRMADA (leitura direta do codigo, 2026-09-29): pages/dashboard/monthly-drawdown-grid/monthly-drawdown-grid.scss:19 - 'grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))'. Com auto-fit, colunas vazias de uma linha incompleta colapsam a largura 0 e o 1fr do minmax deixa os itens existentes esticarem pra preencher o espaco sobrando - o ultimo item de uma linha incompleta fica maior. Trocar auto-fit por auto-fill mantem as trilhas vazias reservadas, sem esticar os itens existentes - fix de 1 palavra, confirmar visualmente com grades de contagens pares e impares de meses antes de fechar.",
-      "dependencies": ["epic-020"],
+      "dependencies": [
+        "epic-020"
+      ],
       "status": "not-started",
       "plan_review": "",
       "jira": "",
@@ -4379,7 +4383,9 @@
       "goal": "Login pede so email e senha; o slug do tenant e resolvido automaticamente a partir do email.",
       "scope": "Formulario de login (apps/web) + validacao de que o contrato de autenticacao real (POST /api/v1/auth/login, que hoje exige slug+email+senha) suporta resolver o slug a partir do email, ou decisao de como tratar email que nao identifica um tenant unico.",
       "description": "Recuperado de sessao anterior (2026-09-25) que nao chegou a commitar - reconfirmado pelo usuario em 2026-09-29: 'preencher 3 campos no login e meio contra produtivo, poderia ter so o login e senha e extrair o slug do email de login'. Escopo a decidir no plan review: o contrato de POST /api/v1/auth/login (auth-service) exige slug explicito hoje (multiplos tenants podem ter usuarios com o mesmo email, ver docs/API-CONTRACTS.md) - resolver o slug a partir so do email pode exigir mudanca de contrato cross-service (nao so frontend) se um email puder pertencer a mais de um tenant. Investigar se essa ambiguidade e real no dominio antes de assumir mudanca so no frontend; tratar explicitamente o caso de email que nao identifica um tenant univoco, sem enviar um slug incorreto/adivinhado.",
-      "dependencies": ["feat-005"],
+      "dependencies": [
+        "feat-005"
+      ],
       "status": "not-started",
       "plan_review": "",
       "jira": "",
@@ -4392,7 +4398,9 @@
       "goal": "Usuario consegue editar uma aposta existente a partir da tela de Historico, nao so registrar novas.",
       "scope": "Tela de Historico (apps/web) + acao de edicao pra apostas elegiveis, reaproveitando o contrato PATCH/PUT ja exposto por bets-service se existir, ou decisao de escopo no plan review se nao existir.",
       "description": "Recuperado de sessao anterior (2026-09-25) que nao chegou a commitar - reconfirmado pelo usuario em 2026-09-29: 'Nao existe a opcao de editar a aposta no historico do frontend.' Implementar acao de edicao acessivel para apostas elegiveis na tela de Historico, carregar os dados atuais, permitir alteracao conforme as regras de negocio (RN01-RN09, docs/REQUIREMENTS.md) e refletir o resultado atualizado na lista, com feedback de sucesso e tratamento de erro. Confirmar no plan review se bets-service ja expoe endpoint de edicao de aposta (RF06/RF07) ou se e escopo cross-service.",
-      "dependencies": ["feat-004"],
+      "dependencies": [
+        "feat-004"
+      ],
       "status": "not-started",
       "plan_review": "",
       "jira": "",
@@ -4405,11 +4413,43 @@
       "goal": "Linha de uma aposta resolvida mantem a mesma altura/alinhamento das demais linhas da tabela, incluindo os botoes de acao.",
       "scope": "Estilo/estrutura da tabela de Historico (apps/web) na transicao de estado da aposta (pendente -> resolvida).",
       "description": "Recuperado de sessao anterior (2026-09-25) que nao chegou a commitar - reconfirmado pelo usuario em 2026-09-29: 'Ao marcar uma aposta como resolvida, fica desalinhado as linhas do botao de acao com o restante das linhas da tabela.' CAUSA RAIZ CONFIRMADA (leitura direta do codigo, 2026-09-29): pages/history/history.scss:71-75 aplica 'display: flex' direto na <td class=\"history__actions\">, quebrando o modelo de caixa de tabela nessa celula (o browser gera uma caixa anonima table-cell ao redor, que nao se comporta mais como as demais <td> da linha pra efeitos de altura/alinhamento vertical). history.html:96-124 so renderiza os 3 botoes de acao (ganha/perdida/devolvida) quando bet.status==='pending' - pra aposta resolvida a <td> fica vazia mas mantem a classe flex, resultando no desalinhamento. Ajustar estrutura/estilo pra manter altura e alinhamento consistentes durante e apos a mudanca de estado, sem deslocar as acoes das demais linhas - avaliar no plan review se o fix e mover o display:flex pra um <div> interno em vez da <td> diretamente, ou outra abordagem que preserve o comportamento de table-cell na <td>.",
-      "dependencies": ["feat-004"],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "dependencies": [
+        "feat-004"
+      ],
+      "status": "in-progress",
+      "plan_review": "Plan Reviewer (self-conduzido, risco baixo, 1 revisor) em 2026-09-29. Verdict: READY. history.scss:71-75 e history.html:95-125 lidos e conferidos - causa raiz bate exatamente com a descricao (display:flex na <td class=\"history__actions\">, td fica vazia e sem flex quando resolvida). Plano aprovado sem alteracao: mover display:flex/gap/flex-wrap de .history__actions (td) para um .history__actions-inner (div interno que envolve os 3 botoes), td volta a se comportar como table-cell normal em altura/alinhamento vertical, pending e resolvida incluidos. Sem mudanca de logica/estado. Teste de regressao: e2e/history.spec.ts ja tem um cenario com 2 linhas (pendente 'Bet365' + resolvida 'Lost') carregadas juntas (linhas 206-214) - adicionar ali (antes do click) uma asercao de boundingBox comparando altura das duas linhas, mais barato que criar cenario novo. Sem risco cross-service, sem mudanca de contrato/i18n novo (nenhuma string nova).",
+      "jira": "SV-681",
+      "subtasks": [
+        {
+          "id": "feat-064.1",
+          "name": "Mover display:flex da td para div interno + teste de alinhamento",
+          "detail": "Causa raiz confirmada empiricamente (medicao via Playwright, com/sem o fix): display:flex direto na <td class=\"history__actions\"> faz a celula parar de esticar pra altura da linha (comportamento normal de table-cell) - numa linha resolvida (td vazia) a td ficava com 17px de altura contra 41px da <tr>, um buraco/desalinhamento vertical dentro da propria linha. Com o fix a td volta a bater 1:1 com a altura da <tr>.",
+          "checklist": [
+            "history.html: envolver os 3 botoes de acao em <div class=\"history__actions-inner\">",
+            "history.scss: mover display:flex/gap/flex-wrap de .history__actions para .history__actions-inner",
+            "e2e/history.spec.ts: asercao de boundingBox comparando a altura da td.history__actions da linha resolvida com a altura da propria <tr> (nao entre linhas diferentes - conteudo diferente ja produz alturas de linha diferentes por design)"
+          ],
+          "validation": "npx ng test e npx playwright test e2e/history.spec.ts verdes; td da linha resolvida com altura igual a da <tr>. Reproduzido o bug antes do fix (git stash) pra confirmar causa raiz: 17px vs 41px.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-682"
+        },
+        {
+          "id": "feat-064.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento da feature: evidencia, init.sh, skills de revisao.",
+          "checklist": [
+            "CHANGELOG.md: entrada em [Unreleased]",
+            "./init.sh verde",
+            "Delivery Reviewer + Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "feature_list.json com status done e evidence preenchida.",
+          "owner": "agente",
+          "status": "not-started",
+          "jira": "SV-683"
+        }
+      ],
       "evidence": ""
     },
     {
@@ -4418,7 +4458,9 @@
       "goal": "Todo grafico do app tem rotulo claro do que cada eixo representa (ex.: eixo X = data, eixo Y = lucro em unidades/moeda), nos 3 locales.",
       "scope": "Todos os graficos do app (core/chart-theme.ts e componentes que o usam). feat-040 (done) ja cobre titulo/legenda de serie/botao de ajuda do grafico como um todo - este e especificamente sobre os EIXOS, gap nao coberto por aquela feature.",
       "description": "Recuperado de sessao anterior (2026-09-25) que nao chegou a commitar - reconfirmado pelo usuario em 2026-09-29: 'Os eixos dos graficos continuam sem legenda do que aquele item representa.' feat-040 adicionou titulo, legenda das series e explicacao geral do grafico, mas nao identificacao direta dos eixos. Adicionar rotulos claros pro eixo X (ex.: data/dia) e eixo Y (metrica e unidade correspondente, ex.: lucro em unidades ou moeda), especificos por grafico e traduzidos nos 3 locales - sem depender so do botao de ajuda ou da legenda de serie pra explicar os eixos.",
-      "dependencies": ["feat-040"],
+      "dependencies": [
+        "feat-040"
+      ],
       "status": "not-started",
       "plan_review": "",
       "jira": "",
@@ -4431,7 +4473,11 @@
       "goal": "Datas na tabela diaria do Relatorio do periodo seguem o locale ativo (numerico dd/MM em pt-BR), nao a string ISO crua da API.",
       "scope": "pages/period-report/period-report.html - so a coluna de data da tabela diaria. Achado original (sessao 2026-09-25) apontava Visao geral/Historico, mas ambas testadas ao vivo (Playwright+Chromium real, dados mockados) em 2026-09-29 e ja renderizam corretamente (ex.: '05/03/2026, 15:00' no Historico, 'jan. de 2026' na Visao geral) - usuario confirmou no mesmo dia que o problema real e no Relatorio do periodo, nao nessas 2 telas.",
       "description": "Recuperado de sessao anterior (2026-09-25) que nao chegou a commitar, escopo corrigido em 2026-09-29 apos o usuario confirmar a tela certa. Achado real, confirmado por leitura direta do codigo: period-report.html:88 interpola row.date direto no template ({{ row.date }}) - row.date e uma string ISO yyyy-MM-dd crua (period-report.ts, dateStr = toDateOnly(cursor)), sem passar por nenhuma formatacao de locale. Todo o resto do app usa core/date-format.ts (formatDateTime/formatMonth/formatDay) pra isso - equity-curve-chart e monthly-profit-chart, por exemplo, ja usam formatDay(value, locale) pra exibir dia dentro de um grafico. Corrigir: trocar {{ row.date }} por uma chamada a formatDay (ou equivalente) passando o locale ativo (Language.current()), mesmo padrao ja usado nos outros lugares - decidir no plan review se o formato deve incluir ano (esta e uma tabela de dias dentro de um periodo, pode nao precisar) e se cabe reaproveitar formatDay tal como esta ou se o formato numerico dd/MM (sem nome de mes por extenso) e mais adequado pra uma tabela densa de varias linhas.",
-      "dependencies": ["feat-005", "feat-022", "feat-029"],
+      "dependencies": [
+        "feat-005",
+        "feat-022",
+        "feat-029"
+      ],
       "status": "not-started",
       "plan_review": "",
       "jira": "",
