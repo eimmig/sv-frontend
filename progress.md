@@ -4,10 +4,22 @@
 
 **Última atualização:** 2026-09-29
 **Estado:** `epic-039` (raiz) em andamento - 7 achados reais de UX recuperados de sessão nunca
-commitada (2026-09-25/29). `feat-064`, `feat-066`, `feat-061`, `feat-060` e `feat-065` fechadas
-nesta sessão. Restam `feat-062` (login por slug+email, pode exigir decisão de contrato com
-auth-service) e `feat-063` (editar aposta pelo histórico), ambas `not-started`, dependências já
-`done`.
+commitada (2026-09-25/29). `feat-064`, `feat-066`, `feat-061`, `feat-060`, `feat-065` e `feat-062`
+fechadas nesta sessão. Resta só `feat-063` (editar aposta pelo histórico), `not-started`,
+dependência já `done`.
+
+## `feat-062` fechada — login 2 campos, criação de usuário por username (2026-09-29)
+
+Story SV-700 (SV-701/702), PRs #261/#262/#263. Parte de `epic-039` (raiz), fecha `epic-040` da
+raiz junto com `services/auth-service feat-023` (já fechada). Espelha o contrato novo do backend:
+login vira 2 campos (email+senha), `core/auth.ts` deriva `tenantSlug` do domínio do próprio e-mail
+digitado (sem mudança no contrato de resposta - o backend nunca devolveu esse valor). Criação de
+usuário troca e-mail livre por `username`, com hint mostrando o sufixo `@<slug>` que será
+completado. Achado real de QA visual: o hint quebrava em 2 linhas e sobrepunha o campo de senha
+(Material só reserva altura pra 1 linha no subscript wrapper) - corrigido encurtando o texto nos 3
+locales. Achado real de CI: remover o campo `slug` do form deslocou uma linha pré-existente
+(`navigateByUrl` sem `await`/`void`) pro range de "novo código" do SonarCloud, disparando
+`typescript:S9383` mesmo sem eu ter tocado naquela linha - corrigido com `void`.
 
 ## `feat-065` fechada — eixos dos gráficos sem rótulo (2026-09-29)
 
