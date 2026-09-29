@@ -1,7 +1,15 @@
 export class ResizeObserverStub {
-  observe(): void {}
-  unobserve(): void {}
-  disconnect(): void {}
+  observe(): void {
+    // no-op: JSDOM has no layout engine, so there is nothing to observe
+  }
+
+  unobserve(): void {
+    // no-op: see observe()
+  }
+
+  disconnect(): void {
+    // no-op: see observe()
+  }
 }
 
 export function stubCanvasContext(): void {
