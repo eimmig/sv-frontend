@@ -36,6 +36,40 @@ function axisNameStyle(color: string) {
   return { fontSize: 10, color };
 }
 
+function namedGrid(xAxisName: string | undefined, yAxisName: string | undefined) {
+  return {
+    top: 16,
+    right: 16,
+    bottom: xAxisName ? 40 : 24,
+    left: yAxisName ? 64 : 48,
+  };
+}
+
+function categoryAxis(categories: string[], labelColor: string, xAxisName: string | undefined) {
+  return {
+    type: 'category',
+    data: categories,
+    axisLine: { show: false },
+    axisTick: { show: false },
+    axisLabel: { color: labelColor },
+    name: xAxisName,
+    nameLocation: 'middle',
+    nameGap: 22,
+    nameTextStyle: axisNameStyle(labelColor),
+  };
+}
+
+function namedValueAxisStyle(labelColor: string, yAxisName: string | undefined) {
+  return {
+    axisLabel: { color: labelColor },
+    name: yAxisName,
+    nameLocation: 'middle',
+    nameGap: 40,
+    nameRotate: 90,
+    nameTextStyle: axisNameStyle(labelColor),
+  };
+}
+
 export function buildLineChartOption(
   categories: string[],
   values: (number | null)[],
@@ -46,36 +80,16 @@ export function buildLineChartOption(
 ): EChartsCoreOption {
   const { smooth = true, splitNumber = 2, yMin, yMax, xAxisName, yAxisName } = style;
   return {
-    grid: {
-      top: 16,
-      right: 16,
-      bottom: xAxisName ? 40 : 24,
-      left: yAxisName ? 64 : 48,
-    },
+    grid: namedGrid(xAxisName, yAxisName),
     tooltip: { trigger: 'axis', ...themedTooltip() },
-    xAxis: {
-      type: 'category',
-      data: categories,
-      axisLine: { show: false },
-      axisTick: { show: false },
-      axisLabel: { color: labelColor },
-      name: xAxisName,
-      nameLocation: 'middle',
-      nameGap: 22,
-      nameTextStyle: axisNameStyle(labelColor),
-    },
+    xAxis: categoryAxis(categories, labelColor, xAxisName),
     yAxis: {
       type: 'value',
       splitNumber,
       min: yMin,
       max: yMax,
-      axisLabel: { color: labelColor },
       splitLine: { lineStyle: { color: borderColor, width: 1 } },
-      name: yAxisName,
-      nameLocation: 'middle',
-      nameGap: 40,
-      nameRotate: 90,
-      nameTextStyle: axisNameStyle(labelColor),
+      ...namedValueAxisStyle(labelColor, yAxisName),
     },
     series: [
       {
@@ -138,34 +152,14 @@ export function buildComparisonLineChartOption(
 ): EChartsCoreOption {
   const { xAxisName, yAxisName } = axisNames;
   return {
-    grid: {
-      top: 16,
-      right: 16,
-      bottom: xAxisName ? 40 : 24,
-      left: yAxisName ? 64 : 48,
-    },
+    grid: namedGrid(xAxisName, yAxisName),
     tooltip: { trigger: 'axis', ...themedTooltip() },
-    xAxis: {
-      type: 'category',
-      data: categories,
-      axisLine: { show: false },
-      axisTick: { show: false },
-      axisLabel: { color: labelColor },
-      name: xAxisName,
-      nameLocation: 'middle',
-      nameGap: 22,
-      nameTextStyle: axisNameStyle(labelColor),
-    },
+    xAxis: categoryAxis(categories, labelColor, xAxisName),
     yAxis: {
       type: 'value',
       splitNumber: 2,
-      axisLabel: { color: labelColor },
       splitLine: { lineStyle: { color: borderColor, width: 1 } },
-      name: yAxisName,
-      nameLocation: 'middle',
-      nameGap: 40,
-      nameRotate: 90,
-      nameTextStyle: axisNameStyle(labelColor),
+      ...namedValueAxisStyle(labelColor, yAxisName),
     },
     series: [comparisonSeriesOption(seriesA), comparisonSeriesOption(seriesB)],
   };
