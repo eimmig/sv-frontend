@@ -67,6 +67,12 @@ export const routes: Routes = [
       import('./pages/register-bet/register-bet').then((m) => m.RegisterBet),
     canActivate: [authGuard],
   },
+  {
+    path: 'register-bet/:id',
+    loadComponent: () =>
+      import('./pages/register-bet/register-bet').then((m) => m.RegisterBet),
+    canActivate: [authGuard],
+  },
   ...catalogManagerRoutes,
   ...catalogDashboardRoutes,
   {

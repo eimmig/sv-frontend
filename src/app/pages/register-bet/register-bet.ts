@@ -8,11 +8,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTimepickerModule } from '@angular/material/timepicker';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { forkJoin, map } from 'rxjs';
 
 import { loadInto, submitForm } from '../../core/api-request';
-import { BetType, BetsApi } from '../../core/bets-api';
+import { Bet, BetStatus, BetType, BetsApi } from '../../core/bets-api';
 import { BettingHouse, BettingHousesApi } from '../../core/betting-houses-api';
 import { CatalogEntry, Team, catalogApi, teamsApi } from '../../core/catalog-api';
 import { formatBrl } from '../../core/currency';
@@ -45,6 +46,8 @@ function combineDateAndTime(date: Date, time: Date): Date {
   return combined;
 }
 
+const SETTLED_STATUSES: readonly BetStatus[] = ['won', 'lost', 'void'];
+
 @Component({
   imports: [
     ReactiveFormsModule,
@@ -70,14 +73,24 @@ export class RegisterBet implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly formBuilder = inject(FormBuilder);
   private readonly transloco = inject(TranslocoService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   protected readonly formatBrl = formatBrl;
   protected readonly betTypes: readonly BetType[] = ['pre', 'live'];
+  protected readonly betStatuses: readonly BetStatus[] = SETTLED_STATUSES;
   protected readonly options = signal<FormOptions>(EMPTY_OPTIONS);
   protected readonly loadError = signal<string | null>(null);
   protected readonly submitting = signal(false);
   protected readonly formError = signal<string | null>(null);
   protected readonly successMessage = signal<string | null>(null);
+
+  protected readonly editingBetId = signal<string | null>(null);
+  protected readonly loadedBetStatus = signal<BetStatus | null>(null);
+  protected readonly showStatusField = computed(() => {
+    const status = this.loadedBetStatus();
+    return status !== null && SETTLED_STATUSES.includes(status);
+  });
 
   private idempotencyKey = crypto.randomUUID();
 
@@ -97,6 +110,7 @@ export class RegisterBet implements OnInit {
     odd: [1.01, [Validators.required, Validators.min(1.01)]],
     betDateOnly: new FormControl<Date | null>(new Date(), Validators.required),
     betTimeOnly: new FormControl<Date | null>(new Date(), Validators.required),
+    status: ['pending' as BetStatus, Validators.required],
   });
 
   private readonly sportId = toSignal(this.form.controls.sportId.valueChanges, { initialValue: '' });
@@ -108,6 +122,12 @@ export class RegisterBet implements OnInit {
   ngOnInit(): void {
     this.reload();
 
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.editingBetId.set(id);
+      this.loadBetForEdit(id);
+    }
+
     this.form.controls.sportId.valueChanges.subscribe((sportId) => {
       this.form.controls.team1Id.setValue('');
       this.form.controls.team2Id.setValue('');
@@ -118,6 +138,34 @@ export class RegisterBet implements OnInit {
         this.form.controls.team1Id.disable();
         this.form.controls.team2Id.disable();
       }
+    });
+  }
+
+  private loadBetForEdit(id: string): void {
+    this.betsApi.get(id).subscribe({
+      next: (bet: Bet) => {
+        this.loadedBetStatus.set(bet.status);
+        const betDate = new Date(bet.betDate);
+        this.form.patchValue({
+          bettingHouseId: bet.bettingHouseId,
+          sportId: bet.sportId,
+          leagueId: bet.leagueId,
+          marketId: bet.marketId,
+          tipsterId: bet.tipsterId ?? '',
+          ticketNumber: bet.ticketNumber ?? '',
+          team1Id: bet.team1Id ?? '',
+          team2Id: bet.team2Id ?? '',
+          description: bet.description ?? '',
+          betType: bet.betType ?? 'pre',
+          playType: bet.playType ?? '',
+          stake: bet.stake,
+          odd: bet.odd,
+          betDateOnly: betDate,
+          betTimeOnly: betDate,
+          status: bet.status,
+        });
+      },
+      error: () => this.loadError.set(this.transloco.translate('registerBet.genericError')),
     });
   }
 
@@ -171,26 +219,37 @@ export class RegisterBet implements OnInit {
     }
     const raw = this.form.getRawValue();
     this.successMessage.set(null);
+    const fields = {
+      bettingHouseId: raw.bettingHouseId,
+      sportId: raw.sportId,
+      leagueId: raw.leagueId,
+      marketId: raw.marketId,
+      tipsterId: raw.tipsterId || null,
+      ticketNumber: raw.ticketNumber || null,
+      team1Id: raw.team1Id || null,
+      team2Id: raw.team2Id || null,
+      description: raw.description || null,
+      betType: raw.betType,
+      playType: raw.playType || null,
+      stake: raw.stake,
+      odd: raw.odd,
+      betDate: combineDateAndTime(raw.betDateOnly ?? new Date(), raw.betTimeOnly ?? new Date()).toISOString(),
+    };
+
+    const editingId = this.editingBetId();
+    if (editingId) {
+      submitForm(
+        this.betsApi.update(editingId, { ...fields, status: raw.status }),
+        this.submitting,
+        this.formError,
+        () => this.transloco.translate('registerBet.genericError'),
+        () => void this.router.navigateByUrl('/history'),
+      );
+      return;
+    }
+
     submitForm(
-      this.betsApi.create(
-        {
-          bettingHouseId: raw.bettingHouseId,
-          sportId: raw.sportId,
-          leagueId: raw.leagueId,
-          marketId: raw.marketId,
-          tipsterId: raw.tipsterId || null,
-          ticketNumber: raw.ticketNumber || null,
-          team1Id: raw.team1Id || null,
-          team2Id: raw.team2Id || null,
-          description: raw.description || null,
-          betType: raw.betType,
-          playType: raw.playType || null,
-          stake: raw.stake,
-          odd: raw.odd,
-          betDate: combineDateAndTime(raw.betDateOnly ?? new Date(), raw.betTimeOnly ?? new Date()).toISOString(),
-        },
-        this.idempotencyKey,
-      ),
+      this.betsApi.create(fields, this.idempotencyKey),
       this.submitting,
       this.formError,
       () => this.transloco.translate('registerBet.genericError'),

@@ -36,6 +36,7 @@ describe('History', () => {
         markWon: 'Ganha',
         markLost: 'Perdida',
         markVoid: 'Devolvida',
+        edit: 'Editar',
         typeLabel: 'Tipo',
         amountLabel: 'Valor',
         previousPage: 'Anterior',
@@ -215,6 +216,32 @@ describe('History', () => {
     expect(badges[0].classList).toContain('badge--positive');
     expect(badges[1].classList).toContain('badge--negative');
     expect(badges[2].classList).toContain('badge--neutral');
+  });
+
+  it('renders an edit link routing to /register-bet/:id for each bet row', () => {
+    const bet: Bet = {
+      id: 'bet-1',
+      bettingHouseId: 'bh-1',
+      sportId: 'sp-1',
+      leagueId: 'lg-1',
+      marketId: 'mk-1',
+      tipsterId: null,
+      ticketNumber: null,
+      team1Id: null,
+      team2Id: null,
+      description: null,
+      betType: null,
+      playType: null,
+      stake: 100,
+      odd: 1.85,
+      status: 'pending',
+      betDate: '2026-03-01T18:00:00Z',
+    };
+    fixture.componentInstance['betsPage'].set({ content: [bet], page: 0, size: 20, totalElements: 1, totalPages: 1 });
+    fixture.detectChanges();
+
+    const link: HTMLAnchorElement = fixture.nativeElement.querySelector('[data-testid="history-bets-edit"]');
+    expect(link.getAttribute('href')).toBe('/register-bet/bet-1');
   });
 
   it('badges transaction type deposit as positive and withdrawal as neutral', () => {

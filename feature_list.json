@@ -4498,11 +4498,48 @@
       "dependencies": [
         "feat-004"
       ],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
-      "evidence": ""
+      "status": "done",
+      "plan_review": "Investigacao completa (leitura direta do codigo, equivalente ao Plan Reviewer) confirmou que NAO e escopo cross-service: bets-service JA expoe PUT /api/v1/bets/{id} desde feat-019 (2026-09-22, bem antes desta sessao) - docs/services/bets-service.md secao 'Edicao de aposta ja registrada' e o codigo real (BetsController.java:86-93, UpdateBetRequest.java) confirmam. Contrato: body = todos os campos de CreateBetInput + status (BetStatus) + ticketNumber; X-User-Id obrigatorio; 422 invalid-status-transition se tentar cruzar pending<->liquidada (so pending->pending ou liquidada->liquidada, trocando o valor - correcao pos-liquidacao permitida, ex. won->lost, recalcula profit RN02/RN03); 409 bet-modified-concurrently em corrida com PATCH /status concorrente (cliente rele e tenta de novo). Edicao permitida tanto em pending quanto ja liquidada - TODAS as apostas sao 'elegiveis', nao ha filtro de elegibilidade a implementar. Verdict: READY. Leitura completa de core/bets-api.ts (sem metodo get(id) nem update ainda - so create/list/updateStatus), pages/register-bet/register-bet.ts/html (formulario completo, ja Shneiderman-compliant, reaproveitavel pra edicao sem duplicar UI) e pages/history/history.ts/html (coluna de acoes ja tem os 3 botoes de liquidacao do feat-064). Decisao de design: reaproveitar a MESMA tela/componente RegisterBet pra edicao (rota nova register-bet/:id, mesmo componente lazy-loaded) em vez de duplicar o formulario inteiro num modal - historico ganha so um link/botao 'Editar' por linha (todas as linhas, sem excecao) navegando pra la. Modo edicao: (1) carrega a aposta via um GET /api/v1/bets/{id} novo (endpoint ja existe no backend, so falta o metodo no frontend) e pre-preenche o form, incluindo split de betDate em betDateOnly/betTimeOnly (mesmo padrao ja usado na criacao). (2) form ganha um controle status, mostrado (select won/lost/void) SO quando a aposta carregada ja esta liquidada (pending fica sem esse controle, o valor pending e enviado sem UI pra troca - liquidar continua sendo o botao dedicado do historico, PATCH /status, nao este formulario). (3) submit() chama update() em vez de create() quando em modo edicao; sucesso navega de volta pra /history (fechamento claro, regra 4 de Shneiderman) em vez de limpar o form pra nova entrada. (4) Idempotency-Key nao se aplica a PUT (so POST) - omitido no metodo update(). i18n: novas chaves em registerBet (editTitle/save/updateSuccess/statusLabel/status.won/lost/void) e history (edit) nos 3 locales, seguindo o vocabulario ja usado em history.status.*. Testes: bets-api.spec.ts (get/update), register-bet.spec.ts (modo edicao: carrega dados, mostra/esconde status conforme status atual, chama update, navega pra history), history.spec.ts (link de editar por linha), e2e/register-bet.spec.ts (fluxo completo de edicao). Sem risco cross-service, sem mudanca de contrato (contrato ja existia).",
+      "jira": "SV-703",
+      "subtasks": [
+        {
+          "id": "feat-063.1",
+          "name": "Reaproveitar RegisterBet pra edicao + link no Historico",
+          "detail": "bets-service ja expoe PUT /api/v1/bets/{id} (feat-019) - so falta o frontend. Reaproveita o formulario de registro existente em vez de duplicar.",
+          "checklist": [
+            "core/bets-api.ts: novo metodo get(id) (GET /api/v1/bets/{id}); UpdateBetInput (CreateBetInput + status); novo metodo update(id, input) (PUT /api/v1/bets/{id}, sem Idempotency-Key)",
+            "app.routes.ts: rota nova register-bet/:id, mesmo componente RegisterBet lazy-loaded",
+            "register-bet.ts: le :id da rota: se presente, carrega a aposta via betsApi.get(), pre-preenche o form (split betDate em betDateOnly/betTimeOnly), guarda o status atual num signal",
+            "register-bet.ts: controle status novo no form, visivel no template so quando o status atual carregado NAO e pending (select won/lost/void)",
+            "register-bet.ts: submit() chama update() em vez de create() em modo edicao; sucesso navega pra /history (nao reseta o form)",
+            "register-bet.html: bloco condicional pro select de status (modo edicao, status != pending) + titulo/label do botao mudam em modo edicao",
+            "pages/history: coluna de acoes ganha um link 'Editar' (routerLink pra /register-bet/{bet.id}) em toda linha, junto dos botoes ja existentes",
+            "i18n (pt-BR/en-US/es): registerBet.editTitle/save/updateSuccess/statusLabel/status.won/lost/void; history.edit"
+          ],
+          "validation": "npx ng test verde; abrir uma aposta pendente pelo historico nao mostra seletor de status; abrir uma ja liquidada mostra e permite trocar won/lost/void; salvar edicao volta pra /history.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-704"
+        },
+        {
+          "id": "feat-063.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento da feature: evidencia, init.sh, skills de revisao, fecha epic-039 da raiz (ultimo dos 7 achados).",
+          "checklist": [
+            "CHANGELOG.md: entrada em [Unreleased]",
+            "./init.sh verde",
+            "QA visual (dev server, 2 temas, mobile+desktop) - UI nova (seletor de status condicional)",
+            "Delivery Reviewer + Test Suite Auditor rodados",
+            "Vault (docs/): docs/services/web.md - fluxo de edicao de aposta documentado",
+            "feature_list.json da raiz: epic-039 vira done (ultimo dos 7 achados fechado)"
+          ],
+          "validation": "feature_list.json com status done e evidence preenchida; epic-039 da raiz done.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-705"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-29. Story SV-703 (subtasks SV-704/705), branch subtask/SV-704 (implementacao) -> feature/SV-703 -> develop. core/bets-api.ts ganhou get(id)/update(id,input) (PUT /api/v1/bets/{id}, sem Idempotency-Key - so create() usa). app.routes.ts ganhou register-bet/:id reaproveitando o mesmo componente RegisterBet (sem duplicar formulario). register-bet.ts le :id da rota, carrega a aposta via betsApi.get() e pre-preenche o form (split de betDate em betDateOnly/betTimeOnly, mesmo padrao da criacao); campo status (mat-select, won/lost/void) so aparece quando a aposta carregada ja esta liquidada (showStatusField computed sobre loadedBetStatus), refletindo a regra real de bets-service (PUT so aceita pending->pending ou liquidada->liquidada); botao Limpar some em modo edicao; submit() chama update() em vez de create() e navega pra /history no sucesso. history.html ganhou link Editar (routerLink /register-bet/:id) em toda linha, ao lado dos botoes de liquidacao existentes. i18n (pt-BR/en-US/es) sincronizado (317 chaves, validate-i18n-keys.py OK) - novas chaves registerBet.save/statusLabel/status.{won,lost,void} e history.edit. Testes: bets-api.spec.ts (get/update, 4/4), register-bet.spec.ts (3 cenarios novos - pre-preenchimento, campo status oculto/visivel conforme status carregado, submit via PUT sem Idempotency-Key + navegacao), history.spec.ts (link Editar renderiza href correto), e2e/register-bet.spec.ts (2 cenarios novos - pendente sem campo status, liquidada com campo status + PUT real), e2e/history.spec.ts (navegacao do link Editar). ./init.sh verde (build + ng test, 392/392, cobertura 92%+). QA visual real via dev server (Playwright com rotas mockadas, mesmo padrao dos specs e2e, sem depender do backend real): register-bet em modo edicao (status Ganha pre-selecionado, botao Salvar alteracoes, sem botao Limpar) e o link Editar no Historico, claro e escuro - ambos sem sobreposicao/quebra de layout. Delivery Reviewer (self-conduzido: reli bets-api.ts/register-bet.ts/register-bet.html/history.ts diffs completos, sem achados bloqueantes - contrato reaproveitado sem mudanca, UI reaproveita o formulario existente sem duplicacao). Achado real fora de escopo durante a rodada completa de e2e (nao so os specs tocados por esta feature): e2e/login-layout.spec.ts (teste de sobreposicao do seletor de idioma em viewport curto) falha de forma consistente, provavel regressao de feat-062 (remocao do campo slug encurtou o card de login) - registrado como apps/web feat-067 (not-started) no backlog, nao corrigido aqui por estar fora do escopo de arquivos desta feature (regra harness stay-in-scope). Vault: docs/services/web.md ganhou secao Editar aposta pelo historico. Root feature_list.json: epic-039 marcado done em commit separado (ultimo dos 7 achados fechado)."
     },
     {
       "id": "feat-064",
@@ -4645,6 +4682,21 @@
         }
       ],
       "evidence": "Fechada em 2026-09-29. Story SV-684 (subtasks SV-685/SV-686), PRs #249 (subtask->story) + story->develop a seguir. Causa raiz: period-report.html era o unico lugar do app ainda interpolando a data ISO crua da API sem formatacao de locale. Corrigido com formatDayNumeric (nova funcao em core/date-format.ts, numerico dd/MM, reaproveita o parseDay timezone-safe ja usado por formatDay) + period.formatDate como wrapper, ano condicional via spansMoreThanOneYear (mesmo padrao de equity-curve-chart.ts). 2 testes existentes (unitario period-report.spec.ts + e2e period-report.spec.ts) afirmavam a string ISO crua, travando o bug ate agora - corrigidos pro valor formatado real (locale padrao do Chromium/JSDOM neste projeto e en-US sem override explicito -> '09/11'). 3 testes unitarios novos pra formatDayNumeric (pt-BR/en-US/es, com/sem ano). ./init.sh verde (build+ng test, cobertura 92%+), 5/5 e2e/period-report.spec.ts. Delivery Reviewer (self-conduzido, mudanca de baixo risco, so formatacao de exibicao, sem contrato/i18n/logica de negocio alterados): PASS, sem achados bloqueantes. Vault: docs/convencoes.md (repo raiz) ganhou a regra de sempre passar por core/date-format.ts pra data nova exibida, e quando usar formatDay vs formatDayNumeric."
+    },
+    {
+      "id": "feat-067",
+      "name": "Regressao: selector de idioma sobrepoe o botao de login em viewport curto",
+      "goal": "Em viewport curto (375x400), o language-selector flutuante nao sobrepoe mais o botao de login apos o scroll ate o form.",
+      "scope": "pages/login - so o CSS/posicionamento dos controles flutuantes (language-selector/theme-toggle) relativo ao form, sem mudar os campos do form em si.",
+      "description": "Achado real durante o fechamento de apps/web feat-063 (2026-09-29), rodando a suite e2e completa (nao so os specs tocados pela feature): e2e/login-layout.spec.ts:8 ('language selector and theme toggle never overlap the login card, even on a short viewport') falha de forma consistente (reproduzido 3x seguidas, nao e flake - outro teste da mesma bateria, dashboard.spec.ts:279, falhou 1x e passou nas 2 reexecucoes seguintes, esse sim flake e ignorado). Hipotese de causa raiz (nao confirmada por debug visual ainda): feat-062 (fechada em 2026-09-29, poucos commits antes) removeu o campo slug do formulario de login (login.ts/html), encurtando a altura do card - o teste antigo dependia da altura anterior (com 3 campos) pra garantir que o submit, apos scrollIntoViewIfNeeded, ficasse abaixo da faixa ocupada pelo language-selector; com o form mais curto isso pode nao valer mais. Nao investigado nem corrigido nesta sessao porque login.html/scss estao fora do escopo de feat-063 (Editar aposta pelo historico) - regra do harness 'nao edite arquivos de um servico fora da feature ativa'.",
+      "dependencies": [
+        "feat-062"
+      ],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
     },
     {
       "id": "feat-059",
