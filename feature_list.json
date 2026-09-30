@@ -4692,9 +4692,9 @@
       "dependencies": [
         "feat-062"
       ],
-      "status": "not-started",
+      "status": "in-progress",
       "plan_review": "Plan Reviewer (self-conduzido, risco baixo, 1 revisor) em 2026-09-30. Verdict: READY. Reproduzido: e2e/login-layout.spec.ts:8 falha com o submit sobreposto ao language-selector. Causa raiz (confirmada, corrige a hipotese da descricao): o .host da tela de login e o container de scroll e reserva padding-bottom:88px pros controles flutuantes fixos (bottom:16px), mas scrollIntoViewIfNeeded alinha o botao na borda inferior do viewport ignorando esse padding - sem scroll-padding-bottom o submit cai sob os controles fixos. Nao depende da altura do card (feat-062 so expos o caso). Plano aprovado: scroll-padding-bottom:88px no :host de pages/login/login.scss, sem mudar template nem teste. Sem contrato/i18n/logica alterados.",
-      "jira": "",
+      "jira": "SV-706",
       "subtasks": [
         {
           "id": "feat-067.1",
@@ -4706,8 +4706,8 @@
           ],
           "validation": "npx playwright test e2e/login-layout.spec.ts verde (9/9).",
           "owner": "agente",
-          "status": "not-started",
-          "jira": ""
+          "status": "in-progress",
+          "jira": "SV-707"
         },
         {
           "id": "feat-067.2",
@@ -4722,7 +4722,7 @@
           "validation": "feature_list.json com status done e evidence preenchida.",
           "owner": "agente",
           "status": "not-started",
-          "jira": ""
+          "jira": "SV-708"
         }
       ],
       "evidence": ""
