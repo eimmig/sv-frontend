@@ -162,3 +162,116 @@ test.describe('RF04 - manual bet registration', () => {
     );
   });
 });
+
+test.describe('feat-063 - edit an existing bet from History', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.clock.setFixedTime(new Date('2026-09-16T12:00:00Z'));
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.addInitScript(() => {
+      localStorage.setItem(
+        'stakevault.auth',
+        JSON.stringify({
+          token: 'v4.local.test',
+          userId: 'test-user',
+          role: 'MEMBER',
+          tenantSlug: 'acme',
+          mustChangePassword: false,
+        }),
+      );
+    });
+    await page.route('**/api/v1/betting-houses*', catalogRoute([{ id: 'bh-1', name: 'Bet365' }]));
+    await page.route('**/api/v1/sports*', catalogRoute([{ id: 'sp-1', name: 'Futebol' }]));
+    await page.route('**/api/v1/leagues*', catalogRoute([{ id: 'lg-1', name: 'Brasileirão' }]));
+    await page.route('**/api/v1/markets*', catalogRoute([{ id: 'mk-1', name: 'Handicap' }]));
+    await page.route('**/api/v1/tipsters*', catalogRoute([{ id: 'tp-1', name: 'Ana' }]));
+    await page.route('**/api/v1/teams*', catalogRoute([{ id: 'tm-1', name: 'Flamengo' }]));
+  });
+
+  test('pre-fills the form from the existing bet and hides the status field while pending', async ({ page }) => {
+    await page.route('**/api/v1/bets/bet-1', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 'bet-1',
+          bettingHouseId: 'bh-1',
+          sportId: 'sp-1',
+          leagueId: 'lg-1',
+          marketId: 'mk-1',
+          tipsterId: null,
+          ticketNumber: null,
+          team1Id: null,
+          team2Id: null,
+          description: null,
+          betType: 'pre',
+          playType: null,
+          stake: 100,
+          odd: 1.5,
+          status: 'pending',
+          betDate: '2026-09-10T14:30:00.000Z',
+        }),
+      }),
+    );
+
+    await page.goto('/register-bet/bet-1');
+
+    await expect(page.getByTestId('register-bet-stake')).toHaveValue('100');
+    await expect(page.getByTestId('register-bet-odd')).toHaveValue('1.5');
+    await expect(page.getByTestId('register-bet-status')).toHaveCount(0);
+  });
+
+  test('shows the status field pre-selected for a settled bet, and submits via PUT without an Idempotency-Key', async ({
+    page,
+  }) => {
+    let idempotencyKeyHeader: string | null = null;
+    let requestMethod: string | null = null;
+    let requestBody: Record<string, unknown> | null = null;
+
+    await page.route('**/api/v1/bets/bet-1', (route) => {
+      if (route.request().method() === 'GET') {
+        return route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            id: 'bet-1',
+            bettingHouseId: 'bh-1',
+            sportId: 'sp-1',
+            leagueId: 'lg-1',
+            marketId: 'mk-1',
+            tipsterId: null,
+            ticketNumber: null,
+            team1Id: null,
+            team2Id: null,
+            description: null,
+            betType: 'pre',
+            playType: null,
+            stake: 100,
+            odd: 1.5,
+            status: 'won',
+            betDate: '2026-09-10T14:30:00.000Z',
+          }),
+        });
+      }
+      idempotencyKeyHeader = route.request().headers()['idempotency-key'] ?? null;
+      requestMethod = route.request().method();
+      requestBody = route.request().postDataJSON();
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ id: 'bet-1', status: 'lost' }),
+      });
+    });
+
+    await page.goto('/register-bet/bet-1');
+
+    await expect(page.getByTestId('register-bet-status')).toBeVisible();
+    await page.getByTestId('register-bet-status').click();
+    await page.getByRole('option', { name: 'Lost' }).click();
+    await page.getByTestId('register-bet-submit').click();
+
+    await page.waitForURL('**/history');
+    expect(requestMethod).toBe('PUT');
+    expect(idempotencyKeyHeader).toBeNull();
+    expect(requestBody?.['status']).toBe('lost');
+  });
+});

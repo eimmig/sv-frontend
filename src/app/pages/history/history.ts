@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { forkJoin, map } from 'rxjs';
 
@@ -68,6 +68,7 @@ const TRANSACTIONS_TAB = 1;
     MatInputModule,
     MatSelectModule,
     MatTabsModule,
+    RouterLink,
     TranslocoPipe,
     Panel,
     PanelLayout,

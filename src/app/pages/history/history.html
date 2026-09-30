@@ -123,6 +123,13 @@
                           {{ 'history.markVoid' | transloco }}
                         </button>
                       }
+                      <a
+                        mat-stroked-button
+                        [routerLink]="['/register-bet', bet.id]"
+                        data-testid="history-bets-edit"
+                      >
+                        {{ 'history.edit' | transloco }}
+                      </a>
                     </div>
                   </td>
                 </tr>

@@ -338,7 +338,14 @@
     "betTimeLabel": "Event time",
     "reset": "Clear",
     "submit": "Register bet",
+    "save": "Save changes",
     "success": "Bet registered successfully.",
+    "statusLabel": "Status",
+    "status": {
+      "won": "Won",
+      "lost": "Lost",
+      "void": "Void"
+    },
     "genericError": "Could not complete the operation. Please try again."
   },
   "history": {
@@ -376,7 +383,8 @@
     "actionsLabel": "Actions",
     "markWon": "Won",
     "markLost": "Lost",
-    "markVoid": "Void"
+    "markVoid": "Void",
+    "edit": "Edit"
   },
   "panel": {
     "collapse": "Collapse panel",

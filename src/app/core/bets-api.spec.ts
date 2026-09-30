@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
-import { BetsApi, CreateBetInput } from './bets-api';
+import { BetsApi, CreateBetInput, UpdateBetInput } from './bets-api';
 import { environment } from '../../environments/environment';
 
 describe('BetsApi', () => {
@@ -61,5 +61,43 @@ describe('BetsApi', () => {
     expect(request.request.params.has('sportId')).toBe(false);
     expect(request.request.params.has('leagueId')).toBe(false);
     request.flush(page);
+  });
+
+  it('get() GETs /api/v1/bets/{id}', () => {
+    const bet = { id: 'bet-1', bettingHouseId: 'bh-1', status: 'pending' };
+
+    api.get('bet-1').subscribe((result) => expect(result).toEqual(bet));
+
+    const request = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/bets/bet-1`);
+    expect(request.request.method).toBe('GET');
+    request.flush(bet);
+  });
+
+  it('update() PUTs /api/v1/bets/{id} with the given input, no Idempotency-Key header', () => {
+    const input: UpdateBetInput = {
+      bettingHouseId: 'bh-1',
+      sportId: 'sp-1',
+      leagueId: 'lg-1',
+      marketId: 'mk-1',
+      tipsterId: null,
+      ticketNumber: null,
+      team1Id: null,
+      team2Id: null,
+      description: null,
+      betType: null,
+      playType: null,
+      stake: 100,
+      odd: 1.5,
+      betDate: '2026-01-01T00:00:00.000Z',
+      status: 'won',
+    };
+
+    api.update('bet-1', input).subscribe();
+
+    const request = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/bets/bet-1`);
+    expect(request.request.method).toBe('PUT');
+    expect(request.request.body).toEqual(input);
+    expect(request.request.headers.has('Idempotency-Key')).toBe(false);
+    request.flush({ id: 'bet-1', ...input });
   });
 });

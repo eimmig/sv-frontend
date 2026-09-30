@@ -146,6 +146,17 @@
           </p>
         }
 
+        @if (showStatusField()) {
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'registerBet.statusLabel' | transloco }}</mat-label>
+            <mat-select formControlName="status" data-testid="register-bet-status">
+              @for (status of betStatuses; track status) {
+                <mat-option [value]="status">{{ ('registerBet.status.' + status) | transloco }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        }
+
         <mat-form-field appearance="outline">
           <mat-label>{{ 'registerBet.betDateLabel' | transloco }}</mat-label>
           <input
@@ -176,16 +187,18 @@
         </mat-form-field>
 
         <div class="register-bet__actions">
-          <button mat-stroked-button type="button" data-testid="register-bet-reset" (click)="reset()">
-            {{ 'registerBet.reset' | transloco }}
-          </button>
+          @if (!editingBetId()) {
+            <button mat-stroked-button type="button" data-testid="register-bet-reset" (click)="reset()">
+              {{ 'registerBet.reset' | transloco }}
+            </button>
+          }
           <button
             mat-flat-button
             type="submit"
             data-testid="register-bet-submit"
             [disabled]="form.invalid || submitting()"
           >
-            {{ 'registerBet.submit' | transloco }}
+            {{ (editingBetId() ? 'registerBet.save' : 'registerBet.submit') | transloco }}
           </button>
         </div>
       </app-panel>

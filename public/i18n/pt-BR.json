@@ -338,7 +338,14 @@
     "betTimeLabel": "Hora do evento",
     "reset": "Limpar",
     "submit": "Registrar aposta",
+    "save": "Salvar alterações",
     "success": "Aposta registrada com sucesso.",
+    "statusLabel": "Status",
+    "status": {
+      "won": "Ganha",
+      "lost": "Perdida",
+      "void": "Devolvida"
+    },
     "genericError": "Não foi possível completar a operação. Tente novamente."
   },
   "history": {
@@ -376,7 +383,8 @@
     "actionsLabel": "Ações",
     "markWon": "Ganha",
     "markLost": "Perdida",
-    "markVoid": "Devolvida"
+    "markVoid": "Devolvida",
+    "edit": "Editar"
   },
   "panel": {
     "collapse": "Recolher painel",

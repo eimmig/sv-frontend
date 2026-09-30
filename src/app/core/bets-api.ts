@@ -44,6 +44,10 @@ export interface Bet {
   readonly betDate: string;
 }
 
+export interface UpdateBetInput extends CreateBetInput {
+  readonly status: BetStatus;
+}
+
 export interface BetFilter {
   readonly bettingHouseId?: string;
   readonly sportId?: string;
@@ -81,6 +85,14 @@ export class BetsApi {
     return this.http.get<PagedResponse<Bet>>(`${environment.apiGatewayUrl}/api/v1/bets`, {
       params: filterParams(filter, page),
     });
+  }
+
+  get(id: string): Observable<Bet> {
+    return this.http.get<Bet>(`${environment.apiGatewayUrl}/api/v1/bets/${id}`);
+  }
+
+  update(id: string, input: UpdateBetInput): Observable<Bet> {
+    return this.http.put<Bet>(`${environment.apiGatewayUrl}/api/v1/bets/${id}`, input);
   }
 
   updateStatus(id: string, status: 'won' | 'lost' | 'void'): Observable<Bet> {
