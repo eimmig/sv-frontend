@@ -3,7 +3,7 @@
 > Estado atual, não histórico. O diário cronológico é o `progress.md` — este arquivo é reescrito
 > a cada sessão para responder "o que a próxima sessão precisa saber agora".
 
-**Última atualização:** 2026-09-28
+**Última atualização:** 2026-09-30
 
 ## Objetivo atual
 

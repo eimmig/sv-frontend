@@ -2029,3 +2029,10 @@ accessible name real é "January 2026", `getByRole` precisa do nome completo.
 
 6 testes unitários novos. `./init.sh` verde (291 testes, 92.27% cobertura) + suíte e2e completa
 (84/84). Sem story/PR formal (fluxo direto de pareamento).
+
+## `feat-067` — login: submit sob os controles flutuantes (2026-09-30)
+
+Regressão de `e2e/login-layout.spec.ts:8`. Causa raiz diverge da hipótese do backlog: o `:host` do login
+é o container de scroll e reserva `padding-bottom: 88px` pros controles fixos, mas `scrollIntoViewIfNeeded`
+ignora padding — faltava `scroll-padding-bottom`. Corrigido em `pages/login/login.scss` (1 linha). Story
+SV-706, PRs #266-#268. Gotcha em `docs/convencoes.md`.
