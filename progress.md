@@ -2,8 +2,119 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-09-25
-**Estado:** `feat-055`, `feat-057` e `feat-058` fechadas; `feat-053` e `feat-056` no backlog.
+**Última atualização:** 2026-09-29
+**Estado:** `epic-039` (raiz) com os 7 achados de UX fechados nesta sessão (`feat-064`, `feat-066`,
+`feat-061`, `feat-060`, `feat-065`, `feat-062`, `feat-063`) - falta só marcar `epic-039` `done` no
+`feature_list.json` da raiz (commit separado). Achado fora de escopo durante o fechamento de
+`feat-063` virou `feat-067` (`not-started`, backlog): regressão real em `e2e/login-layout.spec.ts`
+(seletor de idioma sobrepõe o botão de login em viewport curto), provável efeito colateral de
+`feat-062` (form de login mais curto sem o campo slug) - não corrigida por estar fora dos arquivos
+de `feat-063`.
+
+## `feat-063` fechada — editar aposta pelo histórico (2026-09-29)
+
+Story SV-703 (SV-704/705), PRs #264/#265. Parte de `epic-039` (raiz). `bets-service` já expunha
+`PUT /api/v1/bets/{id}` desde `feat-019` - só faltava o frontend. Reaproveitado o componente
+`RegisterBet` em modo edição (rota nova `/register-bet/:id`) em vez de duplicar o formulário:
+carrega a aposta via `BetsApi.get()`, pré-preenche o form, e o campo de Status só aparece quando a
+aposta carregada já está liquidada (reflete a regra real do backend - `PUT` só aceita
+`pending→pending` ou `liquidada→liquidada`, nunca cruzar essa fronteira). `submit()` chama
+`update()` em vez de `create()` em modo edição e navega pra `/history` no sucesso, em vez de
+limpar o formulário. Link "Editar" novo em toda linha da tabela de Histórico. Rodando a suite e2e
+completa (não só os specs tocados pela feature) achado real fora de escopo: registrado como
+`feat-067` no backlog (ver "Estado Atual" acima).
+
+## `feat-062` fechada — login 2 campos, criação de usuário por username (2026-09-29)
+
+Story SV-700 (SV-701/702), PRs #261/#262/#263. Parte de `epic-039` (raiz), fecha `epic-040` da
+raiz junto com `services/auth-service feat-023` (já fechada). Espelha o contrato novo do backend:
+login vira 2 campos (email+senha), `core/auth.ts` deriva `tenantSlug` do domínio do próprio e-mail
+digitado (sem mudança no contrato de resposta - o backend nunca devolveu esse valor). Criação de
+usuário troca e-mail livre por `username`, com hint mostrando o sufixo `@<slug>` que será
+completado. Achado real de QA visual: o hint quebrava em 2 linhas e sobrepunha o campo de senha
+(Material só reserva altura pra 1 linha no subscript wrapper) - corrigido encurtando o texto nos 3
+locales. Achado real de CI: remover o campo `slug` do form deslocou uma linha pré-existente
+(`navigateByUrl` sem `await`/`void`) pro range de "novo código" do SonarCloud, disparando
+`typescript:S9383` mesmo sem eu ter tocado naquela linha - corrigido com `void`.
+
+## `feat-065` fechada — eixos dos gráficos sem rótulo (2026-09-29)
+
+Story SV-693 (SV-694/695), PRs #258/#259/#260. Parte de `epic-039` (raiz). Mapeados todos os
+gráficos do app (só 4 existem) - `xAxisName`/`yAxisName` opcionais nos 2 builders de
+`core/chart-theme.ts`, unidades por gráfico confirmadas contra o código real (R$ vs unidades).
+**3 rodadas de correção no PR story->develop** (achado real de processo): a primeira leva de
+testes novos duplicava ~30 linhas de boilerplate (`ResizeObserverStub`/`stubCanvasContext`) quase
+identicamente em 4 specs, reprovando o gate `new_duplicated_lines_density` do SonarCloud (11.3%
+contra o limite de 3%) - corrigido extraindo pra `chart-theme.testing.ts` compartilhado, o que por
+sua vez expôs duplicação dentro do próprio `chart-theme.ts` (os 2 builders repetiam o mesmo bloco
+de eixo/grid, 45%) e um gap de cobertura no arquivo novo (`new_coverage` 60%) - ambos corrigidos
+(extração de `namedGrid`/`categoryAxis`/`namedValueAxisStyle`, spec dedicado pro helper). Por fim,
+um comentário `// no-op: ...` adicionado pra silenciar `typescript:S1186` (métodos vazios) foi
+revertido a pedido do usuário (regra já estabelecida contra comentários de racional em código,
+6ª recorrência - ver memória `feedback_code_comments`) e substituído por arrow functions com corpo
+de expressão (`observe = (): void => undefined`), que não geram bloco vazio pro linter apontar.
+Gotcha de testabilidade do ECharts documentado em `docs/convencoes.md` (repo raiz).
+
+## `feat-060` fechada — loading indevido/lento, desalinhado do tempo de resposta real (2026-09-29)
+
+Story SV-690 (SV-691/692), PRs #255/#256/#257. Parte de `epic-039` (raiz). Colidiu com decisão de
+design explícita e recente (`feat-044`, 2026-09-24: "animação cortada no meio lê como bug") -
+escalado ao usuário via `AskUserQuestion` em **2 rodadas**: a 1ª decidiu reverter a garantia de
+sequência completa; ao implementar o fix de gatilho sugerido pelo achado original (filtrar o
+interceptor por método HTTP, só GET), descoberta real durante a implementação de que isso
+desligaria também o overlay do login (cenário documentado E testado de propósito,
+`e2e/loading-overlay.spec.ts`) - 2ª rodada confirmou manter o interceptor inalterado (qualquer
+`/api/` aciona, qualquer método) e corrigir só a duração. Fix: `loading.ts` `end()` inicia o fade
+no instante em que a requisição termina, sem esperar os 2,1s da animação (constante `SEQUENCE_MS`
+e campo `shownAt` removidos). `docs/sistema-de-design.md` seção 17 atualizada registrando a
+reversão. Lição: um fix "óbvio" sugerido por um achado recuperado pode ter efeito colateral em
+outra tela não mencionada - vale conferir todos os consumidores de um mecanismo compartilhado
+antes de aplicar um filtro amplo.
+
+## `feat-061` fechada — último gráfico do grid de drawdown maior que os demais (2026-09-29)
+
+Story SV-687 (SV-688/689), PRs #252/#253/#254. Parte de `epic-039` (raiz). Causa raiz confirmada
+empiricamente, corrigindo a hipótese inicial do achado recuperado: `grid-template-columns:
+repeat(auto-fit, minmax(220px, 1fr))` só colapsa uma coluna quando ela fica vazia em **todas** as
+linhas do grid (track compartilhado entre linhas) - o cenário de "última linha incompleta" (ex.:
+3 itens, 2 colunas) **não** reproduz o bug (medido: larguras iguais). O bug real acontece quando o
+total de itens é menor que a capacidade de colunas em toda a grade (ex.: 1 gráfico só) - a coluna
+nunca usada colapsa de verdade e o item recebe todo o espaço livre via `1fr` (medido: 607px = 100%
+do container, contra 295.5px normal). Fix: `auto-fit` → `auto-fill` (1 palavra, única ocorrência
+no app). Gotcha documentado em `docs/convencoes.md` (repo raiz), incluindo a correção da hipótese
+errada.
+
+## `feat-066` fechada — datas fora do padrão BR no Relatório do período (2026-09-29)
+
+Story SV-684 (SV-685/686), PRs #249/#250/#251. Parte de `epic-039` (raiz). `period-report.html`
+era o único lugar do app ainda interpolando a string ISO crua da API (`{{ row.date }}`). Nova
+`formatDayNumeric` em `core/date-format.ts` (numérico dd/MM, reaproveita o `parseDay`
+timezone-safe já usado por `formatDay`), ano condicional via `spansMoreThanOneYear` (mesmo padrão
+de `equity-curve-chart.ts`). 2 testes existentes (unitário + E2E) travavam o bug afirmando a
+string ISO crua - corrigidos pro valor formatado real. Gotcha/regra documentada em
+`docs/convencoes.md` (repo raiz): toda data nova exibida na UI passa por `core/date-format.ts`,
+nunca interpolação crua.
+
+## `feat-064` fechada — ações desalinhadas na linha de aposta resolvida (2026-09-29)
+
+Story SV-681 (SV-682/683), PRs #246/#247/#248. Parte de `epic-039` (raiz). Causa raiz confirmada
+empiricamente (medição via Playwright, com/sem o fix, não só leitura de código): `display:flex`
+direto na `<td class="history__actions">` impedia a célula de esticar até a altura da `<tr>`
+(17px vs 41px numa linha resolvida vazia) - a `<td>` parava de participar do algoritmo normal de
+table layout. Corrigido movendo o flex pra um `<div class="history__actions-inner">` interno.
+Teste de regressão usa `data-testid` (não classe CSS) como locator. Gotcha documentado em
+`docs/convencoes.md` (repo raiz) - reaproveitável por qualquer tabela futura com conteúdo
+condicional por linha.
+
+## `feat-053` fechada — conexao recusada pelo dev server na suite E2E (2026-09-28)
+
+Story SV-658 (SV-659/660), PR #240. Achado durante `feat-051`: `ERR_CONNECTION_REFUSED`
+intermitente (1 em 9 rodadas completas). Causa raiz confirmada: hosts do Windows resolve
+`localhost` tanto pra `127.0.0.1` quanto `::1` (dual-stack real), o dev server so escuta numa
+familia, e sob carga paralela (16 workers) o Chromium as vezes bate na errada.
+`playwright.config.ts` pina `baseURL`/`webServer.url`/`webServer.command --host` em `127.0.0.1` -
+sem mexer em workers nem timeout. Validado com 10 rodadas completas seguidas (101/101, 0
+ECONNREFUSED). Gotcha registrado em `docs/testes.md`.
 
 ## `feat-058` fechada — drawdown mensal: escala Y compartilhada + filtro geral (2026-09-25)
 
@@ -1918,3 +2029,10 @@ accessible name real é "January 2026", `getByRole` precisa do nome completo.
 
 6 testes unitários novos. `./init.sh` verde (291 testes, 92.27% cobertura) + suíte e2e completa
 (84/84). Sem story/PR formal (fluxo direto de pareamento).
+
+## `feat-067` — login: submit sob os controles flutuantes (2026-09-30)
+
+Regressão de `e2e/login-layout.spec.ts:8`. Causa raiz diverge da hipótese do backlog: o `:host` do login
+é o container de scroll e reserva `padding-bottom: 88px` pros controles fixos, mas `scrollIntoViewIfNeeded`
+ignora padding — faltava `scroll-padding-bottom`. Corrigido em `pages/login/login.scss` (1 linha). Story
+SV-706, PRs #266-#268. Gotcha em `docs/convencoes.md`.

@@ -22,21 +22,29 @@
     "profit": {
       "title": "Lucro líquido no período",
       "help": "Lucro ou prejuízo das apostas liquidadas, em reais. Em períodos de até 31 dias, cada ponto é um dia (dias sem aposta aparecem como zero); em períodos maiores, cada ponto é um mês.",
-      "legend": "Lucro líquido (R$)"
+      "legend": "Lucro líquido (R$)",
+      "xAxisLabel": "Data",
+      "yAxisLabel": "Lucro (R$)"
     },
     "drawdown": {
       "title": "Drawdown mensal",
       "help": "Um gráfico por mês com o lucro ou prejuízo acumulado dia a dia, em unidades (lucro dividido por saldo atual × percentual da unidade). A curva recomeça do zero no dia 1 de cada mês e repete o valor anterior nos dias sem aposta.",
-      "legend": "Lucro acumulado (unidades)"
+      "legend": "Lucro acumulado (unidades)",
+      "xAxisLabel": "Dia do mês",
+      "yAxisLabel": "Lucro (unidades)"
     },
     "equity": {
       "title": "Curva de lucro acumulado",
       "help": "Lucro somado dia após dia, em reais, das apostas que correspondem à combinação buscada. Mostra como o resultado dessa combinação evoluiu ao longo do tempo.",
-      "legend": "Lucro acumulado (R$)"
+      "legend": "Lucro acumulado (R$)",
+      "xAxisLabel": "Data",
+      "yAxisLabel": "Lucro acumulado (R$)"
     },
     "comparison": {
       "title": "Evolução comparada dos períodos",
-      "help": "Lucro acumulado em unidades de cada período, alinhado pelo dia do período (dia 1, dia 2...) para comparar o ritmo dos dois mesmo quando as datas são diferentes."
+      "help": "Lucro acumulado em unidades de cada período, alinhado pelo dia do período (dia 1, dia 2...) para comparar o ritmo dos dois mesmo quando as datas são diferentes.",
+      "xAxisLabel": "Dia do período",
+      "yAxisLabel": "Lucro acumulado (unidades)"
     }
   },
   "periodPresetFilter": {
@@ -204,7 +212,6 @@
   "login": {
     "title": "Entrar",
     "tagline": "Gestão de banca",
-    "slugLabel": "Organização",
     "emailLabel": "E-mail",
     "passwordLabel": "Senha",
     "submit": "Entrar",
@@ -250,6 +257,8 @@
     "listTitle": "Usuários do tenant",
     "nameLabel": "Nome",
     "emailLabel": "E-mail",
+    "usernameLabel": "Usuário",
+    "usernameHint": "Vira @{{slug}} automaticamente",
     "passwordLabel": "Senha",
     "roleLabel": "Papel",
     "create": "Criar usuário",
@@ -329,7 +338,14 @@
     "betTimeLabel": "Hora do evento",
     "reset": "Limpar",
     "submit": "Registrar aposta",
+    "save": "Salvar alterações",
     "success": "Aposta registrada com sucesso.",
+    "statusLabel": "Status",
+    "status": {
+      "won": "Ganha",
+      "lost": "Perdida",
+      "void": "Devolvida"
+    },
     "genericError": "Não foi possível completar a operação. Tente novamente."
   },
   "history": {
@@ -367,7 +383,8 @@
     "actionsLabel": "Ações",
     "markWon": "Ganha",
     "markLost": "Perdida",
-    "markVoid": "Devolvida"
+    "markVoid": "Devolvida",
+    "edit": "Editar"
   },
   "panel": {
     "collapse": "Recolher painel",

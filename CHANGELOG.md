@@ -7,6 +7,36 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 
+- [SV-679](https://stakevault.atlassian.net/browse/SV-679) - Validar SonarCloud tambem em push pra main (nao so pull_request)
+- [SV-680](https://stakevault.atlassian.net/browse/SV-680) - ci.yml: push so pra main habilita os 2 steps de SonarCloud, com continue-on-error
+- [SV-658](https://stakevault.atlassian.net/browse/SV-658) - Conexao recusada pelo dev server na suite E2E completa
+- [SV-659](https://stakevault.atlassian.net/browse/SV-659) - Pinar dev server e baseURL em 127.0.0.1
+- [SV-660](https://stakevault.atlassian.net/browse/SV-660) - CHANGELOG e verificacao final
+- [SV-681](https://stakevault.atlassian.net/browse/SV-681) - Alinhar acoes das apostas resolvidas na tabela de historico
+- [SV-682](https://stakevault.atlassian.net/browse/SV-682) - Mover display:flex da td para div interno + teste de alinhamento
+- [SV-683](https://stakevault.atlassian.net/browse/SV-683) - CHANGELOG e verificacao final
+- [SV-684](https://stakevault.atlassian.net/browse/SV-684) - Formato brasileiro de datas no Relatorio do periodo
+- [SV-685](https://stakevault.atlassian.net/browse/SV-685) - formatDayNumeric em core/date-format.ts + uso no Relatorio do periodo
+- [SV-686](https://stakevault.atlassian.net/browse/SV-686) - CHANGELOG e verificacao final
+- [SV-687](https://stakevault.atlassian.net/browse/SV-687) - Tamanho consistente dos graficos de drawdown (ultimo item maior que os demais)
+- [SV-688](https://stakevault.atlassian.net/browse/SV-688) - auto-fit -> auto-fill no grid de drawdown + teste de largura
+- [SV-689](https://stakevault.atlassian.net/browse/SV-689) - CHANGELOG e verificacao final
+- [SV-690](https://stakevault.atlassian.net/browse/SV-690) - Loading indevido, lento e desalinhado do tempo de resposta real
+- [SV-691](https://stakevault.atlassian.net/browse/SV-691) - Overlay global so pra GET + fim imediato ao terminar a requisicao
+- [SV-692](https://stakevault.atlassian.net/browse/SV-692) - CHANGELOG e verificacao final
+- [SV-693](https://stakevault.atlassian.net/browse/SV-693) - Identificar o significado dos eixos dos graficos (rotulos de eixo X/Y)
+- [SV-694](https://stakevault.atlassian.net/browse/SV-694) - Nomes de eixo nos 2 builders + i18n + 4 componentes
+- [SV-695](https://stakevault.atlassian.net/browse/SV-695) - CHANGELOG e verificacao final
+- [SV-700](https://stakevault.atlassian.net/browse/SV-700) - Simplificar campos da tela de login (2 campos, nao 3)
+- [SV-701](https://stakevault.atlassian.net/browse/SV-701) - Login 2 campos + criacao de usuario por username
+- [SV-702](https://stakevault.atlassian.net/browse/SV-702) - CHANGELOG e verificacao final
+- [SV-703](https://stakevault.atlassian.net/browse/SV-703) - Editar aposta pelo historico
+- [SV-704](https://stakevault.atlassian.net/browse/SV-704) - Reaproveitar RegisterBet pra edicao + link no Historico
+- [SV-705](https://stakevault.atlassian.net/browse/SV-705) - CHANGELOG e verificacao final
+- [SV-706](https://stakevault.atlassian.net/browse/SV-706) - Regressao: selector de idioma sobrepoe o botao de login em viewport curto
+- [SV-707](https://stakevault.atlassian.net/browse/SV-707) - scroll-padding-bottom no host do login
+- [SV-708](https://stakevault.atlassian.net/browse/SV-708) - CHANGELOG e verificacao final
+
 ## [1.1.0] - 2026-09-25
 
 - [SV-647](https://stakevault.atlassian.net/browse/SV-647) - Painel de filtros recolhivel nos dashboards

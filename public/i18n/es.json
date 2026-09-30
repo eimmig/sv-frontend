@@ -22,21 +22,29 @@
     "profit": {
       "title": "Ganancia neta en el período",
       "help": "Ganancia o pérdida de las apuestas liquidadas, en reales. En períodos de hasta 31 días cada punto es un día (los días sin apuestas aparecen como cero); en períodos más largos cada punto es un mes.",
-      "legend": "Ganancia neta (R$)"
+      "legend": "Ganancia neta (R$)",
+      "xAxisLabel": "Fecha",
+      "yAxisLabel": "Ganancia (R$)"
     },
     "drawdown": {
       "title": "Drawdown mensual",
       "help": "Un gráfico por mes con la ganancia o pérdida acumulada día a día, en unidades (ganancia dividida por saldo actual × porcentaje de la unidad). La curva vuelve a cero el día 1 de cada mes y repite el valor anterior en los días sin apuestas.",
-      "legend": "Ganancia acumulada (unidades)"
+      "legend": "Ganancia acumulada (unidades)",
+      "xAxisLabel": "Día del mes",
+      "yAxisLabel": "Ganancia (unidades)"
     },
     "equity": {
       "title": "Curva de ganancia acumulada",
       "help": "Ganancia sumada día tras día, en reales, de las apuestas que coinciden con la combinación buscada. Muestra cómo evolucionó el resultado de esa combinación en el tiempo.",
-      "legend": "Ganancia acumulada (R$)"
+      "legend": "Ganancia acumulada (R$)",
+      "xAxisLabel": "Fecha",
+      "yAxisLabel": "Ganancia acumulada (R$)"
     },
     "comparison": {
       "title": "Evolución comparada de los períodos",
-      "help": "Ganancia acumulada en unidades de cada período, alineada por día del período (día 1, día 2...) para comparar el ritmo de ambos aunque las fechas sean distintas."
+      "help": "Ganancia acumulada en unidades de cada período, alineada por día del período (día 1, día 2...) para comparar el ritmo de ambos aunque las fechas sean distintas.",
+      "xAxisLabel": "Día del período",
+      "yAxisLabel": "Ganancia acumulada (unidades)"
     }
   },
   "periodPresetFilter": {
@@ -204,7 +212,6 @@
   "login": {
     "title": "Iniciar sesión",
     "tagline": "Gestión de banca",
-    "slugLabel": "Organización",
     "emailLabel": "Correo electrónico",
     "passwordLabel": "Contraseña",
     "submit": "Iniciar sesión",
@@ -250,6 +257,8 @@
     "listTitle": "Usuarios del tenant",
     "nameLabel": "Nombre",
     "emailLabel": "Correo electrónico",
+    "usernameLabel": "Usuario",
+    "usernameHint": "Se completa con @{{slug}}",
     "passwordLabel": "Contraseña",
     "roleLabel": "Rol",
     "create": "Crear usuario",
@@ -329,7 +338,14 @@
     "betTimeLabel": "Hora del evento",
     "reset": "Limpiar",
     "submit": "Registrar apuesta",
+    "save": "Guardar cambios",
     "success": "Apuesta registrada con éxito.",
+    "statusLabel": "Estado",
+    "status": {
+      "won": "Ganada",
+      "lost": "Perdida",
+      "void": "Anulada"
+    },
     "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
   },
   "history": {
@@ -367,7 +383,8 @@
     "actionsLabel": "Acciones",
     "markWon": "Ganada",
     "markLost": "Perdida",
-    "markVoid": "Anulada"
+    "markVoid": "Anulada",
+    "edit": "Editar"
   },
   "panel": {
     "collapse": "Contraer panel",

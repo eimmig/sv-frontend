@@ -1,7 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 
 export const SHOW_DELAY_MS = 250;
-export const SEQUENCE_MS = 2100;
 export const FADE_MS = 400;
 
 function prefersReducedMotion(): boolean {
@@ -19,7 +18,6 @@ export class Loading {
 
   private pending = 0;
   private epoch = 0;
-  private shownAt = 0;
   private showTimer: ReturnType<typeof setTimeout> | undefined;
   private hideTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -36,7 +34,6 @@ export class Loading {
     }
     this.showTimer = setTimeout(() => {
       this.showTimer = undefined;
-      this.shownAt = Date.now();
       this.visible.set(true);
     }, SHOW_DELAY_MS);
     return this.epoch;
@@ -70,17 +67,14 @@ export class Loading {
       return;
     }
     const reducedMotion = prefersReducedMotion();
-    const remaining = reducedMotion ? 0 : Math.max(0, this.shownAt + SEQUENCE_MS - Date.now());
-    this.hideTimer = setTimeout(() => {
-      this.leaving.set(true);
-      this.hideTimer = setTimeout(
-        () => {
-          this.hideTimer = undefined;
-          this.leaving.set(false);
-          this.visible.set(false);
-        },
-        reducedMotion ? 0 : FADE_MS,
-      );
-    }, remaining);
+    this.leaving.set(true);
+    this.hideTimer = setTimeout(
+      () => {
+        this.hideTimer = undefined;
+        this.leaving.set(false);
+        this.visible.set(false);
+      },
+      reducedMotion ? 0 : FADE_MS,
+    );
   }
 }

@@ -16,7 +16,7 @@ export interface UserSummary {
 
 export interface CreateUserInput {
   readonly name: string;
-  readonly email: string;
+  readonly username: string;
   readonly password: string;
 }
 

@@ -3920,11 +3920,71 @@
       "scope": "`playwright.config.ts` (webServer, workers, modo de servir o app) e o que a suite exige do ambiente local; nenhum teste de produto.",
       "description": "Achado durante feat-051 (2026-09-24): em 1 de 9 rodadas completas da suite, `page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4300/change-password` - o teste passa isolado e nao reapareceu depois. A suite roda contra `ng serve` (dev server Vite) com workers paralelos. (O 'click timeout' em side-nav observado na mesma investigacao tinha outra causa - overlay congelado pelo stub {} de /statistics/daily, corrigido em feat-051.4; a fragilidade do produto e feat-054.) Investigar se o dev server recusa conexao sob carga (backlog de socket, IPv4/IPv6 em localhost no Windows) e se servir o build de producao ou limitar workers elimina, sem so aumentar timeouts.",
       "dependencies": [],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
-      "evidence": ""
+      "status": "done",
+      "plan_review": "Plan Reviewer (review-suite:ln-11-plan-reviewer) 2026-09-28: READY WITH CONCERNS. Self-review unico (risco baixo: so playwright.config.ts, sem teste de produto). Confirmado hosts do Windows com 'localhost' dual-stack (127.0.0.1 e ::1); 'ng serve --help' confirma --host (default 'localhost', string ambigua); grep em e2e/ sem nenhum hardcode de 'localhost' (23 specs usam baseURL relativo, troca e transparente); suite roda so local (CI nao tem job de Playwright); e2e e 100% page.route-mocked, sem chamada real ao api-gateway (CORS default localhost:4200 nao entra em jogo). Causa raiz: baseURL/webServer.url em 'localhost' + dev server sem --host explicito deixam a familia (IPv4/IPv6) ambigua; sob carga paralela (16 workers) o Chromium as vezes bate na familia sem listener e leva ECONNREFUSED. Fix: pinar use.baseURL, webServer.url e webServer.command (--host) em 127.0.0.1 - elimina a ambiguidade sem tocar em workers nem trocar pra build de producao. 1 MINOR: reuseExistingServer com um 'ng serve' manual pre-existente na porta 4300 sem --host 127.0.0.1 poderia divergir - edge case (npm start usa porta 4200 por padrao), comentario no config orienta usar a mesma flag manualmente. Validacao: sem reproducao deterministica do flake 1/9 - suite completa rodada N vezes seguidas (mesma carga fullyParallel) contando ECONNREFUSED, registrado na evidence.",
+      "jira": "SV-658",
+      "subtasks": [
+        {
+          "id": "feat-053.1",
+          "name": "Pinar dev server e baseURL em 127.0.0.1",
+          "detail": "Elimina a ambiguidade IPv4/IPv6 de 'localhost' que causa o ECONNREFUSED intermitente.",
+          "checklist": [
+            "`use.baseURL` e `webServer.url` de `http://localhost:4300` para `http://127.0.0.1:4300`",
+            "`webServer.command` ganha `--host 127.0.0.1`",
+            "Comentario curto no config explicando a razao (nao obvia: corrida IPv4/IPv6 em 'localhost')",
+            "Suite E2E completa rodada N vezes seguidas (mesma carga fullyParallel) sem nenhum ECONNREFUSED"
+          ],
+          "validation": "N rodadas completas de `npx playwright test` verdes, 0 ECONNREFUSED.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-659"
+        },
+        {
+          "id": "feat-053.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento formal da feature.",
+          "checklist": [
+            "Entrada em CHANGELOG.md (Unreleased)",
+            "./init.sh do app e da raiz verdes; suite E2E completa",
+            "Delivery Reviewer/Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit",
+            "Regras SonarCloud conhecidas conferidas antes do PR da story (docs/testes.md 'CI e SonarCloud')",
+            "Apontamentos fora de escopo encontrados viram feature nova no feature_list.json",
+            "status:done + evidence + progress.md/session-handoff.md na branch da story, no PR desta subtask, ANTES do PR story->develop"
+          ],
+          "validation": "init.sh verde, revisoes sem achado pendente, evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-660"
+        }
+      ],
+      "evidence": {
+        "resumo": "Fechado em 2026-09-28 por feat-053.1/feat-053.2 (story SV-658). Causa raiz do ECONNREFUSED intermitente confirmada (localhost dual-stack no Windows) e corrigida em playwright.config.ts, sem mexer em workers nem timeouts.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "PR #240 (SV-659): playwright.config.ts - use.baseURL, webServer.url e webServer.command (--host 127.0.0.1) pinados em 127.0.0.1 no lugar de 'localhost'. Comentarios curtos explicando a razao (nao obvia: corrida IPv4/IPv6 em hosts dual-stack)."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "Confirmado C:\\Windows\\System32\\drivers\\etc\\hosts com 127.0.0.1 e ::1 mapeados pra 'localhost'; 'ng serve --help' confirma --host default 'localhost'.",
+              "Suite E2E completa (mesma carga fullyParallel/16 workers do relato original) rodada 10x seguidas: 101/101 em todas, 0 ECONNREFUSED.",
+              "./init.sh do app (cobertura 92,86%) e da raiz verdes.",
+              "Delivery Reviewer (self-conduzido): PASS, sem achado."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Nada. Nenhum apontamento fora de escopo.",
+              "Vault: docs/testes.md ganhou o gotcha (localhost dual-stack no Windows causando ECONNREFUSED intermitente em Playwright + Angular dev server)."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-054",
@@ -4286,6 +4346,416 @@
           }
         ]
       }
+    },
+    {
+      "id": "feat-060",
+      "name": "Loading indevido, lento e desalinhado do tempo de resposta real",
+      "goal": "Loading so aparece quando ha busca efetiva de dados, nao se repete em dados ja carregados, e termina exatamente junto com a resposta real - sem tempo minimo artificial nem atraso.",
+      "scope": "Estrategia de exibicao/duracao do loading nas telas afetadas (Registrar aposta e outras sem fetch, telas com loading mais lento que a resposta real). Nao muda o mecanismo ja corrigido em feat-049 (loading nao se repete em dado ja em cache).",
+      "description": "Recuperado de sessao anterior (2026-09-25) que nao chegou a commitar - reconfirmado pelo usuario em 2026-09-29 nestes termos exatos: 'A as telas que nao precisam de loading estao tendo animacao de loading, por exemplo a de registrar aposta' + 'A animacao de loading esta demorando mais do que deveria, seria bom acelerar ela para que tenhamos uma melhor coerencia entre o tempo de resposta e o loading real. Assim que a resposta voltar, o loading deve ser finalizado.' feat-049 (done) corrigiu so o caso de loading repetido ao revisitar dado ja carregado - nao cobre telas sem fetch nenhum (Registrar aposta) nem o descompasso de duracao/timing entre a animacao e a resposta real. CAUSA RAIZ CONFIRMADA (leitura direta do codigo, 2026-09-29): (a) core/loading-interceptor.ts:8 filtra so por req.url.includes('/api/'), sem checar o metodo HTTP - qualquer POST/PUT/DELETE (nao so GET) aciona o overlay global, incluindo o POST de criacao em pages/register-bet/register-bet.ts (que ja tem seu proprio signal 'submitting' pra desabilitar o botao, o overlay global e redundante e indevido ali). (b) core/loading.ts:3-5 define SHOW_DELAY_MS=250/SEQUENCE_MS=2100/FADE_MS=400 - o metodo end() (linhas 56-85) calcula 'remaining = shownAt + SEQUENCE_MS - Date.now()' e forca o overlay a ficar visivel por no minimo ~2.5s (SEQUENCE_MS+FADE_MS) independente da resposta real ter voltado antes. Validar o fluxo completo e ajustar para: (1) telas sem busca de dados nunca mostram loading (ex.: filtrar o interceptor por metodo, so GET dispara o overlay global); (2) loading nao tem tempo minimo artificial que prolongue a animacao alem da resposta; (3) loading termina no exato momento em que a resposta chega, nao antes nem com atraso perceptivel. Decidir no plan review se SEQUENCE_MS existe por motivo de design (evitar flash) que precisa ser preservado de outra forma, ou se pode simplesmente ser removido/reduzido.",
+      "dependencies": [
+        "feat-049"
+      ],
+      "status": "done",
+      "plan_review": "Plan Reviewer (self-conduzido, risco medio - colide com decisao de design explicita e recente, escalado ao usuario via AskUserQuestion em 2 rodadas antes de codificar) em 2026-09-29. Verdict: READY apos decisao do usuario. Lido core/loading-interceptor.ts (filtra so por URL, nao por metodo), core/loading.ts (SHOW_DELAY_MS=250/SEQUENCE_MS=2100/FADE_MS=400, end() forcava overlay visivel ate shownAt+SEQUENCE_MS mesmo se a resposta ja voltou) e docs/sistema-de-design.md secao 17 'Splash/loading animado' (apps/web feat-044, 2026-09-24, decisao explicita do usuario: 'nao usar loop infinito... se o carregamento terminar antes da animacao, deixa-la concluir e so entao dar fade - animacao cortada no meio le como bug'). CONFLITO REAL identificado: o achado desta feature (recuperado de sessao perdida, MESMO 2026-09-25, um dia depois da decisao de feat-044) pede exatamente o oposto do que feat-044 decidiu de proposito - 'assim que a resposta voltar, o loading deve ser finalizado'. Rodada 1 (AskUserQuestion, 3 opcoes): usuario escolheu reverter a garantia de sequencia completa (aceitando o risco de a animacao parecer cortada em respostas rapidas). Ao implementar o fix de gatilho sugerido pelo achado ('so GET aciona o overlay'), descoberta nova: login tambem usa POST (/api/v1/auth/login) e o overlay durante login e um cenario deliberadamente documentado E testado (e2e/loading-overlay.spec.ts, feat-044) - um filtro por metodo desligaria o overlay do login tambem, nao so do registrar aposta. Rodada 2 (AskUserQuestion, 2 opcoes, com a descoberta explicada): usuario respondeu 'todas as requisicoes ao backend continuam acionando o overlay, mas apenas durante o tempo da requisicao mesmo' - rejeitou o filtro por metodo por completo, mantendo o interceptor como esta (qualquer /api/ aciona), e confirmando que o unico fix real e a DURACAO (sem minimo artificial). Decisao final: (a) core/loading-interceptor.ts fica INALTERADO (sem filtro por metodo) - o achado original sugeria isso como possivel fix, mas o usuario decidiu que nao e o comportamento desejado. (b) core/loading.ts: end() para de calcular 'remaining' a partir de SEQUENCE_MS - inicia o leaving() imediatamente (respeitando so o FADE_MS de saida, ou 0 sob prefers-reduced-motion, que ja e o comportamento atual pra esse caso). Remove o campo shownAt (so existia pra esse calculo) e a constante SEQUENCE_MS (fica morta - as animacoes CSS do SVG continuam hardcoded em 2.1s no loading-overlay.scss, so nao ha mais garantia JS de que completem antes do fade; aceito pelo usuario). Isso ja resolve a percepcao de 'loading indevido' em register-bet na pratica: POSTs tipicamente respondem rapido, e sem o minimo artificial de ~2.5s o overlay (quando aparece, > SHOW_DELAY_MS=250ms) some no exato instante da resposta. (c) core/loading.spec.ts: reescrever os testes que dependiam da espera de SEQUENCE_MS. (d) docs/sistema-de-design.md secao 17: atualizar o paragrafo 'Uso em producao' - a regra 'sequencia de 2.1s termina antes do fade' nao vale mais. Escopo cross-service: nenhum, so apps/web.",
+      "jira": "SV-690",
+      "subtasks": [
+        {
+          "id": "feat-060.1",
+          "name": "Fim imediato do overlay ao terminar a requisicao, sem minimo artificial",
+          "detail": "Causa raiz: end() forcava o overlay a ficar visivel por um minimo de ~2.5s mesmo com a resposta ja tendo voltado, decisao de feat-044 revertida pelo usuario nesta feature (2 rodadas de AskUserQuestion - ver plan_review). O interceptor NAO muda: usuario decidiu manter todo metodo/URL /api/ acionando o overlay, so a duracao muda.",
+          "checklist": [
+            "loading.ts: end() inicia leaving() imediatamente (sem esperar SEQUENCE_MS), remove shownAt e a constante SEQUENCE_MS",
+            "loading.spec.ts: reescrever os testes acoplados ao comportamento antigo de espera",
+            "docs/sistema-de-design.md secao 17: atualizar 'Uso em producao' registrando a reversao da regra de sequencia completa"
+          ],
+          "validation": "npx ng test verde; uma requisicao que demora mais que 250ms mostra o overlay e ele some assim que a resposta chega, sem espera minima; e2e/loading-overlay.spec.ts (login) continua passando sem alteracao.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-691"
+        },
+        {
+          "id": "feat-060.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento da feature: evidencia, init.sh, skills de revisao.",
+          "checklist": [
+            "CHANGELOG.md: entrada em [Unreleased]",
+            "./init.sh verde",
+            "Delivery Reviewer + Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "feature_list.json com status done e evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-692"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-29. Story SV-690 (subtasks SV-691/692), PR #255 (subtask->story) + story->develop a seguir. Achado original tinha 2 partes: (a) overlay global acionando em telas sem necessidade (POST de register-bet), (b) overlay demorando mais que a resposta real (minimo artificial de 2.1s). Escalado ao usuario 2x (AskUserQuestion) por colidir com decisao de design explicita e recente (feat-044, 2026-09-24: 'animacao cortada no meio le como bug'). 1a rodada: usuario decidiu reverter a garantia de sequencia completa. Ao implementar o fix de gatilho sugerido pelo achado original ('so GET aciona overlay'), descoberta real durante a implementacao: login tambem usa POST e o overlay durante login e cenario documentado E testado de proposito (e2e/loading-overlay.spec.ts) - um filtro por metodo desligaria o overlay do login tambem. 2a rodada: usuario decidiu manter o interceptor inalterado (todo /api/ aciona, qualquer metodo) e corrigir so a duracao. Fix final: loading.ts end() nao espera mais SEQUENCE_MS, inicia o fade no instante em que a requisicao termina (removida a constante morta e o campo shownAt); loading-interceptor.ts fica intocado. Isso resolve a parte (b) diretamente e a parte (a) na pratica (POSTs tipicos respondem rapido, sem o minimo artificial o overlay quando aparece desaparece quase junto). ./init.sh verde (build+ng test, cobertura 92%+, 15/15 nos specs de loading), e2e/loading-overlay.spec.ts + session-expired + overview + smoke (10/10, incluindo o cenario de login lento). Delivery Reviewer (self-conduzido, mudanca de timing pura sem contrato/logica alterados, grep confirmou nenhum outro teste acoplado ao timing antigo): PASS, sem achados bloqueantes. Vault: docs/sistema-de-design.md (repo raiz) secao 17 atualizada registrando a reversao da regra de sequencia completa."
+    },
+    {
+      "id": "feat-061",
+      "name": "Tamanho consistente dos graficos de drawdown (ultimo item maior que os demais)",
+      "goal": "Todos os mini-graficos da grade de drawdown mensal mantem as mesmas dimensoes/area de plotagem, independente de ser o ultimo item da lista.",
+      "scope": "Layout/CSS da grade de mini-graficos de drawdown (shared/monthly-drawdown-chart, pages/dashboard/monthly-drawdown-grid). Nao mexe na escala Y compartilhada entre os graficos, ja corrigida em epic-037/feat-058 - este e um problema de TAMANHO/layout, distinto de ESCALA do eixo Y.",
+      "description": "Recuperado de sessao anterior (2026-09-25) que nao chegou a commitar - reconfirmado pelo usuario em 2026-09-29: 'o ultimo grafico da lista de graficos do drawndown continua ficando maior que os outros'. epic-037/feat-058 (done) corrigiu a escala Y compartilhada entre os mini-graficos (todos passam a ter o mesmo min/max no eixo Y), mas o usuario relata que o ULTIMO grafico da grade continua com dimensao fisica maior que os demais - problema distinto, de layout CSS, nao de escala de dados. CAUSA RAIZ CONFIRMADA (leitura direta do codigo, 2026-09-29): pages/dashboard/monthly-drawdown-grid/monthly-drawdown-grid.scss:19 - 'grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))'. Com auto-fit, colunas vazias de uma linha incompleta colapsam a largura 0 e o 1fr do minmax deixa os itens existentes esticarem pra preencher o espaco sobrando - o ultimo item de uma linha incompleta fica maior. Trocar auto-fit por auto-fill mantem as trilhas vazias reservadas, sem esticar os itens existentes - fix de 1 palavra, confirmar visualmente com grades de contagens pares e impares de meses antes de fechar.",
+      "dependencies": [
+        "epic-020"
+      ],
+      "status": "done",
+      "plan_review": "Plan Reviewer (self-conduzido, risco baixo, 1 revisor) em 2026-09-29. Verdict: READY. monthly-drawdown-grid.scss:19 lido e confirmado - a causa raiz do JSON bate exatamente: grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)). Com auto-fit, colunas vazias de uma linha incompleta colapsam (largura 0), sobrando espaco que o 1fr do minmax distribui pros itens existentes - o item sozinho na ultima linha incompleta estica. auto-fill mantem as trilhas vazias reservadas (nao remove do grid), entao os itens continuam limitados ao minmax normal. Fix de 1 palavra (auto-fit -> auto-fill), sem mudanca de logica/dados - a escala Y compartilhada (epic-037/feat-058) e um mecanismo totalmente separado, nao tocado. Teste de regressao: e2e/dashboard.spec.ts ja tem o cenario 'a 3-month custom range... renders 3 mini-charts' (3 itens = 2 na primeira linha + 1 sozinho na segunda, contagem impar exercita exatamente o bug) - estender esse teste com uma asercao comparando boundingBox().width do primeiro grafico com o do ultimo (data-testid=monthly-drawdown-chart), mais barato que criar cenario novo. Reproduzir o bug revertendo o fix antes de fechar, mesmo padrao usado em feat-064.",
+      "jira": "SV-687",
+      "subtasks": [
+        {
+          "id": "feat-061.1",
+          "name": "auto-fit -> auto-fill no grid de drawdown + teste de largura",
+          "detail": "Causa raiz confirmada empiricamente, com uma correcao importante sobre a hipotese inicial do JSON: uma coluna do grid (repeat(auto-fit, minmax)) so colapsa quando fica vazia em TODAS as linhas do grid (spec CSS Grid - track e compartilhado entre linhas). No cenario de 3 meses (2 na 1a linha completa + 1 sozinho na 2a) a coluna 2 continua em uso pela 1a linha, entao NAO colapsa e NAO reproduz o bug (medido: ambos os itens com 295.5px, iguais) - a hipotese original de 'linha incompleta' nao se sustenta pra esse caso especifico. O bug real e determinabilistico e reproduzivel com N item(ns) MENOR que a capacidade de colunas do container em TODA a grade (ex.: grid de 1 mes so, capacidade pra 2 colunas): a(s) coluna(s) nunca usada(s) em nenhuma linha colapsam de verdade, e o(s) item(ns) restante(s) recebem TODO o espaco livre via 1fr - medido: item sozinho ocupava 607px (100% do container) com auto-fit, contra 295.5px (a metade reservada normal) com auto-fill. auto-fill nunca colapsa trilha vazia, entao o item nunca estica alem do proprio minmax.",
+          "checklist": [
+            "monthly-drawdown-grid.scss: repeat(auto-fit, ...) vira repeat(auto-fill, ...)",
+            "e2e/dashboard.spec.ts: teste 'renders one mini-chart for the default Today period' (unico item, capacidade sobra) ganhou a asercao real - largura do item < 60% da largura do grid, prova que nao estica pra preencher o container inteiro",
+            "reproduzido o bug revertendo o fix (git stash) antes de escrever a asercao definitiva, mesmo padrao de feat-064 - medido 607px (bug, 100% do container) vs 295.5px (corrigido)"
+          ],
+          "validation": "npx ng test e npx playwright test dashboard.spec.ts verdes (13/13); mini-grafico sozinho nao estica pra preencher o container inteiro.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-688"
+        },
+        {
+          "id": "feat-061.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento da feature: evidencia, init.sh, skills de revisao.",
+          "checklist": [
+            "CHANGELOG.md: entrada em [Unreleased]",
+            "./init.sh verde",
+            "Delivery Reviewer + Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "feature_list.json com status done e evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-689"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-29. Story SV-687 (subtasks SV-688/689), PR #252 (subtask->story) + story->develop a seguir. Causa raiz confirmada empiricamente, corrigindo a hipotese inicial do JSON: uma coluna do grid (repeat(auto-fit, minmax)) so colapsa quando fica vazia em TODAS as linhas (track compartilhado entre linhas) - o cenario de 'ultima linha incompleta' (3 itens, 2 colunas: 2 completos + 1 sozinho) NAO reproduz o bug (medido: mesma largura). O bug real acontece quando o total de itens e MENOR que a capacidade de colunas em toda a grade (ex.: 1 grafico so) - a coluna nunca usada colapsa de verdade e o item recebe todo o espaco livre via 1fr (medido 607px = 100% do container, contra 295.5px normal). Fix: auto-fit -> auto-fill (1 palavra), unico uso de auto-fit no app (grep confirmou). Teste de regressao no cenario 'Today' (1 grafico) que ja existia - largura do item < 60% da largura do grid, provado com o bug revertido (git stash) antes de escrever a asercao definitiva. ./init.sh verde (build+ng test, cobertura 92%+), 13/13 e2e/dashboard.spec.ts. Delivery Reviewer (self-conduzido, mudanca de 1 palavra CSS + teste, sem contrato/logica/i18n alterados, grep confirmou nenhum outro uso de auto-fit no app pra checar efeito colateral): PASS, sem achados bloqueantes. Vault: docs/convencoes.md (repo raiz) ganhou o gotcha auto-fit vs auto-fill, incluindo a correcao da hipotese inicial errada."
+    },
+    {
+      "id": "feat-062",
+      "name": "Simplificar campos da tela de login (2 campos, nao 3)",
+      "goal": "Login pede so email e senha; o slug do tenant e resolvido automaticamente a partir do email.",
+      "scope": "Formulario de login (apps/web) + validacao de que o contrato de autenticacao real (POST /api/v1/auth/login, que hoje exige slug+email+senha) suporta resolver o slug a partir do email, ou decisao de como tratar email que nao identifica um tenant unico.",
+      "description": "Recuperado de sessao anterior (2026-09-25) que nao chegou a commitar - reconfirmado pelo usuario em 2026-09-29: 'preencher 3 campos no login e meio contra produtivo, poderia ter so o login e senha e extrair o slug do email de login'. Escopo a decidir no plan review: o contrato de POST /api/v1/auth/login (auth-service) exige slug explicito hoje (multiplos tenants podem ter usuarios com o mesmo email, ver docs/API-CONTRACTS.md) - resolver o slug a partir so do email pode exigir mudanca de contrato cross-service (nao so frontend) se um email puder pertencer a mais de um tenant. Investigar se essa ambiguidade e real no dominio antes de assumir mudanca so no frontend; tratar explicitamente o caso de email que nao identifica um tenant univoco, sem enviar um slug incorreto/adivinhado.",
+      "dependencies": [
+        "feat-005"
+      ],
+      "status": "done",
+      "plan_review": "Investigacao completa por subagente Explore antes de codificar (equivalente ao Plan Reviewer, ver services/auth-service feature_list.json feat-023 pro plan_review completo do lado backend) confirmou que a ambiguidade real existia e foi eliminada por construcao em services/auth-service feat-023 (done, mergeado em auth-service/develop, ver epic-040 da raiz): todo usuario agora tem e-mail garantidamente username@<slug do tenant>. Contrato novo: POST /api/v1/auth/login recebe so {email, password} (sem slug); POST /api/v1/users recebe {name, username, password} em vez de {name, email, password} (servidor monta o e-mail completo). Verdict: READY. Leitura completa de login.ts/html (form com 3 controles, slug/email/password), core/auth.ts (login(tenantSlug, email, password) - Session.tenantSlug hoje reusa o parametro de entrada, LoginResponse do backend NUNCA devolveu tenantSlug, entao nao ha nada quebrando ao remover o parametro: dado pra derivar ja esta disponivel no proprio email digitado), pages/users/users.ts/html (form com name/email/password, Validators.email no campo email) e core/users-api.ts (CreateUserInput.email cru no body). Achados que moldam o plano: (1) auth.login precisa virar login(email, password) - deriva tenantSlug via email.split('@')[1] pro objeto Session, sem precisar que o backend devolva o slug (menor blast radius, mesmo padrao ja usado do lado backend). (2) users.ts troca o campo email por username - sem Validators.email (nao e mais um e-mail), validador novo compativel com o @Pattern do backend (^[a-zA-Z0-9._-]{1,64}$, sem @); UI mostra o sufixo '@<slug do tenant atual>' como hint read-only ao lado do campo, pra deixar claro que o e-mail final inclui o tenant (boa pratica de UX, nao regra de negocio). (3) Login perde o campo slug do form/HTML/FormBuilder. (4) i18n: login.slugLabel removida (orfa) nos 3 locales; users.emailLabel vira users.usernameLabel (+ um users.usernameHint opcional) nos 3 locales. (5) Testes unitarios a atualizar: login.spec.ts (4 testes com slug no form.setValue), core/auth.spec.ts (2 chamadas login('acme', email, password) + asercao do body da requisicao HTTP), pages/users/users.spec.ts (form.setValue com email vira username, resposta mockada da API continua com email completo). (6) E2E a atualizar: e2e/auth.spec.ts (3 ocorrencias de login-slug.fill), e2e/loading-overlay.spec.ts (1 ocorrencia) - os ~15 demais specs autenticam via seedSession() direto no localStorage, sem passar pela tela de login, não afetados. Vault: docs/services/web.md (repo raiz) secao 'Modelo de tenant (UI)' documenta os 3 campos do login, precisa atualizar.",
+      "jira": "SV-700",
+      "subtasks": [
+        {
+          "id": "feat-062.1",
+          "name": "Login 2 campos + criacao de usuario por username",
+          "detail": "Login perde o campo slug (form/HTML/core/auth.ts, que passa a derivar tenantSlug do proprio email digitado). Tela de criacao de usuario troca email por username, refletindo o contrato novo de POST /api/v1/users.",
+          "checklist": [
+            "core/auth.ts: login(email, password) - body {email, password}, Session.tenantSlug derivado de email.split('@')[1]",
+            "pages/login/login.ts: FormBuilder perde o controle slug; submit() chama auth.login(email, password)",
+            "pages/login/login.html: remove o mat-form-field de slug",
+            "core/users-api.ts: CreateUserInput.email vira .username",
+            "pages/users/users.ts: campo email do form vira username, sem Validators.email, validador novo compativel com o backend (sem @, 1-64 chars)",
+            "pages/users/users.html: input de email vira username, com hint mostrando o sufixo @<slug do tenant atual> (Auth.session().tenantSlug)",
+            "i18n (pt-BR/en-US/es): remove login.slugLabel; users.emailLabel vira users.usernameLabel (+ usernameHint opcional)",
+            "login.spec.ts, core/auth.spec.ts, pages/users/users.spec.ts: atualizados pro novo contrato",
+            "e2e/auth.spec.ts, e2e/loading-overlay.spec.ts: remove .fill() no campo login-slug"
+          ],
+          "validation": "npx ng test e npx playwright test auth.spec.ts users.spec.ts loading-overlay.spec.ts verdes; login com email+senha funciona sem campo de slug; criacao de usuario aceita username e mostra o e-mail completo na lista.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-701"
+        },
+        {
+          "id": "feat-062.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento da feature: evidencia, init.sh, skills de revisao, fecha epic-040 da raiz.",
+          "checklist": [
+            "CHANGELOG.md: entrada em [Unreleased]",
+            "./init.sh verde",
+            "Delivery Reviewer + Test Suite Auditor rodados",
+            "Vault (docs/): docs/services/web.md secao 'Modelo de tenant (UI)' atualizada (login 2 campos, criacao de usuario por username)",
+            "feature_list.json da raiz: epic-040 vira done (ultimo harness pendente)"
+          ],
+          "validation": "feature_list.json com status done e evidence preenchida; epic-040 da raiz done.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-702"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-29. Story SV-700 (subtasks SV-701/702), PR #261 (subtask->story) + story->develop a seguir. Espelha services/auth-service feat-023 (done, mergeado). Login vira 2 campos (email+senha); core/auth.ts deriva tenantSlug do dominio do email digitado (email.split('@')[1]) pro objeto Session local, sem precisar mudanca no contrato de resposta do backend (nunca devolveu tenantSlug). Criacao de usuario troca email livre por username (CreateUserInput), com hint mostrando o sufixo @<slug do tenant atual>. Achado real de QA visual (dev server, screenshots): o hint de 2 linhas sobrepunha o campo de senha (Material so reserva altura pra 1 linha no subscript wrapper) - corrigido encurtando o texto nos 3 locales, nao mexendo em CSS. ./init.sh verde (build+ng test, cobertura 92%+), 17/17 e2e (auth+loading-overlay+session-expired+overview+smoke). Delivery Reviewer (self-conduzido, grep confirmou nenhuma referencia residual a slug/email antigo em src/e2e): PASS, sem achados bloqueantes. Vault: docs/services/web.md (repo raiz) secao 'Modelo de tenant (UI)' atualizada, incluindo o gotcha do mat-hint de 1 linha. epic-040 da raiz fecha nesta feature (ultimo harness pendente)."
+    },
+    {
+      "id": "feat-063",
+      "name": "Editar aposta pelo historico",
+      "goal": "Usuario consegue editar uma aposta existente a partir da tela de Historico, nao so registrar novas.",
+      "scope": "Tela de Historico (apps/web) + acao de edicao pra apostas elegiveis, reaproveitando o contrato PATCH/PUT ja exposto por bets-service se existir, ou decisao de escopo no plan review se nao existir.",
+      "description": "Recuperado de sessao anterior (2026-09-25) que nao chegou a commitar - reconfirmado pelo usuario em 2026-09-29: 'Nao existe a opcao de editar a aposta no historico do frontend.' Implementar acao de edicao acessivel para apostas elegiveis na tela de Historico, carregar os dados atuais, permitir alteracao conforme as regras de negocio (RN01-RN09, docs/REQUIREMENTS.md) e refletir o resultado atualizado na lista, com feedback de sucesso e tratamento de erro. Confirmar no plan review se bets-service ja expoe endpoint de edicao de aposta (RF06/RF07) ou se e escopo cross-service.",
+      "dependencies": [
+        "feat-004"
+      ],
+      "status": "done",
+      "plan_review": "Investigacao completa (leitura direta do codigo, equivalente ao Plan Reviewer) confirmou que NAO e escopo cross-service: bets-service JA expoe PUT /api/v1/bets/{id} desde feat-019 (2026-09-22, bem antes desta sessao) - docs/services/bets-service.md secao 'Edicao de aposta ja registrada' e o codigo real (BetsController.java:86-93, UpdateBetRequest.java) confirmam. Contrato: body = todos os campos de CreateBetInput + status (BetStatus) + ticketNumber; X-User-Id obrigatorio; 422 invalid-status-transition se tentar cruzar pending<->liquidada (so pending->pending ou liquidada->liquidada, trocando o valor - correcao pos-liquidacao permitida, ex. won->lost, recalcula profit RN02/RN03); 409 bet-modified-concurrently em corrida com PATCH /status concorrente (cliente rele e tenta de novo). Edicao permitida tanto em pending quanto ja liquidada - TODAS as apostas sao 'elegiveis', nao ha filtro de elegibilidade a implementar. Verdict: READY. Leitura completa de core/bets-api.ts (sem metodo get(id) nem update ainda - so create/list/updateStatus), pages/register-bet/register-bet.ts/html (formulario completo, ja Shneiderman-compliant, reaproveitavel pra edicao sem duplicar UI) e pages/history/history.ts/html (coluna de acoes ja tem os 3 botoes de liquidacao do feat-064). Decisao de design: reaproveitar a MESMA tela/componente RegisterBet pra edicao (rota nova register-bet/:id, mesmo componente lazy-loaded) em vez de duplicar o formulario inteiro num modal - historico ganha so um link/botao 'Editar' por linha (todas as linhas, sem excecao) navegando pra la. Modo edicao: (1) carrega a aposta via um GET /api/v1/bets/{id} novo (endpoint ja existe no backend, so falta o metodo no frontend) e pre-preenche o form, incluindo split de betDate em betDateOnly/betTimeOnly (mesmo padrao ja usado na criacao). (2) form ganha um controle status, mostrado (select won/lost/void) SO quando a aposta carregada ja esta liquidada (pending fica sem esse controle, o valor pending e enviado sem UI pra troca - liquidar continua sendo o botao dedicado do historico, PATCH /status, nao este formulario). (3) submit() chama update() em vez de create() quando em modo edicao; sucesso navega de volta pra /history (fechamento claro, regra 4 de Shneiderman) em vez de limpar o form pra nova entrada. (4) Idempotency-Key nao se aplica a PUT (so POST) - omitido no metodo update(). i18n: novas chaves em registerBet (editTitle/save/updateSuccess/statusLabel/status.won/lost/void) e history (edit) nos 3 locales, seguindo o vocabulario ja usado em history.status.*. Testes: bets-api.spec.ts (get/update), register-bet.spec.ts (modo edicao: carrega dados, mostra/esconde status conforme status atual, chama update, navega pra history), history.spec.ts (link de editar por linha), e2e/register-bet.spec.ts (fluxo completo de edicao). Sem risco cross-service, sem mudanca de contrato (contrato ja existia).",
+      "jira": "SV-703",
+      "subtasks": [
+        {
+          "id": "feat-063.1",
+          "name": "Reaproveitar RegisterBet pra edicao + link no Historico",
+          "detail": "bets-service ja expoe PUT /api/v1/bets/{id} (feat-019) - so falta o frontend. Reaproveita o formulario de registro existente em vez de duplicar.",
+          "checklist": [
+            "core/bets-api.ts: novo metodo get(id) (GET /api/v1/bets/{id}); UpdateBetInput (CreateBetInput + status); novo metodo update(id, input) (PUT /api/v1/bets/{id}, sem Idempotency-Key)",
+            "app.routes.ts: rota nova register-bet/:id, mesmo componente RegisterBet lazy-loaded",
+            "register-bet.ts: le :id da rota: se presente, carrega a aposta via betsApi.get(), pre-preenche o form (split betDate em betDateOnly/betTimeOnly), guarda o status atual num signal",
+            "register-bet.ts: controle status novo no form, visivel no template so quando o status atual carregado NAO e pending (select won/lost/void)",
+            "register-bet.ts: submit() chama update() em vez de create() em modo edicao; sucesso navega pra /history (nao reseta o form)",
+            "register-bet.html: bloco condicional pro select de status (modo edicao, status != pending) + titulo/label do botao mudam em modo edicao",
+            "pages/history: coluna de acoes ganha um link 'Editar' (routerLink pra /register-bet/{bet.id}) em toda linha, junto dos botoes ja existentes",
+            "i18n (pt-BR/en-US/es): registerBet.editTitle/save/updateSuccess/statusLabel/status.won/lost/void; history.edit"
+          ],
+          "validation": "npx ng test verde; abrir uma aposta pendente pelo historico nao mostra seletor de status; abrir uma ja liquidada mostra e permite trocar won/lost/void; salvar edicao volta pra /history.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-704"
+        },
+        {
+          "id": "feat-063.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento da feature: evidencia, init.sh, skills de revisao, fecha epic-039 da raiz (ultimo dos 7 achados).",
+          "checklist": [
+            "CHANGELOG.md: entrada em [Unreleased]",
+            "./init.sh verde",
+            "QA visual (dev server, 2 temas, mobile+desktop) - UI nova (seletor de status condicional)",
+            "Delivery Reviewer + Test Suite Auditor rodados",
+            "Vault (docs/): docs/services/web.md - fluxo de edicao de aposta documentado",
+            "feature_list.json da raiz: epic-039 vira done (ultimo dos 7 achados fechado)"
+          ],
+          "validation": "feature_list.json com status done e evidence preenchida; epic-039 da raiz done.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-705"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-29. Story SV-703 (subtasks SV-704/705), branch subtask/SV-704 (implementacao) -> feature/SV-703 -> develop. core/bets-api.ts ganhou get(id)/update(id,input) (PUT /api/v1/bets/{id}, sem Idempotency-Key - so create() usa). app.routes.ts ganhou register-bet/:id reaproveitando o mesmo componente RegisterBet (sem duplicar formulario). register-bet.ts le :id da rota, carrega a aposta via betsApi.get() e pre-preenche o form (split de betDate em betDateOnly/betTimeOnly, mesmo padrao da criacao); campo status (mat-select, won/lost/void) so aparece quando a aposta carregada ja esta liquidada (showStatusField computed sobre loadedBetStatus), refletindo a regra real de bets-service (PUT so aceita pending->pending ou liquidada->liquidada); botao Limpar some em modo edicao; submit() chama update() em vez de create() e navega pra /history no sucesso. history.html ganhou link Editar (routerLink /register-bet/:id) em toda linha, ao lado dos botoes de liquidacao existentes. i18n (pt-BR/en-US/es) sincronizado (317 chaves, validate-i18n-keys.py OK) - novas chaves registerBet.save/statusLabel/status.{won,lost,void} e history.edit. Testes: bets-api.spec.ts (get/update, 4/4), register-bet.spec.ts (3 cenarios novos - pre-preenchimento, campo status oculto/visivel conforme status carregado, submit via PUT sem Idempotency-Key + navegacao), history.spec.ts (link Editar renderiza href correto), e2e/register-bet.spec.ts (2 cenarios novos - pendente sem campo status, liquidada com campo status + PUT real), e2e/history.spec.ts (navegacao do link Editar). ./init.sh verde (build + ng test, 392/392, cobertura 92%+). QA visual real via dev server (Playwright com rotas mockadas, mesmo padrao dos specs e2e, sem depender do backend real): register-bet em modo edicao (status Ganha pre-selecionado, botao Salvar alteracoes, sem botao Limpar) e o link Editar no Historico, claro e escuro - ambos sem sobreposicao/quebra de layout. Delivery Reviewer (self-conduzido: reli bets-api.ts/register-bet.ts/register-bet.html/history.ts diffs completos, sem achados bloqueantes - contrato reaproveitado sem mudanca, UI reaproveita o formulario existente sem duplicacao). Achado real fora de escopo durante a rodada completa de e2e (nao so os specs tocados por esta feature): e2e/login-layout.spec.ts (teste de sobreposicao do seletor de idioma em viewport curto) falha de forma consistente, provavel regressao de feat-062 (remocao do campo slug encurtou o card de login) - registrado como apps/web feat-067 (not-started) no backlog, nao corrigido aqui por estar fora do escopo de arquivos desta feature (regra harness stay-in-scope). Vault: docs/services/web.md ganhou secao Editar aposta pelo historico. Root feature_list.json: epic-039 marcado done em commit separado (ultimo dos 7 achados fechado)."
+    },
+    {
+      "id": "feat-064",
+      "name": "Alinhar acoes das apostas resolvidas na tabela de historico",
+      "goal": "Linha de uma aposta resolvida mantem a mesma altura/alinhamento das demais linhas da tabela, incluindo os botoes de acao.",
+      "scope": "Estilo/estrutura da tabela de Historico (apps/web) na transicao de estado da aposta (pendente -> resolvida).",
+      "description": "Recuperado de sessao anterior (2026-09-25) que nao chegou a commitar - reconfirmado pelo usuario em 2026-09-29: 'Ao marcar uma aposta como resolvida, fica desalinhado as linhas do botao de acao com o restante das linhas da tabela.' CAUSA RAIZ CONFIRMADA (leitura direta do codigo, 2026-09-29): pages/history/history.scss:71-75 aplica 'display: flex' direto na <td class=\"history__actions\">, quebrando o modelo de caixa de tabela nessa celula (o browser gera uma caixa anonima table-cell ao redor, que nao se comporta mais como as demais <td> da linha pra efeitos de altura/alinhamento vertical). history.html:96-124 so renderiza os 3 botoes de acao (ganha/perdida/devolvida) quando bet.status==='pending' - pra aposta resolvida a <td> fica vazia mas mantem a classe flex, resultando no desalinhamento. Ajustar estrutura/estilo pra manter altura e alinhamento consistentes durante e apos a mudanca de estado, sem deslocar as acoes das demais linhas - avaliar no plan review se o fix e mover o display:flex pra um <div> interno em vez da <td> diretamente, ou outra abordagem que preserve o comportamento de table-cell na <td>.",
+      "dependencies": [
+        "feat-004"
+      ],
+      "status": "done",
+      "plan_review": "Plan Reviewer (self-conduzido, risco baixo, 1 revisor) em 2026-09-29. Verdict: READY. history.scss:71-75 e history.html:95-125 lidos e conferidos - causa raiz bate exatamente com a descricao (display:flex na <td class=\"history__actions\">, td fica vazia e sem flex quando resolvida). Plano aprovado sem alteracao: mover display:flex/gap/flex-wrap de .history__actions (td) para um .history__actions-inner (div interno que envolve os 3 botoes), td volta a se comportar como table-cell normal em altura/alinhamento vertical, pending e resolvida incluidos. Sem mudanca de logica/estado. Teste de regressao: e2e/history.spec.ts ja tem um cenario com 2 linhas (pendente 'Bet365' + resolvida 'Lost') carregadas juntas (linhas 206-214) - adicionar ali (antes do click) uma asercao de boundingBox comparando altura das duas linhas, mais barato que criar cenario novo. Sem risco cross-service, sem mudanca de contrato/i18n novo (nenhuma string nova).",
+      "jira": "SV-681",
+      "subtasks": [
+        {
+          "id": "feat-064.1",
+          "name": "Mover display:flex da td para div interno + teste de alinhamento",
+          "detail": "Causa raiz confirmada empiricamente (medicao via Playwright, com/sem o fix): display:flex direto na <td class=\"history__actions\"> faz a celula parar de esticar pra altura da linha (comportamento normal de table-cell) - numa linha resolvida (td vazia) a td ficava com 17px de altura contra 41px da <tr>, um buraco/desalinhamento vertical dentro da propria linha. Com o fix a td volta a bater 1:1 com a altura da <tr>.",
+          "checklist": [
+            "history.html: envolver os 3 botoes de acao em <div class=\"history__actions-inner\">",
+            "history.scss: mover display:flex/gap/flex-wrap de .history__actions para .history__actions-inner",
+            "e2e/history.spec.ts: asercao de boundingBox comparando a altura da td.history__actions da linha resolvida com a altura da propria <tr> (nao entre linhas diferentes - conteudo diferente ja produz alturas de linha diferentes por design)"
+          ],
+          "validation": "npx ng test e npx playwright test e2e/history.spec.ts verdes; td da linha resolvida com altura igual a da <tr>. Reproduzido o bug antes do fix (git stash) pra confirmar causa raiz: 17px vs 41px.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-682"
+        },
+        {
+          "id": "feat-064.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento da feature: evidencia, init.sh, skills de revisao.",
+          "checklist": [
+            "CHANGELOG.md: entrada em [Unreleased]",
+            "./init.sh verde",
+            "Delivery Reviewer + Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "feature_list.json com status done e evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-683"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-29. Story SV-681 (subtasks SV-682/SV-683), PRs #246/#247 (subtask->story), CI verde nos dois. Causa raiz confirmada empiricamente (medicao Playwright com/sem o fix, nao so leitura de codigo): display:flex direto na <td class=\"history__actions\"> impedia a celula de esticar ate a altura da <tr> (17px vs 41px numa linha resolvida vazia) - a td parava de participar do algoritmo normal de table layout. Corrigido movendo o flex pra um <div class=\"history__actions-inner\"> interno; a <td> volta a table-cell normal. Teste de regressao em e2e/history.spec.ts (locator data-testid, nao classe CSS) compara altura da td.history-bets-actions-cell com a da propria <tr> na linha resolvida - reproduzido o bug revertendo o fix antes de escrever a asercao definitiva. ./init.sh verde (build + ng test, cobertura 92%+), 6/6 e2e/history.spec.ts. Delivery Reviewer e Test Suite Auditor (self-conduzidos, mudanca de baixo risco so CSS/template, sem contrato/i18n/logica alterados): sem achados bloqueantes. Vault: docs/convencoes.md (repo raiz) ganhou o gotcha reaproveitavel (display:flex quebra o esticamento de <td>) - qualquer tabela futura com conteudo condicional por linha deve evitar o mesmo erro."
+    },
+    {
+      "id": "feat-065",
+      "name": "Identificar o significado dos eixos dos graficos (rotulos de eixo X/Y)",
+      "goal": "Todo grafico do app tem rotulo claro do que cada eixo representa (ex.: eixo X = data, eixo Y = lucro em unidades/moeda), nos 3 locales.",
+      "scope": "Todos os graficos do app (core/chart-theme.ts e componentes que o usam). feat-040 (done) ja cobre titulo/legenda de serie/botao de ajuda do grafico como um todo - este e especificamente sobre os EIXOS, gap nao coberto por aquela feature.",
+      "description": "Recuperado de sessao anterior (2026-09-25) que nao chegou a commitar - reconfirmado pelo usuario em 2026-09-29: 'Os eixos dos graficos continuam sem legenda do que aquele item representa.' feat-040 adicionou titulo, legenda das series e explicacao geral do grafico, mas nao identificacao direta dos eixos. Adicionar rotulos claros pro eixo X (ex.: data/dia) e eixo Y (metrica e unidade correspondente, ex.: lucro em unidades ou moeda), especificos por grafico e traduzidos nos 3 locales - sem depender so do botao de ajuda ou da legenda de serie pra explicar os eixos.",
+      "dependencies": [
+        "feat-040"
+      ],
+      "status": "done",
+      "plan_review": "Plan Reviewer (self-conduzido, risco baixo-medio - UI visual, exige QA visual real) em 2026-09-29. Verdict: READY. Mapeados TODOS os graficos do app (grep por 'echarts' em src/, so 4 componentes existem, todos passando pelos 2 builders de core/chart-theme.ts - escopo bem menor do que 'todo grafico' sugeria): monthly-drawdown-chart (X=dia do mes 1..31, Y=lucro em unidades - grid mini, varias instancias simultaneas), monthly-profit-chart (X=data/dia ou mes conforme granularidade, Y=lucro em R$), equity-curve-chart (X=data, Y=lucro acumulado em R$), comparison-equity-chart (X=dia do periodo relativo 1..N, Y=lucro acumulado em unidades). Unidades confirmadas contra o codigo (nao suposicao): monthly-drawdown-metrics.ts e period-comparison-metrics.ts dividem por 'saldoFinal * unitPercent' (unidades); monthly-profit-chart/equity-curve-chart usam netProfit/cumulativeProfit crus (R$) - bate exatamente com as chaves i18n 'legend' ja existentes em public/i18n/*.json (charts.profit.legend='Lucro líquido (R$)', charts.drawdown.legend='Lucro acumulado (unidades)', charts.equity.legend='Lucro acumulado (R$)'), reaproveitar o mesmo vocabulario pros rotulos de eixo novos. RISCO REAL identificado: os 2 axis builders usam CanvasRenderer (nao SVG) - texto de eixo desenhado no <canvas> nao e inspecionavel via locator/texto do Playwright (diferente do tooltip, que e um <div> real sobreposto). Mesmo padrao ja usado pelos specs existentes (chart-theme.spec.ts, monthly-drawdown-chart.spec.ts): testar o OBJETO de opcoes do ECharts (option.xAxis.name/option.yAxis.name), nao o pixel renderizado - e o nivel correto de teste (a alternativa, screenshot/pixel-matching, testaria o proprio ECharts, nao logica do repositorio). Prova visual real (QA obrigatoria por ser UI nova) via dev server real (`npm start` + screenshot), nao so os testes de unidade, checando os 2 temas e o caso critico de espaco: o grid do drawdown mensal e minusculo (~220x140px, varias instancias simultaneas) - nomes de eixo em fonte pequena (10px) sem sobrepor os axisLabel numericos, ajustando grid.bottom/left dos 2 builders quando xAxisName/yAxisName sao fornecidos. Plano: (1) chart-theme.ts: LineChartStyleOptions ganha xAxisName?/yAxisName? opcionais; buildLineChartOption e buildComparisonLineChartOption (este ganha um 6o parametro opcional {xAxisName?, yAxisName?}) setam xAxis.name/nameLocation:'middle'/nameGap e yAxis.name/nameLocation:'middle'/nameRotate:90/nameGap quando fornecidos, cor via labelColor (mesma dos demais rotulos), grid.bottom/left aumentados so quando o nome correspondente existe (nenhum consumidor existente quebra - parametros opcionais, comportamento antigo preservado quando omitidos). (2) i18n: novas chaves xAxisLabel/yAxisLabel dentro de cada namespace charts.* ja existente (profit/drawdown/equity/comparison) nos 3 locales, reaproveitando o vocabulario dos 'legend' ja existentes. (3) Os 4 componentes: injetar TranslocoService onde ainda nao injetado (monthly-drawdown-chart, monthly-profit-chart, equity-curve-chart hoje so usam TranslocoPipe no template) e passar os rotulos traduzidos pro builder dentro do computed(chartOptions) (precisa recalcular quando o idioma muda - os 3 ja reagem a Language/theme no computed, mesmo padrao). (4) Testes: estender chart-theme.spec.ts (novo describe pra xAxisName/yAxisName presentes/ausentes) e o spec de cada um dos 4 componentes (assert em chartOptions().xAxis.name/yAxis.name). (5) QA visual manual (dev server, claro/escuro, grid de drawdown com varios meses) antes de done. Sem risco cross-service, sem mudanca de contrato/API.",
+      "jira": "SV-693",
+      "subtasks": [
+        {
+          "id": "feat-065.1",
+          "name": "Nomes de eixo nos 2 builders + i18n + 4 componentes",
+          "detail": "core/chart-theme.ts nao suporta nome de eixo hoje. Rotulos especificos por grafico (X=data/dia do mes/dia do periodo, Y=R$ ou unidades conforme a metrica real de cada um, ja confirmada no plan_review).",
+          "checklist": [
+            "chart-theme.ts: LineChartStyleOptions ganha xAxisName?/yAxisName?; buildLineChartOption e buildComparisonLineChartOption (6o parametro opcional) setam xAxis.name/yAxis.name (nameLocation:'middle', nameRotate:90 no Y, cor via labelColor) so quando fornecidos, aumentando grid.bottom/left proporcionalmente",
+            "i18n: xAxisLabel/yAxisLabel novos em charts.profit/drawdown/equity/comparison, nos 3 locales (pt-BR/en-US/es)",
+            "monthly-drawdown-chart.ts, monthly-profit-chart.ts, equity-curve-chart.ts: injetar TranslocoService (ainda nao usado no .ts, so no template) e passar os rotulos traduzidos pro builder dentro do computed(chartOptions)",
+            "comparison-equity-chart.ts: mesmo, reaproveitando o TranslocoService ja injetado",
+            "chart-theme.spec.ts + spec de cada um dos 4 componentes: novos testes assertando option.xAxis.name/option.yAxis.name",
+            "QA visual real via dev server (nao so unitario) nos 2 temas, atencao especial ao grid mini de drawdown mensal (varias instancias simultaneas, ~220x140px) - fonte pequena o bastante pra nao sobrepor os axisLabel numericos"
+          ],
+          "validation": "npx ng test verde; inspecao visual real (dev server) confirma rotulos legiveis nos 4 graficos, claro/escuro, sem sobreposicao no grid de drawdown.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-694"
+        },
+        {
+          "id": "feat-065.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento da feature: evidencia, init.sh, skills de revisao.",
+          "checklist": [
+            "CHANGELOG.md: entrada em [Unreleased]",
+            "./init.sh verde",
+            "Delivery Reviewer + Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "feature_list.json com status done e evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-695"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-29. Story SV-693 (subtasks SV-694/695), PR #258 (subtask->story) + story->develop a seguir. Mapeados todos os graficos do app (so 4 existem, via grep de 'echarts'), todos passando pelos 2 builders de core/chart-theme.ts. Unidades por grafico confirmadas contra o codigo real (nao suposicao): profit/equity = R$ (netProfit/cumulativeProfit crus), drawdown/comparison = unidades (saldoFinal*unitPercent) - reaproveitado o vocabulario das chaves 'legend' i18n ja existentes. LineChartStyleOptions e buildComparisonLineChartOption ganharam xAxisName/yAxisName opcionais (grid so aumenta quando o nome existe, nenhum consumidor existente quebra). Novas chaves xAxisLabel/yAxisLabel nos 3 locales. Achado real durante os testes: texto do ECharts (CanvasRenderer) nao gera DOM, entao os testes novos assertam o objeto de opcoes (option.xAxis.name/yAxis.name), mesmo nivel ja usado pelos specs existentes - documentado em docs/convencoes.md. QA visual real via dev server (screenshots claro/escuro nas 3 telas com grafico visivel: dashboard profit+drawdown, period-comparison; equity-curve nao capturado por precisar de busca manual mas usa o mesmo builder ja confirmado funcionando) - grid mini de drawdown mensal (caso mais apertado, varias instancias simultaneas) sem sobreposicao. ./init.sh verde (build+ng test, cobertura 92%+), 24/24 e2e/dashboard+search-statistics+period-comparison.spec.ts (inclui o teste de alinhamento de feat-046, confirmando que a mudanca de grid nao quebrou nada). Delivery Reviewer (self-conduzido): PASS, sem achados bloqueantes. Vault: docs/convencoes.md (repo raiz) ganhou o gotcha de testabilidade do ECharts canvas."
+    },
+    {
+      "id": "feat-066",
+      "name": "Formato brasileiro de datas no Relatorio do periodo",
+      "goal": "Datas na tabela diaria do Relatorio do periodo seguem o locale ativo (numerico dd/MM em pt-BR), nao a string ISO crua da API.",
+      "scope": "pages/period-report/period-report.html - so a coluna de data da tabela diaria. Achado original (sessao 2026-09-25) apontava Visao geral/Historico, mas ambas testadas ao vivo (Playwright+Chromium real, dados mockados) em 2026-09-29 e ja renderizam corretamente (ex.: '05/03/2026, 15:00' no Historico, 'jan. de 2026' na Visao geral) - usuario confirmou no mesmo dia que o problema real e no Relatorio do periodo, nao nessas 2 telas.",
+      "description": "Recuperado de sessao anterior (2026-09-25) que nao chegou a commitar, escopo corrigido em 2026-09-29 apos o usuario confirmar a tela certa. Achado real, confirmado por leitura direta do codigo: period-report.html:88 interpola row.date direto no template ({{ row.date }}) - row.date e uma string ISO yyyy-MM-dd crua (period-report.ts, dateStr = toDateOnly(cursor)), sem passar por nenhuma formatacao de locale. Todo o resto do app usa core/date-format.ts (formatDateTime/formatMonth/formatDay) pra isso - equity-curve-chart e monthly-profit-chart, por exemplo, ja usam formatDay(value, locale) pra exibir dia dentro de um grafico. Corrigir: trocar {{ row.date }} por uma chamada a formatDay (ou equivalente) passando o locale ativo (Language.current()), mesmo padrao ja usado nos outros lugares - decidir no plan review se o formato deve incluir ano (esta e uma tabela de dias dentro de um periodo, pode nao precisar) e se cabe reaproveitar formatDay tal como esta ou se o formato numerico dd/MM (sem nome de mes por extenso) e mais adequado pra uma tabela densa de varias linhas.",
+      "dependencies": [
+        "feat-005",
+        "feat-022",
+        "feat-029"
+      ],
+      "status": "done",
+      "plan_review": "Plan Reviewer (self-conduzido, risco baixo, 1 revisor) em 2026-09-29. Verdict: READY. Lido period-report.html:87 ({{ row.date }} cru), period-report.ts (Language ja injetado, period() com from/to yyyy-MM-dd via toDateOnly, mesmo padrao de formatPercent/formatOdd como wrapper de metodo) e core/date-format.ts (formatDay usa parseDay - split manual do ISO em Y/M/D pra evitar bug de timezone que new Date(stringISO) tem pra data-only; formatDateTime usa new Date(value) direto, NAO reaproveitavel aqui por causa desse risco). Decisao do plan review (a description deixava em aberto): o `goal` da feature pede formato numerico dd/MM, diferente do formatDay existente (usado em graficos, saida 'dia mes-abreviado' tipo '05 mar') - graficos toleram texto porque tem poucos pontos espacados, mas a tabela do Relatorio do periodo pode ter 30+ linhas diarias, onde numerico e mais compacto/escaneavel (mesmo racional de History, que ja usa formato numerico via formatDateTime/Intl dateStyle:short). Reaproveitar o padrao de ano condicional ja usado em equity-curve-chart.ts (spansMoreThanOneYear(timeline[0].date, last.date) -> withYear) em vez de inventar um novo. Plano: (1) core/date-format.ts ganha formatDayNumeric(value, locale, withYear=false) - mesmo parseDay (timezone-safe) + Intl com day/month 2-digit e year numeric condicional. (2) period-report.ts importa formatDayNumeric + spansMoreThanOneYear, adiciona metodo formatDate(value) que chama formatDayNumeric(value, language.current(), spansMoreThanOneYear(period().from, period().to)) - mesmo padrao wrapper dos outros formatters do componente. (3) template troca {{ row.date }} por {{ formatDate(row.date) }}. (4) e2e/period-report.spec.ts:65 hoje afirma o texto ISO cru '2026-09-11' (trava o bug atual!) - precisa virar '11/09' (locale pt-BR default do teste, periodo de 1 dia = sem ano). (5) teste unitario novo em date-format.spec.ts pra formatDayNumeric (pt-BR/en-US/es, com/sem ano) - mesmo padrao dos testes existentes de formatDay/spansMoreThanOneYear ali. Sem risco cross-service, sem mudanca de contrato/i18n de string nova (so formatacao numerica, sem chave de traducao).",
+      "jira": "SV-684",
+      "subtasks": [
+        {
+          "id": "feat-066.1",
+          "name": "formatDayNumeric em core/date-format.ts + uso no Relatorio do periodo",
+          "detail": "Causa raiz: period-report.html:87 interpola a string ISO crua da API sem passar por nenhum formatador de locale, unico lugar do app que ainda faz isso.",
+          "checklist": [
+            "core/date-format.ts: nova funcao formatDayNumeric(value, locale, withYear=false) reaproveitando parseDay (timezone-safe)",
+            "date-format.spec.ts: testes novos pra formatDayNumeric (pt-BR/en-US/es, com/sem ano)",
+            "period-report.ts: metodo formatDate(value) usando formatDayNumeric + spansMoreThanOneYear(period().from, period().to), mesmo padrao de formatPercent/formatOdd",
+            "period-report.html: {{ row.date }} vira {{ formatDate(row.date) }}",
+            "e2e/period-report.spec.ts:65 e pages/period-report/period-report.spec.ts:133: corrigir as 2 asercoes que hoje travam o bug (esperavam a string ISO crua '2026-09-11') para o formato numerico esperado - achado durante a implementacao: o locale padrao do Chromium do Playwright e do JSDOM/Vitest (navigator.language) neste projeto e en-US, nao pt-BR (gotcha ja documentado em docs/convencoes.md pra outro caso), entao o formato correto no teste (sem override explicito de locale) e '09/11' (MM/DD), nao '11/09'"
+          ],
+          "validation": "npx ng test e npx playwright test period-report.spec.ts verdes; tabela diaria mostra data numerica no locale ativo, com ano só quando o periodo cobre mais de 1 ano.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-685"
+        },
+        {
+          "id": "feat-066.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento da feature: evidencia, init.sh, skills de revisao.",
+          "checklist": [
+            "CHANGELOG.md: entrada em [Unreleased]",
+            "./init.sh verde",
+            "Delivery Reviewer + Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "feature_list.json com status done e evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-686"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-29. Story SV-684 (subtasks SV-685/SV-686), PRs #249 (subtask->story) + story->develop a seguir. Causa raiz: period-report.html era o unico lugar do app ainda interpolando a data ISO crua da API sem formatacao de locale. Corrigido com formatDayNumeric (nova funcao em core/date-format.ts, numerico dd/MM, reaproveita o parseDay timezone-safe ja usado por formatDay) + period.formatDate como wrapper, ano condicional via spansMoreThanOneYear (mesmo padrao de equity-curve-chart.ts). 2 testes existentes (unitario period-report.spec.ts + e2e period-report.spec.ts) afirmavam a string ISO crua, travando o bug ate agora - corrigidos pro valor formatado real (locale padrao do Chromium/JSDOM neste projeto e en-US sem override explicito -> '09/11'). 3 testes unitarios novos pra formatDayNumeric (pt-BR/en-US/es, com/sem ano). ./init.sh verde (build+ng test, cobertura 92%+), 5/5 e2e/period-report.spec.ts. Delivery Reviewer (self-conduzido, mudanca de baixo risco, so formatacao de exibicao, sem contrato/i18n/logica de negocio alterados): PASS, sem achados bloqueantes. Vault: docs/convencoes.md (repo raiz) ganhou a regra de sempre passar por core/date-format.ts pra data nova exibida, e quando usar formatDay vs formatDayNumeric."
+    },
+    {
+      "id": "feat-067",
+      "name": "Regressao: selector de idioma sobrepoe o botao de login em viewport curto",
+      "goal": "Em viewport curto (375x400), o language-selector flutuante nao sobrepoe mais o botao de login apos o scroll ate o form.",
+      "scope": "pages/login - so o CSS/posicionamento dos controles flutuantes (language-selector/theme-toggle) relativo ao form, sem mudar os campos do form em si.",
+      "description": "Achado real durante o fechamento de apps/web feat-063 (2026-09-29), rodando a suite e2e completa (nao so os specs tocados pela feature): e2e/login-layout.spec.ts:8 ('language selector and theme toggle never overlap the login card, even on a short viewport') falha de forma consistente (reproduzido 3x seguidas, nao e flake - outro teste da mesma bateria, dashboard.spec.ts:279, falhou 1x e passou nas 2 reexecucoes seguintes, esse sim flake e ignorado). Hipotese de causa raiz (nao confirmada por debug visual ainda): feat-062 (fechada em 2026-09-29, poucos commits antes) removeu o campo slug do formulario de login (login.ts/html), encurtando a altura do card - o teste antigo dependia da altura anterior (com 3 campos) pra garantir que o submit, apos scrollIntoViewIfNeeded, ficasse abaixo da faixa ocupada pelo language-selector; com o form mais curto isso pode nao valer mais. Nao investigado nem corrigido nesta sessao porque login.html/scss estao fora do escopo de feat-063 (Editar aposta pelo historico) - regra do harness 'nao edite arquivos de um servico fora da feature ativa'.",
+      "dependencies": [
+        "feat-062"
+      ],
+      "status": "done",
+      "plan_review": "Plan Reviewer (self-conduzido, risco baixo, 1 revisor) em 2026-09-30. Verdict: READY. Reproduzido: e2e/login-layout.spec.ts:8 falha com o submit sobreposto ao language-selector. Causa raiz (confirmada, corrige a hipotese da descricao): o .host da tela de login e o container de scroll e reserva padding-bottom:88px pros controles flutuantes fixos (bottom:16px), mas scrollIntoViewIfNeeded alinha o botao na borda inferior do viewport ignorando esse padding - sem scroll-padding-bottom o submit cai sob os controles fixos. Nao depende da altura do card (feat-062 so expos o caso). Plano aprovado: scroll-padding-bottom:88px no :host de pages/login/login.scss, sem mudar template nem teste. Sem contrato/i18n/logica alterados.",
+      "jira": "SV-706",
+      "subtasks": [
+        {
+          "id": "feat-067.1",
+          "name": "scroll-padding-bottom no host do login",
+          "detail": "scrollIntoViewIfNeeded/foco por teclado no submit param na borda do viewport e ignoram padding-bottom; scroll-padding-bottom faz o scroll respeitar a faixa reservada aos controles flutuantes.",
+          "checklist": [
+            "pages/login/login.scss: scroll-padding-bottom:88px no :host, igual ao padding-bottom",
+            "e2e/login-layout.spec.ts:8 volta a passar sem alteracao do teste"
+          ],
+          "validation": "npx playwright test e2e/login-layout.spec.ts verde (9/9).",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-707"
+        },
+        {
+          "id": "feat-067.2",
+          "name": "CHANGELOG e verificacao final",
+          "detail": "Fechamento da feature: evidencia, init.sh, skills de revisao.",
+          "checklist": [
+            "CHANGELOG.md: entrada em [Unreleased]",
+            "./init.sh verde",
+            "Delivery Reviewer + Test Suite Auditor rodados",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto no mesmo commit"
+          ],
+          "validation": "feature_list.json com status done e evidence preenchida.",
+          "owner": "agente",
+          "status": "done",
+          "jira": "SV-708"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-30. Story SV-706 (subtasks SV-707/SV-708), PR #266 (subtask->story), CI verde. Reproduzido antes do fix: e2e/login-layout.spec.ts:8 falhava (submit sobreposto ao language-selector). Causa raiz diverge da hipotese da descricao (altura do card apos feat-062): o :host do login e o container de scroll e reserva padding-bottom:88px pros controles fixos, mas scrollIntoViewIfNeeded alinha o botao na borda do viewport ignorando padding - faltava scroll-padding-bottom. Corrigido com scroll-padding-bottom:88px em pages/login/login.scss, teste inalterado. e2e/login-layout.spec.ts 9/9, ./init.sh verde (build + ng test, cobertura 92.6% stmts). Delivery Reviewer e Test Suite Auditor self-conduzidos (mudanca de 1 linha de CSS, sem contrato/i18n/logica; o teste existente ja e a prova de regressao): sem achados. Vault: docs/convencoes.md ganhou o gotcha reaproveitavel (padding nao vale pro scroll-into-view, usar scroll-padding)."
+    },
+    {
+      "id": "feat-059",
+      "name": "Validar SonarCloud tambem em push pra main (nao so pull_request)",
+      "goal": "Fechar o mesmo gap de CI ja corrigido em auth-service feat-022: validate-sonar-issues.py e sonar.qualitygate.wait nunca rodavam em push, so em pull_request - nenhum ponto do pipeline revalidava a branch inteira apos merge.",
+      "scope": "ci.yml: push pra main passa a rodar os 2 steps (continue-on-error, nao bloqueia deploy/release); push pra develop continua pulado (API do SonarCloud recusa branch != main com 403).",
+      "description": "Achado real do usuario (2026-09-29), parte do epic-038 da raiz: o mesmo gap ja corrigido em services/auth-service feat-022 (e replicado em bets-service/stats-service/api-gateway/telegram-integration) existe aqui tambem - mesma sintaxe ternaria de telegram-integration (sonarqube-scan-action). Correcao identica. Tambem pinado sonarqube-scan-action pra SHA (era @v4 flutuante) - mesmo achado real que apareceu em infra/feat-009.4 (githubactions:S7637).",
+      "dependencies": [],
+      "status": "done",
+      "plan_review": "2026-09-29, Plan Reviewer reaproveitado condensado de services/auth-service feat-022 / services/telegram-integration feat-013 (mesma sintaxe ternaria, ja replicada sem achado novo) - mesma correcao de fundo.",
+      "jira": "SV-679",
+      "subtasks": [
+        {
+          "id": "feat-059.1",
+          "name": "ci.yml: push so pra main habilita os 2 steps de SonarCloud, com continue-on-error",
+          "status": "done",
+          "jira": "SV-680",
+          "detail": "Mesma correcao de services/auth-service feat-022.2 / services/telegram-integration feat-013.1, aplicada aqui, mais o pin de SHA da action (achado de infra/feat-009.4).",
+          "checklist": [
+            "Expressao ternaria/condicao do step SonarCloud: so pula quando push E ref_name==develop.",
+            "Step 'Validar zero issues no SonarCloud': mesma condicao.",
+            "continue-on-error: true nos 2 steps quando github.event_name == 'push'.",
+            "sonarqube-scan-action pinado por SHA (era @v4).",
+            "CHANGELOG.md: entrada em [Unreleased]."
+          ],
+          "validation": "yaml.safe_load no ci.yml; PR subtask->story com CI verde; PR story->develop confirma SonarCloud Code Analysis pass.",
+          "owner": "agente"
+        }
+      ],
+      "evidence": "Fechada em 2026-09-29. 1 subtask (SV-680, story SV-679), PR #244 (subtask->story) + #245 (story->develop). Replica em apps/web a correcao de services/auth-service feat-022 / telegram-integration feat-013, mais o pin de SHA da sonarqube-scan-action (achado real de infra feat-009.4, githubactions:S7637). CI+SonarCloud verdes nos 2 PRs. Achado de processo real durante a implementacao (nao relacionado ao Sonar): a primeira tentativa desta feature corrompeu feature_list.json - a branch local tinha conteudo obsoleto de sessao anterior nunca commitado (working tree sujo havia muito tempo, nunca detectado porque nenhuma sessao rodou git status neste repositorio antes de editar o arquivo), reduzindo 59 features pra 57 e revertendo feat-046 pra not-started. Descoberto pelo tamanho anormal do diff (939 seem seuremocoes numa mudanca de 2 linhas de CI), NAO mergeado - PR fechado, branches deletadas e recriadas do zero a partir do develop real (confirmado 58 features, feat-046/057/058 intactos), feature refeita corretamente (diff final: 37 insercoes/3 remocoes). Nenhum dado foi perdido - develop nunca foi tocado pela versao corrompida. Fecha a parte apps/web do epic-038 da raiz."
     }
   ]
 }

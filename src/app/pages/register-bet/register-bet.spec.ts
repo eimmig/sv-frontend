@@ -2,7 +2,9 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@jsverse/transloco';
+import { vi } from 'vitest';
 
 import { RegisterBet } from './register-bet';
 import { environment } from '../../../environments/environment';
@@ -36,7 +38,10 @@ describe('RegisterBet', () => {
         betTimeLabel: 'Hora do evento',
         reset: 'Limpar',
         submit: 'Registrar aposta',
+        save: 'Salvar alterações',
         success: 'Aposta registrada com sucesso.',
+        statusLabel: 'Status',
+        status: { won: 'Ganha', lost: 'Perdida', void: 'Devolvida' },
         genericError: 'Não foi possível completar a operação. Tente novamente.',
       },
     },
@@ -95,7 +100,7 @@ describe('RegisterBet', () => {
           preloadLangs: true,
         }),
       ],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideNativeDateAdapter()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]), provideNativeDateAdapter()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegisterBet);
@@ -242,5 +247,131 @@ describe('RegisterBet', () => {
     fixture.componentInstance['submit']();
 
     httpMock.expectNone(`${environment.apiGatewayUrl}/api/v1/bets`);
+  });
+});
+
+describe('RegisterBet - editing an existing bet', () => {
+  let fixture: ComponentFixture<RegisterBet>;
+  let httpMock: HttpTestingController;
+  let router: Router;
+
+  const editLangs = {
+    'pt-BR': {
+      dateMask: { placeholder: 'mm/dd/aaaa' },
+      registerBet: {
+        eventTitle: 'Evento',
+        detailsTitle: 'Detalhes',
+        valuesTitle: 'Valores',
+        bettingHouseLabel: 'Casa de apostas',
+        sportLabel: 'Esporte',
+        leagueLabel: 'Liga',
+        marketLabel: 'Mercado',
+        stakeLabel: 'Valor apostado',
+        oddLabel: 'Odd',
+        betDateLabel: 'Data do evento',
+        betTimeLabel: 'Hora do evento',
+        reset: 'Limpar',
+        submit: 'Registrar aposta',
+        save: 'Salvar alterações',
+        success: 'Aposta registrada com sucesso.',
+        statusLabel: 'Status',
+        status: { won: 'Ganha', lost: 'Perdida', void: 'Devolvida' },
+        genericError: 'Não foi possível completar a operação. Tente novamente.',
+      },
+    },
+  };
+
+  const existingBet = {
+    id: 'bet-1',
+    bettingHouseId: 'bh-1',
+    sportId: 'sp-1',
+    leagueId: 'lg-1',
+    marketId: 'mk-1',
+    tipsterId: null,
+    ticketNumber: null,
+    team1Id: null,
+    team2Id: null,
+    description: null,
+    betType: 'pre',
+    playType: null,
+    stake: 50,
+    odd: 2,
+    status: 'pending',
+    betDate: '2026-03-01T18:00:00.000Z',
+  };
+
+  function flushCatalogOptions() {
+    httpMock
+      .expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/betting-houses`)
+      .flush({ content: [], page: 0, size: 100, totalElements: 0, totalPages: 0 });
+    for (const resource of ['sports', 'leagues', 'markets', 'tipsters']) {
+      httpMock
+        .expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/${resource}`)
+        .flush({ content: [], page: 0, size: 100, totalElements: 0, totalPages: 0 });
+    }
+    httpMock
+      .expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/teams`)
+      .flush({ content: [], page: 0, size: 100, totalElements: 0, totalPages: 0 });
+  }
+
+  async function setup(bet: typeof existingBet): Promise<void> {
+    await TestBed.configureTestingModule({
+      imports: [
+        RegisterBet,
+        TranslocoTestingModule.forRoot({
+          langs: editLangs,
+          translocoConfig: { availableLangs: ['pt-BR'], defaultLang: 'pt-BR' },
+          preloadLangs: true,
+        }),
+      ],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        provideNativeDateAdapter(),
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: convertToParamMap({ id: bet.id }) } } },
+      ],
+    }).compileComponents();
+
+    router = TestBed.inject(Router);
+    vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+
+    fixture = TestBed.createComponent(RegisterBet);
+    httpMock = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
+    flushCatalogOptions();
+    httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/bets/${bet.id}`).flush(bet);
+  }
+
+  afterEach(() => {
+    httpMock.verify();
+  });
+
+  it('loads the bet and pre-fills the form, hiding the status field for a pending bet', async () => {
+    await setup(existingBet);
+
+    expect(fixture.componentInstance['form'].value.bettingHouseId).toBe('bh-1');
+    expect(fixture.componentInstance['form'].value.stake).toBe(50);
+    expect(fixture.componentInstance['showStatusField']()).toBe(false);
+  });
+
+  it('shows the status field, pre-selected with the current value, for an already settled bet', async () => {
+    await setup({ ...existingBet, status: 'won' });
+
+    expect(fixture.componentInstance['showStatusField']()).toBe(true);
+    expect(fixture.componentInstance['form'].value.status).toBe('won');
+  });
+
+  it('submits via update() instead of create(), then navigates back to /history', async () => {
+    await setup(existingBet);
+
+    fixture.componentInstance['submit']();
+
+    const request = httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/bets/${existingBet.id}`);
+    expect(request.request.method).toBe('PUT');
+    expect(request.request.body.status).toBe('pending');
+    request.flush({ ...existingBet });
+
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/history');
   });
 });
