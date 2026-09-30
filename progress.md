@@ -3,10 +3,26 @@
 ## Estado Atual (Current State)
 
 **Última atualização:** 2026-09-29
-**Estado:** `epic-039` (raiz) em andamento - 7 achados reais de UX recuperados de sessão nunca
-commitada (2026-09-25/29). `feat-064`, `feat-066`, `feat-061`, `feat-060`, `feat-065` e `feat-062`
-fechadas nesta sessão. Resta só `feat-063` (editar aposta pelo histórico), `not-started`,
-dependência já `done`.
+**Estado:** `epic-039` (raiz) com os 7 achados de UX fechados nesta sessão (`feat-064`, `feat-066`,
+`feat-061`, `feat-060`, `feat-065`, `feat-062`, `feat-063`) - falta só marcar `epic-039` `done` no
+`feature_list.json` da raiz (commit separado). Achado fora de escopo durante o fechamento de
+`feat-063` virou `feat-067` (`not-started`, backlog): regressão real em `e2e/login-layout.spec.ts`
+(seletor de idioma sobrepõe o botão de login em viewport curto), provável efeito colateral de
+`feat-062` (form de login mais curto sem o campo slug) - não corrigida por estar fora dos arquivos
+de `feat-063`.
+
+## `feat-063` fechada — editar aposta pelo histórico (2026-09-29)
+
+Story SV-703 (SV-704/705), PRs #264/#265. Parte de `epic-039` (raiz). `bets-service` já expunha
+`PUT /api/v1/bets/{id}` desde `feat-019` - só faltava o frontend. Reaproveitado o componente
+`RegisterBet` em modo edição (rota nova `/register-bet/:id`) em vez de duplicar o formulário:
+carrega a aposta via `BetsApi.get()`, pré-preenche o form, e o campo de Status só aparece quando a
+aposta carregada já está liquidada (reflete a regra real do backend - `PUT` só aceita
+`pending→pending` ou `liquidada→liquidada`, nunca cruzar essa fronteira). `submit()` chama
+`update()` em vez de `create()` em modo edição e navega pra `/history` no sucesso, em vez de
+limpar o formulário. Link "Editar" novo em toda linha da tabela de Histórico. Rodando a suite e2e
+completa (não só os specs tocados pela feature) achado real fora de escopo: registrado como
+`feat-067` no backlog (ver "Estado Atual" acima).
 
 ## `feat-062` fechada — login 2 campos, criação de usuário por username (2026-09-29)
 
