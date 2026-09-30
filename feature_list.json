@@ -4692,7 +4692,7 @@
       "dependencies": [
         "feat-062"
       ],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "Plan Reviewer (self-conduzido, risco baixo, 1 revisor) em 2026-09-30. Verdict: READY. Reproduzido: e2e/login-layout.spec.ts:8 falha com o submit sobreposto ao language-selector. Causa raiz (confirmada, corrige a hipotese da descricao): o .host da tela de login e o container de scroll e reserva padding-bottom:88px pros controles flutuantes fixos (bottom:16px), mas scrollIntoViewIfNeeded alinha o botao na borda inferior do viewport ignorando esse padding - sem scroll-padding-bottom o submit cai sob os controles fixos. Nao depende da altura do card (feat-062 so expos o caso). Plano aprovado: scroll-padding-bottom:88px no :host de pages/login/login.scss, sem mudar template nem teste. Sem contrato/i18n/logica alterados.",
       "jira": "SV-706",
       "subtasks": [
@@ -4721,11 +4721,11 @@
           ],
           "validation": "feature_list.json com status done e evidence preenchida.",
           "owner": "agente",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-708"
         }
       ],
-      "evidence": ""
+      "evidence": "Fechada em 2026-09-30. Story SV-706 (subtasks SV-707/SV-708), PR #266 (subtask->story), CI verde. Reproduzido antes do fix: e2e/login-layout.spec.ts:8 falhava (submit sobreposto ao language-selector). Causa raiz diverge da hipotese da descricao (altura do card apos feat-062): o :host do login e o container de scroll e reserva padding-bottom:88px pros controles fixos, mas scrollIntoViewIfNeeded alinha o botao na borda do viewport ignorando padding - faltava scroll-padding-bottom. Corrigido com scroll-padding-bottom:88px em pages/login/login.scss, teste inalterado. e2e/login-layout.spec.ts 9/9, ./init.sh verde (build + ng test, cobertura 92.6% stmts). Delivery Reviewer e Test Suite Auditor self-conduzidos (mudanca de 1 linha de CSS, sem contrato/i18n/logica; o teste existente ja e a prova de regressao): sem achados. Vault: docs/convencoes.md ganhou o gotcha reaproveitavel (padding nao vale pro scroll-into-view, usar scroll-padding)."
     },
     {
       "id": "feat-059",
