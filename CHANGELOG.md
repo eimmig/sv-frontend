@@ -9,17 +9,6 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 - [SV-679](https://stakevault.atlassian.net/browse/SV-679) - Validar SonarCloud tambem em push pra main (nao so pull_request)
 - [SV-680](https://stakevault.atlassian.net/browse/SV-680) - ci.yml: push so pra main habilita os 2 steps de SonarCloud, com continue-on-error
-- [SV-647](https://stakevault.atlassian.net/browse/SV-647) - Painel de filtros recolhivel nos dashboards
-- [SV-648](https://stakevault.atlassian.net/browse/SV-648) - Panel recolhivel e colunas do tablet
-- [SV-649](https://stakevault.atlassian.net/browse/SV-649) - Aplicar o painel recolhivel nas 5 telas
-- [SV-650](https://stakevault.atlassian.net/browse/SV-650) - E2E, QA visual e verificacao final
-- [SV-651](https://stakevault.atlassian.net/browse/SV-651) - Sessao expirada volta direto para o login
-- [SV-652](https://stakevault.atlassian.net/browse/SV-652) - Detectar sessao expirada e voltar ao login
-- [SV-653](https://stakevault.atlassian.net/browse/SV-653) - E2E, QA visual e verificacao final
-- [SV-654](https://stakevault.atlassian.net/browse/SV-654) - Drawdown mensal: escala Y compartilhada e reaproveitar filtro geral do dashboard
-- [SV-655](https://stakevault.atlassian.net/browse/SV-655) - Escala Y compartilhada entre os mini-graficos mensais
-- [SV-656](https://stakevault.atlassian.net/browse/SV-656) - Reaproveitar o filtro geral do dashboard em vez do datepicker proprio
-- [SV-657](https://stakevault.atlassian.net/browse/SV-657) - E2E, QA visual e verificacao final
 - [SV-658](https://stakevault.atlassian.net/browse/SV-658) - Conexao recusada pelo dev server na suite E2E completa
 - [SV-659](https://stakevault.atlassian.net/browse/SV-659) - Pinar dev server e baseURL em 127.0.0.1
 - [SV-660](https://stakevault.atlassian.net/browse/SV-660) - CHANGELOG e verificacao final
@@ -47,6 +36,20 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-706](https://stakevault.atlassian.net/browse/SV-706) - Regressao: selector de idioma sobrepoe o botao de login em viewport curto
 - [SV-707](https://stakevault.atlassian.net/browse/SV-707) - scroll-padding-bottom no host do login
 - [SV-708](https://stakevault.atlassian.net/browse/SV-708) - CHANGELOG e verificacao final
+
+## [1.1.0] - 2026-09-25
+
+- [SV-647](https://stakevault.atlassian.net/browse/SV-647) - Painel de filtros recolhivel nos dashboards
+- [SV-648](https://stakevault.atlassian.net/browse/SV-648) - Panel recolhivel e colunas do tablet
+- [SV-649](https://stakevault.atlassian.net/browse/SV-649) - Aplicar o painel recolhivel nas 5 telas
+- [SV-650](https://stakevault.atlassian.net/browse/SV-650) - E2E, QA visual e verificacao final
+- [SV-651](https://stakevault.atlassian.net/browse/SV-651) - Sessao expirada volta direto para o login
+- [SV-652](https://stakevault.atlassian.net/browse/SV-652) - Detectar sessao expirada e voltar ao login
+- [SV-653](https://stakevault.atlassian.net/browse/SV-653) - E2E, QA visual e verificacao final
+- [SV-654](https://stakevault.atlassian.net/browse/SV-654) - Drawdown mensal: escala Y compartilhada e reaproveitar filtro geral do dashboard
+- [SV-655](https://stakevault.atlassian.net/browse/SV-655) - Escala Y compartilhada entre os mini-graficos mensais
+- [SV-656](https://stakevault.atlassian.net/browse/SV-656) - Reaproveitar o filtro geral do dashboard em vez do datepicker proprio
+- [SV-657](https://stakevault.atlassian.net/browse/SV-657) - E2E, QA visual e verificacao final
 
 ## [1.0.0] - 2026-09-24
 
