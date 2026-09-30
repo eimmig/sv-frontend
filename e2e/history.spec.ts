@@ -224,6 +224,14 @@ test.describe('RF12 - update bet status', () => {
     await expect(pendingRow.getByTestId('history-bets-mark-won')).toHaveCount(0);
   });
 
+  test('navigates to the edit page when the Edit link is clicked', async ({ page }) => {
+    await page.goto('/history');
+    const rows = page.getByTestId('history-bets-row');
+    await rows.first().getByTestId('history-bets-edit').click();
+
+    await expect(page).toHaveURL(/\/register-bet\/1$/);
+  });
+
   test('shows the backend detail when the status transition is rejected', async ({ page }) => {
     await page.route('**/api/v1/bets/1/status', (route) =>
       route.fulfill({

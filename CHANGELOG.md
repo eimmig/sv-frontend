@@ -41,6 +41,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-700](https://stakevault.atlassian.net/browse/SV-700) - Simplificar campos da tela de login (2 campos, nao 3)
 - [SV-701](https://stakevault.atlassian.net/browse/SV-701) - Login 2 campos + criacao de usuario por username
 - [SV-702](https://stakevault.atlassian.net/browse/SV-702) - CHANGELOG e verificacao final
+- [SV-703](https://stakevault.atlassian.net/browse/SV-703) - Editar aposta pelo historico
+- [SV-704](https://stakevault.atlassian.net/browse/SV-704) - Reaproveitar RegisterBet pra edicao + link no Historico
+- [SV-705](https://stakevault.atlassian.net/browse/SV-705) - CHANGELOG e verificacao final
 
 ## [1.0.0] - 2026-09-24
 
