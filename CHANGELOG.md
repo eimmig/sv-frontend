@@ -44,6 +44,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-703](https://stakevault.atlassian.net/browse/SV-703) - Editar aposta pelo historico
 - [SV-704](https://stakevault.atlassian.net/browse/SV-704) - Reaproveitar RegisterBet pra edicao + link no Historico
 - [SV-705](https://stakevault.atlassian.net/browse/SV-705) - CHANGELOG e verificacao final
+- [SV-706](https://stakevault.atlassian.net/browse/SV-706) - Regressao: selector de idioma sobrepoe o botao de login em viewport curto
+- [SV-707](https://stakevault.atlassian.net/browse/SV-707) - scroll-padding-bottom no host do login
+- [SV-708](https://stakevault.atlassian.net/browse/SV-708) - CHANGELOG e verificacao final
 
 ## [1.0.0] - 2026-09-24
 
