@@ -4706,7 +4706,7 @@
           ],
           "validation": "npx playwright test e2e/login-layout.spec.ts verde (9/9).",
           "owner": "agente",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-707"
         },
         {
