@@ -4769,6 +4769,19 @@
       "jira": "",
       "subtasks": [],
       "evidence": ""
+    },
+    {
+      "id": "feat-069",
+      "name": "Grade de drawdown mensal: dia do mes real no eixo X e graficos maiores",
+      "goal": "Fazer o eixo X mostrar o dia real do mes quando o periodo nao comeca no dia 1, e dar mais area aos graficos da grade.",
+      "scope": "shared/monthly-drawdown-chart (monthly-drawdown-metrics.ts, monthly-drawdown-chart.ts e .scss) e pages/dashboard/monthly-drawdown-grid (.scss): MonthlyDrawdownMonth passa a levar o dia inicial e as categorias do eixo X usam esse dia; cards com largura minima maior e canvas mais alto.",
+      "description": "Achado do usuario na revisao da tela inicial (2026-10-04, tenant loadtest-0086b111): a grade 'Monthly drawdown' mostra Sep 2026 com eixo de 1 a 11 e lucro acumulado de ~3,3 U, enquanto a Visao geral mostra 8,82 U para setembro. Leitura do codigo: buildMonthlyDrawdown comeca o mes inicial em fromDay (o filtro), mas monthly-drawdown-chart.ts rotula as categorias como index + 1, entao um periodo que comeca no dia 20 (por exemplo Sep 20 a Oct 4) aparece como dias 1 a 11, e 3,3 / 8,82 e proximo de 11 / 30 dias. Hipotese, nao confirmada com o filtro da tela: o filtro padrao nao comeca no dia 1. Tambem 'extremamente pequenos': a grade usa minmax(220px, 1fr) e o canvas tem height fixo de 140px. Ver feat-061 (grade) e feat-065 (rotulos de eixo).",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
     }
   ]
 }
