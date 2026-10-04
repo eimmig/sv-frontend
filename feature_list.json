@@ -4756,6 +4756,19 @@
         }
       ],
       "evidence": "Fechada em 2026-09-29. 1 subtask (SV-680, story SV-679), PR #244 (subtask->story) + #245 (story->develop). Replica em apps/web a correcao de services/auth-service feat-022 / telegram-integration feat-013, mais o pin de SHA da sonarqube-scan-action (achado real de infra feat-009.4, githubactions:S7637). CI+SonarCloud verdes nos 2 PRs. Achado de processo real durante a implementacao (nao relacionado ao Sonar): a primeira tentativa desta feature corrompeu feature_list.json - a branch local tinha conteudo obsoleto de sessao anterior nunca commitado (working tree sujo havia muito tempo, nunca detectado porque nenhuma sessao rodou git status neste repositorio antes de editar o arquivo), reduzindo 59 features pra 57 e revertendo feat-046 pra not-started. Descoberto pelo tamanho anormal do diff (939 seem seuremocoes numa mudanca de 2 linhas de CI), NAO mergeado - PR fechado, branches deletadas e recriadas do zero a partir do develop real (confirmado 58 features, feat-046/057/058 intactos), feature refeita corretamente (diff final: 37 insercoes/3 remocoes). Nenhum dado foi perdido - develop nunca foi tocado pela versao corrompida. Fecha a parte apps/web do epic-038 da raiz."
+    },
+    {
+      "id": "feat-068",
+      "name": "Valor em reais nos cards da Visao geral e rotulo claro para Pre / Live",
+      "goal": "Mostrar o lucro tambem em reais ao lado das unidades e deixar claro o que o card Pre / Live (U) mede.",
+      "scope": "apps/web pages/overview: cards Total Profit (U), Pre / Live (U) e Average Monthly Profit (U) com o valor em R$ junto da unidade; rotulo ou dica do card Pre / Live explicando que e o lucro em unidades por tipo de aposta (pre-jogo e ao vivo), nao percentual; textos nos 3 idiomas (pt-BR, en-US, es).",
+      "description": "Pedido do usuario na revisao da tela inicial (2026-10-04): os cards da Visao geral mostram so unidades, e ele quer o valor em reais tambem; alem disso o card 'Pre / Live (U)' (79.09 / 20.48) nao deixa claro que e o lucro em unidades por tipo de aposta (PRE e LIVE), valor absoluto e nao percentual, o que confundiu o proprio autor. Os valores em R$ ja existem no backend (netProfit); a unidade e um percentual configuravel da banca. Nota: pre mais live pode diferir do total por arredondamento ou por apostas sem betType (anteriores a migracao).",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
     }
   ]
 }
