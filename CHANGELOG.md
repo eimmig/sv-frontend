@@ -40,6 +40,10 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-761](https://stakevault.atlassian.net/browse/SV-761) - Eixo X do drawdown com o dia real do mes
 - [SV-762](https://stakevault.atlassian.net/browse/SV-762) - Cards da grade de drawdown maiores
 - [SV-763](https://stakevault.atlassian.net/browse/SV-763) - CHANGELOG e verificacao final
+- [SV-764](https://stakevault.atlassian.net/browse/SV-764) - Valor em reais nos cards da Visao geral e rotulo claro para Pre / Live
+- [SV-765](https://stakevault.atlassian.net/browse/SV-765) - KpiCard com linha secundaria e dica opcionais
+- [SV-766](https://stakevault.atlassian.net/browse/SV-766) - Visao geral com valor em R$ e rotulo claro para Pre / Live
+- [SV-767](https://stakevault.atlassian.net/browse/SV-767) - CHANGELOG e verificacao final
 
 ## [1.1.0] - 2026-09-25
 

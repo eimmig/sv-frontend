@@ -4764,10 +4764,56 @@
       "scope": "apps/web pages/overview: cards Total Profit (U), Pre / Live (U) e Average Monthly Profit (U) com o valor em R$ junto da unidade; rotulo ou dica do card Pre / Live explicando que e o lucro em unidades por tipo de aposta (pre-jogo e ao vivo), nao percentual; textos nos 3 idiomas (pt-BR, en-US, es).",
       "description": "Pedido do usuario na revisao da tela inicial (2026-10-04): os cards da Visao geral mostram so unidades, e ele quer o valor em reais tambem; alem disso o card 'Pre / Live (U)' (79.09 / 20.48) nao deixa claro que e o lucro em unidades por tipo de aposta (PRE e LIVE), valor absoluto e nao percentual, o que confundiu o proprio autor. Os valores em R$ ja existem no backend (netProfit); a unidade e um percentual configuravel da banca. Nota: pre mais live pode diferir do total por arredondamento ou por apostas sem betType (anteriores a migracao).",
       "dependencies": [],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "2026-10-06, Plan Reviewer (revisao direta, risco baixo, UI): READY. Verificado no codigo: overview.ts ja tem daily (netProfit por dia) e byBetType (netProfit por segmento), entao o valor em R$ sai dos dados ja carregados, sem chamada nova. Como unidade = saldoAtual x unitPercent (fixa), soma(netProfit)/denominador = unidades, entao R$ total = soma do netProfit diario, sem recalcular pelo denominador. KpiCard e compartilhado (dashboard e relatorio de periodo): os inputs novos sao opcionais para nao alterar os outros usos. Dica no title do card (tooltip nativo) mais rotulo mais claro (visivel no mobile, onde nao ha tooltip). Pre + live pode diferir do total por apostas sem betType (anteriores a migracao), ja citado no achado, entra na dica. Sem backend, contrato ou rota nova; 3 locales.",
+      "jira": "SV-764",
+      "subtasks": [
+        {
+          "id": "feat-068.1",
+          "status": "in-progress",
+          "jira": "SV-765",
+          "owner": "agente",
+          "name": "KpiCard com linha secundaria e dica opcionais",
+          "detail": "Os cards da Visao geral so mostram unidades; o card precisa de uma segunda linha (R$) e de uma dica explicando o que o valor mede, sem quebrar os demais usos do KpiCard (dashboard, relatorio de periodo).",
+          "checklist": [
+            "KpiCard ganha inputs opcionais secondary (linha menor abaixo do valor) e hint (texto de ajuda no title do card).",
+            "Sem os inputs, o markup e o visual atuais nao mudam.",
+            "Teste unitario: secondary e hint renderizados quando informados e ausentes quando nao.",
+            "Sem comentario no codigo."
+          ],
+          "validation": "ng test do kpi-card verde."
+        },
+        {
+          "id": "feat-068.2",
+          "status": "not-started",
+          "jira": "SV-766",
+          "owner": "agente",
+          "name": "Visao geral com valor em R$ e rotulo claro para Pre / Live",
+          "detail": "Pedido do usuario na revisao da tela inicial: ver o lucro em reais ao lado das unidades, e entender que Pre / Live (U) e o lucro em unidades por tipo de aposta, nao percentual.",
+          "checklist": [
+            "Lucro total, Pre / Live e Lucro medio mensal mostram o valor em R$ na linha secundaria (total = soma do netProfit diario; pre/live = netProfit do segmento; medio = total / 12).",
+            "Rotulo do card Pre / Live deixa claro que e lucro (Lucro Pre / Live (U)) e a dica explica: unidades por tipo de aposta, valor absoluto, nao percentual, e que pre + live pode diferir do total (arredondamento ou apostas sem tipo).",
+            "Textos nos 3 idiomas (pt-BR, en-US, es) em sincronia.",
+            "Unitarios e e2e da Visao geral atualizados; conferido em mobile e desktop, temas claro e escuro."
+          ],
+          "validation": "ng test, e2e overview e verificacao visual."
+        },
+        {
+          "id": "feat-068.3",
+          "name": "CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-767",
+          "detail": "Fechamento da feature: changelog, init.sh e skills de revisao.",
+          "checklist": [
+            "CHANGELOG.md com linhas em [Unreleased].",
+            "./init.sh do servico passa.",
+            "Delivery Reviewer e Test Suite Auditor rodados.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit"
+          ],
+          "validation": "init.sh verde e evidence preenchida.",
+          "owner": "agente"
+        }
+      ],
       "evidence": ""
     },
     {
