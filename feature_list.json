@@ -4783,7 +4783,7 @@
       "subtasks": [
         {
           "id": "feat-069.1",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-761",
           "owner": "agente",
           "name": "Eixo X do drawdown com o dia real do mes",
