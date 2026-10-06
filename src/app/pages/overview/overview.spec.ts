@@ -134,6 +134,30 @@ describe('Overview', () => {
     expect(roi.textContent).toContain('15');
   });
 
+  it('shows the profit in reais next to each unit card, and explains the Pre / Live card', () => {
+    createComponent();
+    flushBase(
+      [
+        { date: '2026-01-10', totalStaked: 100, netProfit: 100, roi: 0.5, betCount: 1 },
+        { date: '2026-02-05', totalStaked: 100, netProfit: -20, roi: -0.2, betCount: 1 },
+      ],
+      [
+        { dimensionId: 'PRE', dimensionName: 'PRE', metrics: { totalStaked: 100, netProfit: 70, roi: 0.1, winRate: 0.5, settledCount: 1 } },
+        { dimensionId: 'LIVE', dimensionName: 'LIVE', metrics: { totalStaked: 100, netProfit: 10, roi: 0.1, winRate: 0.5, settledCount: 1 } },
+      ],
+    );
+    httpMock.expectOne((req) => req.url === BANKROLL_URL && req.params.get('at') === '2026-01-10').flush({ at: '2026-01-10', balance: 900 });
+    fixture.detectChanges();
+
+    const secondary = (testId: string): string | null | undefined =>
+      fixture.nativeElement.querySelector(`[data-testid="${testId}"] [data-testid="kpi-card-secondary"]`)?.textContent;
+    expect(secondary('overview-lucro-total')).toContain('80,00');
+    expect(secondary('overview-pre-live')).toContain('70,00');
+    expect(secondary('overview-pre-live')).toContain('10,00');
+    expect(secondary('overview-lucro-medio-mensal')).toContain('6,67');
+    expect(fixture.nativeElement.querySelector('[data-testid="overview-pre-live"]').getAttribute('title')).toBe('overview.preLiveHint');
+  });
+
   it('renders 12 monthly rows, merging monthly BetMetrics and ignoring a different year', () => {
     createComponent();
     flushBase(
