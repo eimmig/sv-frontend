@@ -7,6 +7,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-09-30
+
 - [SV-679](https://stakevault.atlassian.net/browse/SV-679) - Validar SonarCloud tambem em push pra main (nao so pull_request)
 - [SV-680](https://stakevault.atlassian.net/browse/SV-680) - ci.yml: push so pra main habilita os 2 steps de SonarCloud, com continue-on-error
 - [SV-658](https://stakevault.atlassian.net/browse/SV-658) - Conexao recusada pelo dev server na suite E2E completa
