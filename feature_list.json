@@ -4799,7 +4799,7 @@
         },
         {
           "id": "feat-069.2",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-762",
           "owner": "agente",
           "name": "Cards da grade de drawdown maiores",
