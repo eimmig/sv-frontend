@@ -2045,3 +2045,12 @@ levar `startDay` e a grade usa `minmax(min(320px, 100%), 1fr)` com canvas de 220
 screenshot em desktop e mobile, temas claro e escuro. Plan Reviewer, Delivery Reviewer e Test Suite
 Auditor por revisão direta. `./init.sh` verde. Vault: `docs/services/web.md`. Story SV-760, subtasks
 SV-761/762/763.
+
+## `feat-068` fechada — valor em R$ na Visão geral e rótulo do Pre / Live (2026-10-06)
+
+Pedido do usuário na revisão da tela inicial. `KpiCard` ganha `secondary` e `hint` opcionais; Lucro Total,
+Pre / Live e Lucro Médio Mensal mostram o valor em reais (dados já carregados, sem chamada nova) e o card
+Pre / Live virou "Lucro Pre / Live (U)" com dica de que é lucro em unidades por tipo de aposta, não
+percentual. Conferido por screenshot em desktop e mobile, temas claro e escuro. Plan Reviewer, Delivery
+Reviewer e Test Suite Auditor por revisão direta. `./init.sh` verde. Vault: `docs/services/web.md`. Story
+SV-764, subtasks SV-765/766/767.
