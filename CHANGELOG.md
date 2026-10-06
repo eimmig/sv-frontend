@@ -36,6 +36,10 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-706](https://stakevault.atlassian.net/browse/SV-706) - Regressao: selector de idioma sobrepoe o botao de login em viewport curto
 - [SV-707](https://stakevault.atlassian.net/browse/SV-707) - scroll-padding-bottom no host do login
 - [SV-708](https://stakevault.atlassian.net/browse/SV-708) - CHANGELOG e verificacao final
+- [SV-760](https://stakevault.atlassian.net/browse/SV-760) - Grade de drawdown mensal: dia do mes real no eixo X e graficos maiores
+- [SV-761](https://stakevault.atlassian.net/browse/SV-761) - Eixo X do drawdown com o dia real do mes
+- [SV-762](https://stakevault.atlassian.net/browse/SV-762) - Cards da grade de drawdown maiores
+- [SV-763](https://stakevault.atlassian.net/browse/SV-763) - CHANGELOG e verificacao final
 
 ## [1.1.0] - 2026-09-25
 

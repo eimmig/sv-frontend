@@ -3,6 +3,7 @@ import { DailyBetMetrics } from '../../core/statistics-api';
 export interface MonthlyDrawdownMonth {
   readonly year: number;
   readonly month: number;
+  readonly startDay: number;
   readonly days: readonly (number | null)[];
 }
 
@@ -87,7 +88,7 @@ export function buildMonthlyDrawdown(
       accumulated += netProfit / denominator;
       days.push(accumulated);
     }
-    months.push({ year, month, days });
+    months.push({ year, month, startDay, days });
   }
   return months;
 }
