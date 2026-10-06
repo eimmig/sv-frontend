@@ -66,6 +66,11 @@ export class Overview implements OnInit {
   protected readonly lucroPreUnidades = computed(() => this.betTypeUnidades('PRE'));
   protected readonly lucroLiveUnidades = computed(() => this.betTypeUnidades('LIVE'));
 
+  protected readonly lucroTotalReais = computed(() => this.data().daily.reduce((sum, day) => sum + day.netProfit, 0));
+  protected readonly lucroMedioMensalReais = computed(() => this.lucroTotalReais() / 12);
+  protected readonly lucroPreReais = computed(() => this.betTypeReais('PRE'));
+  protected readonly lucroLiveReais = computed(() => this.betTypeReais('LIVE'));
+
   protected readonly roi = computed(() => roiMedioDiario(this.data().daily));
 
   protected readonly monthlyTable = computed(() => {
@@ -99,6 +104,10 @@ export class Overview implements OnInit {
 
   protected trackMonthRow(_index: number, row: { year: number; month: number }): string {
     return `${row.year}-${row.month}`;
+  }
+
+  private betTypeReais(dimensionId: 'PRE' | 'LIVE'): number {
+    return this.data().byBetType.find((segment) => segment.dimensionId === dimensionId)?.metrics.netProfit ?? 0;
   }
 
   private betTypeUnidades(dimensionId: 'PRE' | 'LIVE'): number | null {
