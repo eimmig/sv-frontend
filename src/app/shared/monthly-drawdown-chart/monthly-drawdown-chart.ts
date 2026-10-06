@@ -24,7 +24,7 @@ function buildChartOption(
   xAxisName: string,
   yAxisName: string,
 ): EChartsCoreOption {
-  const categories = month.days.map((_, index) => String(index + 1));
+  const categories = month.days.map((_, index) => String(month.startDay + index));
   return buildLineChartOption(categories, [...month.days], brandColor, borderColor, labelColor, {
     smooth: false,
     splitNumber: 4,

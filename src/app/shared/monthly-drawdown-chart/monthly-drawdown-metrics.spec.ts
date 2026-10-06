@@ -2,7 +2,7 @@ import { DailyBetMetrics } from '../../core/statistics-api';
 import { buildMonthlyDrawdown, computeSharedYRange, MonthlyDrawdownMonth } from './monthly-drawdown-metrics';
 
 function month(year: number, monthNum: number, days: (number | null)[]): MonthlyDrawdownMonth {
-  return { year, month: monthNum, days };
+  return { year, month: monthNum, startDay: 1, days };
 }
 
 function day(date: string, netProfit: number): DailyBetMetrics {
@@ -72,8 +72,8 @@ describe('buildMonthlyDrawdown', () => {
     const months = buildMonthlyDrawdown([], '2026-12-01', '2027-01-31', 1000, 0.01, new Date(2027, 1, 15));
 
     expect(months).toEqual([
-      { year: 2026, month: 12, days: Array(31).fill(0) },
-      { year: 2027, month: 1, days: Array(31).fill(0) },
+      { year: 2026, month: 12, startDay: 1, days: Array(31).fill(0) },
+      { year: 2027, month: 1, startDay: 1, days: Array(31).fill(0) },
     ]);
   });
 
@@ -85,6 +85,13 @@ describe('buildMonthlyDrawdown', () => {
     expect(months).toHaveLength(1);
     expect(months[0].days).toHaveLength(3);
     expect(months[0].days[2]).toBeCloseTo(10);
+  });
+
+  it('records the real day the first month starts at, so the chart axis does not restart at 1', () => {
+    const months = buildMonthlyDrawdown([], '2026-09-20', '2026-10-04', 1000, 0.01, new Date(2026, 9, 4));
+
+    expect(months.map((entry) => entry.startDay)).toEqual([20, 1]);
+    expect(months[0].days).toHaveLength(11);
   });
 
   it('ends a past month at the real day of to instead of padding to the end of the month', () => {
@@ -106,8 +113,8 @@ describe('buildMonthlyDrawdown', () => {
     const months = buildMonthlyDrawdown([], '2026-02-20', '2026-03-10', 1000, 0.01, new Date(2026, 8, 10));
 
     expect(months).toEqual([
-      { year: 2026, month: 2, days: Array(9).fill(0) },
-      { year: 2026, month: 3, days: Array(10).fill(0) },
+      { year: 2026, month: 2, startDay: 20, days: Array(9).fill(0) },
+      { year: 2026, month: 3, startDay: 1, days: Array(10).fill(0) },
     ]);
   });
 
