@@ -4932,6 +4932,19 @@
           }
         ]
       }
+    },
+    {
+      "id": "feat-070",
+      "name": "Tooltip dos graficos mostra o valor sem arredondar",
+      "goal": "O tooltip de todo grafico de linha mostra o valor formatado (casas decimais e unidade), nao o numero cru.",
+      "scope": "core/chart-theme.ts: valueFormatter no tooltip dos dois builders (linha e comparativo); testes dos 3 locales para separador decimal.",
+      "description": "Achado em 2026-10-06, captura de tela do usuario na grade de drawdown mensal: o tooltip mostra 2.340533100752622. Os dois builders de chart-theme usam tooltip { trigger: 'axis', ...themedTooltip() } sem valueFormatter, entao o echarts imprime o numero cru. Mesmo achado vale para equity-curve, monthly-profit e comparativo.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
     }
   ]
 }
