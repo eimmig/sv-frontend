@@ -5,7 +5,15 @@ import { KpiCard, KpiCardSign } from './kpi-card';
 
 @Component({
   imports: [KpiCard],
-  template: `<app-kpi-card [icon]="icon" [label]="label" [value]="value" [sign]="sign" [testId]="testId" />`,
+  template: `<app-kpi-card
+    [icon]="icon"
+    [label]="label"
+    [value]="value"
+    [sign]="sign"
+    [testId]="testId"
+    [secondary]="secondary"
+    [hint]="hint"
+  />`,
 })
 class HostComponent {
   icon = 'account_balance_wallet';
@@ -13,6 +21,8 @@ class HostComponent {
   value = 'R$ 1.000,00';
   sign: KpiCardSign | undefined;
   testId: string | undefined;
+  secondary: string | undefined;
+  hint: string | undefined;
 }
 
 describe('KpiCard', () => {
@@ -54,5 +64,25 @@ describe('KpiCard', () => {
     const el = fixture.nativeElement as HTMLElement;
 
     expect(el.querySelector('[data-testid="my-card"]')).toBeTruthy();
+  });
+
+  it('renders the secondary line and the hint tooltip when informed', () => {
+    const fixture = TestBed.createComponent(HostComponent);
+    fixture.componentInstance.secondary = 'R$ 80,00';
+    fixture.componentInstance.hint = 'Lucro em unidades';
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+
+    expect(el.querySelector('[data-testid="kpi-card-secondary"]')?.textContent).toBe('R$ 80,00');
+    expect(el.querySelector('.kpi-card')?.getAttribute('title')).toBe('Lucro em unidades');
+  });
+
+  it('renders neither the secondary line nor a title when they are not informed', () => {
+    const fixture = TestBed.createComponent(HostComponent);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+
+    expect(el.querySelector('[data-testid="kpi-card-secondary"]')).toBeNull();
+    expect(el.querySelector('.kpi-card')?.hasAttribute('title')).toBe(false);
   });
 });
