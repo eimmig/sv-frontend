@@ -2036,3 +2036,12 @@ Regressão de `e2e/login-layout.spec.ts:8`. Causa raiz diverge da hipótese do b
 é o container de scroll e reserva `padding-bottom: 88px` pros controles fixos, mas `scrollIntoViewIfNeeded`
 ignora padding — faltava `scroll-padding-bottom`. Corrigido em `pages/login/login.scss` (1 linha). Story
 SV-706, PRs #266-#268. Gotcha em `docs/convencoes.md`.
+
+## `feat-069` fechada — eixo X do drawdown e cards maiores (2026-10-06)
+
+Achado do usuário na revisão da tela inicial: o eixo da grade de drawdown mostrava 1 a 11 para um período
+de 20/09 a 04/10, porque o gráfico rotulava `index + 1` em vez do dia real. `MonthlyDrawdownMonth` passa a
+levar `startDay` e a grade usa `minmax(min(320px, 100%), 1fr)` com canvas de 220 px. Conferido por
+screenshot em desktop e mobile, temas claro e escuro. Plan Reviewer, Delivery Reviewer e Test Suite
+Auditor por revisão direta. `./init.sh` verde. Vault: `docs/services/web.md`. Story SV-760, subtasks
+SV-761/762/763.
