@@ -7,6 +7,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-10-06
+
 ## [2.0.0] - 2026-09-30
 
 - [SV-679](https://stakevault.atlassian.net/browse/SV-679) - Validar SonarCloud tambem em push pra main (nao so pull_request)
