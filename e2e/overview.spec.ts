@@ -67,6 +67,9 @@ test.describe('epic-021 - "Visão geral" pós-login', () => {
     await expect(page.getByTestId('overview-lucro-total')).toContainText('8.00');
     await expect(page.getByTestId('overview-pre-live')).toContainText('7.00');
     await expect(page.getByTestId('overview-lucro-medio-mensal')).toContainText('0.67');
+    await expect(page.getByTestId('overview-lucro-total')).toContainText('R$');
+    await expect(page.getByTestId('overview-pre-live')).toContainText('R$');
+    await expect(page.getByTestId('overview-pre-live')).toHaveAttribute('title', /unit|unidad/i);
 
     await expect(page.getByTestId('overview-monthly-row')).toHaveCount(12);
   });

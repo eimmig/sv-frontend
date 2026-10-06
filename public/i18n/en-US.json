@@ -194,7 +194,8 @@
   "overview": {
     "summaryTitle": "Overview",
     "lucroTotalLabel": "Total Profit (U)",
-    "preLiveLabel": "Pre / Live (U)",
+    "preLiveLabel": "Profit Pre / Live (U)",
+    "preLiveHint": "Profit in units by bet type: pre-game and live. An absolute value, not a percentage. Pre + live can differ from the total (rounding, or bets with no type from before the migration).",
     "lucroMedioMensalLabel": "Average Monthly Profit (U)",
     "roiLabel": "ROI",
     "monthLabel": "Month",

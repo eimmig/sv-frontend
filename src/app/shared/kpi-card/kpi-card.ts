@@ -24,5 +24,7 @@ export class KpiCard {
   readonly label = input.required<string>();
   readonly value = input.required<string>();
   readonly sign = input<KpiCardSign>();
+  readonly secondary = input<string>();
+  readonly hint = input<string>();
   readonly testId = input<string>();
 }
