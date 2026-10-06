@@ -1,7 +1,10 @@
-<div class="kpi-card" [class]="sign() ? 'kpi-card--' + sign() : ''" [attr.data-testid]="testId() ?? null">
+<div class="kpi-card" [class]="sign() ? 'kpi-card--' + sign() : ''" [attr.data-testid]="testId() ?? null" [attr.title]="hint() ?? null">
   <div class="kpi-card__icon"><mat-icon aria-hidden="true">{{ icon() }}</mat-icon></div>
   <div class="kpi-card__body">
     <span class="kpi-card__label">{{ label() }}</span>
     <span class="kpi-card__value">{{ value() }}</span>
+    @if (secondary(); as secondaryValue) {
+      <span class="kpi-card__secondary" data-testid="kpi-card-secondary">{{ secondaryValue }}</span>
+    }
   </div>
 </div>

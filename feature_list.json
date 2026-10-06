@@ -4770,7 +4770,7 @@
       "subtasks": [
         {
           "id": "feat-068.1",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-765",
           "owner": "agente",
           "name": "KpiCard com linha secundaria e dica opcionais",
