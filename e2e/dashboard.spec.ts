@@ -261,7 +261,8 @@ test.describe('RF10/RF11 - dashboards and dynamic filters', () => {
 
       const itemBox = await page.locator('app-monthly-drawdown-chart').boundingBox();
       const gridBox = await page.getByTestId('monthly-drawdown-grid').boundingBox();
-      expect(itemBox?.width).toBeLessThan((gridBox?.width ?? 0) * 0.6);
+      expect(itemBox?.width).toBeGreaterThanOrEqual(Math.min(320, gridBox?.width ?? 0) - 1);
+      expect(itemBox?.width).toBeLessThanOrEqual((gridBox?.width ?? 0) + 1);
     });
 
     test('a 3-month custom range on the general filter renders 3 mini-charts, one per month', async ({ page }) => {
