@@ -194,7 +194,8 @@
   "overview": {
     "summaryTitle": "Visión general",
     "lucroTotalLabel": "Ganancia Total (U)",
-    "preLiveLabel": "Pre / En vivo (U)",
+    "preLiveLabel": "Ganancia Pre / En vivo (U)",
+    "preLiveHint": "Ganancia en unidades por tipo de apuesta: previa y en vivo. Valor absoluto, no porcentual. Pre + en vivo puede diferir del total (redondeo o apuestas sin tipo, anteriores a la migración).",
     "lucroMedioMensalLabel": "Ganancia Media Mensual (U)",
     "roiLabel": "ROI",
     "monthLabel": "Mes",

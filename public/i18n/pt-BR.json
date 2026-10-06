@@ -194,7 +194,8 @@
   "overview": {
     "summaryTitle": "Visão geral",
     "lucroTotalLabel": "Lucro Total (U)",
-    "preLiveLabel": "Pré / Live (U)",
+    "preLiveLabel": "Lucro Pré / Live (U)",
+    "preLiveHint": "Lucro em unidades por tipo de aposta: pré-jogo e ao vivo. Valor absoluto, não percentual. Pré + live pode diferir do total (arredondamento ou apostas sem tipo, anteriores à migração).",
     "lucroMedioMensalLabel": "Lucro Médio Mensal (U)",
     "roiLabel": "ROI",
     "monthLabel": "Mês",
