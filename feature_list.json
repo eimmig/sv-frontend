@@ -4959,7 +4959,7 @@
       "subtasks": [
         {
           "id": "feat-071.1",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-769",
           "owner": "agente",
           "name": "KpiCard preenche a altura do item da grade",
