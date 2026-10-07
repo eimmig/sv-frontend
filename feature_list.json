@@ -4946,7 +4946,7 @@
       "subtasks": [
         {
           "id": "feat-070.1",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-772",
           "owner": "agente",
           "name": "valueFormatter no tooltip dos graficos de linha",

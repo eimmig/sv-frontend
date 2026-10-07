@@ -56,6 +56,15 @@ describe('MonthlyProfitChart', () => {
     expect(() => fixture.detectChanges()).not.toThrow();
   });
 
+  it('formats the tooltip value in reais with the pt-BR separators', () => {
+    const fixture = TestBed.createComponent(MonthlyProfitChart);
+    fixture.detectChanges();
+
+    const options = fixture.componentInstance['chartOptions']() as { tooltip: { valueFormatter: (value: unknown) => string } };
+    expect(options.tooltip.valueFormatter(1234.5).replace(/\s/g, ' ')).toBe('R$ 1.234,50');
+    expect(options.tooltip.valueFormatter(null)).toBe('-');
+  });
+
   it('labels the axes with the chart-specific translation keys', () => {
     const fixture = TestBed.createComponent(MonthlyProfitChart);
     fixture.detectChanges();

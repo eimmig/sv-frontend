@@ -8,6 +8,8 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 
 import { buildComparisonLineChartOption, readCssColor } from '../../core/chart-theme';
+import { Language } from '../../core/language';
+import { formatOdd } from '../../core/number-format';
 import { Theme } from '../../core/theme';
 import { ChartFrame } from '../chart-frame/chart-frame';
 
@@ -22,6 +24,7 @@ echarts.use([LineChart, GridComponent, TooltipComponent, CanvasRenderer]);
 })
 export class ComparisonEquityChart {
   private readonly theme = inject(Theme);
+  private readonly language = inject(Language);
   private readonly transloco = inject(TranslocoService);
 
   readonly seriesA = input<(number | null)[]>([]);
@@ -29,6 +32,7 @@ export class ComparisonEquityChart {
 
   protected readonly chartOptions = computed<EChartsCoreOption>(() => {
     this.theme.current();
+    const locale = this.language.current();
     const seriesA = this.seriesA();
     const seriesB = this.seriesB();
     const categories = Array.from({ length: Math.max(seriesA.length, seriesB.length) }, (_, index) => String(index + 1));
@@ -41,6 +45,7 @@ export class ComparisonEquityChart {
       {
         xAxisName: this.transloco.translate('charts.comparison.xAxisLabel'),
         yAxisName: this.transloco.translate('charts.comparison.yAxisLabel'),
+        tooltipValueFormatter: (value) => `${formatOdd(value, locale)} U`,
       },
     );
   });
