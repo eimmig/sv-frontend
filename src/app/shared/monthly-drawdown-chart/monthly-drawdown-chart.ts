@@ -22,10 +22,9 @@ function buildChartOption(
   brandColor: string,
   borderColor: string,
   labelColor: string,
-  xAxisName: string,
-  yAxisName: string,
-  locale: string,
+  axis: { xAxisName: string; yAxisName: string; locale: string },
 ): EChartsCoreOption {
+  const { xAxisName, yAxisName, locale } = axis;
   const categories = month.days.map((_, index) => String(month.startDay + index));
   return buildLineChartOption(categories, [...month.days], brandColor, borderColor, labelColor, {
     smooth: false,
@@ -64,9 +63,11 @@ export class MonthlyDrawdownChart {
       readCssColor('--color-brand'),
       readCssColor('--color-border'),
       readCssColor('--color-text-secondary'),
-      this.transloco.translate('charts.drawdown.xAxisLabel'),
-      this.transloco.translate('charts.drawdown.yAxisLabel'),
-      this.language.current(),
+      {
+        xAxisName: this.transloco.translate('charts.drawdown.xAxisLabel'),
+        yAxisName: this.transloco.translate('charts.drawdown.yAxisLabel'),
+        locale: this.language.current(),
+      },
     );
   });
 }
