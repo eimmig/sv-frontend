@@ -1,13 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
-import { ResizeObserverStub, stubCanvasContext } from '../../core/chart-theme.testing';
+import { ResizeObserverStub, restoreLocale, stubBrazilianLocale, stubCanvasContext } from '../../core/chart-theme.testing';
 import { ComparisonEquityChart } from './comparison-equity-chart';
 
 describe('ComparisonEquityChart', () => {
   beforeEach(() => {
     (globalThis as { ResizeObserver?: unknown }).ResizeObserver = ResizeObserverStub;
     stubCanvasContext();
+    stubBrazilianLocale();
     TestBed.configureTestingModule({
       imports: [
         ComparisonEquityChart,
@@ -17,6 +18,10 @@ describe('ComparisonEquityChart', () => {
         }),
       ],
     });
+  });
+
+  afterEach(() => {
+    restoreLocale();
   });
 
   it('frames the chart with a title, a help toggle and a 2-entry legend', () => {
@@ -43,6 +48,15 @@ describe('ComparisonEquityChart', () => {
     fixture.componentRef.setInput('seriesB', [5, null, null]);
 
     expect(() => fixture.detectChanges()).not.toThrow();
+  });
+
+  it('formats the tooltip value in units with the unit suffix and two decimals', () => {
+    const fixture = TestBed.createComponent(ComparisonEquityChart);
+    fixture.componentRef.setInput('seriesA', [1, 2]);
+    fixture.detectChanges();
+
+    const options = fixture.componentInstance['chartOptions']() as { tooltip: { valueFormatter: (value: unknown) => string } };
+    expect(options.tooltip.valueFormatter(2.340533100752622)).toMatch(/^2[.,]34 U$/);
   });
 
   it('labels the axes with the chart-specific translation keys', () => {

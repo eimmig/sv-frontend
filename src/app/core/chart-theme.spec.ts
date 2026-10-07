@@ -175,3 +175,35 @@ describe('tooltip theme', () => {
     expect(option.tooltip).toEqual(expected);
   });
 });
+
+describe('tooltip value formatter', () => {
+  type Tooltip = { valueFormatter?: (value: unknown) => string };
+
+  it('formats the single-series tooltip value with the given formatter and shows a dash for a missing value', () => {
+    const option = buildLineChartOption(['jan'], [1], '#2fa85c', '#dce3e0', '#5c6b72', {
+      tooltipValueFormatter: (value) => `${value} U`,
+    }) as { tooltip: Tooltip };
+
+    expect(option.tooltip.valueFormatter?.(2)).toBe('2 U');
+    expect(option.tooltip.valueFormatter?.(null)).toBe('-');
+  });
+
+  it('formats the comparison tooltip value with the given formatter', () => {
+    const option = buildComparisonLineChartOption(
+      ['1'],
+      { name: 'A', color: '#2fa85c', data: [1] },
+      { name: 'B', color: '#2e70a0', data: [2] },
+      '#dce3e0',
+      '#5c6b72',
+      { tooltipValueFormatter: (value) => `${value} U` },
+    ) as { tooltip: Tooltip };
+
+    expect(option.tooltip.valueFormatter?.(3)).toBe('3 U');
+  });
+
+  it('leaves the tooltip without a formatter when none is given', () => {
+    const option = buildLineChartOption(['jan'], [1], '#2fa85c', '#dce3e0', '#5c6b72') as { tooltip: Tooltip };
+
+    expect(option.tooltip.valueFormatter).toBeUndefined();
+  });
+});

@@ -2054,3 +2054,15 @@ Pre / Live virou "Lucro Pre / Live (U)" com dica de que é lucro em unidades por
 percentual. Conferido por screenshot em desktop e mobile, temas claro e escuro. Plan Reviewer, Delivery
 Reviewer e Test Suite Auditor por revisão direta. `./init.sh` verde. Vault: `docs/services/web.md`. Story
 SV-764, subtasks SV-765/766/767.
+
+## `feat-071` fechada — cards da Visão geral com a mesma altura (2026-10-06)
+
+Regressão de `feat-068` apontada pelo usuário em produção: o card de ROI, sem a linha em R$, ficou mais baixo. O
+`.kpi-card` agora preenche o host esticado pelo flex (`height: 100%`). Novo e2e mede a altura dos 4 cards (vermelho sem
+a correção). `./init.sh` verde. Story SV-768, subtasks SV-769/770.
+
+## `feat-070` fechada — tooltip dos gráficos com unidade e locale (2026-10-06)
+
+Achado do usuário em produção ("Lucro líquido no período" sem unidade e com `,`/`.` trocados): o echarts imprimia o número cru
+no locale dele. `chart-theme` ganhou `tooltipValueFormatter`; lucro e equity usam `formatBrl`, drawdown e comparativo usam
+`formatOdd` + ` U`. Os 4 gráficos do app cobertos. `./init.sh` verde. Story SV-771, subtasks SV-772/773.

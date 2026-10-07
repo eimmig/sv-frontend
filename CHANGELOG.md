@@ -6,6 +6,12 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 `docs/CI-CD.md`).
 
 ## [Unreleased]
+- [SV-768](https://stakevault.atlassian.net/browse/SV-768) - Card de ROI da Visao geral menor que os outros
+- [SV-769](https://stakevault.atlassian.net/browse/SV-769) - KpiCard preenche a altura do item da grade
+- [SV-770](https://stakevault.atlassian.net/browse/SV-770) - CHANGELOG e verificacao final
+- [SV-771](https://stakevault.atlassian.net/browse/SV-771) - Tooltip dos graficos sem unidade e com separadores trocados
+- [SV-772](https://stakevault.atlassian.net/browse/SV-772) - valueFormatter no tooltip dos graficos de linha
+- [SV-773](https://stakevault.atlassian.net/browse/SV-773) - CHANGELOG e verificacao final
 
 ## [2.1.0] - 2026-10-06
 

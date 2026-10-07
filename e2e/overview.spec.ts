@@ -74,6 +74,19 @@ test.describe('epic-021 - "Visão geral" pós-login', () => {
     await expect(page.getByTestId('overview-monthly-row')).toHaveCount(12);
   });
 
+  test('the 4 lifetime cards have the same height, with or without the reais line', async ({ page }) => {
+    await page.goto('/overview');
+    await expect(page.getByTestId('overview-lucro-total')).toContainText('R$');
+
+    const heights = await Promise.all(
+      ['overview-lucro-total', 'overview-pre-live', 'overview-lucro-medio-mensal', 'overview-roi'].map(async (testId) => {
+        const box = await page.getByTestId(testId).boundingBox();
+        return Math.round(box?.height ?? 0);
+      }),
+    );
+    expect(new Set(heights).size).toBe(1);
+  });
+
   test('returning to an already loaded screen reuses its data, with no new request and no loading overlay', async ({
     page,
   }) => {
