@@ -6,6 +6,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 `docs/CI-CD.md`).
 
 ## [Unreleased]
+
+## [2.1.1] - 2026-10-07
 - [SV-768](https://stakevault.atlassian.net/browse/SV-768) - Card de ROI da Visao geral menor que os outros
 - [SV-769](https://stakevault.atlassian.net/browse/SV-769) - KpiCard preenche a altura do item da grade
 - [SV-770](https://stakevault.atlassian.net/browse/SV-770) - CHANGELOG e verificacao final
