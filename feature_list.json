@@ -4953,7 +4953,7 @@
       "scope": "shared/kpi-card: o card preenche a altura do item da grade; nenhum outro comportamento muda.",
       "description": "Achado do usuario em producao (2026-10-06, captura da Visao geral): depois de feat-068 os 3 cards de lucro ganharam a linha secundaria em R$ e o card de ROI, que nao tem, ficou mais baixo. O host do KpiCard e esticado pelo flex, mas o .kpi-card interno nao ocupa a altura do host. Regressao de feat-068, nao pega pelos testes porque nenhum media altura.",
       "dependencies": [],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "2026-10-06, Plan Reviewer (revisao direta, risco baixo, CSS): READY. Causa verificada no codigo: .overview__cards e flex row (align-items padrao stretch) com app-kpi-card display:block; o host estica, o .kpi-card interno nao tem height, entao so os cards com 3 linhas crescem naturalmente e o de 2 linhas fica baixo. Correcao minima no proprio KpiCard (height:100%), sem tocar a Visao geral; efeito nos outros usos (dashboard, relatorio) e nulo onde os cards ja tem a mesma altura. Rejeitado: align-items no overview (nao resolve, o interno nao preenche o host). Teste: e2e mede a altura dos 4 cards.",
       "jira": "SV-768",
       "subtasks": [
@@ -4988,7 +4988,33 @@
           "owner": "agente"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechada em 2026-10-06. Os 4 cards da Visao geral tem a mesma altura de novo.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "kpi-card.scss: o .kpi-card passa a ter height 100% e box-sizing border-box, preenchendo o host que o flex estica.",
+              "Regressao de feat-068: os cards de lucro ganharam a linha secundaria em R$ e o ROI, sem ela, ficou mais baixo."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "Novo e2e mede a altura dos 4 cards: FALHOU sem a correcao (2 alturas diferentes) e passa com ela.",
+              "e2e da Visao geral: 5 verdes. ./init.sh do app verde (ng build, testes, gate de cobertura).",
+              "PRs da subtask e da story: CI e SonarCloud verdes.",
+              "Delivery Reviewer e Test Suite Auditor: PASS, sem achado (revisao direta, 1 regra de CSS)."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Nada. Apontamento do usuario em producao; o teste de feat-068 nao media altura, agora mede."
+            ]
+          }
+        ]
+      }
     }
   ]
 }
