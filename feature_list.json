@@ -4940,7 +4940,7 @@
       "scope": "core/chart-theme.ts (valueFormatter no tooltip dos dois builders) e os 4 graficos: lucro no periodo e curva de equity em R$, drawdown mensal e comparativo em unidades.",
       "description": "Achado em 2026-10-06, captura de tela do usuario na grade de drawdown mensal: o tooltip mostra 2.340533100752622. Os dois builders de chart-theme usam tooltip { trigger: 'axis', ...themedTooltip() } sem valueFormatter, entao o echarts imprime o numero cru. Mesmo achado vale para equity-curve, monthly-profit e comparativo. Reconfirmado pelo usuario em 2026-10-06 no grafico 'Lucro liquido no periodo': o tooltip nao tem unidade de medida e aparece em formato en-US (virgula e ponto trocados) mesmo com o app em pt-BR, porque o echarts formata o numero cru no locale padrao dele.",
       "dependencies": [],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "2026-10-06, Plan Reviewer (revisao direta, risco baixo, UI): READY. Causa verificada em core/chart-theme.ts: os dois builders usam tooltip { trigger: 'axis', ...themedTooltip() } sem valueFormatter; o echarts entao formata o numero cru no locale padrao (en), sem unidade. Os 4 consumidores (monthly-profit e equity-curve em R$; monthly-drawdown e comparison-equity em unidades) ja conhecem a unidade pelas chaves charts.*.yAxisLabel. Formatadores existentes reaproveitados: formatBrl (core/currency, pt-BR fixo, igual aos cards) e formatOdd (core/number-format, idioma ativo). tooltip.valueFormatter e suportado pelo echarts 6. Rejeitado: formatar no yAxis (o pedido e o tooltip). Sem backend, contrato ou i18n novo.",
       "jira": "SV-771",
       "subtasks": [
@@ -4976,7 +4976,34 @@
           "owner": "agente"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechada em 2026-10-06. O tooltip dos 4 graficos de linha mostra o valor com unidade e separadores pt-BR, nao mais o numero cru em en-US.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "chart-theme: opcao tooltipValueFormatter nos dois builders (linha e comparativo); valor nulo vira '-'; sem a opcao o tooltip fica como antes.",
+              "Lucro liquido no periodo e curva de equity: formatBrl (R$ 1.234,50). Drawdown mensal e comparativo: formatOdd no idioma ativo com sufixo ' U'.",
+              "Os 4 componentes que usam echarts (grep em src/app) estao cobertos; nao ha outro grafico no app."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "Unitarios: formatador no tooltip dos 2 builders e dos 4 componentes (R$ 1.234,50; 2,34 U; '-' para nulo).",
+              "Navegador (Playwright): tooltip do grafico de lucro mostra 'R$ 0,00' no formato pt-BR.",
+              "./init.sh do app verde (404 testes, gate de cobertura). PRs da subtask e da story: CI e SonarCloud verdes.",
+              "Delivery Reviewer e Test Suite Auditor: PASS, sem achado (revisao direta)."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "O comparativo passou a injetar Language; o spec dele precisou do stub de locale (stubBrazilianLocale) como os demais. Vault: gotcha registrado em docs/services/web.md."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-071",
