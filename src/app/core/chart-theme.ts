@@ -15,6 +15,18 @@ export function themedTooltip(): { backgroundColor: string; borderColor: string;
   };
 }
 
+export type TooltipValueFormatter = (value: number) => string;
+
+function tooltipOption(formatValue: TooltipValueFormatter | undefined) {
+  return {
+    trigger: 'axis',
+    ...themedTooltip(),
+    ...(formatValue && {
+      valueFormatter: (value: unknown) => (typeof value === 'number' ? formatValue(value) : '-'),
+    }),
+  };
+}
+
 export function withAlpha(hexColor: string, alpha: number): string {
   const value = hexColor.replace('#', '');
   const r = Number.parseInt(value.substring(0, 2), 16);
@@ -30,6 +42,7 @@ export interface LineChartStyleOptions {
   readonly yMax?: number;
   readonly xAxisName?: string;
   readonly yAxisName?: string;
+  readonly tooltipValueFormatter?: TooltipValueFormatter;
 }
 
 function axisNameStyle(color: string) {
@@ -78,10 +91,10 @@ export function buildLineChartOption(
   labelColor: string,
   style: LineChartStyleOptions = {},
 ): EChartsCoreOption {
-  const { smooth = true, splitNumber = 2, yMin, yMax, xAxisName, yAxisName } = style;
+  const { smooth = true, splitNumber = 2, yMin, yMax, xAxisName, yAxisName, tooltipValueFormatter } = style;
   return {
     grid: namedGrid(xAxisName, yAxisName),
-    tooltip: { trigger: 'axis', ...themedTooltip() },
+    tooltip: tooltipOption(tooltipValueFormatter),
     xAxis: categoryAxis(categories, labelColor, xAxisName),
     yAxis: {
       type: 'value',
@@ -140,6 +153,7 @@ function comparisonSeriesOption(style: ComparisonSeriesStyle) {
 export interface ComparisonAxisNames {
   readonly xAxisName?: string;
   readonly yAxisName?: string;
+  readonly tooltipValueFormatter?: TooltipValueFormatter;
 }
 
 export function buildComparisonLineChartOption(
@@ -150,10 +164,10 @@ export function buildComparisonLineChartOption(
   labelColor: string,
   axisNames: ComparisonAxisNames = {},
 ): EChartsCoreOption {
-  const { xAxisName, yAxisName } = axisNames;
+  const { xAxisName, yAxisName, tooltipValueFormatter } = axisNames;
   return {
     grid: namedGrid(xAxisName, yAxisName),
-    tooltip: { trigger: 'axis', ...themedTooltip() },
+    tooltip: tooltipOption(tooltipValueFormatter),
     xAxis: categoryAxis(categories, labelColor, xAxisName),
     yAxis: {
       type: 'value',
