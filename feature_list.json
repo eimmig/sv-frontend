@@ -4935,15 +4935,47 @@
     },
     {
       "id": "feat-070",
-      "name": "Tooltip dos graficos mostra o valor sem arredondar",
-      "goal": "O tooltip de todo grafico de linha mostra o valor formatado (casas decimais e unidade), nao o numero cru.",
-      "scope": "core/chart-theme.ts: valueFormatter no tooltip dos dois builders (linha e comparativo); testes dos 3 locales para separador decimal.",
-      "description": "Achado em 2026-10-06, captura de tela do usuario na grade de drawdown mensal: o tooltip mostra 2.340533100752622. Os dois builders de chart-theme usam tooltip { trigger: 'axis', ...themedTooltip() } sem valueFormatter, entao o echarts imprime o numero cru. Mesmo achado vale para equity-curve, monthly-profit e comparativo.",
+      "name": "Tooltip dos graficos sem unidade e com separadores trocados",
+      "goal": "O tooltip de todo grafico de linha mostra o valor com a unidade (R$ ou U) e os separadores decimal e de milhar do idioma, nao o numero cru no formato en-US.",
+      "scope": "core/chart-theme.ts (valueFormatter no tooltip dos dois builders) e os 4 graficos: lucro no periodo e curva de equity em R$, drawdown mensal e comparativo em unidades.",
+      "description": "Achado em 2026-10-06, captura de tela do usuario na grade de drawdown mensal: o tooltip mostra 2.340533100752622. Os dois builders de chart-theme usam tooltip { trigger: 'axis', ...themedTooltip() } sem valueFormatter, entao o echarts imprime o numero cru. Mesmo achado vale para equity-curve, monthly-profit e comparativo. Reconfirmado pelo usuario em 2026-10-06 no grafico 'Lucro liquido no periodo': o tooltip nao tem unidade de medida e aparece em formato en-US (virgula e ponto trocados) mesmo com o app em pt-BR, porque o echarts formata o numero cru no locale padrao dele.",
       "dependencies": [],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "2026-10-06, Plan Reviewer (revisao direta, risco baixo, UI): READY. Causa verificada em core/chart-theme.ts: os dois builders usam tooltip { trigger: 'axis', ...themedTooltip() } sem valueFormatter; o echarts entao formata o numero cru no locale padrao (en), sem unidade. Os 4 consumidores (monthly-profit e equity-curve em R$; monthly-drawdown e comparison-equity em unidades) ja conhecem a unidade pelas chaves charts.*.yAxisLabel. Formatadores existentes reaproveitados: formatBrl (core/currency, pt-BR fixo, igual aos cards) e formatOdd (core/number-format, idioma ativo). tooltip.valueFormatter e suportado pelo echarts 6. Rejeitado: formatar no yAxis (o pedido e o tooltip). Sem backend, contrato ou i18n novo.",
+      "jira": "SV-771",
+      "subtasks": [
+        {
+          "id": "feat-070.1",
+          "status": "in-progress",
+          "jira": "SV-772",
+          "owner": "agente",
+          "name": "valueFormatter no tooltip dos graficos de linha",
+          "detail": "O echarts imprime o numero cru no locale dele (en-US) e sem unidade. O tooltip precisa usar o mesmo formato dos cards: R$ pt-BR para lucro em reais, unidades no idioma ativo com sufixo U.",
+          "checklist": [
+            "chart-theme: opcao tooltipValueFormatter nos dois builders, valor nulo vira '-'.",
+            "Lucro no periodo e curva de equity: formatBrl (R$ 1.234,56).",
+            "Drawdown mensal e comparativo: formatOdd no idioma ativo mais ' U'.",
+            "Testes unitarios dos formatadores nos 4 componentes e e2e do tooltip com R$ e virgula decimal.",
+            "Sem comentario no codigo."
+          ],
+          "validation": "ng test e e2e do dashboard verdes; tooltip conferido em pt-BR e en-US."
+        },
+        {
+          "id": "feat-070.2",
+          "name": "CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-773",
+          "detail": "Fechamento da feature: changelog, init.sh e skills de revisao.",
+          "checklist": [
+            "CHANGELOG.md com linhas em [Unreleased].",
+            "./init.sh do servico passa.",
+            "Delivery Reviewer e Test Suite Auditor rodados.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit"
+          ],
+          "validation": "init.sh verde e evidence preenchida.",
+          "owner": "agente"
+        }
+      ],
       "evidence": ""
     },
     {
