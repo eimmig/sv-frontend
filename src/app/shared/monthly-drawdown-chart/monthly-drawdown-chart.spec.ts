@@ -75,6 +75,15 @@ describe('MonthlyDrawdownChart', () => {
     expect(options.xAxis.data).toEqual(['20', '21', '22']);
   });
 
+  it('formats the tooltip value in units with the unit suffix and two decimals', () => {
+    const fixture = TestBed.createComponent(MonthlyDrawdownChart);
+    fixture.componentRef.setInput('month', { year: 2026, month: 3, startDay: 1, days: [0, 5, 2, 8] });
+    fixture.detectChanges();
+
+    const options = fixture.componentInstance['chartOptions']() as { tooltip: { valueFormatter: (value: unknown) => string } };
+    expect(options.tooltip.valueFormatter(2.340533100752622)).toMatch(/^2[.,]34 U$/);
+  });
+
   it('labels the axes with the chart-specific translation keys', () => {
     const fixture = TestBed.createComponent(MonthlyDrawdownChart);
     fixture.componentRef.setInput('month', { year: 2026, month: 3, startDay: 1, days: [0, 5, 2, 8] });

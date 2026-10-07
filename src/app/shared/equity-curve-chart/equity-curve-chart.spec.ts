@@ -52,6 +52,14 @@ describe('EquityCurveChart', () => {
     expect(() => fixture.detectChanges()).not.toThrow();
   });
 
+  it('formats the tooltip value in reais with the pt-BR separators', () => {
+    const fixture = TestBed.createComponent(EquityCurveChart);
+    fixture.detectChanges();
+
+    const options = fixture.componentInstance['chartOptions']() as { tooltip: { valueFormatter: (value: unknown) => string } };
+    expect(options.tooltip.valueFormatter(1234.5).replace(/\s/g, ' ')).toBe('R$ 1.234,50');
+  });
+
   it('adds the year to the dates only when the timeline spans more than one year', () => {
     const fixture = TestBed.createComponent(EquityCurveChart);
     const categories = () =>

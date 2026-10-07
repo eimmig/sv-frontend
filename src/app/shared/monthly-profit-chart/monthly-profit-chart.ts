@@ -8,6 +8,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 
 import { buildLineChartOption, readCssColor } from '../../core/chart-theme';
+import { formatBrl } from '../../core/currency';
 import { formatDay, formatMonth } from '../../core/date-format';
 import { Language } from '../../core/language';
 import { DailyBetMetrics, MonthlyBetMetrics } from '../../core/statistics-api';
@@ -91,6 +92,7 @@ export class MonthlyProfitChart {
       {
         xAxisName: this.transloco.translate('charts.profit.xAxisLabel'),
         yAxisName: this.transloco.translate('charts.profit.yAxisLabel'),
+        tooltipValueFormatter: formatBrl,
       },
     );
   });
