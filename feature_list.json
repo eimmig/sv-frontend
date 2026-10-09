@@ -4165,11 +4165,11 @@
       "scope": "Rollout do deployment `web` (manual via tunel SSH, ou a automacao do job `deploy` quando a decisao pendente de infra for tomada); nenhum codigo de produto.",
       "description": "Achado em 2026-09-25 (sessao de feat-055, investigando uma animacao de logo antes do login que o codigo atual nao tem desde feat-044): o job `deploy` de main segue falhando (`127.0.0.1:6443 connection refused`, run 36070299775). Causa e decisao ja documentadas em docs/services/infra.md ('Disparo real do primeiro rollout'): o KUBE_CONFIG aponta para o tunel SSH local; o usuario decidiu 'deixar como esta por agora'. Consequencia para o web: a imagem `ghcr.io/eimmig/sv-frontend:latest` e publicada, mas o pod so atualiza com `kubectl rollout restart deployment/web` manual (a animacao de logo relatada pelo usuario era outro problema, sessao expirada - ver feat-057). Acao: rollout manual e reteste do login pelo usuario; automacao depende da decisao pendente em infra, nao de mudanca neste repositorio.",
       "dependencies": [],
-      "status": "not-started",
+      "status": "done",
       "plan_review": "",
       "jira": "",
       "subtasks": [],
-      "evidence": ""
+      "evidence": "Rollout do deployment `web` no k3s feito manualmente pelo usuario (informado em 2026-10-09); sem codigo de produto alterado, entao sem Plan Reviewer, Jira nem suite a rodar. Automacao do job `deploy` segue dependente da decisao pendente em infra (docs/services/infra.md)."
     },
     {
       "id": "feat-057",

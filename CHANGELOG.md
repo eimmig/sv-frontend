@@ -6,6 +6,7 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 `docs/CI-CD.md`).
 
 ## [Unreleased]
+- feat-056 - Rollout do deployment `web` no cluster feito manualmente (sem mudanca de codigo)
 
 ## [2.1.1] - 2026-10-07
 - [SV-768](https://stakevault.atlassian.net/browse/SV-768) - Card de ROI da Visao geral menor que os outros
