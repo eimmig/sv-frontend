@@ -6,6 +6,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 `docs/CI-CD.md`).
 
 ## [Unreleased]
+
+## [2.1.2] - 2026-10-09
 - feat-056 - Rollout do deployment `web` no cluster feito manualmente (sem mudanca de codigo)
 
 ## [2.1.1] - 2026-10-07
