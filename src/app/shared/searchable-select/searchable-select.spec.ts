@@ -119,6 +119,46 @@ describe('SearchableSelect', () => {
     expect(input(fixture).value).toBe('Futebol');
   });
 
+  it('shows the name, not the id, when the typed text equals the selected option name', async () => {
+    const fixture = TestBed.createComponent(HostComponent);
+    fixture.detectChanges();
+
+    const field = input(fixture);
+    field.focus();
+    field.value = 'Futebol';
+    field.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    (document.querySelector('[role="option"]') as HTMLElement).click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(fixture.componentInstance.form.controls.sportId.value).toBe('sp-1');
+    expect(input(fixture).value).toBe('Futebol');
+  });
+
+  it('shows the sentinel label, not an empty text, when the typed text equals it', async () => {
+    const fixture = TestBed.createComponent(HostComponent);
+    fixture.componentInstance.allOptionLabel.set('Todos');
+    fixture.componentInstance.form.controls.sportId.setValue('sp-1');
+    fixture.detectChanges();
+
+    const field = input(fixture);
+    field.focus();
+    field.value = 'Todos';
+    field.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    (document.querySelector('[role="option"]') as HTMLElement).click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(fixture.componentInstance.form.controls.sportId.value).toBe('');
+    expect(input(fixture).value).toBe('Todos');
+  });
+
   it('reverts the displayed text on blur without selecting an option', async () => {
     const fixture = TestBed.createComponent(HostComponent);
     fixture.componentInstance.form.controls.sportId.setValue('sp-1');
