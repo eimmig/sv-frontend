@@ -7,6 +7,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 - feat-056 - Rollout do deployment `web` no cluster feito manualmente (sem mudanca de codigo)
+- [SV-774](https://stakevault.atlassian.net/browse/SV-774) - searchable-select mostra o UUID quando o texto digitado e igual ao nome da opcao
+- [SV-775](https://stakevault.atlassian.net/browse/SV-775) - displayWith no searchable-select
+- [SV-776](https://stakevault.atlassian.net/browse/SV-776) - CHANGELOG e verificacao final
 
 ## [2.1.1] - 2026-10-07
 - [SV-768](https://stakevault.atlassian.net/browse/SV-768) - Card de ROI da Visao geral menor que os outros
