@@ -5121,7 +5121,7 @@
       "scope": "shared/searchable-select/searchable-select.ts e .html. displayValue = typedQuery ?? resolveName(committedId); ao selecionar, o mat-autocomplete escreve option.value (o id) no input. Se o texto digitado era igual ao nome, displayValue nao muda e o Angular nao reescreve o input, que fica com o UUID. Correcao provavel: [displayWith] no mat-autocomplete resolvendo id -> nome (ou reescrever o valor do input em onOptionSelected). Teste unitario reproduzindo o caso.",
       "description": "Achado nas capturas de tela do TCC 2 (2026-10-25), com Playwright contra a producao (https://192.168.2.124, tenant loadtest-0086b111). No filtro Esporte do dashboard: digitar 'fut' e escolher Futebol mostra 'Futebol'; digitar 'Futebol' e escolher Futebol mostra '0d0e999a-0789-4a13-a3ce-d8be36b14123'. O filtro aplicado esta certo, so o texto do campo fica errado. Vale para todos os usos do componente (dashboard, comparativo, busca de estatisticas, registro de aposta, movimentacoes). Definicao de pronto: o caso acima mostra o nome, teste unitario cobrindo, evidencia no epic-047.",
       "dependencies": [],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "2026-10-25, Plan Reviewer (risco baixo, auto-revisao sem subagente): READY WITH CONCERNS. Causa verificada no Material 22.1.6 (autocomplete.mjs _assignOptionValue): sem displayWith o trigger escreve option.value (id) no input; o binding [value]=displayValue() so reescreve quando o signal muda, e com o nome exato digitado o valor resolvido e igual, entao o UUID fica. Correcao: [displayWith] resolvendo id -> nome no proprio componente; vale para as 5 telas que o usam, nenhuma passa displayWith proprio. Emenda (MINOR): alem do unitario, e2e em e2e/searchable-select.spec.ts com o caso reportado. Enter usa o mesmo caminho e fica coberto.",
       "jira": "SV-774",
       "subtasks": [
@@ -5157,7 +5157,34 @@
           "validation": "init.sh verde e evidence preenchida."
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechada em 2026-10-25. O searchable-select mostra sempre o nome da opcao escolhida, inclusive quando o texto digitado e igual ao nome.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "searchable-select: [displayWith]=displayName no mat-autocomplete, resolvendo id -> nome. Sem ele, o Material 22.1.6 (_assignOptionValue) escrevia o id no input, e o binding [value] nao reescrevia porque o nome resolvido era igual ao digitado.",
+              "Vale para as 5 telas que usam o componente, sem mudanca nos callers. Gotcha registrado em docs/services/web.md (secao Selects de filtro pesquisaveis)."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "2 unitarios novos (nome exato e sentinela 'Todos'): FALHARAM sem a correcao ('sp-1' e '') e passam com ela; spec 14/14.",
+              "e2e novo em e2e/searchable-select.spec.ts: FALHOU sem a correcao (Received 'sp-1') e passa; --repeat-each=5 30/30.",
+              "e2e das 7 suites que usam o componente: 46 verdes. ./init.sh verde (406 testes, 92,7% statements).",
+              "PRs #283 e #284 (subtasks): CI verde. /code-review sem achados.",
+              "Delivery Reviewer: PASS. Test Suite Auditor: PASS. Sem achado."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Nada. A emenda do Plan Reviewer (e2e alem do unitario) foi incluida."
+            ]
+          }
+        ]
+      }
     }
   ]
 }
