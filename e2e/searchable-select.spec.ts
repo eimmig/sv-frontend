@@ -83,6 +83,16 @@ test.describe('feat-031 - searchable-select (typing filters the catalog list)', 
     await expect(page.getByRole('option')).toHaveCount(2);
   });
 
+  test('typing the exact name and selecting it shows the name, not the id', async ({ page }) => {
+    await page.goto('/register-bet');
+    const sport = page.getByTestId('register-bet-sport');
+    await sport.click();
+    await sport.fill('Futebol');
+    await page.getByRole('option', { name: 'Futebol' }).click();
+
+    await expect(sport).toHaveValue('Futebol');
+  });
+
   test('typing text that matches nothing and blurring reverts to the previous selection', async ({ page }) => {
     await page.goto('/register-bet');
     const sport = page.getByTestId('register-bet-sport');

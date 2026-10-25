@@ -51,6 +51,8 @@ export class SearchableSelect implements ControlValueAccessor {
 
   protected readonly displayValue = computed(() => this.typedQuery() ?? this.resolveName(this.committedId()));
 
+  protected readonly displayName = (id: string): string => this.resolveName(id);
+
   protected readonly filteredOptions = computed(() => {
     const needle = normalizeForSearch(this.typedQuery() ?? '');
     return this.optionsWithSentinel().filter((option) => normalizeForSearch(option.name).includes(needle));

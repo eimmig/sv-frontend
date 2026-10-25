@@ -5121,14 +5121,14 @@
       "scope": "shared/searchable-select/searchable-select.ts e .html. displayValue = typedQuery ?? resolveName(committedId); ao selecionar, o mat-autocomplete escreve option.value (o id) no input. Se o texto digitado era igual ao nome, displayValue nao muda e o Angular nao reescreve o input, que fica com o UUID. Correcao provavel: [displayWith] no mat-autocomplete resolvendo id -> nome (ou reescrever o valor do input em onOptionSelected). Teste unitario reproduzindo o caso.",
       "description": "Achado nas capturas de tela do TCC 2 (2026-10-25), com Playwright contra a producao (https://192.168.2.124, tenant loadtest-0086b111). No filtro Esporte do dashboard: digitar 'fut' e escolher Futebol mostra 'Futebol'; digitar 'Futebol' e escolher Futebol mostra '0d0e999a-0789-4a13-a3ce-d8be36b14123'. O filtro aplicado esta certo, so o texto do campo fica errado. Vale para todos os usos do componente (dashboard, comparativo, busca de estatisticas, registro de aposta, movimentacoes). Definicao de pronto: o caso acima mostra o nome, teste unitario cobrindo, evidencia no epic-047.",
       "dependencies": [],
-      "status": "not-started",
+      "status": "in-progress",
       "plan_review": "2026-10-25, Plan Reviewer (risco baixo, auto-revisao sem subagente): READY WITH CONCERNS. Causa verificada no Material 22.1.6 (autocomplete.mjs _assignOptionValue): sem displayWith o trigger escreve option.value (id) no input; o binding [value]=displayValue() so reescreve quando o signal muda, e com o nome exato digitado o valor resolvido e igual, entao o UUID fica. Correcao: [displayWith] resolvendo id -> nome no proprio componente; vale para as 5 telas que o usam, nenhuma passa displayWith proprio. Emenda (MINOR): alem do unitario, e2e em e2e/searchable-select.spec.ts com o caso reportado. Enter usa o mesmo caminho e fica coberto.",
       "jira": "SV-774",
       "subtasks": [
         {
           "id": "feat-075.1",
           "name": "displayWith no searchable-select",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-775",
           "owner": "agente",
           "detail": "Ao escolher uma opcao, o mat-autocomplete escreve o id no input quando nao ha displayWith; se o texto digitado ja era o nome, o binding nao reescreve e o UUID fica visivel.",
