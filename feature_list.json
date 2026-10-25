@@ -5074,6 +5074,58 @@
           }
         ]
       }
+    },
+    {
+      "id": "feat-072",
+      "name": "Unidade = saldo inicial do periodo x unitPercent em todas as telas",
+      "goal": "Uma unica base para converter reais em unidades: o saldo no inicio do periodo exibido, como no print de referencia do usuario.",
+      "scope": "Trocar o denominador (saldo x unitPercent) para saldoEm(from) em: period-report-metrics.ts (buildDailyTable e computeSummary, hoje saldoFinal), period-comparison-metrics.ts (accumulateDaily, hoje saldoFinal de cada periodo, passa a usar o bankrollFrom de cada um), dashboard (unidadesApostadas e grade mensal de drawdown, hoje bankrollNow) e overview (curva vitalicia, tabela mensal e lucro por tipo, hoje saldoAtual; base passa a ser o saldo na data da primeira aposta, que a tela ja busca). Atualizar docs/estatisticas.md (unidadesApostadas, profitUnidades, grade mensal, Visao geral) e docs/services/web.md (decisao de feat-015 que resolveu saldoAtual para saldoFinal). Fora de escopo: unidade historica por aposta (saldoEm(betDate)) e versionar unitPercent, mantidos como simplificacao.",
+      "description": "Epic-043, apontamento da revisao do TCC 2 (2026-10-16). docs/estatisticas.md define a unidade como saldoAtual x unitPercent, mas o codigo usa 3 bases diferentes: saldoFinal = saldoEm(to) no Relatorio do periodo e na Comparacao de periodos (decisao do plan review de feat-015, registrada so em docs/services/web.md), e saldo de agora no dashboard e na Visao geral. O mesmo lucro aparece com valores em unidades diferentes conforme a tela. Saldo inicial e o correto: (1) bate com o print de referencia do usuario, em que lucro 264,20 sobre saldo inicial 1195,05 da 22,11% de ROI Bankroll e 22,11u de lucro (unidade de 1% do saldo inicial); (2) saldoFinal inclui o proprio resultado do periodo no divisor (lucro encolhe a propria conversao, prejuizo infla); (3) saldo de agora faz relatorio de periodo passado mudar sempre que uma aposta nova liquida. Pontos para o Plan Reviewer: saldoInicial <= 0 (devolver null, como o denominador zero de hoje); a grade mensal reseta a cada mes, decidir se a base e o saldo do inicio do filtro ou do inicio de cada mes (recomendado: do filtro, uma unidade por tela); testes que fixam os valores atuais.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-073",
+      "name": "Registrar aposta quebra fora de contexto seguro (crypto.randomUUID)",
+      "goal": "A tela de registrar aposta abre e envia apostas tambem quando o sistema e acessado por http na rede local.",
+      "scope": "pages/register-bet/register-bet.ts:95 e :211 (idempotencyKey = crypto.randomUUID()). Trocar por um gerador com fallback (crypto.getRandomValues, que existe fora de contexto seguro) em um utilitario de core/, com teste unitario do fallback. Procurar outros usos de randomUUID no app. Fora de escopo: forcar https no ingress.",
+      "description": "Achado nas capturas de tela do TCC 2 (2026-10-25), com Playwright contra a producao (https://192.168.2.124, tenant loadtest-0086b111). Em http://192.168.2.124/register-bet a pagina fica em branco e volta para /overview; console: 'TypeError: crypto.randomUUID is not a function'. O navegador so expoe crypto.randomUUID em contexto seguro (https ou localhost). Por https a tela funciona. Definicao de pronto: register-bet abre e registra aposta por http e por https, teste do fallback passando, evidencia no epic-045.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-074",
+      "name": "Campos de data esperam mes/dia/ano mas exibem dia/mes/ano",
+      "goal": "O usuario digita a data no formato que ve na tela (dd/mm/aaaa em pt-BR) e o campo aceita.",
+      "scope": "core/date-mask.directive.ts (SEGMENT_ORDER fixo em month, day, year) e app.config.ts (provideNativeDateAdapter, que faz o parse no formato americano). A ordem da mascara e o parse precisam seguir o idioma ativo (pt-BR e es: dia/mes/ano; en-US: mes/dia/ano), por exemplo com MAT_DATE_LOCALE ligado ao Language e um DateAdapter que faca o parse na ordem do locale. Afeta todos os campos com appDateMask: filtro de periodo personalizado (dashboard, relatorio do periodo, comparativo, rankings), filtros De/Ate do historico (apostas e movimentacoes) e da busca de estatisticas, data do evento no registro de aposta. Revisar o placeholder dateMask.placeholder nos 3 idiomas.",
+      "description": "Achado nas capturas de tela do TCC 2 (2026-10-25), com Playwright contra a producao (https://192.168.2.124, tenant loadtest-0086b111). Digitar 25082026 mostra 25/08/2026, mas o campo fica invalido (mes 25) e o filtro nao e aplicado; digitar 08252026 funciona e passa a exibir 25/08/2026. Escolher no calendario funciona. Definicao de pronto: em pt-BR, digitar 25082026 aplica 25/08/2026 em todos os campos listados; en-US mantem mes/dia/ano; testes da diretiva cobrindo os dois formatos; evidencia no epic-046.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
+    },
+    {
+      "id": "feat-075",
+      "name": "searchable-select mostra o UUID quando o texto digitado e igual ao nome da opcao",
+      "goal": "O campo mostra sempre o nome da opcao escolhida.",
+      "scope": "shared/searchable-select/searchable-select.ts e .html. displayValue = typedQuery ?? resolveName(committedId); ao selecionar, o mat-autocomplete escreve option.value (o id) no input. Se o texto digitado era igual ao nome, displayValue nao muda e o Angular nao reescreve o input, que fica com o UUID. Correcao provavel: [displayWith] no mat-autocomplete resolvendo id -> nome (ou reescrever o valor do input em onOptionSelected). Teste unitario reproduzindo o caso.",
+      "description": "Achado nas capturas de tela do TCC 2 (2026-10-25), com Playwright contra a producao (https://192.168.2.124, tenant loadtest-0086b111). No filtro Esporte do dashboard: digitar 'fut' e escolher Futebol mostra 'Futebol'; digitar 'Futebol' e escolher Futebol mostra '0d0e999a-0789-4a13-a3ce-d8be36b14123'. O filtro aplicado esta certo, so o texto do campo fica errado. Vale para todos os usos do componente (dashboard, comparativo, busca de estatisticas, registro de aposta, movimentacoes). Definicao de pronto: o caso acima mostra o nome, teste unitario cobrindo, evidencia no epic-047.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
     }
   ]
 }
