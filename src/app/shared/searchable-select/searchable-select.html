@@ -15,7 +15,7 @@
     (focus)="onFocus($event)"
     (blur)="onBlur()"
   />
-  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayName" (optionSelected)="onOptionSelected($event)">
     @for (option of filteredOptions(); track option.id) {
       <mat-option [value]="option.id">{{ option.name }}</mat-option>
     }

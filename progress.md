@@ -2,14 +2,19 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-09-29
-**Estado:** `epic-039` (raiz) com os 7 achados de UX fechados nesta sessão (`feat-064`, `feat-066`,
-`feat-061`, `feat-060`, `feat-065`, `feat-062`, `feat-063`) - falta só marcar `epic-039` `done` no
-`feature_list.json` da raiz (commit separado). Achado fora de escopo durante o fechamento de
-`feat-063` virou `feat-067` (`not-started`, backlog): regressão real em `e2e/login-layout.spec.ts`
-(seletor de idioma sobrepõe o botão de login em viewport curto), provável efeito colateral de
-`feat-062` (form de login mais curto sem o campo slug) - não corrigida por estar fora dos arquivos
-de `feat-063`.
+**Última atualização:** 2026-10-25
+**Estado:** `feat-075` fechada (`epic-047` da raiz). Backlog aberto: `feat-072` (unidade com base
+única, `epic-043`), `feat-073` (`crypto.randomUUID` fora de contexto seguro, `epic-045`) e `feat-074`
+(máscara de data mês/dia/ano, `epic-046`), todas sem `plan_review`. Produção não recebeu o deploy
+desta feature: o CI não alcança o k3s, precisa de `kubectl rollout restart` manual.
+
+## `feat-075` fechada — searchable-select mostra o UUID (2026-10-25)
+
+Story SV-774 (SV-775/776), PRs #283/#284/#285. Achado nas capturas do TCC 2: digitar o nome exato
+de uma opção e escolhê-la deixava o UUID no campo. Sem `displayWith`, o `mat-autocomplete` escreve
+`option.value` (o id) no input, e o binding `[value]="displayValue()"` não reescreve porque o nome
+resolvido é igual ao digitado. Correção: `[displayWith]="displayName"` (id → nome). Unitário (nome
+exato e sentinela) e e2e falham sem a correção e passam com ela. Gotcha em `docs/services/web.md`.
 
 ## `feat-063` fechada — editar aposta pelo histórico (2026-09-29)
 
