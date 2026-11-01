@@ -5185,6 +5185,83 @@
           }
         ]
       }
+    },
+    {
+      "id": "feat-076",
+      "name": "Contraste AA da WCAG 2.2 nos tokens de cor",
+      "description": "Pedido do usuario na sessao do TCC 2 de 2026-11-01: o TCC vai afirmar que a interface atende ao contraste minimo AA da WCAG 2.2 (SC 1.4.3, 4,5:1 para texto normal). Medicao sobre src/styles/_tokens.scss: no tema claro o verde (#2fa85c) fica em 2,59-3,05:1 e o vermelho em 4,26:1 sobre surface-elevated; no escuro o vermelho e o azul ficam abaixo de 4,5:1 sobre surface e surface-elevated; os badges com fundo translucido da propria cor (won/lost, contador do painel, papel admin, link ativo da navegacao) ficam entre 2,2 e 4,3:1. Alem disso, docs/sistema-de-design.md e DESIGN.md divergem do codigo (#26A65B e #5A6B75 no claro, #7A8A93 no escuro). Definicao de pronto: todo par texto/fundo usado na interface >= 4,5:1 nos dois temas, mantendo o matiz; teste automatizado lendo _tokens.scss que falha abaixo de 4,5:1; vault e DESIGN.md com os valores finais e as razoes medidas; evidencia no epic-051.",
+      "dependencies": [],
+      "status": "done",
+      "goal": "Todo texto da interface atinge o contraste AA da WCAG 2.2 (4,5:1) nos temas claro e escuro, com um teste que prova isso a cada build.",
+      "scope": "src/styles/_tokens.scss (verde, vermelho e azul ajustados so na luminosidade, mesmo matiz), teste src/styles/contrast.spec.ts lendo _tokens.scss e src/theme-colors.scss, DESIGN.md e docs/sistema-de-design.md com os valores finais. Fora: logos SVG, componentes, layout.",
+      "plan_review": "2026-11-01, Plan Reviewer (risco baixo, auto-revisao sem subagente): READY WITH CONCERNS. Verificado no repositorio: 98 usos de var(--color-*); brand-strong, action-neutral-strong e disabled-* sem nenhum uso; badges/pills com color-mix(token 10-18%, transparent) ficam sobre --color-surface; valor do KPI fica sobre surface-elevated; papeis M3 primary 40/80, on-primary 100/20, error 40/80 (node_modules/@angular/material/core/tokens/m3/_md-sys-color.scss); import with { loader: 'text' } funciona no @angular/build:unit-test (probe 1/1). Emendas: (1) o teste compoe os fundos translucidos sobre surface, que sao os pares que decidem os valores; (2) brand-strong do claro escurece junto (#144b25) para continuar mais forte que o verde; (3) DESIGN.md e vault passam a refletir o codigo (text-secondary claro #5c6b72, escuro #8b99a2). Valores: claro brand #20733f, negative #b93635, action-neutral #2d6c9b; escuro negative #ea7a79, action-neutral #65a4d0; brand escuro sem mudanca. Mudanca visual do verde claro aceita pelo usuario (sem capturas do tema claro no TCC).",
+      "jira": "SV-780",
+      "subtasks": [
+        {
+          "id": "feat-076.1",
+          "name": "Tokens ajustados e teste de contraste",
+          "status": "done",
+          "jira": "SV-781",
+          "detail": "Ajusta so a luminosidade das cores que ficam abaixo de 4,5:1 e cria o teste que le os tokens e falha se algum par cair abaixo do minimo.",
+          "checklist": [
+            "contrast.spec.ts le _tokens.scss e theme-colors.scss e calcula a razao da WCAG para cada par nos dois temas.",
+            "Pares compostos (texto sobre o proprio tom translucido) calculados sobre surface.",
+            "Spec falha com os tokens antigos e passa com os novos.",
+            "_tokens.scss com os valores do plan_review.",
+            "DESIGN.md com os valores do codigo."
+          ],
+          "validation": "ng test verde e o spec vermelho registrado contra os tokens antigos.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-076.2",
+          "name": "CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-782",
+          "detail": "Fechamento: documentacao do vault, conferencia visual nos dois temas, init.sh e skills de revisao.",
+          "checklist": [
+            "CHANGELOG.md com linhas em [Unreleased].",
+            "docs/sistema-de-design.md com tabela por tema e razoes medidas (commit no sv-harness).",
+            "Capturas nos dois temas, desktop e mobile.",
+            "Suite e2e completa e ./init.sh do servico passam.",
+            "Delivery Reviewer e Test Suite Auditor rodados.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit"
+          ],
+          "validation": "init.sh verde e evidence preenchida.",
+          "owner": "agente"
+        }
+      ],
+      "evidence": {
+        "resumo": "Fechada em 2026-11-01. Todo texto da interface atinge 4,5:1 (WCAG 2.2 AA) nos temas claro e escuro, com teste que reprova o ng test abaixo disso.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "Tokens (so luminosidade, mesmo matiz): claro brand #2fa85c -> #20733f, brand-strong #22803f -> #144b25, negative #c73e3d -> #b93635, action-neutral #2e70a0 -> #2d6c9b; escuro negative #e24b4a -> #ea7a79, action-neutral #3e8cc4 -> #65a4d0. Verde escuro sem mudanca.",
+              "contrast.spec.ts le _tokens.scss e theme-colors.scss (import with loader text) e mede: texto sobre background/surface/surface-elevated, texto sobre o proprio tom translucido sobre surface (badges, contador, papel admin, nav ativa, retorno potencial) e M3 primary/on-primary/error.",
+              "Menores razoes finais: claro 4,51 (negative e action-neutral no badge), escuro 4,51 (action-neutral no badge). Tabela completa em docs/sistema-de-design.md, secao Contraste (WCAG 2.2 AA).",
+              "DESIGN.md e docs/sistema-de-design.md iguais ao codigo; divergencia do #26A65B (e do #5A6B75/#7A8A93) resolvida a favor do codigo. Gotcha do loader text em docs/testes.md."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "src/styles/contrast.spec.ts (70 casos): 19 FALHARAM com os tokens antigos (ex.: brand claro 2,59:1 sobre surface-elevated, negative escuro 3,49:1 no badge) e 70/70 passam com os novos.",
+              "Composicao do fundo translucido conferida no Chromium real (getComputedStyle devolve a propria cor com alfa 0.16/0.12), mesma conta do teste.",
+              "Conferencia visual em casas de apostas (badges won/lost/neutro, nav ativa), temas claro e escuro, 1440x900 e 390x844.",
+              "Suite e2e completa: 106/106. ./init.sh verde (476 testes, 92,68% statements).",
+              "PR #287 (subtask SV-781): CI verde. PR #288 (subtask SV-782): CI verde. PR #289 (story -> develop): CI e SonarCloud verdes.",
+              "Delivery Reviewer: PASS. Test Suite Auditor: PASS (P3: lista de pares mantida a mao, regra documentada no vault)."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Nada. As 3 emendas do Plan Reviewer foram aplicadas. Telas que mudam: todas com verde no tema claro (nav ativa, lucro, badges won, linhas de grafico, wordmark 'ka'); vermelho e azul nos dois temas (badges lost, erros, contador do painel, papel admin, serie B do comparativo)."
+            ]
+          }
+        ]
+      }
     }
   ]
 }

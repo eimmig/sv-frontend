@@ -6,6 +6,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 `docs/CI-CD.md`).
 
 ## [Unreleased]
+- [SV-780](https://stakevault.atlassian.net/browse/SV-780) - Contraste AA da WCAG 2.2 nos tokens de cor
+- [SV-781](https://stakevault.atlassian.net/browse/SV-781) - Tokens ajustados e teste de contraste
+- [SV-782](https://stakevault.atlassian.net/browse/SV-782) - CHANGELOG e verificacao final
 
 ## [2.1.3] - 2026-11-01
 
