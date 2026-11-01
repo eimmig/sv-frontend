@@ -9,12 +9,12 @@ tokens:
       surfaceElevated: "#1D2A36"
       border: "#24323F"
       textPrimary: "#F2F7F5"
-      textSecondary: "#7A8A93"
+      textSecondary: "#8B99A2"
       brand: "#3EC46D"
       brandStrong: "#26A65B"
       positive: "#3EC46D"
-      negative: "#E24B4A"
-      actionNeutral: "#3E8CC4"
+      negative: "#EA7A79"
+      actionNeutral: "#65A4D0"
       actionNeutralStrong: "#2E6FA0"
       disabledBg: "#1D2A36"
       disabledText: "#4C5A64"
@@ -24,12 +24,12 @@ tokens:
       surfaceElevated: "#E7EEEB"
       border: "#DCE3E0"
       textPrimary: "#0B1622"
-      textSecondary: "#5A6B75"
-      brand: "#26A65B"
-      brandStrong: "#22803F"
-      positive: "#26A65B"
-      negative: "#C73E3D"
-      actionNeutral: "#2E70A0"
+      textSecondary: "#5C6B72"
+      brand: "#20733F"
+      brandStrong: "#144B25"
+      positive: "#20733F"
+      negative: "#B93635"
+      actionNeutral: "#2D6C9B"
       actionNeutralStrong: "#215680"
       disabledBg: "#E7EEEB"
       disabledText: "#9AA6A2"
@@ -153,6 +153,8 @@ componentes" — destaques:
 - **Don't** colocar formulário (ex.: registro de aposta) em página cheia ou modal solto fora do
   padrão de painéis.
 - **Do** manter estado desabilitado de botão visível (contraste reduzido), nunca escondido.
+- **Do** manter todo texto com contraste de 4,5:1 ou mais nos dois temas (WCAG 2.2 AA);
+  `src/styles/contrast.spec.ts` reprova o `ng test` se um token cair abaixo disso.
 - **Don't** hardcodar string de UI — toda label passa por `transloco`, três locales sempre em
   sincronia (`pt-BR`/`en-US`/`es`).
 - **Do** manter números tabulares em valores monetários/percentuais.
