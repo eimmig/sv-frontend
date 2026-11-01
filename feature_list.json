@@ -5200,7 +5200,7 @@
         {
           "id": "feat-076.1",
           "name": "Tokens ajustados e teste de contraste",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-781",
           "detail": "Ajusta so a luminosidade das cores que ficam abaixo de 4,5:1 e cria o teste que le os tokens e falha se algum par cair abaixo do minimo.",
           "checklist": [
@@ -5216,7 +5216,7 @@
         {
           "id": "feat-076.2",
           "name": "CHANGELOG e verificacao final",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-782",
           "detail": "Fechamento: documentacao do vault, conferencia visual nos dois temas, init.sh e skills de revisao.",
           "checklist": [
@@ -5231,7 +5231,37 @@
           "owner": "agente"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechada em 2026-11-01. Todo texto da interface atinge 4,5:1 (WCAG 2.2 AA) nos temas claro e escuro, com teste que reprova o ng test abaixo disso.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "Tokens (so luminosidade, mesmo matiz): claro brand #2fa85c -> #20733f, brand-strong #22803f -> #144b25, negative #c73e3d -> #b93635, action-neutral #2e70a0 -> #2d6c9b; escuro negative #e24b4a -> #ea7a79, action-neutral #3e8cc4 -> #65a4d0. Verde escuro sem mudanca.",
+              "contrast.spec.ts le _tokens.scss e theme-colors.scss (import with loader text) e mede: texto sobre background/surface/surface-elevated, texto sobre o proprio tom translucido sobre surface (badges, contador, papel admin, nav ativa, retorno potencial) e M3 primary/on-primary/error.",
+              "Menores razoes finais: claro 4,51 (negative e action-neutral no badge), escuro 4,51 (action-neutral no badge). Tabela completa em docs/sistema-de-design.md, secao Contraste (WCAG 2.2 AA).",
+              "DESIGN.md e docs/sistema-de-design.md iguais ao codigo; divergencia do #26A65B (e do #5A6B75/#7A8A93) resolvida a favor do codigo. Gotcha do loader text em docs/testes.md."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "src/styles/contrast.spec.ts (70 casos): 19 FALHARAM com os tokens antigos (ex.: brand claro 2,59:1 sobre surface-elevated, negative escuro 3,49:1 no badge) e 70/70 passam com os novos.",
+              "Composicao do fundo translucido conferida no Chromium real (getComputedStyle devolve a propria cor com alfa 0.16/0.12), mesma conta do teste.",
+              "Conferencia visual em casas de apostas (badges won/lost/neutro, nav ativa), temas claro e escuro, 1440x900 e 390x844.",
+              "Suite e2e completa: 106/106. ./init.sh verde (476 testes, 92,68% statements).",
+              "PR #287 (subtask SV-781): CI verde. PR #288 (subtask SV-782): CI verde.",
+              "Delivery Reviewer: PASS. Test Suite Auditor: PASS (P3: lista de pares mantida a mao, regra documentada no vault)."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Nada. As 3 emendas do Plan Reviewer foram aplicadas. Telas que mudam: todas com verde no tema claro (nav ativa, lucro, badges won, linhas de grafico, wordmark 'ka'); vermelho e azul nos dois temas (badges lost, erros, contador do painel, papel admin, serie B do comparativo)."
+            ]
+          }
+        ]
+      }
     }
   ]
 }
