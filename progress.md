@@ -2,11 +2,22 @@
 
 ## Estado Atual (Current State)
 
-**Última atualização:** 2026-10-25
-**Estado:** `feat-075` fechada (`epic-047` da raiz). Backlog aberto: `feat-072` (unidade com base
+**Última atualização:** 2026-11-01
+**Estado:** `feat-076` fechada (`epic-051` da raiz). Backlog aberto: `feat-072` (unidade com base
 única, `epic-043`), `feat-073` (`crypto.randomUUID` fora de contexto seguro, `epic-045`) e `feat-074`
 (máscara de data mês/dia/ano, `epic-046`), todas sem `plan_review`. Produção não recebeu o deploy
-desta feature: o CI não alcança o k3s, precisa de `kubectl rollout restart` manual.
+de `feat-075`/`feat-076`: o CI não alcança o k3s, precisa de `kubectl rollout restart` manual.
+
+## `feat-076` fechada — contraste AA da WCAG 2.2 nos tokens de cor (2026-11-01)
+
+Story SV-780 (SV-781/782). Pedido do usuário para o TCC poder afirmar o nível AA. Só a luminosidade
+mudou, mesmo matiz: claro `brand` `#20733f` (strong `#144b25`), `negative` `#b93635`,
+`action-neutral` `#2d6c9b`; escuro `negative` `#ea7a79`, `action-neutral` `#65a4d0`. Quem decidiu os
+valores foram os badges com fundo translúcido da própria cor (`color-mix` 10–18% sobre surface), não
+os fundos lisos. `src/styles/contrast.spec.ts` lê `_tokens.scss`/`theme-colors.scss` (import com
+`loader: 'text'`) e reprova o `ng test` abaixo de 4,5:1; falhou 19/70 com os tokens antigos. Tabela
+de razões em `docs/sistema-de-design.md`; `DESIGN.md` e vault agora iguais ao código (divergência
+do `#26A65B` resolvida a favor do código).
 
 ## `feat-075` fechada — searchable-select mostra o UUID (2026-10-25)
 
