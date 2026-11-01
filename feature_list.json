@@ -5191,7 +5191,7 @@
       "name": "Contraste AA da WCAG 2.2 nos tokens de cor",
       "description": "Pedido do usuario na sessao do TCC 2 de 2026-11-01: o TCC vai afirmar que a interface atende ao contraste minimo AA da WCAG 2.2 (SC 1.4.3, 4,5:1 para texto normal). Medicao sobre src/styles/_tokens.scss: no tema claro o verde (#2fa85c) fica em 2,59-3,05:1 e o vermelho em 4,26:1 sobre surface-elevated; no escuro o vermelho e o azul ficam abaixo de 4,5:1 sobre surface e surface-elevated; os badges com fundo translucido da propria cor (won/lost, contador do painel, papel admin, link ativo da navegacao) ficam entre 2,2 e 4,3:1. Alem disso, docs/sistema-de-design.md e DESIGN.md divergem do codigo (#26A65B e #5A6B75 no claro, #7A8A93 no escuro). Definicao de pronto: todo par texto/fundo usado na interface >= 4,5:1 nos dois temas, mantendo o matiz; teste automatizado lendo _tokens.scss que falha abaixo de 4,5:1; vault e DESIGN.md com os valores finais e as razoes medidas; evidencia no epic-051.",
       "dependencies": [],
-      "status": "in-progress",
+      "status": "done",
       "goal": "Todo texto da interface atinge o contraste AA da WCAG 2.2 (4,5:1) nos temas claro e escuro, com um teste que prova isso a cada build.",
       "scope": "src/styles/_tokens.scss (verde, vermelho e azul ajustados so na luminosidade, mesmo matiz), teste src/styles/contrast.spec.ts lendo _tokens.scss e src/theme-colors.scss, DESIGN.md e docs/sistema-de-design.md com os valores finais. Fora: logos SVG, componentes, layout.",
       "plan_review": "2026-11-01, Plan Reviewer (risco baixo, auto-revisao sem subagente): READY WITH CONCERNS. Verificado no repositorio: 98 usos de var(--color-*); brand-strong, action-neutral-strong e disabled-* sem nenhum uso; badges/pills com color-mix(token 10-18%, transparent) ficam sobre --color-surface; valor do KPI fica sobre surface-elevated; papeis M3 primary 40/80, on-primary 100/20, error 40/80 (node_modules/@angular/material/core/tokens/m3/_md-sys-color.scss); import with { loader: 'text' } funciona no @angular/build:unit-test (probe 1/1). Emendas: (1) o teste compoe os fundos translucidos sobre surface, que sao os pares que decidem os valores; (2) brand-strong do claro escurece junto (#144b25) para continuar mais forte que o verde; (3) DESIGN.md e vault passam a refletir o codigo (text-secondary claro #5c6b72, escuro #8b99a2). Valores: claro brand #20733f, negative #b93635, action-neutral #2d6c9b; escuro negative #ea7a79, action-neutral #65a4d0; brand escuro sem mudanca. Mudanca visual do verde claro aceita pelo usuario (sem capturas do tema claro no TCC).",
@@ -5250,7 +5250,7 @@
               "Composicao do fundo translucido conferida no Chromium real (getComputedStyle devolve a propria cor com alfa 0.16/0.12), mesma conta do teste.",
               "Conferencia visual em casas de apostas (badges won/lost/neutro, nav ativa), temas claro e escuro, 1440x900 e 390x844.",
               "Suite e2e completa: 106/106. ./init.sh verde (476 testes, 92,68% statements).",
-              "PR #287 (subtask SV-781): CI verde. PR #288 (subtask SV-782): CI verde.",
+              "PR #287 (subtask SV-781): CI verde. PR #288 (subtask SV-782): CI verde. PR #289 (story -> develop): CI e SonarCloud verdes.",
               "Delivery Reviewer: PASS. Test Suite Auditor: PASS (P3: lista de pares mantida a mao, regra documentada no vault)."
             ]
           },
