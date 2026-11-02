@@ -5089,7 +5089,7 @@
         {
           "id": "feat-072.1",
           "name": "Unidade com base no saldo inicial em todas as telas",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-804",
           "detail": "Troca o denominador das conversoes para o saldo inicial do periodo.",
           "checklist": [
@@ -5105,7 +5105,7 @@
         {
           "id": "feat-072.2",
           "name": "CHANGELOG e verificacao final",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-805",
           "detail": "Fechamento: vault, init.sh e skills de revisao.",
           "checklist": [
@@ -5119,7 +5119,37 @@
           "owner": "agente"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechada em 2026-11-02 (develop). Toda conversao de reais em unidades usa o saldo inicial do periodo exibido; na Visao geral, o saldo na data da primeira aposta.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "period-report-metrics.ts/period-report.ts (tabela diaria e resumo): saldoFinal -> saldoInicial.",
+              "period-comparison-metrics.ts/period-comparison.ts (curva e unidades apostadas): bankrollTo -> bankrollFrom de cada periodo.",
+              "dashboard.ts e monthly-drawdown-grid (unidades apostadas e grade mensal): bankrollNow -> bankrollFrom; o dashboard deixou de pedir o saldo de agora.",
+              "overview.ts/overview-metrics.ts (curva vitalicia, tabela mensal, lucro Pre/Live): saldoAtual -> saldoInicioHistorico.",
+              "Vault (sv-harness): docs/estatisticas.md com uma unica base (secao Unidades apostadas) e docs/services/web.md com as decisoes antigas marcadas como substituidas."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "period-report-metrics.spec: o caso do print (264,20 / 1195,05, saldo final 5000) passou a conferir 22,11u; FALHOU antes ('expected 5.284 to be close to 22.11') e passa.",
+              "dashboard.spec (100u com saldo inicial 1000 contra 50u com o saldo de agora 2000) e overview.spec (8,89u/7,78u/1,11u/0,74u com saldo na primeira aposta 900 contra 8,00/7,00/1,00/0,67 com saldo atual 1000) falharam com a base antiga e passam.",
+              "period-comparison.spec novo: saldo inicial 500 e final 1000 -> 20u (com a base antiga seriam 10u; sem a correcao o spec nao compila, porque o campo mudou de nome).",
+              "./init.sh verde (493 unitarios); e2e completo 113/113; CI do PR #302 verde.",
+              "Delivery Reviewer e Test Suite Auditor (auto-revisao): PASS."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Nada. Os numeros em unidades das capturas de tela do TCC mudam quando houver deposito ou saque no periodo ou quando o periodo nao comecar no saldo atual (aceito pelo usuario em 2026-10-16). Release para main segurado junto com feat-078 ate o rollout do auth-service."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-073",
