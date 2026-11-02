@@ -141,6 +141,35 @@ test.describe('epic-017 - "Relatório do período" page', () => {
     await expect.poll(() => lastTo).toBe('2026-09-10');
   });
 
+  test('in pt-BR the custom date fields take day/month/year, as the screen shows', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('stakevault.language', 'pt-BR'));
+    let lastFrom: string | null = null;
+    let lastTo: string | null = null;
+    await page.route('**/api/v1/statistics**', (route) => {
+      const url = new URL(route.request().url());
+      if (url.pathname.endsWith('/daily')) {
+        return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) });
+      }
+      lastFrom = url.searchParams.get('from');
+      lastTo = url.searchParams.get('to');
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(statisticsBundle()) });
+    });
+
+    await page.goto('/period-report');
+    await expect(page.getByTestId('period-report-roi-bankroll')).toBeVisible();
+
+    await page.getByTestId('period-preset-select').click();
+    await page.getByRole('option', { name: 'Personalizado' }).click();
+
+    await page.getByTestId('period-preset-custom-from').pressSequentially('05082026');
+    await page.getByTestId('period-preset-custom-to').pressSequentially('25082026');
+    await page.getByTestId('period-preset-custom-to').blur();
+
+    await expect.poll(() => lastFrom).toBe('2026-08-05');
+    await expect.poll(() => lastTo).toBe('2026-08-25');
+    await expect(page.getByTestId('period-preset-custom-to')).toHaveValue('25/08/2026');
+  });
+
   test('shows the RFC 7807 detail when the statistics request fails', async ({ page }) => {
     await page.route('**/api/v1/statistics**', (route) => {
       const url = new URL(route.request().url());

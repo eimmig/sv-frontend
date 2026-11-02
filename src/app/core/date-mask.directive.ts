@@ -2,13 +2,10 @@ import { Directive, ElementRef, HostListener, effect, inject } from '@angular/co
 import { TranslocoService } from '@jsverse/transloco';
 
 import { Language } from './language';
-
-type DateSegment = 'day' | 'month' | 'year';
+import { DateSegment, dateSegmentOrder } from './locale-date-adapter';
 
 const SEGMENT_LENGTHS: Record<DateSegment, number> = { day: 2, month: 2, year: 4 };
 const MAX_DIGITS = SEGMENT_LENGTHS.day + SEGMENT_LENGTHS.month + SEGMENT_LENGTHS.year;
-
-const SEGMENT_ORDER: readonly DateSegment[] = ['month', 'day', 'year'];
 
 @Directive({
   selector: 'input[matDatepicker][appDateMask]',
@@ -32,7 +29,7 @@ export class DateMaskDirective {
     const digitsBeforeCursor = countDigits(input.value.slice(0, cursorPos));
 
     const digits = input.value.replace(/\D/g, '').slice(0, MAX_DIGITS);
-    const formatted = formatDigits(digits, SEGMENT_ORDER);
+    const formatted = formatDigits(digits, dateSegmentOrder(this.language.current()));
     input.value = formatted;
 
     const newPos = positionAfterDigits(formatted, digitsBeforeCursor);

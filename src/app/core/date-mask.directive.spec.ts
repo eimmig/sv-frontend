@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { DateAdapter, provideNativeDateAdapter } from '@angular/material/core';
+import { DateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { DateMaskDirective } from './date-mask.directive';
 import { Language } from './language';
+import { provideLocaleDateAdapter } from './locale-date-adapter';
 
 @Component({
   imports: [DateMaskDirective, FormsModule, MatDatepickerModule, MatInputModule],
@@ -29,12 +30,12 @@ describe('DateMaskDirective', () => {
       imports: [
         HostComponent,
         TranslocoTestingModule.forRoot({
-          langs: { 'pt-BR': { dateMask: { placeholder: 'mm/dd/aaaa' } }, 'en-US': { dateMask: { placeholder: 'mm/dd/yyyy' } } },
+          langs: { 'pt-BR': { dateMask: { placeholder: 'dd/mm/aaaa' } }, 'en-US': { dateMask: { placeholder: 'mm/dd/yyyy' } } },
           translocoConfig: { availableLangs: ['pt-BR', 'en-US'], defaultLang: locale },
           preloadLangs: true,
         }),
       ],
-      providers: [provideNativeDateAdapter()],
+      providers: [provideLocaleDateAdapter()],
     }).compileComponents();
     TestBed.inject(DateAdapter).setLocale(locale);
     fixture = TestBed.createComponent(HostComponent);
@@ -69,13 +70,13 @@ describe('DateMaskDirective', () => {
     TestBed.inject(Language).set('pt-BR');
     fixture.detectChanges();
 
-    expect(input.placeholder).toBe('mm/dd/aaaa');
+    expect(input.placeholder).toBe('dd/mm/aaaa');
   });
 
   it.each([
-    { locale: 'pt-BR' as const, typed: '09172026', expected: '09/17/2026', label: 'month/day/year order regardless of locale' },
-    { locale: 'en-US' as const, typed: '09172026', expected: '09/17/2026', label: 'the same order under en-US - never varies by locale' },
-    { locale: 'pt-BR' as const, typed: '09172026999', expected: '09/17/2026', label: 'ignoring non-digit characters and capping at 8 digits' },
+    { locale: 'pt-BR' as const, typed: '25082026', expected: '25/08/2026', label: 'day/month/year order under pt-BR' },
+    { locale: 'en-US' as const, typed: '08252026', expected: '08/25/2026', label: 'month/day/year order under en-US' },
+    { locale: 'pt-BR' as const, typed: '25082026999', expected: '25/08/2026', label: 'ignoring non-digit characters and capping at 8 digits' },
   ])('inserts "/" in $label', async ({ locale, typed, expected }) => {
     localStorage.setItem('stakevault.language', locale);
     await createComponent(locale);
