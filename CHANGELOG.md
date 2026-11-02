@@ -12,6 +12,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-800](https://stakevault.atlassian.net/browse/SV-800) - Tela Vincular Telegram mostra se a conta ja esta vinculada
 - [SV-801](https://stakevault.atlassian.net/browse/SV-801) - Status do vinculo na tela Vincular Telegram
 - [SV-802](https://stakevault.atlassian.net/browse/SV-802) - CHANGELOG e verificacao final
+- [SV-803](https://stakevault.atlassian.net/browse/SV-803) - Unidade = saldo inicial do periodo x unitPercent em todas as telas
+- [SV-804](https://stakevault.atlassian.net/browse/SV-804) - Unidade com base no saldo inicial em todas as telas
+- [SV-805](https://stakevault.atlassian.net/browse/SV-805) - CHANGELOG e verificacao final
 
 ## [2.1.5] - 2026-11-02
 
