@@ -9,6 +9,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-780](https://stakevault.atlassian.net/browse/SV-780) - Contraste AA da WCAG 2.2 nos tokens de cor
 - [SV-781](https://stakevault.atlassian.net/browse/SV-781) - Tokens ajustados e teste de contraste
 - [SV-782](https://stakevault.atlassian.net/browse/SV-782) - CHANGELOG e verificacao final
+- [SV-788](https://stakevault.atlassian.net/browse/SV-788) - Registrar aposta quebra fora de contexto seguro (crypto.randomUUID)
+- [SV-789](https://stakevault.atlassian.net/browse/SV-789) - randomUuid com fallback e uso no registro de aposta
+- [SV-790](https://stakevault.atlassian.net/browse/SV-790) - CHANGELOG e verificacao final
 
 ## [2.1.3] - 2026-11-01
 
