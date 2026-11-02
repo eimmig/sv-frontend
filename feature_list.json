@@ -5095,10 +5095,42 @@
       "scope": "pages/register-bet/register-bet.ts:95 e :211 (idempotencyKey = crypto.randomUUID()). Trocar por um gerador com fallback (crypto.getRandomValues, que existe fora de contexto seguro) em um utilitario de core/, com teste unitario do fallback. Procurar outros usos de randomUUID no app. Fora de escopo: forcar https no ingress.",
       "description": "Achado nas capturas de tela do TCC 2 (2026-10-25), com Playwright contra a producao (https://192.168.2.124, tenant loadtest-0086b111). Em http://192.168.2.124/register-bet a pagina fica em branco e volta para /overview; console: 'TypeError: crypto.randomUUID is not a function'. O navegador so expoe crypto.randomUUID em contexto seguro (https ou localhost). Por https a tela funciona. Definicao de pronto: register-bet abre e registra aposta por http e por https, teste do fallback passando, evidencia no epic-045.",
       "dependencies": [],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "2026-11-02, Plan Reviewer (risco baixo, auto-revisao sem subagente): READY WITH CONCERNS. Verificado no repositorio: randomUUID so em register-bet.ts:95 e :211; BetsApi.create manda a chave no header Idempotency-Key; BetsController aceita o header opcional como string livre (coluna VARCHAR(255) unique); e2e/register-bet.spec.ts mocka as APIs com page.route e ja captura o header; baseURL do Playwright e http://127.0.0.1:4300, que e contexto seguro, entao o e2e atual nunca passa pelo fallback. Emendas: (1) o e2e remove randomUUID de Crypto.prototype no addInitScript (delete na instancia nao remove nada) e confere o header capturado contra a regex do UUID v4; (2) o unitario restaura o stub de globalThis.crypto no afterEach e valida a regex v4 (versao 4, variante 8/9/a/b).",
+      "jira": "SV-788",
+      "subtasks": [
+        {
+          "id": "feat-073.1",
+          "name": "randomUuid com fallback e uso no registro de aposta",
+          "status": "in-progress",
+          "jira": "SV-789",
+          "detail": "Utilitario em core/ que usa crypto.randomUUID quando existe e monta um UUID v4 com crypto.getRandomValues fora de contexto seguro.",
+          "checklist": [
+            "core/random-uuid.ts com randomUuid() (nativo ou getRandomValues, bytes de versao e variante do RFC 9562).",
+            "core/random-uuid.spec.ts: delega ao nativo; sem randomUUID gera v4 valido e valores distintos; stub restaurado no afterEach.",
+            "register-bet.ts usa randomUuid() nos dois pontos.",
+            "e2e/register-bet.spec.ts: teste sem Crypto.prototype.randomUUID registra aposta e o header Idempotency-Key casa com a regex v4."
+          ],
+          "validation": "ng test e o e2e de register-bet verdes; o e2e novo falha sem a correcao.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-073.2",
+          "name": "CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-790",
+          "detail": "Fechamento: producao por http e https, documentacao, init.sh e skills de revisao.",
+          "checklist": [
+            "CHANGELOG.md com linhas em [Unreleased].",
+            "Rollout restart do deployment web e register-bet registrando aposta por http e por https em producao.",
+            "Suite e2e completa e ./init.sh do servico passam.",
+            "Delivery Reviewer e Test Suite Auditor rodados.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit"
+          ],
+          "validation": "init.sh verde, producao conferida e evidence preenchida.",
+          "owner": "agente"
+        }
+      ],
       "evidence": ""
     },
     {
