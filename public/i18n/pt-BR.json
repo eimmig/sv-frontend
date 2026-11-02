@@ -7,7 +7,7 @@
     "label": "Idioma"
   },
   "dateMask": {
-    "placeholder": "mm/dd/aaaa"
+    "placeholder": "dd/mm/aaaa"
   },
   "loadingOverlay": {
     "ariaLabel": "Carregando",

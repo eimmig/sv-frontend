@@ -2082,3 +2082,11 @@ a correção). `./init.sh` verde. Story SV-768, subtasks SV-769/770.
 Achado do usuário em produção ("Lucro líquido no período" sem unidade e com `,`/`.` trocados): o echarts imprimia o número cru
 no locale dele. `chart-theme` ganhou `tooltipValueFormatter`; lucro e equity usam `formatBrl`, drawdown e comparativo usam
 `formatOdd` + ` U`. Os 4 gráficos do app cobertos. `./init.sh` verde. Story SV-771, subtasks SV-772/773.
+
+## `feat-073` fechada — registrar aposta fora de contexto seguro (2026-11-02)
+
+`epic-045`. `crypto.randomUUID` só existe em contexto seguro; por `http://192.168.2.124` a tela quebrava ao criar
+a `Idempotency-Key`. `core/random-uuid.ts` cai para `crypto.getRandomValues` (UUID v4). e2e novo remove
+`Crypto.prototype.randomUUID` (o Playwright roda em `127.0.0.1`, contexto seguro) e falhou antes da correção.
+Release `develop -> main` (#294), rollout manual do `web` e conferência em produção por http e https. Achado
+fora de escopo: `feat-077`. Story SV-788, subtasks SV-789/790.
