@@ -5168,10 +5168,45 @@
       "scope": "core/date-mask.directive.ts (SEGMENT_ORDER fixo em month, day, year) e app.config.ts (provideNativeDateAdapter, que faz o parse no formato americano). A ordem da mascara e o parse precisam seguir o idioma ativo (pt-BR e es: dia/mes/ano; en-US: mes/dia/ano), por exemplo com MAT_DATE_LOCALE ligado ao Language e um DateAdapter que faca o parse na ordem do locale. Afeta todos os campos com appDateMask: filtro de periodo personalizado (dashboard, relatorio do periodo, comparativo, rankings), filtros De/Ate do historico (apostas e movimentacoes) e da busca de estatisticas, data do evento no registro de aposta. Revisar o placeholder dateMask.placeholder nos 3 idiomas.",
       "description": "Achado nas capturas de tela do TCC 2 (2026-10-25), com Playwright contra a producao (https://192.168.2.124, tenant loadtest-0086b111). Digitar 25082026 mostra 25/08/2026, mas o campo fica invalido (mes 25) e o filtro nao e aplicado; digitar 08252026 funciona e passa a exibir 25/08/2026. Escolher no calendario funciona. Definicao de pronto: em pt-BR, digitar 25082026 aplica 25/08/2026 em todos os campos listados; en-US mantem mes/dia/ano; testes da diretiva cobrindo os dois formatos; evidencia no epic-046.",
       "dependencies": [],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
+      "status": "in-progress",
+      "plan_review": "2026-11-02, Plan Reviewer (risco medio: dado gravado, auto-revisao sem subagente): READY WITH CONCERNS. Verificado no repositorio: SEGMENT_ORDER fixo em month/day/year de proposito (docs/convencoes.md, feat-034.3: NativeDateAdapter.parse e Date.parse, sempre M/D/Y, e a mascara por locale gravava dia e mes trocados); NativeDateAdapter.format usa Intl com o locale (pt-BR exibe dd/mm/aaaa), entao hoje o texto exibido e o parse divergem; App ja faz dateAdapter.setLocale(language.current()); provideNativeDateAdapter em app.config.ts e em 7 specs; e2e que digitam data rodam em en-US. Decisao: corrigir o parse, nao so a mascara: LocaleDateAdapter extends NativeDateAdapter com parse() na ordem de Intl.DateTimeFormat(locale).formatToParts() para d/m/aaaa, invalid() para data impossivel, super.parse para o resto; a mascara usa a mesma ordem; placeholder dd/mm/aaaa em pt-BR e es. Emendas: (1) teste de que o texto exibido apos o blur em pt-BR e relido igual; (2) teste de que a hora do mat-timepicker nao passa pelo parse novo; (3) e2e em pt-BR digitando 25082026 -> from=2026-08-25; (4) docs/convencoes.md atualizado (a regra 'M/D/Y sempre' fica so para en-US).",
+      "jira": "SV-797",
+      "subtasks": [
+        {
+          "id": "feat-074.1",
+          "name": "DateAdapter e mascara na ordem do idioma",
+          "status": "in-progress",
+          "jira": "SV-798",
+          "detail": "Parse e mascara de data seguem a ordem do idioma ativo.",
+          "checklist": [
+            "core/locale-date-adapter.ts com dateSegmentOrder(locale), LocaleDateAdapter e provideLocaleDateAdapter().",
+            "app.config.ts usa provideLocaleDateAdapter().",
+            "date-mask.directive.ts ordena pelo idioma ativo; placeholder dd/mm/aaaa em pt-BR e es.",
+            "locale-date-adapter.spec.ts: pt-BR e es d/m, en-US m/d, data impossivel invalida, hora vai para o super, texto formatado relido igual.",
+            "date-mask.directive.spec.ts nos dois formatos.",
+            "e2e em pt-BR: 25082026 aplica from=2026-08-25 (falha antes)."
+          ],
+          "validation": "ng test e e2e verdes; o e2e pt-BR falha sem a correcao.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-074.2",
+          "name": "CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-799",
+          "detail": "Fechamento: vault, telas em producao, init.sh e skills de revisao.",
+          "checklist": [
+            "CHANGELOG.md com linhas em [Unreleased].",
+            "docs/convencoes.md e docs/services/web.md atualizados (commit no sv-harness).",
+            "Suite e2e completa e ./init.sh do servico passam.",
+            "Release develop -> main, rollout do web e conferencia de um campo de data em producao.",
+            "Delivery Reviewer e Test Suite Auditor rodados.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit"
+          ],
+          "validation": "init.sh verde, producao conferida e evidence preenchida.",
+          "owner": "agente"
+        }
+      ],
       "evidence": ""
     },
     {
