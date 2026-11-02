@@ -33,10 +33,10 @@ export function resolveEarliestDate(daily: readonly DailyBetMetrics[]): string |
 
 export function buildLifetimeCurve(
   daily: readonly DailyBetMetrics[],
-  saldoAtual: number,
+  saldoInicial: number,
   unitPercent: number,
 ): LifetimePoint[] {
-  const denominator = saldoAtual * unitPercent;
+  const denominator = saldoInicial * unitPercent;
   let accumulated = 0;
   return daily.map((day) => {
     if (denominator === 0) {
@@ -77,10 +77,10 @@ export function buildMonthlyTable(
   monthly: readonly MonthlyBetMetrics[],
   balances: readonly MonthlyBalance[],
   year: number,
-  saldoAtual: number,
+  saldoInicial: number,
   unitPercent: number,
 ): OverviewMonthRow[] {
-  const denominator = saldoAtual * unitPercent;
+  const denominator = saldoInicial * unitPercent;
   const metricsByMonth = new Map(monthly.filter((entry) => entry.year === year).map((entry) => [entry.month, entry.metrics]));
   return balances.map((balance) => {
     const metrics = metricsByMonth.get(balance.month);

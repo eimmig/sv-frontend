@@ -73,8 +73,8 @@ interface ComparisonRow {
   readonly testId: string;
 }
 
-function unidadesApostadas(overall: BetMetrics, bankrollTo: number, unitPercent: number): number | null {
-  const denominator = bankrollTo * unitPercent;
+function unidadesApostadas(overall: BetMetrics, bankrollFrom: number, unitPercent: number): number | null {
+  const denominator = bankrollFrom * unitPercent;
   return denominator === 0 ? null : overall.totalStaked / denominator;
 }
 
@@ -186,8 +186,8 @@ export class PeriodComparison implements OnInit {
       odd(
         'periodComparison.unitsStakedLabel',
         'period-comparison-row-units-staked',
-        unidadesApostadas(overallA, a.bankrollTo, unitPercent),
-        unidadesApostadas(overallB, b.bankrollTo, unitPercent),
+        unidadesApostadas(overallA, a.bankrollFrom, unitPercent),
+        unidadesApostadas(overallB, b.bankrollFrom, unitPercent),
       ),
     ];
   });
@@ -197,8 +197,8 @@ export class PeriodComparison implements OnInit {
     const periodA = this.periodA();
     const periodB = this.periodB();
     return buildComparisonSeries(
-      { daily: a.daily, from: periodA.from, to: periodA.to, saldoFinal: a.bankrollTo },
-      { daily: b.daily, from: periodB.from, to: periodB.to, saldoFinal: b.bankrollTo },
+      { daily: a.daily, from: periodA.from, to: periodA.to, saldoInicial: a.bankrollFrom },
+      { daily: b.daily, from: periodB.from, to: periodB.to, saldoInicial: b.bankrollFrom },
       unitPercent,
     );
   });

@@ -22,7 +22,7 @@ export class MonthlyDrawdownGrid {
   private readonly transloco = inject(TranslocoService);
 
   readonly filter = input.required<StatisticsFilter>();
-  readonly bankrollNow = input.required<number>();
+  readonly saldoInicial = input.required<number>();
   readonly unitPercent = input.required<number>();
 
   protected readonly daily = signal<DailyBetMetrics[]>([]);
@@ -33,7 +33,7 @@ export class MonthlyDrawdownGrid {
     if (!filter.from || !filter.to) {
       return [];
     }
-    return buildMonthlyDrawdown(this.daily(), filter.from, filter.to, this.bankrollNow(), this.unitPercent());
+    return buildMonthlyDrawdown(this.daily(), filter.from, filter.to, this.saldoInicial(), this.unitPercent());
   });
   protected readonly yRange = computed(() => computeSharedYRange(this.months()));
 

@@ -271,7 +271,7 @@
         <mat-tab [label]="'dashboard.monthlyDrawdownTitle' | transloco">
           <app-monthly-drawdown-grid
             [filter]="appliedFilter()"
-            [bankrollNow]="dashboardData().bankrollNow"
+            [saldoInicial]="dashboardData().bankrollFrom"
             [unitPercent]="dashboardData().unitPercent"
           />
         </mat-tab>

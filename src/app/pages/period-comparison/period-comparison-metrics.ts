@@ -15,9 +15,9 @@ function parseDateOnly(value: string): Date {
   return new Date(year, month - 1, day);
 }
 
-function accumulateDaily(daily: readonly DailyBetMetrics[], from: string, to: string, saldoFinal: number, unitPercent: number): (number | null)[] {
+function accumulateDaily(daily: readonly DailyBetMetrics[], from: string, to: string, saldoInicial: number, unitPercent: number): (number | null)[] {
   const byDate = new Map(daily.map((day) => [day.date, day]));
-  const denominator = saldoFinal * unitPercent;
+  const denominator = saldoInicial * unitPercent;
   const values: (number | null)[] = [];
   let cursor = parseDateOnly(from);
   const end = parseDateOnly(to);
@@ -47,12 +47,12 @@ export interface ComparisonSeriesInput {
   readonly daily: readonly DailyBetMetrics[];
   readonly from: string;
   readonly to: string;
-  readonly saldoFinal: number;
+  readonly saldoInicial: number;
 }
 
 export function buildComparisonSeries(a: ComparisonSeriesInput, b: ComparisonSeriesInput, unitPercent: number): ComparisonSeries {
-  const seriesA = accumulateDaily(a.daily, a.from, a.to, a.saldoFinal, unitPercent);
-  const seriesB = accumulateDaily(b.daily, b.from, b.to, b.saldoFinal, unitPercent);
+  const seriesA = accumulateDaily(a.daily, a.from, a.to, a.saldoInicial, unitPercent);
+  const seriesB = accumulateDaily(b.daily, b.from, b.to, b.saldoInicial, unitPercent);
   const length = Math.max(seriesA.length, seriesB.length);
   return { seriesA: padTo(seriesA, length), seriesB: padTo(seriesB, length) };
 }

@@ -30,11 +30,11 @@ export function buildDailyTable(
   daily: readonly DailyBetMetrics[],
   from: string,
   to: string,
-  saldoFinal: number,
+  saldoInicial: number,
   unitPercent: number,
 ): DailyTableRow[] {
   const byDate = new Map(daily.map((day) => [day.date, day]));
-  const denominator = saldoFinal * unitPercent;
+  const denominator = saldoInicial * unitPercent;
   const rows: DailyTableRow[] = [];
   let cursor = parseDateOnly(from);
   const end = parseDateOnly(to);
@@ -67,7 +67,7 @@ export function computeSummary(
 ): PeriodReportSummary {
   const roiBankroll = saldoInicial === 0 ? null : overall.netProfit / saldoInicial;
 
-  const unitsDenominator = saldoFinal * unitPercent;
+  const unitsDenominator = saldoInicial * unitPercent;
   const profitUnidades = unitsDenominator === 0 ? null : overall.netProfit / unitsDenominator;
 
   const stakeMedio = overall.settledCount === 0 ? null : overall.totalStaked / overall.settledCount;

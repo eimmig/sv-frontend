@@ -19,10 +19,11 @@ function metrics(overrides: Partial<BetMetrics> = {}): BetMetrics {
 }
 
 describe('computeSummary', () => {
-  it('matches the reference spreadsheet: roiBankroll = 264.20 / 1195.05 = 22.11%', () => {
+  it('matches the reference spreadsheet: roiBankroll = 264.20 / 1195.05 = 22.11% and profit = 22.11u', () => {
     const summary = computeSummary(metrics({ netProfit: 264.2 }), [], 1195.05, 5000, 0.01);
 
     expect(summary.roiBankroll).toBeCloseTo(0.2211, 4);
+    expect(summary.profitUnidades).toBeCloseTo(22.11, 2);
   });
 
   it('matches the reference spreadsheet: taxaAcertoEntradas = 74/(74+126) = 37.00%, +EV = 37.00% - (1/3.22) ≈ 5.94%', () => {
