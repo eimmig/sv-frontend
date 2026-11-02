@@ -5399,6 +5399,80 @@
       "jira": "",
       "subtasks": [],
       "evidence": ""
+    },
+    {
+      "id": "feat-078",
+      "name": "Tela Vincular Telegram mostra se a conta ja esta vinculada",
+      "goal": "O usuario ve na tela Vincular Telegram se ja tem conta vinculada e desde quando, sem mandar mensagem ao bot.",
+      "scope": "pages/telegram-link (status antes do botao, botao Verificar novamente, Gerar codigo escondido quando vinculado), core/telegram-link-api.ts (status() -> GET /api/v1/telegram-links/me), i18n nos 3 locales, e2e/telegram-link.spec.ts. Fora: desvincular.",
+      "description": "Parte apps/web do epic-052 (pedido do usuario, 2026-11-02). Depende de auth-service feat-026 (GET /api/v1/telegram-links/me, 200 {linked, linkedAt}), ja em develop e main. Definicao de pronto: os dois estados e o erro de rede na tela, nos 3 locales, com e2e; evidencia aqui e no epic-052.",
+      "dependencies": [],
+      "status": "done",
+      "plan_review": "2026-11-02, Plan Reviewer (risco baixo, auto-revisao sem subagente): READY WITH CONCERNS. Verificado no repositorio: telegram-link.ts so tem generate() com submitForm; loadInto (core/api-request.ts) ja trata erro RFC 7807; e2e/telegram-link.spec.ts mocka so '**/api/v1/telegram-links' (POST), que nao casa com /me; contrato da rota em docs/contratos-de-api.md (sempre 200, linkedAt null quando nao vinculado). Decisoes: (1) status carregado ao abrir a tela e por um botao Verificar novamente, porque o vinculo acontece no bot e a tela nao recebe aviso; (2) com conta vinculada o botao Gerar codigo some: um segundo vinculo e recusado no auth-service (TelegramAccountAlreadyLinkedException) e desvincular esta fora; (3) data em formatDateTime do idioma ativo, sem verde (regra de cor: verde so marca/ganho). Emendas: (a) beforeEach do e2e mocka /me para os testes existentes nao baterem na rede; (b) e2e dos 3 estados (nao vinculado, vinculado, erro) e de Verificar novamente passando de nao vinculado para vinculado, e um caso em pt-BR.",
+      "jira": "SV-800",
+      "subtasks": [
+        {
+          "id": "feat-078.1",
+          "name": "Status do vinculo na tela Vincular Telegram",
+          "status": "done",
+          "jira": "SV-801",
+          "detail": "Consulta GET /api/v1/telegram-links/me e mostra o estado antes do botao.",
+          "checklist": [
+            "TelegramLinkApi.status().",
+            "telegram-link.ts/html: estados carregando, vinculado (data), nao vinculado, erro; Verificar novamente; Gerar codigo so quando nao vinculado.",
+            "i18n nos 3 locales.",
+            "e2e: nao vinculado, vinculado, erro, Verificar novamente, um caso em pt-BR; mocks de /me no beforeEach.",
+            "Spec do componente atualizada se quebrar."
+          ],
+          "validation": "ng test e e2e verdes.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-078.2",
+          "name": "CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-802",
+          "detail": "Fechamento: telas, init.sh, revisores e producao.",
+          "checklist": [
+            "CHANGELOG.md com linhas em [Unreleased].",
+            "Capturas desktop e mobile, temas claro e escuro.",
+            "Suite e2e completa e ./init.sh do servico passam.",
+            "Delivery Reviewer e Test Suite Auditor rodados; QA visual contra docs/sistema-de-design.md.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit"
+          ],
+          "validation": "init.sh verde e evidence preenchida.",
+          "owner": "agente"
+        }
+      ],
+      "evidence": {
+      "resumo": "Fechada em 2026-11-02 (develop). A tela Vincular Telegram mostra se a conta ja esta vinculada e desde quando. Producao aguarda o rollout do auth-service.",
+      "secoes": [
+        {
+          "titulo": "O que foi feito",
+          "itens": [
+            "TelegramLinkApi.status() -> GET /api/v1/telegram-links/me com BYPASS_HTTP_CACHE (HttpContextToken novo em core/http-cache-interceptor.ts): o status muda no bot, fora do app, e o cache de 5 min esconderia um vinculo novo.",
+            "telegram-link: bloco de status antes do botao (vinculada desde dd/mm/aaaa via formatDate novo em core/date-format.ts, nenhuma conta vinculada, erro), botao Verificar novamente, Gerar codigo escondido quando vinculado. i18n nos 3 locales.",
+            "Vault (sv-harness): docs/services/web.md (tela) e docs/sistema-de-design.md (excecao do cache HTTP)."
+          ]
+        },
+        {
+          "titulo": "Como foi verificado",
+          "itens": [
+            "e2e/telegram-link.spec.ts: nao vinculado, vinculado (botao some), Verificar novamente pega vinculo feito no bot, erro de rede, texto em pt-BR 'vinculada desde 20/10/2026'. Os 5 FALHARAM antes da implementacao; o de Verificar novamente falhou tambem na primeira versao, por causa do cache HTTP, o que levou ao BYPASS_HTTP_CACHE.",
+            "Unitarios: bypass no http-cache-interceptor.spec, formatDate no date-format.spec, spec do componente responde o GET inicial.",
+            "./init.sh verde (492 unitarios); e2e completo 113/113; CI do PR #299 verde.",
+            "Capturas desktop e mobile, claro e escuro (QA visual): icone espremido no mobile corrigido com flex-shrink: 0.",
+            "Delivery Reviewer e Test Suite Auditor (auto-revisao): PASS."
+          ]
+        },
+        {
+          "titulo": "O que divergiu do plano",
+          "itens": [
+            "Cache HTTP do app nao estava no plano; virou o BYPASS_HTTP_CACHE. Release para main segurado ate o rollout do auth-service (bloqueado pelo classificador de auto mode nesta sessao): sem a rota /me em producao a tela mostraria erro."
+          ]
+        }
+      ]
+    }
     }
   ]
 }
