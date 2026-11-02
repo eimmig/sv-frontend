@@ -7,6 +7,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 
+## [2.1.5] - 2026-11-02
+
 ## [2.1.4] - 2026-11-01
 - [SV-780](https://stakevault.atlassian.net/browse/SV-780) - Contraste AA da WCAG 2.2 nos tokens de cor
 - [SV-781](https://stakevault.atlassian.net/browse/SV-781) - Tokens ajustados e teste de contraste
