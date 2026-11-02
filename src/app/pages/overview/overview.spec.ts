@@ -105,7 +105,7 @@ describe('Overview', () => {
     expect(fixture.componentInstance['lucroTotalUnidades']()).toBeNull();
   });
 
-  it('renders the 4 lifetime cards (Lucro Total, Pré/Live, Lucro Médio Mensal, ROI)', () => {
+  it('renders the 4 lifetime cards (Lucro Total, Pré/Live, Lucro Médio Mensal, ROI) in units of the balance at the first bet', () => {
     createComponent();
     flushBase(
       [
@@ -121,14 +121,14 @@ describe('Overview', () => {
     fixture.detectChanges();
 
     const total = fixture.nativeElement.querySelector('[data-testid="overview-lucro-total"]');
-    expect(total.textContent).toContain('8,00');
+    expect(total.textContent).toContain('8,89');
 
     const preLive = fixture.nativeElement.querySelector('[data-testid="overview-pre-live"]');
-    expect(preLive.textContent).toContain('7,00');
-    expect(preLive.textContent).toContain('1,00');
+    expect(preLive.textContent).toContain('7,78');
+    expect(preLive.textContent).toContain('1,11');
 
     const mensal = fixture.nativeElement.querySelector('[data-testid="overview-lucro-medio-mensal"]');
-    expect(mensal.textContent).toContain('0,67');
+    expect(mensal.textContent).toContain('0,74');
 
     const roi = fixture.nativeElement.querySelector('[data-testid="overview-roi"]');
     expect(roi.textContent).toContain('15');

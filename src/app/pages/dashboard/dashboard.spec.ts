@@ -136,11 +136,8 @@ describe('Dashboard', () => {
       ...overrides,
     });
 
-    for (const request of httpMock.match((req) => req.url === BANKROLL_URL && req.params.has('at'))) {
+    for (const request of httpMock.match((req) => req.url === BANKROLL_URL)) {
       request.flush({ at: request.request.params.get('at')!, balance: 1000 });
-    }
-    for (const request of httpMock.match((req) => req.url === BANKROLL_URL && !req.params.has('at'))) {
-      request.flush({ at: 'now', balance: 2000 });
     }
     for (const request of httpMock.match((req) => req.url === SETTINGS_URL)) {
       request.flush({ unitPercent: 0.01 });
@@ -273,16 +270,17 @@ describe('Dashboard', () => {
     expect(cardValue('dashboard-balance-to')).toContain('R$');
   });
 
-  it('computes unidades apostadas from totalStaked, current balance, and unitPercent', () => {
+  it('computes unidades apostadas from totalStaked, the balance at the start of the period, and unitPercent', () => {
     createComponent();
     flushOptions();
     flushDashboardData();
     fixture.detectChanges();
 
-    expect(cardValue('dashboard-units-staked')).toContain('50.00');
+    expect(cardValue('dashboard-units-staked')).toContain('100.00');
+    httpMock.expectNone((req) => req.url === BANKROLL_URL && !req.params.has('at'));
   });
 
-  it('renders the indeterminate placeholder for unidades apostadas when the current balance is zero', () => {
+  it('renders the indeterminate placeholder for unidades apostadas when the balance at the start of the period is zero', () => {
     createComponent();
     flushOptions();
     httpMock.expectOne((req) => req.url === STATISTICS_URL).flush({
@@ -292,11 +290,8 @@ describe('Dashboard', () => {
       byBettingHouse: [],
       monthly: [],
     });
-    for (const request of httpMock.match((req) => req.url === BANKROLL_URL && req.params.has('at'))) {
-      request.flush({ at: request.request.params.get('at')!, balance: 1000 });
-    }
-    for (const request of httpMock.match((req) => req.url === BANKROLL_URL && !req.params.has('at'))) {
-      request.flush({ at: 'now', balance: 0 });
+    for (const request of httpMock.match((req) => req.url === BANKROLL_URL)) {
+      request.flush({ at: request.request.params.get('at')!, balance: 0 });
     }
     for (const request of httpMock.match((req) => req.url === SETTINGS_URL)) {
       request.flush({ unitPercent: 0.01 });

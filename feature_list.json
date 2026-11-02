@@ -5082,11 +5082,74 @@
       "scope": "Trocar o denominador (saldo x unitPercent) para saldoEm(from) em: period-report-metrics.ts (buildDailyTable e computeSummary, hoje saldoFinal), period-comparison-metrics.ts (accumulateDaily, hoje saldoFinal de cada periodo, passa a usar o bankrollFrom de cada um), dashboard (unidadesApostadas e grade mensal de drawdown, hoje bankrollNow) e overview (curva vitalicia, tabela mensal e lucro por tipo, hoje saldoAtual; base passa a ser o saldo na data da primeira aposta, que a tela ja busca). Atualizar docs/estatisticas.md (unidadesApostadas, profitUnidades, grade mensal, Visao geral) e docs/services/web.md (decisao de feat-015 que resolveu saldoAtual para saldoFinal). Fora de escopo: unidade historica por aposta (saldoEm(betDate)) e versionar unitPercent, mantidos como simplificacao.",
       "description": "Epic-043, apontamento da revisao do TCC 2 (2026-10-16). docs/estatisticas.md define a unidade como saldoAtual x unitPercent, mas o codigo usa 3 bases diferentes: saldoFinal = saldoEm(to) no Relatorio do periodo e na Comparacao de periodos (decisao do plan review de feat-015, registrada so em docs/services/web.md), e saldo de agora no dashboard e na Visao geral. O mesmo lucro aparece com valores em unidades diferentes conforme a tela. Saldo inicial e o correto: (1) bate com o print de referencia do usuario, em que lucro 264,20 sobre saldo inicial 1195,05 da 22,11% de ROI Bankroll e 22,11u de lucro (unidade de 1% do saldo inicial); (2) saldoFinal inclui o proprio resultado do periodo no divisor (lucro encolhe a propria conversao, prejuizo infla); (3) saldo de agora faz relatorio de periodo passado mudar sempre que uma aposta nova liquida. Pontos para o Plan Reviewer: saldoInicial <= 0 (devolver null, como o denominador zero de hoje); a grade mensal reseta a cada mes, decidir se a base e o saldo do inicio do filtro ou do inicio de cada mes (recomendado: do filtro, uma unidade por tela); testes que fixam os valores atuais.",
       "dependencies": [],
-      "status": "not-started",
-      "plan_review": "",
-      "jira": "",
-      "subtasks": [],
-      "evidence": ""
+      "status": "done",
+      "plan_review": "2026-11-02, Plan Reviewer (risco medio: numero exibido que o TCC cita, auto-revisao sem subagente): READY WITH CONCERNS. Verificado no repositorio: period-report-metrics.ts (buildDailyTable e computeSummary) e period-comparison-metrics.ts (accumulateDaily) dividem por saldoFinal = saldoEm(to); period-comparison.ts unidadesApostadas usa bankrollTo; dashboard.ts (unidadesApostadas) e monthly-drawdown-grid usam bankrollNow (saldo de agora); overview.ts (curva vitalicia, tabela mensal, lucro por tipo) usa saldoAtual e ja busca saldoInicioHistorico (saldo na data da primeira aposta). GET /api/v1/bankroll/balance?at=d devolve o saldo no fim do dia d (BankrollService, limite exclusivo d+1), e e esse saldoEm(from) que o ROI Bankroll ja usa como saldoInicial e que bate com o print (264,20 / 1195,05). Decisoes: (1) base unica = saldoInicial = saldoEm(from) do periodo exibido (Visao geral: saldoInicioHistorico), sem redefinir saldoInicial; (2) grade mensal do dashboard usa a base do filtro, uma unidade por tela; (3) saldoInicial 0 devolve null, como hoje. Emendas: (a) bankrollNow do dashboard fica sem uso e sai, com a requisicao; (b) specs que fixam os valores atuais passam a base nova, com um caso em que saldoInicial e saldoFinal divergem; (c) docs/estatisticas.md e docs/services/web.md com uma unica definicao.",
+      "jira": "SV-803",
+      "subtasks": [
+        {
+          "id": "feat-072.1",
+          "name": "Unidade com base no saldo inicial em todas as telas",
+          "status": "done",
+          "jira": "SV-804",
+          "detail": "Troca o denominador das conversoes para o saldo inicial do periodo.",
+          "checklist": [
+            "period-report-metrics.ts e period-report.ts: saldoInicial.",
+            "period-comparison-metrics.ts e period-comparison.ts: bankrollFrom de cada periodo.",
+            "dashboard.ts e monthly-drawdown-grid: bankrollFrom; bankrollNow removido.",
+            "overview-metrics.ts e overview.ts: saldoInicioHistorico.",
+            "Specs com a base nova e um caso em que saldoInicial e saldoFinal divergem (vermelhos antes)."
+          ],
+          "validation": "ng test e e2e verdes.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-072.2",
+          "name": "CHANGELOG e verificacao final",
+          "status": "done",
+          "jira": "SV-805",
+          "detail": "Fechamento: vault, init.sh e skills de revisao.",
+          "checklist": [
+            "CHANGELOG.md com linhas em [Unreleased].",
+            "docs/estatisticas.md e docs/services/web.md com uma unica definicao de unidade (commit no sv-harness).",
+            "Suite e2e completa e ./init.sh do servico passam.",
+            "Delivery Reviewer e Test Suite Auditor rodados.",
+            "Vault (docs/) revisado: alguma descoberta desta feature - mecanismo reaproveitavel, gotcha de lib/config, lacuna de especificacao, decisao que diverge do ja documentado - sem nota correspondente? Se sim, atualizar/criar a nota do assunto (nao docs/DECISIONS-LOG.md a menos que divirja do TCC 1) no mesmo commit"
+          ],
+          "validation": "init.sh verde e evidence preenchida.",
+          "owner": "agente"
+        }
+      ],
+      "evidence": {
+        "resumo": "Fechada em 2026-11-02 (develop). Toda conversao de reais em unidades usa o saldo inicial do periodo exibido; na Visao geral, o saldo na data da primeira aposta.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "period-report-metrics.ts/period-report.ts (tabela diaria e resumo): saldoFinal -> saldoInicial.",
+              "period-comparison-metrics.ts/period-comparison.ts (curva e unidades apostadas): bankrollTo -> bankrollFrom de cada periodo.",
+              "dashboard.ts e monthly-drawdown-grid (unidades apostadas e grade mensal): bankrollNow -> bankrollFrom; o dashboard deixou de pedir o saldo de agora.",
+              "overview.ts/overview-metrics.ts (curva vitalicia, tabela mensal, lucro Pre/Live): saldoAtual -> saldoInicioHistorico.",
+              "Vault (sv-harness): docs/estatisticas.md com uma unica base (secao Unidades apostadas) e docs/services/web.md com as decisoes antigas marcadas como substituidas."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "period-report-metrics.spec: o caso do print (264,20 / 1195,05, saldo final 5000) passou a conferir 22,11u; FALHOU antes ('expected 5.284 to be close to 22.11') e passa.",
+              "dashboard.spec (100u com saldo inicial 1000 contra 50u com o saldo de agora 2000) e overview.spec (8,89u/7,78u/1,11u/0,74u com saldo na primeira aposta 900 contra 8,00/7,00/1,00/0,67 com saldo atual 1000) falharam com a base antiga e passam.",
+              "period-comparison.spec novo: saldo inicial 500 e final 1000 -> 20u (com a base antiga seriam 10u; sem a correcao o spec nao compila, porque o campo mudou de nome).",
+              "./init.sh verde (493 unitarios); e2e completo 113/113; CI do PR #302 verde.",
+              "Delivery Reviewer e Test Suite Auditor (auto-revisao): PASS."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Nada. Os numeros em unidades das capturas de tela do TCC mudam quando houver deposito ou saque no periodo ou quando o periodo nao comecar no saldo atual (aceito pelo usuario em 2026-10-16). Release para main segurado junto com feat-078 ate o rollout do auth-service."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-073",
@@ -5445,34 +5508,34 @@
         }
       ],
       "evidence": {
-      "resumo": "Fechada em 2026-11-02 (develop). A tela Vincular Telegram mostra se a conta ja esta vinculada e desde quando. Producao aguarda o rollout do auth-service.",
-      "secoes": [
-        {
-          "titulo": "O que foi feito",
-          "itens": [
-            "TelegramLinkApi.status() -> GET /api/v1/telegram-links/me com BYPASS_HTTP_CACHE (HttpContextToken novo em core/http-cache-interceptor.ts): o status muda no bot, fora do app, e o cache de 5 min esconderia um vinculo novo.",
-            "telegram-link: bloco de status antes do botao (vinculada desde dd/mm/aaaa via formatDate novo em core/date-format.ts, nenhuma conta vinculada, erro), botao Verificar novamente, Gerar codigo escondido quando vinculado. i18n nos 3 locales.",
-            "Vault (sv-harness): docs/services/web.md (tela) e docs/sistema-de-design.md (excecao do cache HTTP)."
-          ]
-        },
-        {
-          "titulo": "Como foi verificado",
-          "itens": [
-            "e2e/telegram-link.spec.ts: nao vinculado, vinculado (botao some), Verificar novamente pega vinculo feito no bot, erro de rede, texto em pt-BR 'vinculada desde 20/10/2026'. Os 5 FALHARAM antes da implementacao; o de Verificar novamente falhou tambem na primeira versao, por causa do cache HTTP, o que levou ao BYPASS_HTTP_CACHE.",
-            "Unitarios: bypass no http-cache-interceptor.spec, formatDate no date-format.spec, spec do componente responde o GET inicial.",
-            "./init.sh verde (492 unitarios); e2e completo 113/113; CI do PR #299 verde.",
-            "Capturas desktop e mobile, claro e escuro (QA visual): icone espremido no mobile corrigido com flex-shrink: 0.",
-            "Delivery Reviewer e Test Suite Auditor (auto-revisao): PASS."
-          ]
-        },
-        {
-          "titulo": "O que divergiu do plano",
-          "itens": [
-            "Cache HTTP do app nao estava no plano; virou o BYPASS_HTTP_CACHE. Release para main segurado ate o rollout do auth-service (bloqueado pelo classificador de auto mode nesta sessao): sem a rota /me em producao a tela mostraria erro."
-          ]
-        }
-      ]
-    }
+        "resumo": "Fechada em 2026-11-02 (develop). A tela Vincular Telegram mostra se a conta ja esta vinculada e desde quando. Producao aguarda o rollout do auth-service.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "TelegramLinkApi.status() -> GET /api/v1/telegram-links/me com BYPASS_HTTP_CACHE (HttpContextToken novo em core/http-cache-interceptor.ts): o status muda no bot, fora do app, e o cache de 5 min esconderia um vinculo novo.",
+              "telegram-link: bloco de status antes do botao (vinculada desde dd/mm/aaaa via formatDate novo em core/date-format.ts, nenhuma conta vinculada, erro), botao Verificar novamente, Gerar codigo escondido quando vinculado. i18n nos 3 locales.",
+              "Vault (sv-harness): docs/services/web.md (tela) e docs/sistema-de-design.md (excecao do cache HTTP)."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "e2e/telegram-link.spec.ts: nao vinculado, vinculado (botao some), Verificar novamente pega vinculo feito no bot, erro de rede, texto em pt-BR 'vinculada desde 20/10/2026'. Os 5 FALHARAM antes da implementacao; o de Verificar novamente falhou tambem na primeira versao, por causa do cache HTTP, o que levou ao BYPASS_HTTP_CACHE.",
+              "Unitarios: bypass no http-cache-interceptor.spec, formatDate no date-format.spec, spec do componente responde o GET inicial.",
+              "./init.sh verde (492 unitarios); e2e completo 113/113; CI do PR #299 verde.",
+              "Capturas desktop e mobile, claro e escuro (QA visual): icone espremido no mobile corrigido com flex-shrink: 0.",
+              "Delivery Reviewer e Test Suite Auditor (auto-revisao): PASS."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "Cache HTTP do app nao estava no plano; virou o BYPASS_HTTP_CACHE. Release para main segurado ate o rollout do auth-service (bloqueado pelo classificador de auto mode nesta sessao): sem a rota /me em producao a tela mostraria erro."
+            ]
+          }
+        ]
+      }
     }
   ]
 }
