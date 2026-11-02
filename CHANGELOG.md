@@ -13,6 +13,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-789](https://stakevault.atlassian.net/browse/SV-789) - randomUuid com fallback e uso no registro de aposta
 - [SV-790](https://stakevault.atlassian.net/browse/SV-790) - CHANGELOG e verificacao final
 
+## [2.1.3] - 2026-11-01
+
 ## [2.1.2] - 2026-10-09
 - feat-056 - Rollout do deployment `web` no cluster feito manualmente (sem mudanca de codigo)
 - [SV-774](https://stakevault.atlassian.net/browse/SV-774) - searchable-select mostra o UUID quando o texto digitado e igual ao nome da opcao
