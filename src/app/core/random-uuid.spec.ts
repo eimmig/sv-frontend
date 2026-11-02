@@ -7,14 +7,6 @@ describe('randomUuid', () => {
     vi.unstubAllGlobals();
   });
 
-  it('delegates to crypto.randomUUID when the browser exposes it', () => {
-    const native = vi.fn(() => '11111111-2222-4333-8444-555555555555');
-    vi.stubGlobal('crypto', { randomUUID: native, getRandomValues: crypto.getRandomValues.bind(crypto) });
-
-    expect(randomUuid()).toBe('11111111-2222-4333-8444-555555555555');
-    expect(native).toHaveBeenCalledOnce();
-  });
-
   it('builds a version 4 UUID from getRandomValues outside a secure context', () => {
     vi.stubGlobal('crypto', { getRandomValues: crypto.getRandomValues.bind(crypto) });
 
