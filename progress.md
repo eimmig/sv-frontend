@@ -2105,3 +2105,10 @@ Parte web do `epic-052`. A tela consulta `GET /api/v1/telegram-links/me` (auth-s
 vinculado. O status pula o cache HTTP (`BYPASS_HTTP_CACHE`, novo), porque muda no bot. e2e dos estados falharam
 antes e passam. **Não promover para `main` antes do rollout do auth-service com `feat-026`**: sem a rota em
 produção a tela mostra erro. Story SV-800, subtasks SV-801/802.
+
+## `feat-072` fechada — unidade com base no saldo inicial do período (2026-11-02)
+
+`epic-043`. Toda conversão de reais em unidades usa `saldoInicial = saldoEm(from)` (Visão geral: saldo na primeira
+aposta), a mesma base do ROI Bankroll; o print de referência fecha em 22,11u. Specs que fixavam a base antiga
+falharam e passam com a nova; caso novo no comparativo com saldo inicial e final diferentes. Junto com `feat-078`,
+**não promover para `main` antes do rollout do auth-service**. Story SV-803, subtasks SV-804/805.
