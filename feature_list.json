@@ -5102,7 +5102,7 @@
         {
           "id": "feat-073.1",
           "name": "randomUuid com fallback e uso no registro de aposta",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-789",
           "detail": "Utilitario em core/ que usa crypto.randomUUID quando existe e monta um UUID v4 com crypto.getRandomValues fora de contexto seguro.",
           "checklist": [
@@ -5117,7 +5117,7 @@
         {
           "id": "feat-073.2",
           "name": "CHANGELOG e verificacao final",
-          "status": "not-started",
+          "status": "in-progress",
           "jira": "SV-790",
           "detail": "Fechamento: producao por http e https, documentacao, init.sh e skills de revisao.",
           "checklist": [
@@ -5294,6 +5294,19 @@
           }
         ]
       }
+    },
+    {
+      "id": "feat-077",
+      "name": "Testes unitarios de pagina estouram o timeout de 5 s com a suite inteira",
+      "goal": "ng test passa sempre, sem falha intermitente por timeout.",
+      "scope": "Specs de pagina que falharam por 'Test timed out in 5000ms' so com a suite inteira: dashboard.spec.ts ('loads options and overall metrics on creation...'), period-comparison.spec.ts ('seeds both periods already resolved to Hoje...') e search-statistics.spec.ts ('shows the never searched empty state...'). Investigar a causa (primeiro teste de cada spec pagando a compilacao do componente, ECharts, timers) antes de so aumentar o timeout.",
+      "description": "Achado durante feat-073 (2026-11-02): duas rodadas seguidas de npx ng test --watch=false na branch subtask/SV-789 falharam com 3 e depois 1 teste, sempre o primeiro teste de specs de pagina e sempre por timeout de 5000 ms; os mesmos 3 specs isolados passam (30/30) e a terceira rodada (dentro do init.sh) passou inteira. Nenhum deles toca o codigo de feat-073. Risco: CI vermelha sem defeito real. Definicao de pronto: causa identificada, 5 rodadas seguidas da suite inteira sem falha, evidencia aqui.",
+      "dependencies": [],
+      "status": "not-started",
+      "plan_review": "",
+      "jira": "",
+      "subtasks": [],
+      "evidence": ""
     }
   ]
 }
