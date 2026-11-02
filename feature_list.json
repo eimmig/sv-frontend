@@ -5095,7 +5095,7 @@
       "scope": "pages/register-bet/register-bet.ts:95 e :211 (idempotencyKey = crypto.randomUUID()). Trocar por um gerador com fallback (crypto.getRandomValues, que existe fora de contexto seguro) em um utilitario de core/, com teste unitario do fallback. Procurar outros usos de randomUUID no app. Fora de escopo: forcar https no ingress.",
       "description": "Achado nas capturas de tela do TCC 2 (2026-10-25), com Playwright contra a producao (https://192.168.2.124, tenant loadtest-0086b111). Em http://192.168.2.124/register-bet a pagina fica em branco e volta para /overview; console: 'TypeError: crypto.randomUUID is not a function'. O navegador so expoe crypto.randomUUID em contexto seguro (https ou localhost). Por https a tela funciona. Definicao de pronto: register-bet abre e registra aposta por http e por https, teste do fallback passando, evidencia no epic-045.",
       "dependencies": [],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "2026-11-02, Plan Reviewer (risco baixo, auto-revisao sem subagente): READY WITH CONCERNS. Verificado no repositorio: randomUUID so em register-bet.ts:95 e :211; BetsApi.create manda a chave no header Idempotency-Key; BetsController aceita o header opcional como string livre (coluna VARCHAR(255) unique); e2e/register-bet.spec.ts mocka as APIs com page.route e ja captura o header; baseURL do Playwright e http://127.0.0.1:4300, que e contexto seguro, entao o e2e atual nunca passa pelo fallback. Emendas: (1) o e2e remove randomUUID de Crypto.prototype no addInitScript (delete na instancia nao remove nada) e confere o header capturado contra a regex do UUID v4; (2) o unitario restaura o stub de globalThis.crypto no afterEach e valida a regex v4 (versao 4, variante 8/9/a/b).",
       "jira": "SV-788",
       "subtasks": [
@@ -5131,7 +5131,35 @@
           "owner": "agente"
         }
       ],
-      "evidence": ""
+      "evidence": {
+        "resumo": "Fechada em 2026-11-02. register-bet abre e registra aposta por http e por https em producao.",
+        "secoes": [
+          {
+            "titulo": "O que foi feito",
+            "itens": [
+              "core/random-uuid.ts: randomUuid() usa crypto.randomUUID quando existe; fora de contexto seguro monta UUID v4 com crypto.getRandomValues (bytes de versao e variante).",
+              "register-bet.ts usa randomUuid() na criacao da Idempotency-Key e no reset do formulario. Nenhum outro uso de randomUUID no app.",
+              "Vault (sv-harness e3a24a9): docs/services/web.md explica o fallback e por que o e2e precisa remover Crypto.prototype.randomUUID (127.0.0.1 e contexto seguro)."
+            ]
+          },
+          {
+            "titulo": "Como foi verificado",
+            "itens": [
+              "e2e/register-bet.spec.ts 'outside a secure context': FALHOU antes da correcao (tela nao abre) e passa; confere o header Idempotency-Key contra a regex v4. Suite e2e 107/107.",
+              "random-uuid.spec.ts: v4 valido e distinto em 50 chamadas; bits de versao/variante com bytes 0xff.",
+              "./init.sh verde; CI e SonarCloud verdes nos PRs #291, #292, #293 (develop) e #294 (main, release).",
+              "Producao: rollout restart do deployment web no k3s; Playwright contra o bundle real com /api mockado: http://192.168.2.124 (isSecureContext=false, crypto.randomUUID undefined) registra a aposta com chave 9c41e3e3-732c-41ae-a038-16503ddbebe6, https usa o nativo; nenhum pageerror nos dois.",
+              "Delivery Reviewer (BLOCKED so pela producao, agora resolvida; P3 aplicado) e Test Suite Auditor PASS."
+            ]
+          },
+          {
+            "titulo": "O que divergiu do plano",
+            "itens": [
+              "A verificacao em producao aconteceu depois do merge em develop, porque a imagem so sai do main. Achado fora de escopo registrado: feat-077 (specs de pagina estouram o timeout de 5 s com a suite inteira)."
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "feat-074",
