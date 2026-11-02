@@ -18,6 +18,7 @@ import { BettingHouse, BettingHousesApi } from '../../core/betting-houses-api';
 import { CatalogEntry, Team, catalogApi, teamsApi } from '../../core/catalog-api';
 import { formatBrl } from '../../core/currency';
 import { DateMaskDirective } from '../../core/date-mask.directive';
+import { randomUuid } from '../../core/random-uuid';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 import { SearchableSelect } from '../../shared/searchable-select/searchable-select';
@@ -92,7 +93,7 @@ export class RegisterBet implements OnInit {
     return status !== null && SETTLED_STATUSES.includes(status);
   });
 
-  private idempotencyKey = crypto.randomUUID();
+  private idempotencyKey = randomUuid();
 
   protected readonly form = this.formBuilder.nonNullable.group({
     bettingHouseId: ['', Validators.required],
@@ -208,7 +209,7 @@ export class RegisterBet implements OnInit {
       betDateOnly: new Date(),
       betTimeOnly: new Date(),
     });
-    this.idempotencyKey = crypto.randomUUID();
+    this.idempotencyKey = randomUuid();
     this.formError.set(null);
     this.successMessage.set(null);
   }

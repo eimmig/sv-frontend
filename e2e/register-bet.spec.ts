@@ -62,6 +62,37 @@ test.describe('RF04 - manual bet registration', () => {
     await expect(page.getByTestId('register-bet-stake')).toHaveValue('0');
   });
 
+  test('registers a bet outside a secure context, where crypto.randomUUID does not exist', async ({ page }) => {
+    await page.addInitScript(() => {
+      delete (Crypto.prototype as { randomUUID?: unknown }).randomUUID;
+    });
+    let idempotencyKeyHeader: string | null = null;
+    await page.route('**/api/v1/bets', (route) => {
+      idempotencyKeyHeader = route.request().headers()['idempotency-key'] ?? null;
+      return route.fulfill({
+        status: 201,
+        contentType: 'application/json',
+        body: JSON.stringify({ id: '1', status: 'pending' }),
+      });
+    });
+
+    await page.goto('/register-bet');
+    await page.getByTestId('register-bet-betting-house').click();
+    await page.getByRole('option', { name: 'Bet365' }).click();
+    await page.getByTestId('register-bet-sport').click();
+    await page.getByRole('option', { name: 'Futebol' }).click();
+    await page.getByTestId('register-bet-league').click();
+    await page.getByRole('option', { name: 'Brasileirão' }).click();
+    await page.getByTestId('register-bet-market').click();
+    await page.getByRole('option', { name: 'Handicap' }).click();
+    await page.getByTestId('register-bet-stake').fill('100');
+    await page.getByTestId('register-bet-odd').fill('1.5');
+    await page.getByTestId('register-bet-submit').click();
+
+    await expect(page.getByTestId('register-bet-success')).toBeVisible();
+    expect(idempotencyKeyHeader).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+  });
+
   test('registers a bet with a PRE/LIVE bet type selected via mat-select, not free text', async ({ page }) => {
     let requestBody: Record<string, unknown> | null = null;
     await page.route('**/api/v1/bets', (route) => {
