@@ -2097,3 +2097,11 @@ fora de escopo: `feat-077`. Story SV-788, subtasks SV-789/790.
 enquanto pt-BR e es exibiam D/M/A. `core/locale-date-adapter.ts` faz o parse na ordem de `Intl` para o locale ativo
 e a máscara segue a mesma ordem. e2e em pt-BR falhou antes e passa; produção conferida após release #298 e rollout
 (o primeiro rollout pegou a imagem antiga, ver `docs/services/infra.md`). Story SV-797, subtasks SV-798/799.
+
+## `feat-078` fechada — status do vínculo na tela Vincular Telegram (2026-11-02)
+
+Parte web do `epic-052`. A tela consulta `GET /api/v1/telegram-links/me` (auth-service `feat-026`) e mostra
+"vinculada desde {data}" ou "nenhuma conta vinculada", com "Verificar novamente"; "Gerar código" some quando
+vinculado. O status pula o cache HTTP (`BYPASS_HTTP_CACHE`, novo), porque muda no bot. e2e dos estados falharam
+antes e passam. **Não promover para `main` antes do rollout do auth-service com `feat-026`**: sem a rota em
+produção a tela mostra erro. Story SV-800, subtasks SV-801/802.
