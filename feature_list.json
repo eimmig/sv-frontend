@@ -5414,7 +5414,7 @@
         {
           "id": "feat-078.1",
           "name": "Status do vinculo na tela Vincular Telegram",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-801",
           "detail": "Consulta GET /api/v1/telegram-links/me e mostra o estado antes do botao.",
           "checklist": [
@@ -5430,7 +5430,7 @@
         {
           "id": "feat-078.2",
           "name": "CHANGELOG e verificacao final",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-802",
           "detail": "Fechamento: telas, init.sh, revisores e producao.",
           "checklist": [
@@ -5444,7 +5444,35 @@
           "owner": "agente"
         }
       ],
-      "evidence": ""
+      "evidence": {
+      "resumo": "Fechada em 2026-11-02 (develop). A tela Vincular Telegram mostra se a conta ja esta vinculada e desde quando. Producao aguarda o rollout do auth-service.",
+      "secoes": [
+        {
+          "titulo": "O que foi feito",
+          "itens": [
+            "TelegramLinkApi.status() -> GET /api/v1/telegram-links/me com BYPASS_HTTP_CACHE (HttpContextToken novo em core/http-cache-interceptor.ts): o status muda no bot, fora do app, e o cache de 5 min esconderia um vinculo novo.",
+            "telegram-link: bloco de status antes do botao (vinculada desde dd/mm/aaaa via formatDate novo em core/date-format.ts, nenhuma conta vinculada, erro), botao Verificar novamente, Gerar codigo escondido quando vinculado. i18n nos 3 locales.",
+            "Vault (sv-harness): docs/services/web.md (tela) e docs/sistema-de-design.md (excecao do cache HTTP)."
+          ]
+        },
+        {
+          "titulo": "Como foi verificado",
+          "itens": [
+            "e2e/telegram-link.spec.ts: nao vinculado, vinculado (botao some), Verificar novamente pega vinculo feito no bot, erro de rede, texto em pt-BR 'vinculada desde 20/10/2026'. Os 5 FALHARAM antes da implementacao; o de Verificar novamente falhou tambem na primeira versao, por causa do cache HTTP, o que levou ao BYPASS_HTTP_CACHE.",
+            "Unitarios: bypass no http-cache-interceptor.spec, formatDate no date-format.spec, spec do componente responde o GET inicial.",
+            "./init.sh verde (492 unitarios); e2e completo 113/113; CI do PR #299 verde.",
+            "Capturas desktop e mobile, claro e escuro (QA visual): icone espremido no mobile corrigido com flex-shrink: 0.",
+            "Delivery Reviewer e Test Suite Auditor (auto-revisao): PASS."
+          ]
+        },
+        {
+          "titulo": "O que divergiu do plano",
+          "itens": [
+            "Cache HTTP do app nao estava no plano; virou o BYPASS_HTTP_CACHE. Release para main segurado ate o rollout do auth-service (bloqueado pelo classificador de auto mode nesta sessao): sem a rota /me em producao a tela mostraria erro."
+          ]
+        }
+      ]
+    }
     }
   ]
 }
