@@ -5117,7 +5117,7 @@
         {
           "id": "feat-073.2",
           "name": "CHANGELOG e verificacao final",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-790",
           "detail": "Fechamento: producao por http e https, documentacao, init.sh e skills de revisao.",
           "checklist": [
