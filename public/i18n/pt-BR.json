@@ -276,7 +276,11 @@
     "regenerate": "Gerar novo código",
     "codeLabel": "Código de vínculo",
     "expiresAtLabel": "Expira em {{expiresAt}}",
-    "genericError": "Não foi possível gerar o código. Tente novamente."
+    "genericError": "Não foi possível gerar o código. Tente novamente.",
+    "statusLinked": "Conta do Telegram vinculada desde {{linkedAt}}",
+    "statusUnlinked": "Nenhuma conta do Telegram vinculada.",
+    "statusError": "Não foi possível verificar o vínculo. Tente novamente.",
+    "statusRefresh": "Verificar novamente"
   },
   "bettingHouses": {
     "createTitle": "Nova casa de apostas",

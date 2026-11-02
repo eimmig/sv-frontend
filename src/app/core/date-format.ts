@@ -2,6 +2,10 @@ export function formatDateTime(value: string, locale: string): string {
   return new Intl.DateTimeFormat(locale, { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value));
 }
 
+export function formatDate(value: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(value));
+}
+
 export function formatMonth(year: number, month: number, locale: string): string {
   return new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'short' }).format(new Date(year, month - 1, 1));
 }
