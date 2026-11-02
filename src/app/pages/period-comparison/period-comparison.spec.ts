@@ -211,6 +211,27 @@ describe('PeriodComparison', () => {
     expect(settledCountRow.querySelector('.comparison-metric-row__delta--positive')).toBeNull();
   });
 
+  it('converts units staked with the balance at the start of each period, not at its end', () => {
+    createComponent();
+    flushOptions();
+    drainComparisonRequests();
+    fixture.detectChanges();
+
+    fixture.componentInstance['onPeriodAChange']({ from: '2026-01-01', to: '2026-01-31' });
+
+    for (const request of httpMock.match((req) => req.url === STATISTICS_URL)) {
+      request.flush({ ...EMPTY_DASHBOARD, overall: { ...EMPTY_DASHBOARD.overall, totalStaked: 100, settledCount: 1 } });
+    }
+    for (const request of httpMock.match((req) => req.url === BANKROLL_URL)) {
+      request.flush({ at: request.request.params.get('at')!, balance: request.request.params.get('at') === '2026-01-01' ? 500 : 1000 });
+    }
+    drainComparisonRequests();
+    fixture.detectChanges();
+
+    const unitsRow = fixture.nativeElement.querySelector('[data-testid="period-comparison-row-units-staked"]');
+    expect(unitsRow.querySelector('[data-testid="comparison-metric-row-value-a"]').textContent).toContain('20');
+  });
+
   it('renders "Indeterminado" for avgOdd/unidadesApostadas when a side has no settled bet or zero balance', () => {
     createComponent();
     flushOptions();

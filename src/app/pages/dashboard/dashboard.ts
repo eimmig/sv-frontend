@@ -51,7 +51,6 @@ interface DashboardData {
   readonly daily: DailyBetMetrics[];
   readonly bankrollFrom: number;
   readonly bankrollTo: number;
-  readonly bankrollNow: number;
   readonly unitPercent: number;
 }
 
@@ -61,7 +60,6 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   daily: [],
   bankrollFrom: 0,
   bankrollTo: 0,
-  bankrollNow: 0,
   unitPercent: 0,
 };
 
@@ -110,7 +108,7 @@ export class Dashboard implements OnInit {
 
   protected readonly unidadesApostadas = computed(() => {
     const data = this.dashboardData();
-    const denominator = data.bankrollNow * data.unitPercent;
+    const denominator = data.bankrollFrom * data.unitPercent;
     return denominator === 0 ? null : data.dashboard.overall.totalStaked / denominator;
   });
 
@@ -191,7 +189,6 @@ export class Dashboard implements OnInit {
         daily: isDailyGranularity(period.from, period.to) ? this.statisticsApi.getDaily(filter) : of([]),
         bankrollFrom: this.bankrollApi.getBalance(period.from).pipe(map((b) => b.balance)),
         bankrollTo: this.bankrollApi.getBalance(period.to).pipe(map((b) => b.balance)),
-        bankrollNow: this.bankrollApi.getBalance().pipe(map((b) => b.balance)),
         unitPercent: this.settingsApi.get().pipe(map((s) => s.unitPercent)),
       }),
       this.dashboardData,

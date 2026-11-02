@@ -54,7 +54,7 @@ export class Overview implements OnInit {
   protected readonly error = signal<string | null>(null);
 
   protected readonly lucroTotalUnidades = computed(() => {
-    const curve = buildLifetimeCurve(this.data().daily, this.data().saldoAtual, this.data().unitPercent);
+    const curve = buildLifetimeCurve(this.data().daily, this.data().saldoInicioHistorico, this.data().unitPercent);
     return curve.at(-1)?.accumulated ?? null;
   });
 
@@ -77,7 +77,7 @@ export class Overview implements OnInit {
     const data = this.data();
     const year = new Date().getFullYear();
     const balances = buildMonthlyBalances(data.daily, data.saldoInicioHistorico, year);
-    return buildMonthlyTable(data.monthly, balances, year, data.saldoAtual, data.unitPercent);
+    return buildMonthlyTable(data.monthly, balances, year, data.saldoInicioHistorico, data.unitPercent);
   });
 
   protected readonly formatBrl = formatBrl;
@@ -112,7 +112,7 @@ export class Overview implements OnInit {
 
   private betTypeUnidades(dimensionId: 'PRE' | 'LIVE'): number | null {
     const data = this.data();
-    const denominator = data.saldoAtual * data.unitPercent;
+    const denominator = data.saldoInicioHistorico * data.unitPercent;
     if (denominator === 0) {
       return null;
     }

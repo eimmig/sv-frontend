@@ -55,7 +55,7 @@ export class PeriodReport {
   protected readonly dailyTable = computed(() => {
     const data = this.data();
     const period = this.period();
-    return buildDailyTable(data.daily, period.from, period.to, data.saldoFinal, data.unitPercent);
+    return buildDailyTable(data.daily, period.from, period.to, data.saldoInicial, data.unitPercent);
   });
 
   protected readonly summary = computed(() => {

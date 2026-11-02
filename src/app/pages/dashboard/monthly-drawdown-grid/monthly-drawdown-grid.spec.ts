@@ -77,9 +77,9 @@ describe('MonthlyDrawdownGrid', () => {
     httpMock.verify();
   });
 
-  function setInputs(filter: StatisticsFilter, bankrollNow = 1000, unitPercent = 0.01): void {
+  function setInputs(filter: StatisticsFilter, saldoInicial = 1000, unitPercent = 0.01): void {
     fixture.componentRef.setInput('filter', filter);
-    fixture.componentRef.setInput('bankrollNow', bankrollNow);
+    fixture.componentRef.setInput('saldoInicial', saldoInicial);
     fixture.componentRef.setInput('unitPercent', unitPercent);
   }
 
@@ -134,7 +134,7 @@ describe('MonthlyDrawdownGrid', () => {
     request.flush([]);
   });
 
-  it('recomputes displayed months from bankrollNow/unitPercent without a new HTTP request when only those change (the filter reference is unchanged)', () => {
+  it('recomputes displayed months from saldoInicial/unitPercent without a new HTTP request when only those change (the filter reference is unchanged)', () => {
     const filter: StatisticsFilter = { from: '2026-09-01', to: '2026-09-01' };
     setInputs(filter, 1000, 0.01);
     fixture.detectChanges();
