@@ -2090,3 +2090,10 @@ a `Idempotency-Key`. `core/random-uuid.ts` cai para `crypto.getRandomValues` (UU
 `Crypto.prototype.randomUUID` (o Playwright roda em `127.0.0.1`, contexto seguro) e falhou antes da correção.
 Release `develop -> main` (#294), rollout manual do `web` e conferência em produção por http e https. Achado
 fora de escopo: `feat-077`. Story SV-788, subtasks SV-789/790.
+
+## `feat-074` fechada — datas na ordem do idioma ativo (2026-11-02)
+
+`epic-046`. O `NativeDateAdapter.parse()` é `Date.parse()` (sempre M/D/A), por isso a máscara estava presa em M/D/A
+enquanto pt-BR e es exibiam D/M/A. `core/locale-date-adapter.ts` faz o parse na ordem de `Intl` para o locale ativo
+e a máscara segue a mesma ordem. e2e em pt-BR falhou antes e passa; produção conferida após release #298 e rollout
+(o primeiro rollout pegou a imagem antiga, ver `docs/services/infra.md`). Story SV-797, subtasks SV-798/799.
