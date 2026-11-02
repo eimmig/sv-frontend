@@ -11,6 +11,31 @@
   font-size: 14px;
 }
 
+.telegram-link__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.telegram-link__status .telegram-link__error {
+  margin: 0;
+}
+
+.telegram-link__status-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-primary);
+}
+
+.telegram-link__status-text mat-icon {
+  flex-shrink: 0;
+}
+
 .telegram-link__result {
   margin-bottom: 16px;
   padding: 16px;

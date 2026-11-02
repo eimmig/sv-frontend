@@ -276,7 +276,11 @@
     "regenerate": "Generate new code",
     "codeLabel": "Link code",
     "expiresAtLabel": "Expires at {{expiresAt}}",
-    "genericError": "Could not generate the code. Please try again."
+    "genericError": "Could not generate the code. Please try again.",
+    "statusLinked": "Telegram account linked since {{linkedAt}}",
+    "statusUnlinked": "No Telegram account linked yet.",
+    "statusError": "Could not check the link. Try again.",
+    "statusRefresh": "Check again"
   },
   "bettingHouses": {
     "createTitle": "New betting house",

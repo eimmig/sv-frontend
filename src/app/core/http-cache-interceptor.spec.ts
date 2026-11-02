@@ -1,4 +1,5 @@
 import {
+  HttpContext,
   HttpErrorResponse,
   HttpHandlerFn,
   HttpHeaders,
@@ -11,7 +12,7 @@ import { of, Subject, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
 import { HttpCache } from './http-cache';
-import { httpCacheInterceptor } from './http-cache-interceptor';
+import { BYPASS_HTTP_CACHE, httpCacheInterceptor } from './http-cache-interceptor';
 
 describe('httpCacheInterceptor', () => {
   const interceptor: HttpInterceptorFn = (req, next) =>
@@ -45,6 +46,17 @@ describe('httpCacheInterceptor', () => {
 
     expect(next).toHaveBeenCalledTimes(1);
     expect(second).toEqual({ roi: 0.1 });
+  });
+
+  it('always goes to the backend for a GET marked with BYPASS_HTTP_CACHE', () => {
+    const next = vi.fn(() => of(new HttpResponse({ status: 200, body: { linked: false } })));
+    const bypassed = () =>
+      new HttpRequest('GET', '/api/v1/telegram-links/me', { context: new HttpContext().set(BYPASS_HTTP_CACHE, true) });
+
+    fetch(bypassed(), next);
+    fetch(bypassed(), next);
+
+    expect(next).toHaveBeenCalledTimes(2);
   });
 
   it('goes to the backend when the query params or the language differ', () => {

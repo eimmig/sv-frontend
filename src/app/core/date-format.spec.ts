@@ -1,4 +1,11 @@
-import { formatDateTime, formatDay, formatDayNumeric, formatMonth, spansMoreThanOneYear } from './date-format';
+import { formatDate, formatDateTime, formatDay, formatDayNumeric, formatMonth, spansMoreThanOneYear } from './date-format';
+
+describe('formatDate', () => {
+  it('formats an ISO instant as a date only, with a 4-digit year, in the locale order', () => {
+    expect(formatDate('2026-10-20T14:30:00Z', 'pt-BR')).toBe('20/10/2026');
+    expect(formatDate('2026-10-20T14:30:00Z', 'en-US')).toBe('10/20/2026');
+  });
+});
 
 describe('formatDateTime', () => {
   it('formats an ISO instant using the given locale', () => {

@@ -1,11 +1,13 @@
-import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
+import { HttpContextToken, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { of, tap } from 'rxjs';
 
 import { HttpCache } from './http-cache';
 
+export const BYPASS_HTTP_CACHE = new HttpContextToken<boolean>(() => false);
+
 export const httpCacheInterceptor: HttpInterceptorFn = (req, next) => {
-  if (!req.url.includes('/api/')) {
+  if (!req.url.includes('/api/') || req.context.get(BYPASS_HTTP_CACHE)) {
     return next(req);
   }
   const cache = inject(HttpCache);

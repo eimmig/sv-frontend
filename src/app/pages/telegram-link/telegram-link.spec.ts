@@ -29,6 +29,8 @@ describe('TelegramLinkPage', () => {
     fixture = TestBed.createComponent(TelegramLinkPage);
     httpMock = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
+    httpMock.expectOne(`${environment.apiGatewayUrl}/api/v1/telegram-links/me`).flush({ linked: false, linkedAt: null });
+    fixture.detectChanges();
   }
 
   beforeEach(async () => {
@@ -51,7 +53,7 @@ describe('TelegramLinkPage', () => {
     delete (navigator as { language?: string }).language;
   });
 
-  it('does not call the API until the user clicks generate', () => {
+  it('does not generate a code until the user clicks generate', () => {
     createComponent();
     expect(fixture.componentInstance['link']()).toBeNull();
     httpMock.expectNone(`${environment.apiGatewayUrl}/api/v1/telegram-links`);
