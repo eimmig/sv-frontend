@@ -1,4 +1,4 @@
-import { formatPercent } from './percent';
+import { formatPercent, formatPercentagePoints } from './percent';
 
 describe('formatPercent', () => {
   it('formats a 0..1 fraction as a pt-BR percentage', () => {
