@@ -121,12 +121,14 @@
           [label]="'dashboard.roiLabel' | transloco"
           [value]="formatPercent(overall.roi)"
           [sign]="sign(overall.roi)"
+          [secondary]="intervalLabel(overall.roiLower, overall.roiUpper)"
           testId="dashboard-roi"
         />
         <app-kpi-card
           icon="emoji_events"
           [label]="'dashboard.winRateLabel' | transloco"
           [value]="formatPercent(overall.winRate)"
+          [secondary]="intervalLabel(overall.winRateLower, overall.winRateUpper)"
           testId="dashboard-win-rate"
         />
         <app-kpi-card
@@ -154,6 +156,15 @@
           testId="dashboard-avg-odd"
         />
         <app-kpi-card
+          icon="insights"
+          [label]="'dashboard.edgeLabel' | transloco"
+          [value]="overall.edge == null ? ('dashboard.indeterminate' | transloco) : formatPercentDelta(overall.edge)"
+          [sign]="overall.edge == null ? undefined : sign(overall.edge)"
+          [secondary]="overall.impliedProbability == null ? undefined : ('dashboard.impliedProbability' | transloco: { value: formatPercent(overall.impliedProbability) })"
+          [hint]="'dashboard.edgeHint' | transloco"
+          testId="dashboard-edge"
+        />
+        <app-kpi-card
           icon="account_balance"
           [label]="'dashboard.balanceFromLabel' | transloco"
           [value]="formatBrl(dashboardData().bankrollFrom)"
@@ -172,6 +183,11 @@
           testId="dashboard-units-staked"
         />
       </div>
+      @if (overallWithinChance()) {
+        <p class="dashboard__chance-warning" role="status" data-testid="dashboard-chance-warning">
+          {{ 'dashboard.chanceWarning' | transloco }}
+        </p>
+      }
 
       <app-monthly-profit-chart
         [data]="dashboardData().dashboard.monthly"
@@ -200,7 +216,12 @@
                     <td>{{ segment.dimensionName }}</td>
                     <td>{{ formatBrl(segment.metrics.totalStaked) }}</td>
                     <td [class]="'dashboard__value--' + sign(segment.metrics.netProfit)">{{ formatBrl(segment.metrics.netProfit) }}</td>
-                    <td [class]="'dashboard__value--' + sign(segment.metrics.roi)">{{ formatPercent(segment.metrics.roi) }}</td>
+                    <td [class]="'dashboard__value--' + sign(segment.metrics.roi)">{{ formatPercent(segment.metrics.roi) }}@if (roiWithinChance(segment.metrics)) {<span
+                      class="dashboard__chance-mark"
+                      [attr.title]="'dashboard.chanceMark' | transloco"
+                      [attr.aria-label]="'dashboard.chanceMark' | transloco"
+                      data-testid="dashboard-segment-chance-mark"
+                      >≈</span>}</td>
                     <td>{{ formatPercent(segment.metrics.winRate) }}</td>
                     <td>{{ segment.metrics.settledCount }}</td>
                   </tr>
@@ -229,7 +250,12 @@
                     <td>{{ segment.dimensionName }}</td>
                     <td>{{ formatBrl(segment.metrics.totalStaked) }}</td>
                     <td [class]="'dashboard__value--' + sign(segment.metrics.netProfit)">{{ formatBrl(segment.metrics.netProfit) }}</td>
-                    <td [class]="'dashboard__value--' + sign(segment.metrics.roi)">{{ formatPercent(segment.metrics.roi) }}</td>
+                    <td [class]="'dashboard__value--' + sign(segment.metrics.roi)">{{ formatPercent(segment.metrics.roi) }}@if (roiWithinChance(segment.metrics)) {<span
+                      class="dashboard__chance-mark"
+                      [attr.title]="'dashboard.chanceMark' | transloco"
+                      [attr.aria-label]="'dashboard.chanceMark' | transloco"
+                      data-testid="dashboard-segment-chance-mark"
+                      >≈</span>}</td>
                     <td>{{ formatPercent(segment.metrics.winRate) }}</td>
                     <td>{{ segment.metrics.settledCount }}</td>
                   </tr>
@@ -258,7 +284,12 @@
                     <td>{{ segment.dimensionName }}</td>
                     <td>{{ formatBrl(segment.metrics.totalStaked) }}</td>
                     <td [class]="'dashboard__value--' + sign(segment.metrics.netProfit)">{{ formatBrl(segment.metrics.netProfit) }}</td>
-                    <td [class]="'dashboard__value--' + sign(segment.metrics.roi)">{{ formatPercent(segment.metrics.roi) }}</td>
+                    <td [class]="'dashboard__value--' + sign(segment.metrics.roi)">{{ formatPercent(segment.metrics.roi) }}@if (roiWithinChance(segment.metrics)) {<span
+                      class="dashboard__chance-mark"
+                      [attr.title]="'dashboard.chanceMark' | transloco"
+                      [attr.aria-label]="'dashboard.chanceMark' | transloco"
+                      data-testid="dashboard-segment-chance-mark"
+                      >≈</span>}</td>
                     <td>{{ formatPercent(segment.metrics.winRate) }}</td>
                     <td>{{ segment.metrics.settledCount }}</td>
                   </tr>

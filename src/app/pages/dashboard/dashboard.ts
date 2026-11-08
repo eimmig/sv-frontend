@@ -17,7 +17,7 @@ import { CatalogEntry, catalogApi } from '../../core/catalog-api';
 import { formatBrl } from '../../core/currency';
 import { Language } from '../../core/language';
 import { formatOdd } from '../../core/number-format';
-import { formatPercent } from '../../core/percent';
+import { formatPercent, formatPercentDelta } from '../../core/percent';
 import { SettingsApi } from '../../core/settings-api';
 import {
   DailyBetMetrics,
@@ -33,6 +33,7 @@ import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 import { PeriodPresetFilter, PeriodRange } from '../../shared/period-preset-filter/period-preset-filter';
 import { SearchableSelect } from '../../shared/searchable-select/searchable-select';
+import { formatInterval, roiWithinChance, withinChance } from '../../shared/statistics/chance';
 import { MonthlyDrawdownGrid } from './monthly-drawdown-grid/monthly-drawdown-grid';
 
 interface Options {
@@ -158,6 +159,20 @@ export class Dashboard implements OnInit {
   protected formatOdd(value: number): string {
     return formatOdd(value, this.language.current());
   }
+
+  protected formatPercentDelta(value: number): string {
+    return formatPercentDelta(value, this.language.current());
+  }
+
+  /** "IC 95%: a – b" para o card, ou undefined quando o backend nao mandou o intervalo. */
+  protected intervalLabel(lower: number | null | undefined, upper: number | null | undefined): string | undefined {
+    const interval = formatInterval(lower, upper, (value) => this.formatPercent(value));
+    return interval === null ? undefined : this.transloco.translate('dashboard.confidenceInterval', { interval });
+  }
+
+  protected readonly overallWithinChance = computed(() => withinChance(this.dashboardData().dashboard.overall));
+
+  protected readonly roiWithinChance = roiWithinChance;
 
   protected sign(value: number): KpiCardSign {
     return kpiSign(value);

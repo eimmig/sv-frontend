@@ -74,6 +74,11 @@ describe('Dashboard', () => {
         filterAll: 'Todas',
         applyFilter: 'Aplicar',
         unitPercentLabel: 'Unidade (% da banca)',
+        edgeLabel: 'Vantagem',
+        confidenceInterval: 'IC 95%: {{interval}}',
+        impliedProbability: 'Implícita: {{value}}',
+        chanceWarning: 'Ainda não se distingue do acaso',
+        chanceMark: 'ROI dentro do acaso',
         unitPercentSave: 'Salvar',
         unitPercentSuccess: 'Percentual de unidade atualizado.',
         nameLabel: 'Nome',
@@ -268,6 +273,73 @@ describe('Dashboard', () => {
     expect(cardValue('dashboard-avg-odd')).toContain('1.90');
     expect(cardValue('dashboard-balance-from')).toContain('R$');
     expect(cardValue('dashboard-balance-to')).toContain('R$');
+  });
+
+  function cardSecondary(testId: string): string | null {
+    return fixture.nativeElement.querySelector(`[data-testid="${testId}"] [data-testid="kpi-card-secondary"]`)?.textContent ?? null;
+  }
+
+  // exemplo numerico do TCC (secao 2.5): os dois intervalos contem o ponto de empate
+  const workedExample = {
+    totalStaked: 500,
+    netProfit: 65,
+    roi: 0.13,
+    winRate: 0.6,
+    settledCount: 6,
+    wonCount: 3,
+    lostCount: 2,
+    voidCount: 1,
+    preCount: 0,
+    liveCount: 0,
+    avgOdd: 2.1167,
+    impliedProbability: 0.5297,
+    edge: 0.0703,
+    winRateLower: 0.2307,
+    winRateUpper: 0.8824,
+    roiLower: -0.7684,
+    roiUpper: 1.0284,
+  };
+
+  it('shows the 95% intervals of ROI and win rate, the edge card and the chance warning for the worked example', () => {
+    createComponent();
+    flushOptions();
+    flushDashboardData({
+      overall: workedExample,
+      bySport: [{ dimensionId: 'sports-1', dimensionName: 'sports', metrics: workedExample }],
+    });
+    fixture.detectChanges();
+
+    expect(cardSecondary('dashboard-roi')).toContain('IC 95%:');
+    expect(cardSecondary('dashboard-roi')).toContain('77');
+    expect(cardSecondary('dashboard-win-rate')).toContain('23');
+    expect(cardValue('dashboard-edge')).toContain('7');
+    expect(cardSecondary('dashboard-edge')).toContain('Implícita');
+    expect(fixture.nativeElement.querySelector('[data-testid="dashboard-chance-warning"]')).not.toBeNull();
+    expect(fixture.nativeElement.querySelectorAll('[data-testid="dashboard-segment-chance-mark"]')).toHaveLength(1);
+  });
+
+  it('hides intervals, warning and edge value when the backend does not send them', () => {
+    createComponent();
+    flushOptions();
+    flushDashboardData();
+    fixture.detectChanges();
+
+    expect(cardSecondary('dashboard-roi')).toBeNull();
+    expect(cardSecondary('dashboard-win-rate')).toBeNull();
+    expect(cardValue('dashboard-edge')).toContain('Indeterminado');
+    expect(fixture.nativeElement.querySelector('[data-testid="dashboard-chance-warning"]')).toBeNull();
+    expect(fixture.nativeElement.querySelector('[data-testid="dashboard-segment-chance-mark"]')).toBeNull();
+  });
+
+  it('does not warn when both intervals exclude the break-even point', () => {
+    createComponent();
+    flushOptions();
+    flushDashboardData({
+      overall: { ...workedExample, winRateLower: 0.56, winRateUpper: 0.64, roiLower: 0.05, roiUpper: 0.21 },
+    });
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('[data-testid="dashboard-chance-warning"]')).toBeNull();
   });
 
   it('computes unidades apostadas from totalStaked, the balance at the start of the period, and unitPercent', () => {
