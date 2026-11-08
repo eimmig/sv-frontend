@@ -167,7 +167,7 @@ export class Dashboard implements OnInit {
   /** "IC 95%: a – b" para o card, ou undefined quando o backend nao mandou o intervalo. */
   protected intervalLabel(lower: number | null | undefined, upper: number | null | undefined): string | undefined {
     const interval = formatInterval(lower, upper, (value) => this.formatPercent(value));
-    return interval === null ? undefined : this.transloco.translate('dashboard.confidenceInterval', { interval });
+    return interval === null ? undefined : `${this.transloco.translate('dashboard.confidenceInterval')} ${interval}`;
   }
 
   protected readonly overallWithinChance = computed(() => withinChance(this.dashboardData().dashboard.overall));

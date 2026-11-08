@@ -89,7 +89,7 @@
     "byBettingHouseTitle": "By betting house",
     "monthlyDrawdownTitle": "Monthly drawdown",
     "genericError": "Could not complete the operation. Please try again.",
-    "confidenceInterval": "95% CI: {{interval}}",
+    "confidenceInterval": "95% CI:",
     "edgeLabel": "Edge",
     "impliedProbability": "Implied: {{value}}",
     "edgeHint": "Win rate minus the average implied probability of the odds of won and lost bets, in percentage points.",

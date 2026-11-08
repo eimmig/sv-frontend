@@ -89,7 +89,7 @@
     "byBettingHouseTitle": "Por casa de apostas",
     "monthlyDrawdownTitle": "Drawdown mensal",
     "genericError": "Não foi possível completar a operação. Tente novamente.",
-    "confidenceInterval": "IC 95%: {{interval}}",
+    "confidenceInterval": "IC 95%:",
     "edgeLabel": "Vantagem",
     "impliedProbability": "Implícita: {{value}}",
     "edgeHint": "Taxa de acerto menos a probabilidade implícita média das odds das apostas ganhas e perdidas, em pontos percentuais.",
