@@ -311,10 +311,11 @@ describe('Dashboard', () => {
 
     expect(cardSecondary('dashboard-roi')).toContain('76');
     expect(cardSecondary('dashboard-win-rate')).toContain('23');
-    expect(cardValue('dashboard-edge')).toContain('7');
+    expect(cardValue('dashboard-edge')).toMatch(/+7[.,]0/);
     expect(cardSecondary('dashboard-edge')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('[data-testid="dashboard-chance-warning"]')).not.toBeNull();
     expect(fixture.nativeElement.querySelectorAll('[data-testid="dashboard-segment-chance-mark"]')).toHaveLength(1);
+    expect(fixture.nativeElement.querySelector('[data-testid="dashboard-chance-legend"]')).not.toBeNull();
   });
 
   it('hides intervals, warning and edge value when the backend does not send them', () => {
@@ -328,6 +329,7 @@ describe('Dashboard', () => {
     expect(cardValue('dashboard-edge')).not.toMatch(/\d/);
     expect(fixture.nativeElement.querySelector('[data-testid="dashboard-chance-warning"]')).toBeNull();
     expect(fixture.nativeElement.querySelector('[data-testid="dashboard-segment-chance-mark"]')).toBeNull();
+    expect(fixture.nativeElement.querySelector('[data-testid="dashboard-chance-legend"]')).toBeNull();
   });
 
   it('does not warn when both intervals exclude the break-even point', () => {

@@ -94,7 +94,9 @@
     "impliedProbability": "Implícita: {{value}}",
     "edgeHint": "Taxa de acerto menos a probabilidade implícita média das odds das apostas ganhas e perdidas, em pontos percentuais.",
     "chanceWarning": "Com estes dados, a taxa de acerto ou o ROI ainda não se distinguem do acaso: o intervalo de confiança de 95% contém o ponto de empate.",
-    "chanceMark": "ROI que ainda não se distingue do acaso (o intervalo de 95% contém zero)"
+    "chanceMark": "ROI que ainda não se distingue do acaso (o intervalo de 95% contém zero)",
+    "percentagePoints": "p.p.",
+    "chanceMarkSymbol": "≈"
   },
   "monthlyDrawdown": {
     "emptyResult": "Nenhum mês no intervalo selecionado.",
@@ -164,7 +166,9 @@
     "roiReaisLabel": "ROI (R$)",
     "betsLabel": "Apostas",
     "genericError": "Não foi possível completar a operação. Tente novamente.",
-    "edgeLabel": "Vantagem"
+    "edgeLabel": "Vantagem",
+    "percentagePoints": "p.p.",
+    "chanceWarning": "Com estes dados, a taxa de acerto ou o ROI ainda não se distinguem do acaso: o intervalo de confiança de 95% contém o ponto de empate."
   },
   "periodComparison": {
     "filtersTitle": "Filtros",

@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -17,7 +18,7 @@ import { CatalogEntry, catalogApi } from '../../core/catalog-api';
 import { formatBrl } from '../../core/currency';
 import { Language } from '../../core/language';
 import { formatOdd } from '../../core/number-format';
-import { formatPercent, formatPercentDelta } from '../../core/percent';
+import { formatPercent, formatPercentagePoints } from '../../core/percent';
 import { SettingsApi } from '../../core/settings-api';
 import {
   DailyBetMetrics,
@@ -33,7 +34,7 @@ import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 import { PeriodPresetFilter, PeriodRange } from '../../shared/period-preset-filter/period-preset-filter';
 import { SearchableSelect } from '../../shared/searchable-select/searchable-select';
-import { formatInterval, roiWithinChance, withinChance } from '../../shared/statistics/chance';
+import { displayedEdge, formatInterval, roiWithinChance, withinChance } from '../../shared/statistics/chance';
 import { MonthlyDrawdownGrid } from './monthly-drawdown-grid/monthly-drawdown-grid';
 
 interface Options {
@@ -71,6 +72,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
     MatFormFieldModule,
     MatInputModule,
     MatTabsModule,
+    NgTemplateOutlet,
     KpiCard,
     MonthlyProfitChart,
     MonthlyDrawdownGrid,
@@ -160,17 +162,27 @@ export class Dashboard implements OnInit {
     return formatOdd(value, this.language.current());
   }
 
-  protected formatPercentDelta(value: number): string {
-    return formatPercentDelta(value, this.language.current());
+  /** "a – b" do intervalo de 95%, ou null quando o backend nao mandou o intervalo. */
+  protected interval(lower: number | null | undefined, upper: number | null | undefined): string | null {
+    return formatInterval(lower, upper, (value) => this.formatPercent(value));
   }
 
-  /** "IC 95%: a – b" para o card, ou undefined quando o backend nao mandou o intervalo. */
-  protected intervalLabel(lower: number | null | undefined, upper: number | null | undefined): string | undefined {
-    const interval = formatInterval(lower, upper, (value) => this.formatPercent(value));
-    return interval === null ? undefined : `${this.transloco.translate('dashboard.confidenceInterval')} ${interval}`;
+  protected formatPercentagePoints(value: number): string {
+    return formatPercentagePoints(value, this.language.current());
+  }
+
+  protected edgeSign(edge: number): KpiCardSign {
+    return kpiSign(displayedEdge(edge));
   }
 
   protected readonly overallWithinChance = computed(() => withinChance(this.dashboardData().dashboard.overall));
+
+  protected readonly anySegmentWithinChance = computed(() => {
+    const dashboard = this.dashboardData().dashboard;
+    return [...dashboard.bySport, ...dashboard.byMarket, ...dashboard.byBettingHouse].some((segment) =>
+      roiWithinChance(segment.metrics),
+    );
+  });
 
   protected readonly roiWithinChance = roiWithinChance;
 

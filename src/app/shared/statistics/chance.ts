@@ -29,6 +29,11 @@ export function withinChance(metrics: BetMetrics): boolean {
   return winRateWithinChance(metrics) || roiWithinChance(metrics);
 }
 
+/** Vantagem arredondada como e exibida (0,1 p.p.), para o sinal e a cor seguirem o valor mostrado. */
+export function displayedEdge(edge: number): number {
+  return Math.round(edge * 1000) / 1000;
+}
+
 /** Intervalo formatado ("a – b") ou null quando um dos limites nao esta definido. */
 export function formatInterval(
   lower: number | null | undefined,

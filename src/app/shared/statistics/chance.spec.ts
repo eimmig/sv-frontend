@@ -1,5 +1,5 @@
 import { BetMetrics, EMPTY_BET_METRICS } from '../../core/statistics-api';
-import { formatInterval, roiWithinChance, winRateWithinChance, withinChance } from './chance';
+import { displayedEdge, formatInterval, roiWithinChance, winRateWithinChance, withinChance } from './chance';
 
 function metrics(overrides: Partial<BetMetrics>): BetMetrics {
   return { ...EMPTY_BET_METRICS, ...overrides };
@@ -48,5 +48,11 @@ describe('chance', () => {
     expect(formatInterval(0.2307, 0.8824, pct)).toBe('23.1% – 88.2%');
     expect(formatInterval(null, 0.8824, pct)).toBeNull();
     expect(formatInterval(undefined, undefined, pct)).toBeNull();
+  });
+
+  it('rounds the edge to the 0.1 p.p. shown on screen, so a tiny edge has no sign', () => {
+    expect(displayedEdge(0.0004)).toBe(0);
+    expect(displayedEdge(-0.0004)).toBe(-0);
+    expect(displayedEdge(0.0703)).toBe(0.07);
   });
 });
