@@ -311,7 +311,7 @@ describe('Dashboard', () => {
 
     expect(cardSecondary('dashboard-roi')).toContain('76');
     expect(cardSecondary('dashboard-win-rate')).toContain('23');
-    expect(cardValue('dashboard-edge')).toMatch(/+7[.,]0/);
+    expect(cardValue('dashboard-edge')).toMatch(/\+7[.,]0/);
     expect(cardSecondary('dashboard-edge')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('[data-testid="dashboard-chance-warning"]')).not.toBeNull();
     expect(fixture.nativeElement.querySelectorAll('[data-testid="dashboard-segment-chance-mark"]')).toHaveLength(1);
