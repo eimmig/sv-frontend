@@ -5590,7 +5590,7 @@
       "dependencies": [
         "feat-079"
       ],
-      "status": "in-progress",
+      "status": "done",
       "jira": "SV-829",
       "plan_review": "2026-11-09, Plan Reviewer em auto-revisao curta, sem subagente (independencia reduzida, declarada). Veredito: READY WITH CONCERNS. Conferido: .badge--positive/--negative em styles.scss e .users__role--admin em users.scss usam o tom como texto sobre o proprio tom a 16% transparente; contrast.spec so media esse par sobre --color-surface, por isso a falha sobre o fundo da linha passou. O panel compartilhado e usado em varias telas: tabindex=0 no corpo acrescenta uma parada de Tab por panel - aceito, padrao do WAI para regiao rolavel, com role=region e aria-label do titulo. :focus-visible global com :where() tem especificidade zero e nao briga com estilos dos componentes. Risco: o Material ja desenha foco em alguns componentes; conferir visualmente botoes e abas depois da mudanca.",
       "subtasks": [
@@ -5613,7 +5613,7 @@
         {
           "id": "feat-080.2",
           "name": "Implantacao e auditoria repetida",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-831",
           "detail": "Prova no servidor.",
           "checklist": [
@@ -5623,7 +5623,7 @@
           "owner": "agente"
         }
       ],
-      "evidence": ""
+      "evidence": "Entregue em 2026-11-09 (feature/SV-829, PR #307). Badges com 80% do tom e 20% do texto principal, panel body com role=region/tabindex=0/aria-label, :focus-visible global; contrast.spec com badges sobre os tres fundos. ./init.sh verde (525 testes). Auditoria axe repetida em evidencias/20261109-acessibilidade-pos."
     }
   ]
 }
