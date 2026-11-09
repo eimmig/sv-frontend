@@ -104,13 +104,11 @@
       @let unidades = unidadesApostadas();
       @let roiInterval = interval(overall.roiLower, overall.roiUpper);
       @let winRateInterval = interval(overall.winRateLower, overall.winRateUpper);
-      <ng-template #roiCell let-metrics>{{ formatPercent(metrics.roi) }}@if (roiWithinChance(metrics)) {<span
+      <ng-template #roiCell let-metrics>{{ formatPercent(metrics.roi) }}@if (roiWithinChance(metrics)) {<abbr
           class="dashboard__chance-mark"
-          role="img"
           [attr.title]="'dashboard.chanceMark' | transloco"
-          [attr.aria-label]="'dashboard.chanceMark' | transloco"
           data-testid="dashboard-segment-chance-mark"
-          >{{ 'dashboard.chanceMarkSymbol' | transloco }}</span>}</ng-template>
+          >{{ 'dashboard.chanceMarkSymbol' | transloco }}</abbr>}</ng-template>
       <div class="dashboard__cards" data-testid="dashboard-overall-cards">
         <app-kpi-card
           icon="account_balance_wallet"
@@ -193,9 +191,9 @@
         />
       </div>
       @if (overallWithinChance()) {
-        <p class="dashboard__chance-warning" role="status" data-testid="dashboard-chance-warning">
+        <output class="dashboard__chance-warning" data-testid="dashboard-chance-warning">
           {{ 'dashboard.chanceWarning' | transloco }}
-        </p>
+        </output>
       }
 
       <app-monthly-profit-chart

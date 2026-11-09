@@ -71,9 +71,9 @@
         />
       </div>
       @if (withinChance()) {
-        <p class="period-report__chance-warning" role="status" data-testid="period-report-chance-warning">
+        <output class="period-report__chance-warning" data-testid="period-report-chance-warning">
           {{ 'periodReport.chanceWarning' | transloco }}
-        </p>
+        </output>
       }
 
       <div class="period-report__table-wrap">
