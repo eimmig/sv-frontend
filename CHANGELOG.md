@@ -7,6 +7,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 
+## [2.2.1] - 2026-11-09
+
 ## [2.2.0] - 2026-11-09
 
 ## [2.1.6] - 2026-11-02
