@@ -310,6 +310,10 @@
     "sportFieldLabel": "Sport",
     "create": "Add",
     "genericError": "Could not complete the operation. Please try again.",
+    "previousPage": "Previous",
+    "nextPage": "Next",
+    "pageIndicator": "Page {{page}} of {{totalPages}}",
+    "pagination": "List pagination",
     "sports": {
       "title": "Sports"
     },
