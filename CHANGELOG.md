@@ -15,6 +15,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-803](https://stakevault.atlassian.net/browse/SV-803) - Unidade = saldo inicial do periodo x unitPercent em todas as telas
 - [SV-804](https://stakevault.atlassian.net/browse/SV-804) - Unidade com base no saldo inicial em todas as telas
 - [SV-805](https://stakevault.atlassian.net/browse/SV-805) - CHANGELOG e verificacao final
+- [SV-814](https://stakevault.atlassian.net/browse/SV-814) - Vantagem, intervalos de confianca e aviso de resultado indistinguivel do acaso
+- [SV-815](https://stakevault.atlassian.net/browse/SV-815) - Intervalos, vantagem e aviso no dashboard e no Relatorio
+- [SV-816](https://stakevault.atlassian.net/browse/SV-816) - CHANGELOG e verificacao final
 
 ## [2.1.5] - 2026-11-02
 

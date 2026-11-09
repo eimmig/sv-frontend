@@ -17,6 +17,16 @@ export interface BetMetrics {
   readonly preCount: number;
   readonly liveCount: number;
   readonly avgOdd: number | null;
+  /** Media de 1/odd das ganhas e perdidas (stats-service feat-033); ausente em cache antigo. */
+  readonly impliedProbability?: number | null;
+  /** Vantagem sobre a probabilidade implicita: winRate - impliedProbability. */
+  readonly edge?: number | null;
+  /** Intervalo de Wilson de 95% da taxa de acerto. */
+  readonly winRateLower?: number | null;
+  readonly winRateUpper?: number | null;
+  /** Intervalo de 95% do ROI (metodo delta do estimador de razao). */
+  readonly roiLower?: number | null;
+  readonly roiUpper?: number | null;
 }
 
 export const EMPTY_BET_METRICS: BetMetrics = {

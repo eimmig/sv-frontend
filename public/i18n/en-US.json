@@ -88,7 +88,15 @@
     "byMarketTitle": "By market",
     "byBettingHouseTitle": "By betting house",
     "monthlyDrawdownTitle": "Monthly drawdown",
-    "genericError": "Could not complete the operation. Please try again."
+    "genericError": "Could not complete the operation. Please try again.",
+    "confidenceInterval": "95% CI:",
+    "edgeLabel": "Edge",
+    "impliedProbability": "Implied: {{value}}",
+    "edgeHint": "Win rate minus the average implied probability of the odds of won and lost bets, in percentage points.",
+    "chanceWarning": "With this data, the win rate or the ROI cannot yet be told apart from chance: the 95% confidence interval contains the break-even point.",
+    "chanceMark": "ROI that cannot yet be told apart from chance (the 95% interval contains zero)",
+    "percentagePoints": "pp",
+    "chanceMarkSymbol": "≈"
   },
   "monthlyDrawdown": {
     "emptyResult": "No month in the selected range.",
@@ -151,14 +159,16 @@
     "averageStakeLabel": "Average stake",
     "greenRedDaysLabel": "Green / red days",
     "greenRedEntriesLabel": "Green / red entries",
-    "evLabel": "+EV",
     "indeterminate": "Indeterminate",
     "dateLabel": "Date",
     "roiPercentLabel": "ROI %",
     "roiUnitsLabel": "ROI (units)",
     "roiReaisLabel": "ROI (R$)",
     "betsLabel": "Bets",
-    "genericError": "Could not complete the operation. Please try again."
+    "genericError": "Could not complete the operation. Please try again.",
+    "edgeLabel": "Edge",
+    "percentagePoints": "pp",
+    "chanceWarning": "With this data, the win rate or the ROI cannot yet be told apart from chance: the 95% confidence interval contains the break-even point."
   },
   "periodComparison": {
     "filtersTitle": "Filters",

@@ -88,3 +88,26 @@
     font-size: 14px;
   }
 }
+
+// Aviso de resultado que nao se distingue do acaso (epic-053): so tokens ja cobertos pelo teste de contraste.
+.dashboard__chance-warning {
+  display: block;
+  margin: 0 0 16px;
+  padding: 8px 12px;
+  border-left: 3px solid var(--color-text-secondary);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.dashboard__chance-legend {
+  margin: 8px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.dashboard__chance-mark {
+  text-decoration: none;
+  margin-left: 4px;
+  color: var(--color-text-secondary);
+  cursor: help;
+}

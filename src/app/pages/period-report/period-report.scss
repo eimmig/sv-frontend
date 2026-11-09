@@ -51,3 +51,13 @@
     font-size: 14px;
   }
 }
+
+// Aviso de resultado que nao se distingue do acaso (epic-053), mesmo estilo do dashboard.
+.period-report__chance-warning {
+  display: block;
+  margin: 0 0 16px;
+  padding: 8px 12px;
+  border-left: 3px solid var(--color-text-secondary);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
