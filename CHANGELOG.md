@@ -10,6 +10,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-836](https://stakevault.atlassian.net/browse/SV-836) - ListPager, paginacao nas listas, foco e testes
 - [SV-837](https://stakevault.atlassian.net/browse/SV-837) - Implantacao e auditoria repetida
 
+## [2.2.1] - 2026-11-09
+
 ## [2.2.0] - 2026-11-09
 
 ## [2.1.6] - 2026-11-02
