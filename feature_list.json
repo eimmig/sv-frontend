@@ -5624,6 +5624,49 @@
         }
       ],
       "evidence": "Entregue em 2026-11-09 (feature/SV-829, PR #307). Badges com 80% do tom e 20% do texto principal, panel body com role=region/tabindex=0/aria-label, :focus-visible global; contrast.spec com badges sobre os tres fundos. ./init.sh verde (525 testes). Auditoria axe repetida em evidencias/20261109-acessibilidade-pos."
+    },
+    {
+      "id": "feat-081",
+      "name": "Paginacao das listas de cadastros e foco visivel em botoes de icone e seletores",
+      "goal": "Listas de times e dos demais cadastros paginadas, sem regiao com rolagem interna (achado scrollable-region-focusable do axe na tela de Times), e indicador de foco visivel nos botoes de icone e no mat-select (fecha epic-057 da raiz).",
+      "scope": "shared/list-pager (componente novo com Anterior/Proxima e indicador de pagina, mais pageSlice/pageCount), shared/team-manager e shared/catalog-manager (10 itens por pagina), i18n (catalogs.previousPage, nextPage, pageIndicator, pagination nos 3 idiomas), styles.scss (outline em .mat-mdc-icon-button e .mat-mdc-select com :focus-visible), tools/evidence/10-acessibilidade.js (campo do Material focado conta como indicador). Fora de escopo: paginacao no backend (a API de cadastros devolve a lista inteira).",
+      "description": "Ver epic-057 da raiz. A auditoria de 2026-11-09 (evidencias/20261109-acessibilidade-pos) deixou um achado: o corpo do panel da tela de Times rola sem receber foco. A correcao com tabindex=0 conflita com a regra S6845 do SonarCloud; o usuario decidiu paginar a lista. A captura de foco no login mostrou o botao de tema e o seletor de idioma so com a camada cinza do Material; os campos de texto ja tinham indicador (borda do mat-form-field), que o script nao reconhecia.",
+      "dependencies": [
+        "feat-080"
+      ],
+      "status": "in-progress",
+      "plan_review": "2026-11-09, Plan Reviewer em auto-revisao curta, sem subagente (independencia reduzida, declarada). Veredito: READY WITH CONCERNS. Conferido: team-manager e catalog-manager mostram options().teams / entries() inteiros num ul dentro do app-panel; a API (teamsApi/catalogApi list) nao pagina, entao a paginacao no cliente basta; o padrao visual existente e o de history (mat-stroked-button Anterior/Proxima e indicador). Um componente compartilhado evita duplicar o bloco nos dois templates. Pagina corrente fica limitada ao total depois de recarregar a lista (cadastro novo). Risco: em tela muito baixa, 10 itens ainda podem rolar; aceito, conferido na auditoria em 1280x800.",
+      "subtasks": [
+        {
+          "id": "feat-081.1",
+          "name": "ListPager, paginacao nas listas, foco e testes",
+          "status": "in-progress",
+          "detail": "Codigo e testes.",
+          "checklist": [
+            "shared/list-pager com spec.",
+            "team-manager e catalog-manager paginados, specs.",
+            "i18n nos 3 idiomas.",
+            "styles.scss: outline nos botoes de icone e mat-select.",
+            "10-acessibilidade.js: mat-focused conta como indicador."
+          ],
+          "validation": "./init.sh verde; CI e SonarCloud verdes.",
+          "owner": "agente",
+          "jira": "SV-836"
+        },
+        {
+          "id": "feat-081.2",
+          "name": "Implantacao e auditoria repetida",
+          "status": "not-started",
+          "detail": "Prova no servidor.",
+          "checklist": [
+            "Release, rollout restart, axe nas 18 telas e relatorio de foco."
+          ],
+          "validation": "evidencias/20261109-acessibilidade-final.",
+          "owner": "agente",
+          "jira": "SV-837"
+        }
+      ],
+      "jira": "SV-835"
     }
   ]
 }
