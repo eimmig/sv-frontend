@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,6 +9,8 @@ import { forkJoin } from 'rxjs';
 
 import { loadInto, submitForm } from '../../core/api-request';
 import { CatalogEntry, Team, catalogApi, teamsApi } from '../../core/catalog-api';
+import { ListPager } from '../list-pager/list-pager';
+import { clampPage, pageCount, pageSlice } from '../list-pager/paginate';
 import { Panel } from '../panel/panel';
 import { PanelLayout } from '../panel-layout/panel-layout';
 import { SearchableSelect } from '../searchable-select/searchable-select';
@@ -30,6 +32,7 @@ const EMPTY_OPTIONS: FormOptions = { sports: [], teams: [] };
     Panel,
     PanelLayout,
     SearchableSelect,
+    ListPager,
   ],
   selector: 'app-team-manager',
   styleUrl: './team-manager.scss',
@@ -42,6 +45,10 @@ export class TeamManager implements OnInit {
   private readonly teams = teamsApi(this.http);
 
   protected readonly options = signal<FormOptions>(EMPTY_OPTIONS);
+  private readonly requestedPage = signal(0);
+  protected readonly page = computed(() => clampPage(this.requestedPage(), this.options().teams.length));
+  protected readonly totalPages = computed(() => pageCount(this.options().teams.length));
+  protected readonly visibleTeams = computed(() => pageSlice(this.options().teams, this.page()));
   protected readonly loadError = signal<string | null>(null);
   protected readonly submitting = signal(false);
   protected readonly formError = signal<string | null>(null);
@@ -66,6 +73,10 @@ export class TeamManager implements OnInit {
 
   protected sportName(sportId: string): string {
     return this.options().sports.find((sport) => sport.id === sportId)?.name ?? '';
+  }
+
+  protected goToPage(page: number): void {
+    this.requestedPage.set(page);
   }
 
   protected submit(): void {

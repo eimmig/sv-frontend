@@ -67,6 +67,24 @@ describe('CatalogManager', () => {
     expect(rows[0].textContent).toContain('Futebol');
   });
 
+  it('pages the entries and hides the pager when everything fits in one page', () => {
+    createComponent('leagues');
+    const leagues = Array.from({ length: 12 }, (_, i) => ({ id: `${i}`, name: `Liga ${i + 1}` }));
+    expectListRequest('leagues').flush({ content: leagues, page: 0, size: 100, totalElements: 12, totalPages: 1 });
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+
+    expect(el.querySelectorAll('[data-testid="catalog-manager-row"]')).toHaveLength(10);
+    el.querySelector<HTMLButtonElement>('[data-testid="catalog-manager-next-page"]')!.click();
+    fixture.detectChanges();
+    expect(el.querySelectorAll('[data-testid="catalog-manager-row"]')).toHaveLength(2);
+
+    fixture.componentInstance['entries'].set(leagues.slice(0, 3));
+    fixture.detectChanges();
+    expect(el.querySelectorAll('[data-testid="catalog-manager-row"]')).toHaveLength(3);
+    expect(el.querySelector('[data-testid="catalog-manager-next-page"]')).toBeNull();
+  });
+
   it('creates an entry and reloads the list', () => {
     createComponent('leagues');
     expectListRequest('leagues').flush({ content: [], page: 0, size: 100, totalElements: 0, totalPages: 0 });
