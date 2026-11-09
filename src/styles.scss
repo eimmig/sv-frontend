@@ -85,12 +85,17 @@ body {
 
 .badge--positive {
   background: color-mix(in srgb, var(--color-positive) 16%, transparent);
-  color: var(--color-positive);
+  color: color-mix(in srgb, var(--color-positive) 80%, var(--color-text-primary));
 }
 
 .badge--negative {
   background: color-mix(in srgb, var(--color-negative) 16%, transparent);
-  color: var(--color-negative);
+  color: color-mix(in srgb, var(--color-negative) 80%, var(--color-text-primary));
+}
+
+:where(button, a, [role='tab'], [tabindex]):focus-visible {
+  outline: 2px solid var(--color-action-neutral);
+  outline-offset: 2px;
 }
 
 .badge--neutral {

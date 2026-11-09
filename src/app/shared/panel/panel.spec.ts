@@ -73,6 +73,25 @@ describe('Panel', () => {
     expect(el.querySelector('.panel__body p')?.textContent).toBe('body content');
   });
 
+  it('makes the scrollable body a keyboard-reachable region named by the title', () => {
+    const fixture = TestBed.createComponent(HostComponent);
+    fixture.detectChanges();
+    const body = (fixture.nativeElement as HTMLElement).querySelector('[data-testid="panel-body"]');
+
+    expect(body?.getAttribute('role')).toBe('region');
+    expect(body?.getAttribute('tabindex')).toBe('0');
+    expect(body?.getAttribute('aria-label')).toBe('Painel de teste');
+  });
+
+  it('leaves the body region without a label when no title is set', () => {
+    const fixture = TestBed.createComponent(HostComponent);
+    fixture.componentInstance.title = undefined;
+    fixture.detectChanges();
+    const body = (fixture.nativeElement as HTMLElement).querySelector('[data-testid="panel-body"]');
+
+    expect(body?.hasAttribute('aria-label')).toBe(false);
+  });
+
   it('omits the header entirely when no title is set', () => {
     const fixture = TestBed.createComponent(HostComponent);
     fixture.componentInstance.title = undefined;

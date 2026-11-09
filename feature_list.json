@@ -5580,6 +5580,50 @@
         }
       ],
       "evidence": "Entregue em 2026-11-08 (feature/SV-814, PR #304 da subtask/SV-815). Dashboard com IC 95% da taxa de acerto e do ROI, card de vantagem em p.p., aviso de resultado indistinguivel do acaso e marca nos segmentos; Relatorio do periodo troca +EV por vantagem do backend; 3 locales. ./init.sh verde em 2026-11-08 (72 arquivos, 505 testes), CI verde no PR #304. Delivery Reviewer nao rodado nesta sessao; revisao feita no proprio PR."
+    },
+    {
+      "id": "feat-080",
+      "name": "Contraste dos badges, regiao rolavel do panel e foco visivel por teclado",
+      "goal": "Zerar as violacoes do axe-core (WCAG 2.2 AA) nas 18 telas e deixar o foco de teclado visivel nos botoes (fecha epic-057 da raiz).",
+      "scope": "styles.scss (badges e :focus-visible global), pages/users/users.scss (badge de admin), shared/panel/panel.html (corpo rolavel com tabindex, role region e rotulo), styles/contrast.spec.ts (badges sobre background, surface e surface-elevated), specs do panel. Fora de escopo: leitor de tela, testes com usuarios.",
+      "description": "Ver epic-057 da raiz. Contraste medido do texto do badge sobre o proprio tom de 16%: pior caso 3,88:1 (claro) a 4,10:1 (escuro) quando o fundo e surface-elevated ou background; misturando 80% do tom com --color-text-primary, o pior caso sobe para 4,98:1.",
+      "dependencies": [
+        "feat-079"
+      ],
+      "status": "in-progress",
+      "jira": "SV-829",
+      "plan_review": "2026-11-09, Plan Reviewer em auto-revisao curta, sem subagente (independencia reduzida, declarada). Veredito: READY WITH CONCERNS. Conferido: .badge--positive/--negative em styles.scss e .users__role--admin em users.scss usam o tom como texto sobre o proprio tom a 16% transparente; contrast.spec so media esse par sobre --color-surface, por isso a falha sobre o fundo da linha passou. O panel compartilhado e usado em varias telas: tabindex=0 no corpo acrescenta uma parada de Tab por panel - aceito, padrao do WAI para regiao rolavel, com role=region e aria-label do titulo. :focus-visible global com :where() tem especificidade zero e nao briga com estilos dos componentes. Risco: o Material ja desenha foco em alguns componentes; conferir visualmente botoes e abas depois da mudanca.",
+      "subtasks": [
+        {
+          "id": "feat-080.1",
+          "name": "Badges, panel, foco visivel e testes",
+          "status": "done",
+          "jira": "SV-830",
+          "detail": "Correcoes e testes.",
+          "checklist": [
+            "Badges: color-mix do tom 80% com --color-text-primary.",
+            "Panel: corpo com tabindex 0, role region e aria-label do titulo.",
+            "styles.scss: :where(button, a, [role=tab], [tabindex]):focus-visible com outline 2px --color-action-neutral.",
+            "contrast.spec: badge sobre o tom de 16% sobre os tres fundos.",
+            "Spec do panel com os atributos."
+          ],
+          "validation": "./init.sh verde; CI e SonarCloud verdes.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-080.2",
+          "name": "Implantacao e auditoria repetida",
+          "status": "in-progress",
+          "jira": "SV-831",
+          "detail": "Prova no servidor.",
+          "checklist": [
+            "Release, rollout restart do web, 10-acessibilidade.js sem violacoes."
+          ],
+          "validation": "evidencias/20261109-acessibilidade-pos.",
+          "owner": "agente"
+        }
+      ],
+      "evidence": ""
     }
   ]
 }
