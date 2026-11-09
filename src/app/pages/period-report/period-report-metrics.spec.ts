@@ -19,16 +19,24 @@ function metrics(overrides: Partial<BetMetrics> = {}): BetMetrics {
 }
 
 describe('computeSummary', () => {
-  it('matches the reference spreadsheet: roiBankroll = 264.20 / 1195.05 = 22.11%', () => {
+  it('matches the reference spreadsheet: roiBankroll = 264.20 / 1195.05 = 22.11% and profit = 22.11u', () => {
     const summary = computeSummary(metrics({ netProfit: 264.2 }), [], 1195.05, 5000, 0.01);
 
     expect(summary.roiBankroll).toBeCloseTo(0.2211, 4);
+    expect(summary.profitUnidades).toBeCloseTo(22.11, 2);
   });
 
-  it('matches the reference spreadsheet: taxaAcertoEntradas = 74/(74+126) = 37.00%, +EV = 37.00% - (1/3.22) ≈ 5.94%', () => {
+  it('shows the edge computed by the backend (epic-053), no longer TA - 1/avgOdd computed on the client', () => {
+    // exemplo numerico do TCC: TA 60%, implicita media 52,97%, avgOdd 2,12 com a devolvida
+    const summary = computeSummary(metrics({ wonCount: 3, lostCount: 2, avgOdd: 2.1167, edge: 0.0703 }), [], 1, 1, 0.01);
+
+    expect(summary.edge).toBeCloseTo(0.0703, 4);
+  });
+
+  it('keeps the edge null when the backend did not send it (old cache)', () => {
     const summary = computeSummary(metrics({ wonCount: 74, lostCount: 126, avgOdd: 3.22 }), [], 1, 1, 0.01);
 
-    expect(summary.evPercent).toBeCloseTo(0.0594, 4);
+    expect(summary.edge).toBeNull();
   });
 
   it('returns null for every ratio when its denominator is zero, instead of throwing or dividing by zero', () => {
@@ -38,7 +46,7 @@ describe('computeSummary', () => {
     expect(summary.roiMedioDiario).toBeNull();
     expect(summary.profitUnidades).toBeNull();
     expect(summary.stakeMedio).toBeNull();
-    expect(summary.evPercent).toBeNull();
+    expect(summary.edge).toBeNull();
   });
 
   it('computes roiMedioDiario as the simple (unweighted) average of each day with a settled bet, ignoring volume', () => {

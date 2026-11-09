@@ -18,7 +18,8 @@ export interface PeriodReportSummary {
   readonly stakeMedio: number | null;
   readonly diasVerdes: number;
   readonly diasVermelhos: number;
-  readonly evPercent: number | null;
+  /** Vantagem sobre a probabilidade implicita (edge do stats-service, epic-053); antes '+EV'. */
+  readonly edge: number | null;
 }
 
 function parseDateOnly(value: string): Date {
@@ -30,11 +31,11 @@ export function buildDailyTable(
   daily: readonly DailyBetMetrics[],
   from: string,
   to: string,
-  saldoFinal: number,
+  saldoInicial: number,
   unitPercent: number,
 ): DailyTableRow[] {
   const byDate = new Map(daily.map((day) => [day.date, day]));
-  const denominator = saldoFinal * unitPercent;
+  const denominator = saldoInicial * unitPercent;
   const rows: DailyTableRow[] = [];
   let cursor = parseDateOnly(from);
   const end = parseDateOnly(to);
@@ -67,7 +68,7 @@ export function computeSummary(
 ): PeriodReportSummary {
   const roiBankroll = saldoInicial === 0 ? null : overall.netProfit / saldoInicial;
 
-  const unitsDenominator = saldoFinal * unitPercent;
+  const unitsDenominator = saldoInicial * unitPercent;
   const profitUnidades = unitsDenominator === 0 ? null : overall.netProfit / unitsDenominator;
 
   const stakeMedio = overall.settledCount === 0 ? null : overall.totalStaked / overall.settledCount;
@@ -75,12 +76,6 @@ export function computeSummary(
   const diasVerdes = daily.filter((day) => day.netProfit > 0).length;
   const diasVermelhos = daily.filter((day) => day.netProfit < 0).length;
 
-  const entradas = overall.wonCount + overall.lostCount;
-  const taxaAcertoEntradas = entradas === 0 ? null : overall.wonCount / entradas;
-  const evPercent =
-    taxaAcertoEntradas === null || overall.avgOdd === null || overall.avgOdd === 0
-      ? null
-      : taxaAcertoEntradas - 1 / overall.avgOdd;
 
   return {
     roiBankroll,
@@ -91,6 +86,6 @@ export function computeSummary(
     stakeMedio,
     diasVerdes,
     diasVermelhos,
-    evPercent,
+    edge: overall.edge ?? null,
   };
 }

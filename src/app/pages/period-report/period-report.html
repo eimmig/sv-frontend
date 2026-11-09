@@ -64,12 +64,17 @@
         />
         <app-kpi-card
           icon="insights"
-          [label]="'periodReport.evLabel' | transloco"
-          [value]="s.evPercent === null ? ('periodReport.indeterminate' | transloco) : formatPercent(s.evPercent)"
-          [sign]="s.evPercent === null ? undefined : sign(s.evPercent)"
-          testId="period-report-ev"
+          [label]="'periodReport.edgeLabel' | transloco"
+          [value]="s.edge === null ? ('periodReport.indeterminate' | transloco) : formatPercentagePoints(s.edge) + ' ' + ('periodReport.percentagePoints' | transloco)"
+          [sign]="s.edge === null ? undefined : edgeSign(s.edge)"
+          testId="period-report-edge"
         />
       </div>
+      @if (withinChance()) {
+        <output class="period-report__chance-warning" data-testid="period-report-chance-warning">
+          {{ 'periodReport.chanceWarning' | transloco }}
+        </output>
+      }
 
       <div class="period-report__table-wrap">
         <table class="period-report__table" data-testid="period-report-daily-table">

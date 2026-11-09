@@ -2090,3 +2090,25 @@ a `Idempotency-Key`. `core/random-uuid.ts` cai para `crypto.getRandomValues` (UU
 `Crypto.prototype.randomUUID` (o Playwright roda em `127.0.0.1`, contexto seguro) e falhou antes da correção.
 Release `develop -> main` (#294), rollout manual do `web` e conferência em produção por http e https. Achado
 fora de escopo: `feat-077`. Story SV-788, subtasks SV-789/790.
+
+## `feat-074` fechada — datas na ordem do idioma ativo (2026-11-02)
+
+`epic-046`. O `NativeDateAdapter.parse()` é `Date.parse()` (sempre M/D/A), por isso a máscara estava presa em M/D/A
+enquanto pt-BR e es exibiam D/M/A. `core/locale-date-adapter.ts` faz o parse na ordem de `Intl` para o locale ativo
+e a máscara segue a mesma ordem. e2e em pt-BR falhou antes e passa; produção conferida após release #298 e rollout
+(o primeiro rollout pegou a imagem antiga, ver `docs/services/infra.md`). Story SV-797, subtasks SV-798/799.
+
+## `feat-078` fechada — status do vínculo na tela Vincular Telegram (2026-11-02)
+
+Parte web do `epic-052`. A tela consulta `GET /api/v1/telegram-links/me` (auth-service `feat-026`) e mostra
+"vinculada desde {data}" ou "nenhuma conta vinculada", com "Verificar novamente"; "Gerar código" some quando
+vinculado. O status pula o cache HTTP (`BYPASS_HTTP_CACHE`, novo), porque muda no bot. e2e dos estados falharam
+antes e passam. **Não promover para `main` antes do rollout do auth-service com `feat-026`**: sem a rota em
+produção a tela mostra erro. Story SV-800, subtasks SV-801/802.
+
+## `feat-072` fechada — unidade com base no saldo inicial do período (2026-11-02)
+
+`epic-043`. Toda conversão de reais em unidades usa `saldoInicial = saldoEm(from)` (Visão geral: saldo na primeira
+aposta), a mesma base do ROI Bankroll; o print de referência fecha em 22,11u. Specs que fixavam a base antiga
+falharam e passam com a nova; caso novo no comparativo com saldo inicial e final diferentes. Junto com `feat-078`,
+**não promover para `main` antes do rollout do auth-service**. Story SV-803, subtasks SV-804/805.

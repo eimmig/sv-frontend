@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -17,7 +18,7 @@ import { CatalogEntry, catalogApi } from '../../core/catalog-api';
 import { formatBrl } from '../../core/currency';
 import { Language } from '../../core/language';
 import { formatOdd } from '../../core/number-format';
-import { formatPercent } from '../../core/percent';
+import { formatPercent, formatPercentagePoints } from '../../core/percent';
 import { SettingsApi } from '../../core/settings-api';
 import {
   DailyBetMetrics,
@@ -33,6 +34,7 @@ import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 import { PeriodPresetFilter, PeriodRange } from '../../shared/period-preset-filter/period-preset-filter';
 import { SearchableSelect } from '../../shared/searchable-select/searchable-select';
+import { displayedEdge, formatInterval, roiWithinChance, withinChance } from '../../shared/statistics/chance';
 import { MonthlyDrawdownGrid } from './monthly-drawdown-grid/monthly-drawdown-grid';
 
 interface Options {
@@ -51,7 +53,6 @@ interface DashboardData {
   readonly daily: DailyBetMetrics[];
   readonly bankrollFrom: number;
   readonly bankrollTo: number;
-  readonly bankrollNow: number;
   readonly unitPercent: number;
 }
 
@@ -61,7 +62,6 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
   daily: [],
   bankrollFrom: 0,
   bankrollTo: 0,
-  bankrollNow: 0,
   unitPercent: 0,
 };
 
@@ -72,6 +72,7 @@ const EMPTY_DASHBOARD_DATA: DashboardData = {
     MatFormFieldModule,
     MatInputModule,
     MatTabsModule,
+    NgTemplateOutlet,
     KpiCard,
     MonthlyProfitChart,
     MonthlyDrawdownGrid,
@@ -110,7 +111,7 @@ export class Dashboard implements OnInit {
 
   protected readonly unidadesApostadas = computed(() => {
     const data = this.dashboardData();
-    const denominator = data.bankrollNow * data.unitPercent;
+    const denominator = data.bankrollFrom * data.unitPercent;
     return denominator === 0 ? null : data.dashboard.overall.totalStaked / denominator;
   });
 
@@ -161,6 +162,30 @@ export class Dashboard implements OnInit {
     return formatOdd(value, this.language.current());
   }
 
+  /** "a – b" do intervalo de 95%, ou null quando o backend nao mandou o intervalo. */
+  protected interval(lower: number | null | undefined, upper: number | null | undefined): string | null {
+    return formatInterval(lower, upper, (value) => this.formatPercent(value));
+  }
+
+  protected formatPercentagePoints(value: number): string {
+    return formatPercentagePoints(value, this.language.current());
+  }
+
+  protected edgeSign(edge: number): KpiCardSign {
+    return kpiSign(displayedEdge(edge));
+  }
+
+  protected readonly overallWithinChance = computed(() => withinChance(this.dashboardData().dashboard.overall));
+
+  protected readonly anySegmentWithinChance = computed(() => {
+    const dashboard = this.dashboardData().dashboard;
+    return [...dashboard.bySport, ...dashboard.byMarket, ...dashboard.byBettingHouse].some((segment) =>
+      roiWithinChance(segment.metrics),
+    );
+  });
+
+  protected readonly roiWithinChance = roiWithinChance;
+
   protected sign(value: number): KpiCardSign {
     return kpiSign(value);
   }
@@ -191,7 +216,6 @@ export class Dashboard implements OnInit {
         daily: isDailyGranularity(period.from, period.to) ? this.statisticsApi.getDaily(filter) : of([]),
         bankrollFrom: this.bankrollApi.getBalance(period.from).pipe(map((b) => b.balance)),
         bankrollTo: this.bankrollApi.getBalance(period.to).pipe(map((b) => b.balance)),
-        bankrollNow: this.bankrollApi.getBalance().pipe(map((b) => b.balance)),
         unitPercent: this.settingsApi.get().pipe(map((s) => s.unitPercent)),
       }),
       this.dashboardData,
