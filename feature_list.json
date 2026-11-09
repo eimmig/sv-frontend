@@ -5634,13 +5634,13 @@
       "dependencies": [
         "feat-080"
       ],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "2026-11-09, Plan Reviewer em auto-revisao curta, sem subagente (independencia reduzida, declarada). Veredito: READY WITH CONCERNS. Conferido: team-manager e catalog-manager mostram options().teams / entries() inteiros num ul dentro do app-panel; a API (teamsApi/catalogApi list) nao pagina, entao a paginacao no cliente basta; o padrao visual existente e o de history (mat-stroked-button Anterior/Proxima e indicador). Um componente compartilhado evita duplicar o bloco nos dois templates. Pagina corrente fica limitada ao total depois de recarregar a lista (cadastro novo). Risco: em tela muito baixa, 10 itens ainda podem rolar; aceito, conferido na auditoria em 1280x800.",
       "subtasks": [
         {
           "id": "feat-081.1",
           "name": "ListPager, paginacao nas listas, foco e testes",
-          "status": "in-progress",
+          "status": "done",
           "detail": "Codigo e testes.",
           "checklist": [
             "shared/list-pager com spec.",
@@ -5656,7 +5656,7 @@
         {
           "id": "feat-081.2",
           "name": "Implantacao e auditoria repetida",
-          "status": "not-started",
+          "status": "done",
           "detail": "Prova no servidor.",
           "checklist": [
             "Release, rollout restart, axe nas 18 telas e relatorio de foco."
@@ -5666,7 +5666,8 @@
           "jira": "SV-837"
         }
       ],
-      "jira": "SV-835"
+      "jira": "SV-835",
+      "evidence": "Entregue em 2026-11-09 (feature/SV-835, PR #310). Listas de cadastro paginadas (app-list-pager, 10 por pagina) e outline de foco em botoes de icone e mat-select. ./init.sh verde; auditoria em evidencias/20261109-acessibilidade-final."
     }
   ]
 }
