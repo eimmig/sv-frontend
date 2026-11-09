@@ -22,6 +22,9 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-814](https://stakevault.atlassian.net/browse/SV-814) - Vantagem, intervalos de confianca e aviso de resultado indistinguivel do acaso
 - [SV-815](https://stakevault.atlassian.net/browse/SV-815) - Intervalos, vantagem e aviso no dashboard e no Relatorio
 - [SV-816](https://stakevault.atlassian.net/browse/SV-816) - CHANGELOG e verificacao final
+- [SV-829](https://stakevault.atlassian.net/browse/SV-829) - Contraste dos badges, regiao rolavel do panel e foco visivel por teclado
+- [SV-830](https://stakevault.atlassian.net/browse/SV-830) - Badges, panel, foco visivel e testes
+- [SV-831](https://stakevault.atlassian.net/browse/SV-831) - Implantacao e auditoria repetida
 
 ## [2.1.5] - 2026-11-02
 
