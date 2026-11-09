@@ -98,6 +98,14 @@ body {
   outline-offset: 2px;
 }
 
+// o Material marca o foco dos botões de ícone e do seletor só com uma camada cinza translúcida,
+// pouco visível; o contorno precisa de especificidade acima da regra do próprio componente
+.mat-mdc-icon-button:focus-visible,
+.mat-mdc-select:focus-visible {
+  outline: 2px solid var(--color-action-neutral);
+  outline-offset: 2px;
+}
+
 .badge--neutral {
   background: var(--color-surface-elevated);
   color: var(--color-text-secondary);

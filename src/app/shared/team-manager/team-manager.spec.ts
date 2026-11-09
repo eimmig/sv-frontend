@@ -19,6 +19,10 @@ describe('TeamManager', () => {
         sportFieldLabel: 'Esporte',
         create: 'Adicionar',
         genericError: 'Não foi possível completar a operação. Tente novamente.',
+        previousPage: 'Anterior',
+        nextPage: 'Próxima',
+        pageIndicator: 'Página {{page}} de {{totalPages}}',
+        pagination: 'Paginação da lista',
       },
     },
   };
@@ -85,6 +89,33 @@ describe('TeamManager', () => {
     expect(rows).toHaveLength(1);
     expect(rows[0].textContent).toContain('Flamengo');
     expect(rows[0].textContent).toContain('Futebol');
+  });
+
+  it('shows ten teams per page and moves between pages without an inner scroll', () => {
+    httpMock
+      .expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/sports`)
+      .flush({ content: [{ id: 'sp-1', name: 'Futebol' }], page: 0, size: 100, totalElements: 1, totalPages: 1 });
+    const teams = Array.from({ length: 23 }, (_, i) => ({ id: `tm-${i}`, name: `Time ${i + 1}`, sportId: 'sp-1' }));
+    httpMock
+      .expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/teams`)
+      .flush({ content: teams, page: 0, size: 100, totalElements: 23, totalPages: 1 });
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const rows = () => el.querySelectorAll('[data-testid="team-manager-row"]');
+    const next = () => el.querySelector<HTMLButtonElement>('[data-testid="team-manager-next-page"]')!;
+
+    expect(rows()).toHaveLength(10);
+    expect(el.querySelector('[data-testid="team-manager-page-indicator"]')?.textContent).toContain('Página 1 de 3');
+    expect(el.querySelector<HTMLButtonElement>('[data-testid="team-manager-prev-page"]')!.disabled).toBe(true);
+
+    next().click();
+    fixture.detectChanges();
+    next().click();
+    fixture.detectChanges();
+
+    expect(rows()).toHaveLength(3);
+    expect(rows()[0].textContent).toContain('Time 21');
+    expect(next().disabled).toBe(true);
   });
 
   it('creates a team scoped by sport and reloads the list', () => {

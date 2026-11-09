@@ -40,10 +40,16 @@
       <p class="team-manager__error" role="alert" data-testid="team-manager-load-error">{{ message }}</p>
     } @else {
       <ul class="team-manager__list" data-testid="team-manager-list">
-        @for (entry of options().teams; track entry.id) {
+        @for (entry of visibleTeams(); track entry.id) {
           <li data-testid="team-manager-row">{{ entry.name }} — {{ sportName(entry.sportId) }}</li>
         }
       </ul>
+      <app-list-pager
+        testId="team-manager"
+        [page]="page()"
+        [totalPages]="totalPages()"
+        (pageChange)="goToPage($event)"
+      />
     }
   </app-panel>
 </app-panel-layout>
