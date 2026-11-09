@@ -7,6 +7,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-11-09
+
 ## [2.1.6] - 2026-11-02
 - [SV-797](https://stakevault.atlassian.net/browse/SV-797) - Campos de data esperam mes/dia/ano mas exibem dia/mes/ano
 - [SV-798](https://stakevault.atlassian.net/browse/SV-798) - DateAdapter e mascara na ordem do idioma
