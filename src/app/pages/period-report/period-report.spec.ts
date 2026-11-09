@@ -40,7 +40,7 @@ describe('PeriodReport', () => {
         averageStakeLabel: 'Stake médio',
         greenRedDaysLabel: 'Dias green / red',
         greenRedEntriesLabel: 'Entradas green / red',
-        evLabel: '+EV',
+        edgeLabel: 'Vantagem',
         indeterminate: 'Indeterminado',
         dateLabel: 'Data',
         roiPercentLabel: 'ROI %',

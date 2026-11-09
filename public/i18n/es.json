@@ -88,7 +88,15 @@
     "byMarketTitle": "Por mercado",
     "byBettingHouseTitle": "Por casa de apuestas",
     "monthlyDrawdownTitle": "Drawdown mensual",
-    "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo.",
+    "confidenceInterval": "IC 95%:",
+    "edgeLabel": "Ventaja",
+    "impliedProbability": "Implícita: {{value}}",
+    "edgeHint": "Tasa de acierto menos la probabilidad implícita media de las cuotas de las apuestas ganadas y perdidas, en puntos porcentuales.",
+    "chanceWarning": "Con estos datos, la tasa de acierto o el ROI todavía no se distinguen del azar: el intervalo de confianza del 95% contiene el punto de equilibrio.",
+    "chanceMark": "ROI que todavía no se distingue del azar (el intervalo del 95% contiene cero)",
+    "percentagePoints": "p.p.",
+    "chanceMarkSymbol": "≈"
   },
   "monthlyDrawdown": {
     "emptyResult": "Ningún mes en el intervalo seleccionado.",
@@ -151,14 +159,16 @@
     "averageStakeLabel": "Stake medio",
     "greenRedDaysLabel": "Días green / red",
     "greenRedEntriesLabel": "Entradas green / red",
-    "evLabel": "+EV",
     "indeterminate": "Indeterminado",
     "dateLabel": "Fecha",
     "roiPercentLabel": "ROI %",
     "roiUnitsLabel": "ROI (unidades)",
     "roiReaisLabel": "ROI (R$)",
     "betsLabel": "Apuestas",
-    "genericError": "No se pudo completar la operación. Inténtalo de nuevo."
+    "genericError": "No se pudo completar la operación. Inténtalo de nuevo.",
+    "edgeLabel": "Ventaja",
+    "percentagePoints": "p.p.",
+    "chanceWarning": "Con estos datos, la tasa de acierto o el ROI todavía no se distinguen del azar: el intervalo de confianza del 95% contiene el punto de equilibrio."
   },
   "periodComparison": {
     "filtersTitle": "Filtros",

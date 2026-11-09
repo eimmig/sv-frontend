@@ -8,13 +8,14 @@ import { formatBrl } from '../../core/currency';
 import { formatDayNumeric, spansMoreThanOneYear } from '../../core/date-format';
 import { Language } from '../../core/language';
 import { formatOdd } from '../../core/number-format';
-import { formatPercent } from '../../core/percent';
+import { formatPercent, formatPercentagePoints } from '../../core/percent';
 import { SettingsApi } from '../../core/settings-api';
 import { DailyBetMetrics, EMPTY_BET_METRICS, BetMetrics, StatisticsApi } from '../../core/statistics-api';
 import { KpiCard, KpiCardSign, kpiSign } from '../../shared/kpi-card/kpi-card';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
 import { PeriodPresetFilter, PeriodRange } from '../../shared/period-preset-filter/period-preset-filter';
+import { displayedEdge, withinChance } from '../../shared/statistics/chance';
 import { buildDailyTable, computeSummary } from './period-report-metrics';
 
 interface PeriodReportData {
@@ -66,6 +67,16 @@ export class PeriodReport {
   protected formatPercent(value: number): string {
     return formatPercent(value, this.language.current());
   }
+
+  protected formatPercentagePoints(value: number): string {
+    return formatPercentagePoints(value, this.language.current());
+  }
+
+  protected edgeSign(edge: number): KpiCardSign {
+    return kpiSign(displayedEdge(edge));
+  }
+
+  protected readonly withinChance = computed(() => withinChance(this.data().overall));
 
   protected formatOdd(value: number): string {
     return formatOdd(value, this.language.current());

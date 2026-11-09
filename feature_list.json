@@ -5536,6 +5536,49 @@
           }
         ]
       }
+    },
+    {
+      "id": "feat-079",
+      "name": "Vantagem, intervalos de confianca e aviso de resultado indistinguivel do acaso",
+      "goal": "Mostrar no dashboard e no Relatorio do periodo a vantagem sobre a probabilidade implicita e os intervalos de 95% da taxa de acerto e do ROI, com aviso quando o resultado nao se distingue do acaso.",
+      "scope": "BetMetrics (core/statistics-api.ts) com impliedProbability, edge, winRateLower/Upper e roiLower/Upper opcionais; shared/statistics/chance.ts; cards de ROI e taxa de acerto com o intervalo, card de vantagem, aviso role=status e marcador nos segmentos; Relatorio do periodo troca '+EV' por 'Vantagem' (edge do backend); 3 locales; vault e CHANGELOG.",
+      "description": "epic-053 da raiz, depois de services/stats-service feat-033. O '+EV' do Relatorio (period-report-metrics.ts) calcula TA - 1/avgOdd com avgOdd incluindo devolvidas; o usuario decidiu (2026-11-08) renomear para vantagem sobre a probabilidade implicita e usar o edge calculado no backend. Aviso quando winRateLower <= impliedProbability <= winRateUpper ou roiLower <= 0 <= roiUpper.",
+      "dependencies": [],
+      "status": "in-progress",
+      "plan_review": "2026-11-08, Plan Reviewer (risco baixo, auto-revisao sem subagente): READY WITH CONCERNS. Verificado: KpiCard ja tem secondary e hint; period-report-metrics.ts:79-83 calcula evPercent; specs fixam evLabel '+EV' e 0,0594; e2e/dashboard.spec.ts confere icones dos kpi-cards; mocks do e2e nao trazem os campos novos (opcionais). Emendas: icone insights (ja no subconjunto da fonte); aviso e marcador com tokens existentes (teste de contraste do epic-051) e texto acessivel. Risco aceito: sem intervalos ate o deploy do stats-service e por ate 1 h de cache.",
+      "jira": "SV-814",
+      "subtasks": [
+        {
+          "id": "feat-079.1",
+          "name": "Intervalos, vantagem e aviso no dashboard e no Relatorio",
+          "status": "in-progress",
+          "jira": "SV-815",
+          "detail": "Contrato, funcoes puras e telas.",
+          "checklist": [
+            "BetMetrics com os 6 campos opcionais.",
+            "shared/statistics/chance.ts com testes.",
+            "Dashboard: intervalos nos cards de ROI e taxa de acerto, card de vantagem, aviso e marcador nos segmentos.",
+            "Relatorio: '+EV' vira 'Vantagem' com o edge do backend.",
+            "pt-BR, en-US e es em sincronia; specs atualizadas."
+          ],
+          "validation": "npm test e lint verdes.",
+          "owner": "agente"
+        },
+        {
+          "id": "feat-079.2",
+          "name": "CHANGELOG e verificacao final",
+          "status": "not-started",
+          "jira": "SV-816",
+          "detail": "Vault, CHANGELOG, init.sh e revisoes.",
+          "checklist": [
+            "docs/services/web.md, docs/estatisticas.md e docs/business/estatisticas-e-dashboards.md sem '+EV'.",
+            "CHANGELOG.md [Unreleased].",
+            "./init.sh verde; /code-review sem achado aberto."
+          ],
+          "validation": "init.sh verde, PR em develop com CI e SonarCloud verdes.",
+          "owner": "agente"
+        }
+      ]
     }
   ]
 }
