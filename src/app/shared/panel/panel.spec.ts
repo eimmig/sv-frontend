@@ -78,7 +78,7 @@ describe('Panel', () => {
     fixture.detectChanges();
     const body = (fixture.nativeElement as HTMLElement).querySelector('[data-testid="panel-body"]');
 
-    expect(body?.getAttribute('role')).toBe('region');
+    expect(body?.tagName.toLowerCase()).toBe('section');
     expect(body?.getAttribute('tabindex')).toBe('0');
     expect(body?.getAttribute('aria-label')).toBe('Painel de teste');
   });
