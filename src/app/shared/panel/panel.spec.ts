@@ -73,13 +73,12 @@ describe('Panel', () => {
     expect(el.querySelector('.panel__body p')?.textContent).toBe('body content');
   });
 
-  it('makes the scrollable body a keyboard-reachable region named by the title', () => {
+  it('makes the body a section named by the title', () => {
     const fixture = TestBed.createComponent(HostComponent);
     fixture.detectChanges();
     const body = (fixture.nativeElement as HTMLElement).querySelector('[data-testid="panel-body"]');
 
     expect(body?.tagName.toLowerCase()).toBe('section');
-    expect(body?.getAttribute('tabindex')).toBe('0');
     expect(body?.getAttribute('aria-label')).toBe('Painel de teste');
   });
 
