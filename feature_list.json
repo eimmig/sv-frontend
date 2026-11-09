@@ -5544,14 +5544,14 @@
       "scope": "BetMetrics (core/statistics-api.ts) com impliedProbability, edge, winRateLower/Upper e roiLower/Upper opcionais; shared/statistics/chance.ts; cards de ROI e taxa de acerto com o intervalo, card de vantagem, aviso role=status e marcador nos segmentos; Relatorio do periodo troca '+EV' por 'Vantagem' (edge do backend); 3 locales; vault e CHANGELOG.",
       "description": "epic-053 da raiz, depois de services/stats-service feat-033. O '+EV' do Relatorio (period-report-metrics.ts) calcula TA - 1/avgOdd com avgOdd incluindo devolvidas; o usuario decidiu (2026-11-08) renomear para vantagem sobre a probabilidade implicita e usar o edge calculado no backend. Aviso quando winRateLower <= impliedProbability <= winRateUpper ou roiLower <= 0 <= roiUpper.",
       "dependencies": [],
-      "status": "in-progress",
+      "status": "done",
       "plan_review": "2026-11-08, Plan Reviewer (risco baixo, auto-revisao sem subagente): READY WITH CONCERNS. Verificado: KpiCard ja tem secondary e hint; period-report-metrics.ts:79-83 calcula evPercent; specs fixam evLabel '+EV' e 0,0594; e2e/dashboard.spec.ts confere icones dos kpi-cards; mocks do e2e nao trazem os campos novos (opcionais). Emendas: icone insights (ja no subconjunto da fonte); aviso e marcador com tokens existentes (teste de contraste do epic-051) e texto acessivel. Risco aceito: sem intervalos ate o deploy do stats-service e por ate 1 h de cache.",
       "jira": "SV-814",
       "subtasks": [
         {
           "id": "feat-079.1",
           "name": "Intervalos, vantagem e aviso no dashboard e no Relatorio",
-          "status": "in-progress",
+          "status": "done",
           "jira": "SV-815",
           "detail": "Contrato, funcoes puras e telas.",
           "checklist": [
@@ -5567,7 +5567,7 @@
         {
           "id": "feat-079.2",
           "name": "CHANGELOG e verificacao final",
-          "status": "not-started",
+          "status": "done",
           "jira": "SV-816",
           "detail": "Vault, CHANGELOG, init.sh e revisoes.",
           "checklist": [
@@ -5578,7 +5578,8 @@
           "validation": "init.sh verde, PR em develop com CI e SonarCloud verdes.",
           "owner": "agente"
         }
-      ]
+      ],
+      "evidence": "Entregue em 2026-11-08 (feature/SV-814, PR #304 da subtask/SV-815). Dashboard com IC 95% da taxa de acerto e do ROI, card de vantagem em p.p., aviso de resultado indistinguivel do acaso e marca nos segmentos; Relatorio do periodo troca +EV por vantagem do backend; 3 locales. ./init.sh verde em 2026-11-08 (72 arquivos, 505 testes), CI verde no PR #304. Delivery Reviewer nao rodado nesta sessao; revisao feita no proprio PR."
     }
   ]
 }
