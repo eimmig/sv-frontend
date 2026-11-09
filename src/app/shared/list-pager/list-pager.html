@@ -1,0 +1,25 @@
+@if (totalPages() > 1) {
+  <nav class="list-pager" [attr.aria-label]="'catalogs.pagination' | transloco">
+    <button
+      mat-stroked-button
+      type="button"
+      [attr.data-testid]="testId() + '-prev-page'"
+      [disabled]="page() <= 0"
+      (click)="pageChange.emit(page() - 1)"
+    >
+      {{ 'catalogs.previousPage' | transloco }}
+    </button>
+    <span [attr.data-testid]="testId() + '-page-indicator'">{{
+      'catalogs.pageIndicator' | transloco: { page: page() + 1, totalPages: totalPages() }
+    }}</span>
+    <button
+      mat-stroked-button
+      type="button"
+      [attr.data-testid]="testId() + '-next-page'"
+      [disabled]="page() >= totalPages() - 1"
+      (click)="pageChange.emit(page() + 1)"
+    >
+      {{ 'catalogs.nextPage' | transloco }}
+    </button>
+  </nav>
+}
