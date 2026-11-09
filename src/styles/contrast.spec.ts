@@ -29,6 +29,10 @@ function tint(color: Rgb, alpha: number, backdrop: Rgb): Rgb {
   return color.map((c, i) => alpha * c + (1 - alpha) * backdrop[i]) as unknown as Rgb;
 }
 
+function mixColors(a: Rgb, b: Rgb, weightOfA: number): Rgb {
+  return a.map((c, i) => weightOfA * c + (1 - weightOfA) * b[i]) as unknown as Rgb;
+}
+
 function readTokens(theme: Theme): Map<string, string> {
   const block = new RegExp(String.raw`@mixin ${theme}-tokens \{([\s\S]*?)\n\}`).exec(tokensSource);
   if (!block) {
@@ -100,6 +104,16 @@ function pairsFor(theme: Theme): Pair[] {
       name: `${token} on ${token} ${alpha * 100}% over --color-surface`,
       ratio: contrastRatio(color(token), backdrop),
     });
+  }
+  // badges: texto = tom 80% com o texto principal, sobre o proprio tom a 16% sobre cada fundo
+  for (const token of ['--color-positive', '--color-negative', '--color-action-neutral']) {
+    const text = mixColors(color(token), color('--color-text-primary'), 0.8);
+    for (const bg of backgrounds) {
+      pairs.push({
+        name: `badge ${token} on its 16% tint over ${bg}`,
+        ratio: contrastRatio(text, tint(color(token), 0.16, color(bg))),
+      });
+    }
   }
   pairs.push({
     name: '--color-text-secondary on --color-positive 10% over --color-surface',

@@ -28,7 +28,15 @@
       <ng-content select="[panel-actions]" />
     </header>
   }
-  <div class="panel__body" data-testid="panel-body" [id]="bodyId" [hidden]="isCollapsed()">
+  <div
+    class="panel__body"
+    data-testid="panel-body"
+    role="region"
+    tabindex="0"
+    [id]="bodyId"
+    [attr.aria-label]="title() ?? null"
+    [hidden]="isCollapsed()"
+  >
     <ng-content />
   </div>
 </section>
