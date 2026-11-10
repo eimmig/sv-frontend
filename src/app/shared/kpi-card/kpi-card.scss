@@ -64,7 +64,12 @@
   color: var(--color-text-secondary);
 }
 
+.kpi-card--with-help {
+  padding-right: 44px;
+}
+
 .kpi-card__help {
+  max-width: 26ch;
   margin: 6px 0 0;
   font-size: 12px;
   line-height: 1.4;
