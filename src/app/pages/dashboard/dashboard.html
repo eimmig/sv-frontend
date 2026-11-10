@@ -129,6 +129,7 @@
           [value]="formatPercent(overall.roi)"
           [sign]="sign(overall.roi)"
           [secondary]="roiInterval === null ? undefined : ('dashboard.confidenceInterval' | transloco) + ' ' + roiInterval"
+          [hint]="'dashboard.roiHint' | transloco"
           testId="dashboard-roi"
         />
         <app-kpi-card
@@ -136,6 +137,7 @@
           [label]="'dashboard.winRateLabel' | transloco"
           [value]="formatPercent(overall.winRate)"
           [secondary]="winRateInterval === null ? undefined : ('dashboard.confidenceInterval' | transloco) + ' ' + winRateInterval"
+          [hint]="'dashboard.winRateHint' | transloco"
           testId="dashboard-win-rate"
         />
         <app-kpi-card

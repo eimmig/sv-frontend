@@ -92,11 +92,13 @@
     "confidenceInterval": "IC 95%:",
     "edgeLabel": "Ventaja",
     "impliedProbability": "Implícita: {{value}}",
-    "edgeHint": "Tasa de acierto menos la probabilidad implícita media de las cuotas de las apuestas ganadas y perdidas, en puntos porcentuales.",
+    "edgeHint": "Tasa de acierto menos la probabilidad implícita media de las cuotas, en puntos porcentuales. La implícita (1/cuota) es la tasa de acierto que las cuotas exigen solo para empatar. Positiva: acertaste más de lo que exigían las cuotas; negativa: menos.",
     "chanceWarning": "Con estos datos, la tasa de acierto o el ROI todavía no se distinguen del azar: el intervalo de confianza del 95% contiene el punto de equilibrio.",
     "chanceMark": "ROI que todavía no se distingue del azar (el intervalo del 95% contiene cero)",
     "percentagePoints": "p.p.",
-    "chanceMarkSymbol": "≈"
+    "chanceMarkSymbol": "≈",
+    "roiHint": "Beneficio dividido por el total apostado. El IC 95% es el rango donde probablemente está el ROI real, según el número de apuestas: cuantas menos apuestas, más ancho el rango. Si incluye el cero, todavía no se puede saber si el beneficio viene de la habilidad o de la suerte.",
+    "winRateHint": "Apuestas ganadas divididas por las ganadas y perdidas; las anuladas quedan fuera. El IC 95% es el rango donde probablemente está la tasa real. Si incluye la probabilidad implícita de las cuotas (tarjeta Ventaja), el resultado todavía no se distingue del azar."
   },
   "monthlyDrawdown": {
     "emptyResult": "Ningún mes en el intervalo seleccionado.",
@@ -410,5 +412,8 @@
     "expand": "Expandir panel",
     "activeFilter": "1 filtro aplicado",
     "activeFilters": "{{count}} filtros aplicados"
+  },
+  "kpiCard": {
+    "helpLabel": "Explicar {{label}}"
   }
 }

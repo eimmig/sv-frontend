@@ -155,7 +155,9 @@ describe('Overview', () => {
     expect(secondary('overview-pre-live')).toContain('70,00');
     expect(secondary('overview-pre-live')).toContain('10,00');
     expect(secondary('overview-lucro-medio-mensal')).toContain('6,67');
-    expect(fixture.nativeElement.querySelector('[data-testid="overview-pre-live"]').getAttribute('title')).toBe('overview.preLiveHint');
+    fixture.nativeElement.querySelector('[data-testid="overview-pre-live"] [data-testid="kpi-card-help-toggle"]').click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[data-testid="overview-pre-live"] [data-testid="kpi-card-help"]').textContent).toBe('overview.preLiveHint');
   });
 
   it('renders 12 monthly rows, merging monthly BetMetrics and ignoring a different year', () => {
