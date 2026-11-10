@@ -5679,12 +5679,12 @@
         "feat-081"
       ],
       "plan_review": "2026-11-09, Plan Reviewer em auto-revisao curta, sem subagente (independencia reduzida, declarada). Veredito: READY. Unico consumidor do input hint alem do dashboard e overview.html (preLiveHint); o comportamento muda para todos de title para botao, e os testes que liam o atributo title (kpi-card.spec, overview.spec) passam a abrir o botao. Padrao de acessibilidade ja usado e auditado no ChartFrame (botao mat-icon-button com aria-label, aria-expanded e aria-controls), entao a auditoria axe nao deve mudar. Sem mudanca de contrato com o backend.",
-      "status": "in-progress",
+      "status": "done",
       "subtasks": [
         {
           "id": "feat-082.1",
           "name": "Botao de ajuda no KpiCard e textos",
-          "status": "in-progress",
+          "status": "done",
           "detail": "Componente, textos e testes.",
           "checklist": [
             "KpiCard com botao de ajuda.",
@@ -5696,7 +5696,8 @@
           "jira": "SV-855"
         }
       ],
-      "jira": "SV-854"
+      "jira": "SV-854",
+      "evidence": "Entregue em 2026-11-09 (feature/SV-854, PR #313). KpiCard com botao de ajuda (aria-expanded, aria-controls) no lugar do title; textos de ROI, taxa de acerto e vantagem com a leitura do IC 95% em pt-BR, en-US e es; preLiveHint do overview pelo mesmo botao. ./init.sh verde (532 testes)."
     }
   ]
 }
