@@ -318,6 +318,24 @@ describe('Dashboard', () => {
     expect(fixture.nativeElement.querySelector('[data-testid="dashboard-chance-legend"]')).not.toBeNull();
   });
 
+  it('explains ROI, win rate and edge through the help button of each card', () => {
+    createComponent();
+    flushOptions();
+    flushDashboardData({ overall: workedExample, bySport: [] });
+    fixture.detectChanges();
+
+    const hints: Record<string, string> = {
+      'dashboard-roi': 'dashboard.roiHint',
+      'dashboard-win-rate': 'dashboard.winRateHint',
+      'dashboard-edge': 'dashboard.edgeHint',
+    };
+    for (const [testId, hint] of Object.entries(hints)) {
+      fixture.nativeElement.querySelector(`[data-testid="${testId}"] [data-testid="kpi-card-help-toggle"]`).click();
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector(`[data-testid="${testId}"] [data-testid="kpi-card-help"]`).textContent).toContain(hint);
+    }
+  });
+
   it('hides intervals, warning and edge value when the backend does not send them', () => {
     createComponent();
     flushOptions();

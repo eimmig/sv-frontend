@@ -5668,6 +5668,35 @@
       ],
       "jira": "SV-835",
       "evidence": "Entregue em 2026-11-09 (feature/SV-835, PR #310). Listas de cadastro paginadas (app-list-pager, 10 por pagina) e outline de foco em botoes de icone e mat-select. ./init.sh verde; auditoria em evidencias/20261109-acessibilidade-final."
+    },
+    {
+      "id": "feat-082",
+      "name": "Botao de ajuda nos cards de ROI, taxa de acerto e vantagem",
+      "goal": "O usuario ve 'IC 95%: 69,5% - 76,7%' e 'Vantagem' sem saber o que significam nem como ler. O hint atual do KpiCard so aparece como title no hover: nao funciona no toque nem com teclado e ninguem descobre.",
+      "scope": "shared/kpi-card: hint vira botao de ajuda (icone help, aria-expanded, aria-controls) que abre o texto no proprio card, como no ChartFrame; dashboard: hints de ROI e taxa de acerto (com leitura do IC) e da vantagem; overview: preLiveHint passa a usar o mesmo botao; i18n pt-BR, en-US e es; testes.",
+      "description": "Pedido do usuario em 2026-11-09, olhando o dashboard em producao.",
+      "dependencies": [
+        "feat-081"
+      ],
+      "plan_review": "2026-11-09, Plan Reviewer em auto-revisao curta, sem subagente (independencia reduzida, declarada). Veredito: READY. Unico consumidor do input hint alem do dashboard e overview.html (preLiveHint); o comportamento muda para todos de title para botao, e os testes que liam o atributo title (kpi-card.spec, overview.spec) passam a abrir o botao. Padrao de acessibilidade ja usado e auditado no ChartFrame (botao mat-icon-button com aria-label, aria-expanded e aria-controls), entao a auditoria axe nao deve mudar. Sem mudanca de contrato com o backend.",
+      "status": "in-progress",
+      "subtasks": [
+        {
+          "id": "feat-082.1",
+          "name": "Botao de ajuda no KpiCard e textos",
+          "status": "in-progress",
+          "detail": "Componente, textos e testes.",
+          "checklist": [
+            "KpiCard com botao de ajuda.",
+            "Textos de ROI, taxa de acerto e vantagem nos tres idiomas.",
+            "Testes do componente, do dashboard e do overview."
+          ],
+          "validation": "./init.sh verde; CI e SonarCloud verdes.",
+          "owner": "agente",
+          "jira": "SV-855"
+        }
+      ],
+      "jira": "SV-854"
     }
   ]
 }

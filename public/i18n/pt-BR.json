@@ -92,11 +92,13 @@
     "confidenceInterval": "IC 95%:",
     "edgeLabel": "Vantagem",
     "impliedProbability": "Implícita: {{value}}",
-    "edgeHint": "Taxa de acerto menos a probabilidade implícita média das odds das apostas ganhas e perdidas, em pontos percentuais.",
+    "edgeHint": "Taxa de acerto menos a probabilidade implícita média das odds, em pontos percentuais. A implícita (1/odd) é a taxa de acerto que as odds exigem só para empatar. Positiva: você acertou mais do que as odds exigiam; negativa: menos.",
     "chanceWarning": "Com estes dados, a taxa de acerto ou o ROI ainda não se distinguem do acaso: o intervalo de confiança de 95% contém o ponto de empate.",
     "chanceMark": "ROI que ainda não se distingue do acaso (o intervalo de 95% contém zero)",
     "percentagePoints": "p.p.",
-    "chanceMarkSymbol": "≈"
+    "chanceMarkSymbol": "≈",
+    "roiHint": "Lucro dividido pelo total apostado. O IC 95% é a faixa onde o ROI real provavelmente está, dado o número de apostas: quanto menos apostas, mais larga a faixa. Se ela inclui o zero, ainda não dá para saber se o lucro vem de habilidade ou de sorte.",
+    "winRateHint": "Apostas ganhas divididas pelas ganhas e perdidas; as devolvidas ficam fora. O IC 95% é a faixa onde a taxa real provavelmente está. Se ela inclui a probabilidade implícita das odds (card Vantagem), o resultado ainda não se distingue do acaso."
   },
   "monthlyDrawdown": {
     "emptyResult": "Nenhum mês no intervalo selecionado.",
@@ -410,5 +412,8 @@
     "expand": "Expandir painel",
     "activeFilter": "1 filtro aplicado",
     "activeFilters": "{{count}} filtros aplicados"
+  },
+  "kpiCard": {
+    "helpLabel": "Explicar {{label}}"
   }
 }
