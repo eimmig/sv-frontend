@@ -5698,6 +5698,36 @@
       ],
       "jira": "SV-854",
       "evidence": "Entregue em 2026-11-09 (feature/SV-854, PR #313). KpiCard com botao de ajuda (aria-expanded, aria-controls) no lugar do title; textos de ROI, taxa de acerto e vantagem com a leitura do IC 95% em pt-BR, en-US e es; preLiveHint do overview pelo mesmo botao. ./init.sh verde (532 testes)."
+    },
+    {
+      "id": "feat-083",
+      "name": "Layout do botao de ajuda do KpiCard",
+      "goal": "Em producao (v2.4.0), o botao de ajuda cobre o rotulo de cards estreitos (Taxa de acerto) e o texto aberto alarga o card ate a linha inteira, empurrando os vizinhos.",
+      "scope": "shared/kpi-card: espaco a direita para o botao quando ha hint e largura maxima do texto de ajuda; teste do modificador de classe.",
+      "description": "Achado na conferencia visual da feat-082 em producao (captura Playwright, 2026-11-09).",
+      "dependencies": [
+        "feat-082"
+      ],
+      "plan_review": "2026-11-09, Plan Reviewer em auto-revisao curta (independencia reduzida, declarada). Veredito: READY. So CSS e uma classe modificadora; sem mudanca de comportamento nem de acessibilidade.",
+      "status": "done",
+      "subtasks": [
+        {
+          "id": "feat-083.1",
+          "name": "Espaco do botao e largura do texto",
+          "status": "done",
+          "detail": "CSS e teste.",
+          "checklist": [
+            "padding-right com hint.",
+            "max-width no texto de ajuda.",
+            "Conferencia visual em producao."
+          ],
+          "validation": "./init.sh verde; captura em producao.",
+          "owner": "agente",
+          "jira": "SV-857"
+        }
+      ],
+      "jira": "SV-856",
+      "evidence": "Entregue em 2026-11-09 (feature/SV-856, PR #316). Espaco de 44px a direita no KpiCard com ajuda e texto de ajuda com max-width de 26ch. ./init.sh verde; conferido por captura em producao."
     }
   ]
 }
