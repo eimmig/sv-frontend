@@ -6,6 +6,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 `docs/CI-CD.md`).
 
 ## [Unreleased]
+
+## [2.3.0] - 2026-11-09
 - [SV-835](https://stakevault.atlassian.net/browse/SV-835) - Paginacao das listas de cadastros e foco visivel em botoes de icone e seletores
 - [SV-836](https://stakevault.atlassian.net/browse/SV-836) - ListPager, paginacao nas listas, foco e testes
 - [SV-837](https://stakevault.atlassian.net/browse/SV-837) - Implantacao e auditoria repetida
