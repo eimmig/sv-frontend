@@ -88,6 +88,7 @@ describe('KpiCard', () => {
     expect(toggle?.getAttribute('aria-expanded')).toBe('false');
     expect(el.querySelector('[data-testid="kpi-card-help"]')).toBeNull();
     expect(el.querySelector('.kpi-card')?.hasAttribute('title')).toBe(false);
+    expect(el.querySelector('.kpi-card')?.classList).toContain('kpi-card--with-help');
   });
 
   it('opens and closes the hint with the help button, linked by aria-controls', () => {
@@ -117,5 +118,6 @@ describe('KpiCard', () => {
 
     expect(el.querySelector('[data-testid="kpi-card-secondary"]')).toBeNull();
     expect(el.querySelector('[data-testid="kpi-card-help-toggle"]')).toBeNull();
+    expect(el.querySelector('.kpi-card')?.classList).not.toContain('kpi-card--with-help');
   });
 });
