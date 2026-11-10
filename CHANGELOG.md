@@ -9,6 +9,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 - [SV-856](https://stakevault.atlassian.net/browse/SV-856) - Layout do botao de ajuda do KpiCard
 - [SV-857](https://stakevault.atlassian.net/browse/SV-857) - Espaco do botao e largura do texto
 
+## [2.4.0] - 2026-11-10
+
 ## [2.3.0] - 2026-11-09
 - [SV-835](https://stakevault.atlassian.net/browse/SV-835) - Paginacao das listas de cadastros e foco visivel em botoes de icone e seletores
 - [SV-836](https://stakevault.atlassian.net/browse/SV-836) - ListPager, paginacao nas listas, foco e testes
