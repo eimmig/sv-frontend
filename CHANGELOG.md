@@ -6,6 +6,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 `docs/CI-CD.md`).
 
 ## [Unreleased]
+
+## [2.4.1] - 2026-11-10
 - [SV-856](https://stakevault.atlassian.net/browse/SV-856) - Layout do botao de ajuda do KpiCard
 - [SV-857](https://stakevault.atlassian.net/browse/SV-857) - Espaco do botao e largura do texto
 
