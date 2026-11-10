@@ -67,6 +67,7 @@
           [label]="'periodReport.edgeLabel' | transloco"
           [value]="s.edge === null ? ('periodReport.indeterminate' | transloco) : formatPercentagePoints(s.edge) + ' ' + ('periodReport.percentagePoints' | transloco)"
           [sign]="s.edge === null ? undefined : edgeSign(s.edge)"
+          [hint]="'dashboard.edgeHint' | transloco"
           testId="period-report-edge"
         />
       </div>

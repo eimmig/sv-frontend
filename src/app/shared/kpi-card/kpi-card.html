@@ -1,4 +1,4 @@
-<div class="kpi-card" [class]="sign() ? 'kpi-card--' + sign() : ''" [attr.data-testid]="testId() ?? null" [attr.title]="hint() ?? null">
+<div class="kpi-card" [class]="sign() ? 'kpi-card--' + sign() : ''" [attr.data-testid]="testId() ?? null">
   <div class="kpi-card__icon"><mat-icon aria-hidden="true">{{ icon() }}</mat-icon></div>
   <div class="kpi-card__body">
     <span class="kpi-card__label">{{ label() }}</span>
@@ -6,5 +6,24 @@
     @if (secondary(); as secondaryValue) {
       <span class="kpi-card__secondary" data-testid="kpi-card-secondary">{{ secondaryValue }}</span>
     }
+    @if (hint(); as hintText) {
+      @if (helpOpen()) {
+        <p class="kpi-card__help" [id]="helpId" data-testid="kpi-card-help">{{ hintText }}</p>
+      }
+    }
   </div>
+  @if (hint(); as hintText) {
+    <button
+      mat-icon-button
+      type="button"
+      class="kpi-card__help-toggle"
+      data-testid="kpi-card-help-toggle"
+      [attr.aria-label]="'kpiCard.helpLabel' | transloco: { label: label() }"
+      [attr.aria-expanded]="helpOpen()"
+      [attr.aria-controls]="helpId"
+      (click)="toggleHelp()"
+    >
+      <mat-icon fontSet="material-symbols-outlined">help</mat-icon>
+    </button>
+  }
 </div>

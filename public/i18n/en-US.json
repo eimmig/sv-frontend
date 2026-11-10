@@ -92,11 +92,13 @@
     "confidenceInterval": "95% CI:",
     "edgeLabel": "Edge",
     "impliedProbability": "Implied: {{value}}",
-    "edgeHint": "Win rate minus the average implied probability of the odds of won and lost bets, in percentage points.",
+    "edgeHint": "Win rate minus the average implied probability of the odds, in percentage points. The implied probability (1/odd) is the win rate the odds require just to break even. Positive: you won more often than the odds required; negative: less.",
     "chanceWarning": "With this data, the win rate or the ROI cannot yet be told apart from chance: the 95% confidence interval contains the break-even point.",
     "chanceMark": "ROI that cannot yet be told apart from chance (the 95% interval contains zero)",
     "percentagePoints": "pp",
-    "chanceMarkSymbol": "≈"
+    "chanceMarkSymbol": "≈",
+    "roiHint": "Profit divided by the total staked. The 95% CI is the range where the true ROI most likely lies, given the number of bets: the fewer bets, the wider the range. If it includes zero, it is not yet possible to tell skill from luck.",
+    "winRateHint": "Won bets divided by won and lost bets; voided bets are left out. The 95% CI is the range where the true rate most likely lies. If it includes the implied probability of the odds (Edge card), the result cannot yet be told apart from chance."
   },
   "monthlyDrawdown": {
     "emptyResult": "No month in the selected range.",
@@ -410,5 +412,8 @@
     "expand": "Expand panel",
     "activeFilter": "1 filter applied",
     "activeFilters": "{{count}} filters applied"
+  },
+  "kpiCard": {
+    "helpLabel": "Explain {{label}}"
   }
 }
