@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { KpiCard, KpiCardSign } from './kpi-card';
 
@@ -27,7 +28,15 @@ class HostComponent {
 
 describe('KpiCard', () => {
   beforeEach(() => {
-    TestBed.configureTestingModule({ imports: [HostComponent] });
+    TestBed.configureTestingModule({
+      imports: [
+        HostComponent,
+        TranslocoTestingModule.forRoot({
+          langs: { 'pt-BR': { kpiCard: { helpLabel: 'Explicar {{label}}' } } },
+          translocoConfig: { availableLangs: ['pt-BR'], defaultLang: 'pt-BR' },
+        }),
+      ],
+    });
   });
 
   it('renders label and value', () => {
@@ -66,23 +75,47 @@ describe('KpiCard', () => {
     expect(el.querySelector('[data-testid="my-card"]')).toBeTruthy();
   });
 
-  it('renders the secondary line and the hint tooltip when informed', () => {
+  it('renders the secondary line and a closed help button when a hint is informed', () => {
     const fixture = TestBed.createComponent(HostComponent);
     fixture.componentInstance.secondary = 'R$ 80,00';
     fixture.componentInstance.hint = 'Lucro em unidades';
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
+    const toggle = el.querySelector('[data-testid="kpi-card-help-toggle"]');
 
     expect(el.querySelector('[data-testid="kpi-card-secondary"]')?.textContent).toBe('R$ 80,00');
-    expect(el.querySelector('.kpi-card')?.getAttribute('title')).toBe('Lucro em unidades');
+    expect(toggle?.getAttribute('aria-label')).toBe('Explicar Total apostado');
+    expect(toggle?.getAttribute('aria-expanded')).toBe('false');
+    expect(el.querySelector('[data-testid="kpi-card-help"]')).toBeNull();
+    expect(el.querySelector('.kpi-card')?.hasAttribute('title')).toBe(false);
   });
 
-  it('renders neither the secondary line nor a title when they are not informed', () => {
+  it('opens and closes the hint with the help button, linked by aria-controls', () => {
+    const fixture = TestBed.createComponent(HostComponent);
+    fixture.componentInstance.hint = 'Lucro em unidades';
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const toggle = el.querySelector<HTMLButtonElement>('[data-testid="kpi-card-help-toggle"]')!;
+
+    toggle.click();
+    fixture.detectChanges();
+    const help = el.querySelector('[data-testid="kpi-card-help"]');
+    expect(help?.textContent).toBe('Lucro em unidades');
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    expect(toggle.getAttribute('aria-controls')).toBe(help?.id);
+
+    toggle.click();
+    fixture.detectChanges();
+    expect(el.querySelector('[data-testid="kpi-card-help"]')).toBeNull();
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('renders neither the secondary line nor a help button when they are not informed', () => {
     const fixture = TestBed.createComponent(HostComponent);
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
 
     expect(el.querySelector('[data-testid="kpi-card-secondary"]')).toBeNull();
-    expect(el.querySelector('.kpi-card')?.hasAttribute('title')).toBe(false);
+    expect(el.querySelector('[data-testid="kpi-card-help-toggle"]')).toBeNull();
   });
 });
