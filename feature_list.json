@@ -5709,12 +5709,12 @@
         "feat-082"
       ],
       "plan_review": "2026-11-09, Plan Reviewer em auto-revisao curta (independencia reduzida, declarada). Veredito: READY. So CSS e uma classe modificadora; sem mudanca de comportamento nem de acessibilidade.",
-      "status": "in-progress",
+      "status": "done",
       "subtasks": [
         {
           "id": "feat-083.1",
           "name": "Espaco do botao e largura do texto",
-          "status": "in-progress",
+          "status": "done",
           "detail": "CSS e teste.",
           "checklist": [
             "padding-right com hint.",
@@ -5726,7 +5726,8 @@
           "jira": "SV-857"
         }
       ],
-      "jira": "SV-856"
+      "jira": "SV-856",
+      "evidence": "Entregue em 2026-11-09 (feature/SV-856, PR #316). Espaco de 44px a direita no KpiCard com ajuda e texto de ajuda com max-width de 26ch. ./init.sh verde; conferido por captura em producao."
     }
   ]
 }
