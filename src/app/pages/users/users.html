@@ -87,3 +87,37 @@
     }
   </app-panel>
 </app-panel-layout>
+
+<app-panel-layout columns="1fr" class="users__danger-zone">
+  <app-panel [title]="'users.deleteOrganization.title' | transloco">
+    <div class="users__danger" data-testid="users-delete-organization">
+      <p class="users__danger-text">{{ 'users.deleteOrganization.description' | transloco }}</p>
+      <mat-form-field appearance="outline" class="users__danger-field">
+        <mat-label>{{ 'users.deleteOrganization.confirmLabel' | transloco: { slug: auth.session()?.tenantSlug ?? '' } }}</mat-label>
+        <input
+          matInput
+          id="users-delete-confirmation-input"
+          type="text"
+          autocomplete="off"
+          data-testid="users-delete-confirmation"
+          [value]="deleteConfirmation()"
+          (input)="onDeleteConfirmationInput($event)"
+          [attr.aria-label]="'users.deleteOrganization.confirmLabel' | transloco: { slug: auth.session()?.tenantSlug ?? '' }"
+        />
+      </mat-form-field>
+      @if (deleteError(); as message) {
+        <p class="users__error" role="alert" data-testid="users-delete-error">{{ message }}</p>
+      }
+      <button
+        mat-stroked-button
+        type="button"
+        class="users__danger-button"
+        data-testid="users-delete-organization-button"
+        [disabled]="!canDelete()"
+        (click)="deleteOrganization()"
+      >
+        {{ 'users.deleteOrganization.button' | transloco }}
+      </button>
+    </div>
+  </app-panel>
+</app-panel-layout>
