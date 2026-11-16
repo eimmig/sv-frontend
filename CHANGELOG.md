@@ -8,6 +8,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 ## [Unreleased]
 - [SV-856](https://stakevault.atlassian.net/browse/SV-856) - Layout do botao de ajuda do KpiCard
 - [SV-857](https://stakevault.atlassian.net/browse/SV-857) - Espaco do botao e largura do texto
+- [SV-872](https://stakevault.atlassian.net/browse/SV-872) - Excluir a organizacao na tela de usuarios
+- [SV-873](https://stakevault.atlassian.net/browse/SV-873) - Painel de exclusao, API e specs
 
 ## [2.4.0] - 2026-11-10
 
