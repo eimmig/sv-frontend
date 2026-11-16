@@ -279,6 +279,13 @@
     "role": {
       "ADMIN": "Admin",
       "MEMBER": "Member"
+    },
+    "deleteOrganization": {
+      "title": "Delete organization",
+      "description": "Permanently deletes all of the organization's data: bets, bookmakers, transactions, catalogs, statistics, users and Telegram links. The deletion cannot be undone and ends your session.",
+      "confirmLabel": "Type {{slug}} to confirm",
+      "button": "Delete organization",
+      "genericError": "The organization could not be deleted. Please try again."
     }
   },
   "telegramLink": {

@@ -60,3 +60,29 @@
   background: color-mix(in srgb, var(--color-action-neutral) 16%, transparent);
   color: color-mix(in srgb, var(--color-action-neutral) 80%, var(--color-text-primary));
 }
+
+.users__danger-zone {
+  margin-top: 24px;
+}
+
+.users__danger {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 640px;
+}
+
+.users__danger-text {
+  margin: 0 0 8px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.users__danger-button {
+  align-self: flex-start;
+}
+
+.users__danger-button:not([disabled]) {
+  color: var(--color-negative);
+  border-color: var(--color-negative);
+}

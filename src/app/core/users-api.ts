@@ -31,4 +31,9 @@ export class UsersApi {
   create(input: CreateUserInput): Observable<UserSummary> {
     return this.http.post<UserSummary>(`${environment.apiGatewayUrl}/api/v1/users`, input);
   }
+
+  /** Apaga a organizacao do admin e todos os dados dela (epic-065). Irreversivel. */
+  deleteOrganization(): Observable<void> {
+    return this.http.delete<void>(`${environment.apiGatewayUrl}/api/v1/organization`);
+  }
 }

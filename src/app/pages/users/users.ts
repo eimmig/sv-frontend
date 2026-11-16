@@ -1,8 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { Router } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 import { loadInto, submitForm } from '../../core/api-request';
@@ -32,6 +33,7 @@ export class Users {
   private readonly formBuilder = inject(FormBuilder);
   private readonly transloco = inject(TranslocoService);
   protected readonly auth = inject(Auth);
+  private readonly router = inject(Router);
 
   protected readonly users = signal<UserSummary[]>([]);
   protected readonly loadError = signal<string | null>(null);
@@ -42,6 +44,14 @@ export class Users {
     name: ['', Validators.required],
     username: ['', [Validators.required, Validators.pattern(USERNAME_PATTERN)]],
     password: ['', Validators.required],
+  });
+
+  protected readonly deleteConfirmation = signal('');
+  protected readonly deleting = signal(false);
+  protected readonly deleteError = signal<string | null>(null);
+  protected readonly canDelete = computed(() => {
+    const slug = this.auth.session()?.tenantSlug;
+    return !!slug && this.deleteConfirmation().trim() === slug && !this.deleting();
   });
 
   constructor() {
@@ -76,6 +86,26 @@ export class Users {
       () => {
         this.form.reset();
         this.reload();
+      },
+    );
+  }
+
+  protected onDeleteConfirmationInput(event: Event): void {
+    this.deleteConfirmation.set((event.target as HTMLInputElement).value);
+  }
+
+  protected deleteOrganization(): void {
+    if (!this.canDelete()) {
+      return;
+    }
+    submitForm(
+      this.usersApi.deleteOrganization(),
+      this.deleting,
+      this.deleteError,
+      () => this.transloco.translate('users.deleteOrganization.genericError'),
+      () => {
+        this.auth.logout();
+        void this.router.navigate(['/login'], { queryParams: { organizationDeleted: 1 } });
       },
     );
   }

@@ -5728,6 +5728,37 @@
       ],
       "jira": "SV-856",
       "evidence": "Entregue em 2026-11-09 (feature/SV-856, PR #316). Espaco de 44px a direita no KpiCard com ajuda e texto de ajuda com max-width de 26ch. ./init.sh verde; conferido por captura em producao."
+    },
+    {
+      "id": "feat-084",
+      "name": "Excluir a organizacao na tela de usuarios",
+      "goal": "O admin exclui a organizacao e todos os dados dela pela tela de Usuarios (LGPD art. 18 VI, epic-065), com confirmacao digitando o identificador da organizacao; depois da exclusao a sessao e encerrada.",
+      "scope": "UsersApi.deleteOrganization (DELETE /api/v1/organization); painel \"Excluir organizacao\" em pages/users com texto do que e apagado, campo de confirmacao com o slug e botao habilitado so quando o texto confere; erro do servidor mostrado no painel; sucesso faz logout e navega para o login; i18n pt-BR, en-US e es; specs.",
+      "description": "",
+      "dependencies": [],
+      "plan_review": "2026-11-16, Plan Reviewer em auto-revisao curta (independencia reduzida, declarada), plano cross-service do epic-065 (exclusao da organizacao a pedido do admin, LGPD art. 18 VI, devolutiva de 2026-11-16). Veredito: READY WITH CONCERNS. Fluxo sincrono igual ao da criacao: auth valida admin, chama DELETE /api/v1/admin/tenants/{slug} no bets e no stats (X-Admin-Api-Key, idempotente, 204 mesmo sem schema) e so entao apaga o proprio schema e os vinculos do Telegram; falha em servico abaixo devolve 502 sem apagar nada no auth, e repetir e seguro. Riscos aceitos: (1) o cache de schema existente por instancia (feat-038 do bets) faz outras replicas responderem 500 a tokens antigos da organizacao ate reiniciar; nenhum dado volta, porque o schema so e criado pela rota admin. (2) Eventos em voo para o stats caem na DLQ por schema inexistente. (3) Historico de execucoes do n8n (ate 14 dias) nao e apagado.",
+      "status": "done",
+      "subtasks": [
+        {
+          "id": "feat-084.1",
+          "name": "Painel de exclusao, API e specs",
+          "status": "done",
+          "detail": "Painel de exclusao, API e specs",
+          "checklist": [
+            "Spec vermelho antes.",
+            "Botao desabilitado ate o slug conferir.",
+            "Erro do servidor no painel; sucesso faz logout.",
+            "i18n nos 3 idiomas.",
+            "CHANGELOG em [Unreleased].",
+            "Vault (docs/) revisado: services/web.md e jornadas."
+          ],
+          "validation": "./init.sh verde; CI e SonarCloud verdes.",
+          "owner": "agente",
+          "jira": "SV-873"
+        }
+      ],
+      "jira": "SV-872",
+      "evidence": "Entregue em 2026-11-16 (feature/SV-872, PR #319). Painel 'Excluir organizacao' na tela de Usuarios: botao so com o slug digitado, DELETE /api/v1/organization, logout e login no sucesso, erro do servidor no painel; i18n nos 3 idiomas; 3 specs novos. ./init.sh verde (535 testes). Auto-revisao (Delivery Reviewer e Test Suite Auditor em modo curto, independencia reduzida)."
     }
   ]
 }
