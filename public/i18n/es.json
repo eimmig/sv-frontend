@@ -279,6 +279,13 @@
     "role": {
       "ADMIN": "Administrador",
       "MEMBER": "Miembro"
+    },
+    "deleteOrganization": {
+      "title": "Eliminar organización",
+      "description": "Borra de forma definitiva todos los datos de la organización: apuestas, casas, movimientos, catálogos, estadísticas, usuarios y vínculos con Telegram. La eliminación no se puede deshacer y cierra su sesión.",
+      "confirmLabel": "Escriba {{slug}} para confirmar",
+      "button": "Eliminar organización",
+      "genericError": "No fue posible eliminar la organización. Inténtelo de nuevo."
     }
   },
   "telegramLink": {
