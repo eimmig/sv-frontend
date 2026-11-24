@@ -126,7 +126,7 @@ describe('History', () => {
     request.flush({ content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 });
   });
 
-  it('sends the from/to date picker values as yyyy-MM-dd query params for bets', () => {
+  it('sends the from/to date picker values as start and end of the local day for bets', () => {
     fixture.componentInstance['betFilterForm'].patchValue({
       from: new Date(2026, 0, 1),
       to: new Date(2026, 0, 31),
@@ -134,8 +134,24 @@ describe('History', () => {
     fixture.componentInstance['applyBetFilter']();
 
     const request = httpMock.expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/bets`);
-    expect(request.request.params.get('from')).toBe('2026-01-01');
-    expect(request.request.params.get('to')).toBe('2026-01-31');
+    expect(request.request.params.get('from')).toBe(new Date(2026, 0, 1).toISOString());
+    expect(request.request.params.get('to')).toBe(new Date(2026, 0, 31, 23, 59, 59, 999).toISOString());
+    request.flush({ content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 });
+  });
+
+  it('covers the whole day when from and to are the same date', () => {
+    fixture.componentInstance['betFilterForm'].patchValue({
+      from: new Date(2026, 10, 24),
+      to: new Date(2026, 10, 24),
+    });
+    fixture.componentInstance['applyBetFilter']();
+
+    const request = httpMock.expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/bets`);
+    const from = new Date(request.request.params.get('from') ?? '');
+    const to = new Date(request.request.params.get('to') ?? '');
+    expect(to.getTime() - from.getTime()).toBe(24 * 60 * 60 * 1000 - 1);
+    expect(from.getDate()).toBe(24);
+    expect(to.getDate()).toBe(24);
     request.flush({ content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 });
   });
 
@@ -160,7 +176,7 @@ describe('History', () => {
     request.flush({ content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 });
   });
 
-  it('sends the from/to date picker values as yyyy-MM-dd query params for transactions', () => {
+  it('sends the from/to date picker values as start and end of the local day for transactions', () => {
     fixture.componentInstance['transactionFilterForm'].patchValue({
       from: new Date(2026, 5, 1),
       to: new Date(2026, 5, 30),
@@ -168,8 +184,8 @@ describe('History', () => {
     fixture.componentInstance['applyTransactionFilter']();
 
     const request = httpMock.expectOne((req) => req.url === `${environment.apiGatewayUrl}/api/v1/transactions`);
-    expect(request.request.params.get('from')).toBe('2026-06-01');
-    expect(request.request.params.get('to')).toBe('2026-06-30');
+    expect(request.request.params.get('from')).toBe(new Date(2026, 5, 1).toISOString());
+    expect(request.request.params.get('to')).toBe(new Date(2026, 5, 30, 23, 59, 59, 999).toISOString());
     request.flush({ content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 });
   });
 
