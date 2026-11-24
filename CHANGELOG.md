@@ -6,6 +6,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 `docs/CI-CD.md`).
 
 ## [Unreleased]
+
+## [2.5.1] - 2026-11-24
 - Filtro de data do Historico respondia 400: as datas "De" e "Ate" vao como inicio e fim do dia local em ISO, como a API espera
 
 ## [2.5.0] - 2026-11-16
