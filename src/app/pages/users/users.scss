@@ -3,6 +3,12 @@
   height: 100%;
   padding: 24px;
   box-sizing: border-box;
+  overflow-y: auto;
+}
+
+// A grade de cima ocupava 100% da altura e empurrava o painel de exclusao para fora da tela.
+.users__top {
+  height: auto;
 }
 
 .users__form {
