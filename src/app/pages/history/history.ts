@@ -24,7 +24,6 @@ import { toProblemDetail } from '../../core/problem-detail';
 import { Transaction, TransactionsApi, TransactionType } from '../../core/transactions-api';
 import { Panel } from '../../shared/panel/panel';
 import { PanelLayout } from '../../shared/panel-layout/panel-layout';
-import { toDateOnly } from '../../shared/period-preset-filter/period-preset-filter';
 import { SearchableSelect } from '../../shared/searchable-select/searchable-select';
 
 type SettledBetStatus = 'won' | 'lost' | 'void';
@@ -57,6 +56,16 @@ const TRANSACTION_TYPE_BADGE: Record<TransactionType, 'positive' | 'neutral'> = 
 
 const BETS_TAB = 0;
 const TRANSACTIONS_TAB = 1;
+
+// A API de apostas e de movimentacoes recebe instantes (Instant), nao datas: "2026-11-24" sozinho
+// respondia 400. O filtro vai do inicio do dia "De" ao fim do dia "Ate", no fuso do navegador.
+export function startOfLocalDay(date: Date): string {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate()).toISOString();
+}
+
+export function endOfLocalDay(date: Date): string {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999).toISOString();
+}
 
 @Component({
   imports: [
@@ -188,8 +197,8 @@ export class History implements OnInit {
           leagueId: raw.leagueId || undefined,
           marketId: raw.marketId || undefined,
           tipsterId: raw.tipsterId || undefined,
-          from: raw.from ? toDateOnly(raw.from) : undefined,
-          to: raw.to ? toDateOnly(raw.to) : undefined,
+          from: raw.from ? startOfLocalDay(raw.from) : undefined,
+          to: raw.to ? endOfLocalDay(raw.to) : undefined,
         },
         page,
       ),
@@ -237,8 +246,8 @@ export class History implements OnInit {
       this.transactionsApi.list(
         {
           bettingHouseId: raw.bettingHouseId || undefined,
-          from: raw.from ? toDateOnly(raw.from) : undefined,
-          to: raw.to ? toDateOnly(raw.to) : undefined,
+          from: raw.from ? startOfLocalDay(raw.from) : undefined,
+          to: raw.to ? endOfLocalDay(raw.to) : undefined,
         },
         page,
       ),
