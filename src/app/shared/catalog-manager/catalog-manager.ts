@@ -8,8 +8,9 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 import { loadInto, submitForm } from '../../core/api-request';
 import { CatalogEntry, catalogApi } from '../../core/catalog-api';
+import { FitPageSize } from '../list-pager/fit-page-size.directive';
 import { ListPager } from '../list-pager/list-pager';
-import { clampPage, pageCount, pageSlice } from '../list-pager/paginate';
+import { LIST_PAGE_SIZE, clampPage, pageCount, pageSlice } from '../list-pager/paginate';
 import { Panel } from '../panel/panel';
 import { PanelLayout } from '../panel-layout/panel-layout';
 
@@ -23,6 +24,7 @@ import { PanelLayout } from '../panel-layout/panel-layout';
     Panel,
     PanelLayout,
     ListPager,
+    FitPageSize,
   ],
   selector: 'app-catalog-manager',
   styleUrl: './catalog-manager.scss',
@@ -38,9 +40,12 @@ export class CatalogManager implements OnInit {
 
   protected readonly entries = signal<CatalogEntry[]>([]);
   private readonly requestedPage = signal(0);
-  protected readonly page = computed(() => clampPage(this.requestedPage(), this.entries().length));
-  protected readonly totalPages = computed(() => pageCount(this.entries().length));
-  protected readonly visibleEntries = computed(() => pageSlice(this.entries(), this.page()));
+  protected readonly pageSize = signal(LIST_PAGE_SIZE);
+  protected readonly page = computed(() =>
+    clampPage(this.requestedPage(), this.entries().length, this.pageSize()),
+  );
+  protected readonly totalPages = computed(() => pageCount(this.entries().length, this.pageSize()));
+  protected readonly visibleEntries = computed(() => pageSlice(this.entries(), this.page(), this.pageSize()));
   protected readonly loadError = signal<string | null>(null);
   protected readonly submitting = signal(false);
   protected readonly formError = signal<string | null>(null);
