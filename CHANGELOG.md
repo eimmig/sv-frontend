@@ -6,6 +6,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 `docs/CI-CD.md`).
 
 ## [Unreleased]
+
+## [2.5.3] - 2026-11-25
 - Listas paginadas de cadastro (esportes, ligas, mercados, tipsters, times) mostram quantas linhas cabem na altura do painel, em vez de 10 fixas
 
 ## [2.5.2] - 2026-11-25
