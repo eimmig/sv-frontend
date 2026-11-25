@@ -7,6 +7,8 @@ adiciona uma entrada em `[Unreleased]` — verificado automaticamente pela pipel
 
 ## [Unreleased]
 - Listas paginadas de cadastro (esportes, ligas, mercados, tipsters, times) mostram quantas linhas cabem na altura do painel, em vez de 10 fixas
+
+## [2.5.2] - 2026-11-25
 - Tela de Usuarios sem rolagem escondia o painel "Excluir organizacao": a tela rola e a grade de cima deixa de ocupar a altura inteira
 
 ## [2.5.1] - 2026-11-24
