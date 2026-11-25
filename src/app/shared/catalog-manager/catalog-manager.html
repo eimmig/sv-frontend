@@ -32,17 +32,19 @@
     @if (loadError(); as message) {
       <p class="catalog-manager__error" role="alert" data-testid="catalog-manager-load-error">{{ message }}</p>
     } @else {
-      <ul class="catalog-manager__list" data-testid="catalog-manager-list">
-        @for (entry of visibleEntries(); track entry.id) {
-          <li data-testid="catalog-manager-row">{{ entry.name }}</li>
-        }
-      </ul>
-      <app-list-pager
-        testId="catalog-manager"
-        [page]="page()"
-        [totalPages]="totalPages()"
-        (pageChange)="goToPage($event)"
-      />
+      <div class="catalog-manager__fill" appFitPageSize (pageSizeChange)="pageSize.set($event)">
+        <ul class="catalog-manager__list" data-testid="catalog-manager-list">
+          @for (entry of visibleEntries(); track entry.id) {
+            <li data-testid="catalog-manager-row">{{ entry.name }}</li>
+          }
+        </ul>
+        <app-list-pager
+          testId="catalog-manager"
+          [page]="page()"
+          [totalPages]="totalPages()"
+          (pageChange)="goToPage($event)"
+        />
+      </div>
     }
   </app-panel>
 </app-panel-layout>
