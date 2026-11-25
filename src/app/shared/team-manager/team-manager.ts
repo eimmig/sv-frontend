@@ -9,8 +9,9 @@ import { forkJoin } from 'rxjs';
 
 import { loadInto, submitForm } from '../../core/api-request';
 import { CatalogEntry, Team, catalogApi, teamsApi } from '../../core/catalog-api';
+import { FitPageSize } from '../list-pager/fit-page-size.directive';
 import { ListPager } from '../list-pager/list-pager';
-import { clampPage, pageCount, pageSlice } from '../list-pager/paginate';
+import { LIST_PAGE_SIZE, clampPage, pageCount, pageSlice } from '../list-pager/paginate';
 import { Panel } from '../panel/panel';
 import { PanelLayout } from '../panel-layout/panel-layout';
 import { SearchableSelect } from '../searchable-select/searchable-select';
@@ -33,6 +34,7 @@ const EMPTY_OPTIONS: FormOptions = { sports: [], teams: [] };
     PanelLayout,
     SearchableSelect,
     ListPager,
+    FitPageSize,
   ],
   selector: 'app-team-manager',
   styleUrl: './team-manager.scss',
@@ -46,9 +48,12 @@ export class TeamManager implements OnInit {
 
   protected readonly options = signal<FormOptions>(EMPTY_OPTIONS);
   private readonly requestedPage = signal(0);
-  protected readonly page = computed(() => clampPage(this.requestedPage(), this.options().teams.length));
-  protected readonly totalPages = computed(() => pageCount(this.options().teams.length));
-  protected readonly visibleTeams = computed(() => pageSlice(this.options().teams, this.page()));
+  protected readonly pageSize = signal(LIST_PAGE_SIZE);
+  protected readonly page = computed(() =>
+    clampPage(this.requestedPage(), this.options().teams.length, this.pageSize()),
+  );
+  protected readonly totalPages = computed(() => pageCount(this.options().teams.length, this.pageSize()));
+  protected readonly visibleTeams = computed(() => pageSlice(this.options().teams, this.page(), this.pageSize()));
   protected readonly loadError = signal<string | null>(null);
   protected readonly submitting = signal(false);
   protected readonly formError = signal<string | null>(null);
